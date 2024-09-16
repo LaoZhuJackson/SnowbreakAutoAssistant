@@ -1,0 +1,6 @@
+psutil==6.0.0
+PyAutoGUI==0.9.54
+PyQt5==5.15.11
+PyQt5_sip==12.13.0
+PyQt_Fluent_Widgets==1.4.3
+PyScreeze==0.1.30
