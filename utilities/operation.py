@@ -205,3 +205,13 @@ def drag(start_point, x_offset, y_offset, duration=1):
 
     # 释放鼠标左键
     pyautogui.mouseUp()
+
+
+def back_to_home():
+    root = "images/in_game/"
+    while not is_exist_image(root + "setting_icon.png"):
+        if is_exist_image(root + "home.png"):
+            move_to_then_click(root + "home.png")
+        else:
+            pyautogui.press('esc')
+        time.sleep(1)

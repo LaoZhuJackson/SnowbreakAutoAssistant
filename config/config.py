@@ -46,7 +46,12 @@ class Config:
                 "CheckBox_use_power_4": False,
                 "CheckBox_buy_14": False,
                 "CheckBox_buy_13": False,
-                "CheckBox_buy_15": False
+                "CheckBox_buy_15": False,
+                "CheckBox_chasm_6": False,
+                "CheckBox_is_use_power": False,
+                "ComboBox_power_day": 0,
+                "CheckBox_reward_7": False,
+                "CheckBox_mail": False
             }
             self.save_config()
         return self.config_data

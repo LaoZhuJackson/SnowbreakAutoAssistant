@@ -1,3 +1,6 @@
 /images/test/
 /config/user_config.json
 /modules/test.py
+/build/
+/dist/
+/.idea/

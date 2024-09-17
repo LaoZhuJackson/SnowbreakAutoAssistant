@@ -3,7 +3,8 @@ import time
 import pyautogui
 
 from config.config import config
-from utilities.operation import move_to_then_click, match_all_by_x, is_exist_image, locate, click, wait_for_image
+from utilities.operation import move_to_then_click, match_all_by_x, is_exist_image, locate, click, wait_for_image, \
+    back_to_home
 
 
 def drag_down(x, y):
@@ -60,12 +61,12 @@ class shopping_module:
                     self.ensure_click(num)
                 if is_exist_image(self.shopping_root + "buy.png", confidence=0.9):
                     move_to_then_click(self.shopping_root + "max.png", confidence=0.9)
-                    move_to_then_click(self.shopping_root + "regular.png", confidence=0.9)
-                    # move_to_then_click(self.shopping_root + "buy.png", confidence=0.9)
+                    # move_to_then_click(self.shopping_root + "regular.png", confidence=0.9)
+                    move_to_then_click(self.shopping_root + "buy.png", confidence=0.9)
                 if is_exist_image(self.shopping_root + "buy_success.png", wait_time=3):
                     pass
                     # move_to_then_click(self.shopping_root + "buy_success.png")
-        pyautogui.press('esc')
+        back_to_home()
 
     def ensure_click(self, num):
         click(self.shopping_root + f"{num}.png", 3, 0.9)

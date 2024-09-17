@@ -1,6 +1,6 @@
 import time
 
-from utilities.operation import wait_then_click, is_exist_image, move_to_then_click
+from utilities.operation import wait_then_click, is_exist_image, move_to_then_click, back_to_home
 
 
 class get_power_module:
@@ -12,7 +12,7 @@ class get_power_module:
         move_to_then_click(self.in_game + "friends.png")
         if is_exist_image(self.in_game + "power.png"):
             move_to_then_click(self.in_game + "power.png")
-        move_to_then_click(self.in_game + "back.png")
+        back_to_home()
 
     def station_power(self):
         # 收取供应站体力
@@ -23,7 +23,7 @@ class get_power_module:
             time.sleep(0.3)
             move_to_then_click(self.in_game + "buy.png", 2)
             wait_then_click(self.in_game + "click.png", 2)
-        move_to_then_click(self.in_game + "back.png")
+        back_to_home()
 
 
 if __name__ == '__main__':

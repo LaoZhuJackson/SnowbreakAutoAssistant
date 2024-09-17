@@ -2,9 +2,7 @@ import time
 
 import pyautogui
 
-from utilities.operation import move_to_then_click, match_all_by_x
-
-
+from utilities.operation import move_to_then_click, match_all_by_x, back_to_home
 
 
 class person_module:
@@ -29,7 +27,7 @@ class person_module:
                     move_to_then_click(self.in_game + "start_fight.png")
                     move_to_then_click(self.in_game + "finish.png")
                     time.sleep(1)
-        move_to_then_click(self.in_game + "home.png")
+        back_to_home()
 
 
 if __name__ == '__main__':

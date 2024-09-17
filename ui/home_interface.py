@@ -158,7 +158,7 @@ class Ui_home(object):
         self.line_2.setStyleSheet("QFrame\n"
 "{\n"
 "    border:none;\n"
-"    background-color: rgba(0, 159, 170, 50);\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
 "    min-height : 3px;\n"
 "    max-height : 3px;\n"
 "    border-radius: 3px;\n"
@@ -269,7 +269,7 @@ class Ui_home(object):
         self.line_4.setStyleSheet("QFrame\n"
 "{\n"
 "    border:none;\n"
-"    background-color: rgba(0, 159, 170, 50);\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
 "    min-height : 3px;\n"
 "    max-height : 3px;\n"
 "    border-radius: 3px;\n"
@@ -300,7 +300,7 @@ class Ui_home(object):
         self.line.setStyleSheet("QFrame\n"
 "{\n"
 "    border:none;\n"
-"    background-color: rgba(0, 159, 170, 50);\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
 "    min-height : 3px;\n"
 "    max-height : 3px;\n"
 "    border-radius: 3px;\n"
@@ -351,7 +351,7 @@ class Ui_home(object):
         self.line_3.setStyleSheet("QFrame\n"
 "{\n"
 "    border:none;\n"
-"    background-color: rgba(0, 159, 170, 50);\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
 "    min-height : 3px;\n"
 "    max-height : 3px;\n"
 "    border-radius: 3px;\n"
@@ -402,7 +402,7 @@ class Ui_home(object):
         self.line_5.setStyleSheet("QFrame\n"
 "{\n"
 "    border:none;\n"
-"    background-color: rgba(0, 159, 170, 50);\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
 "    min-height : 3px;\n"
 "    max-height : 3px;\n"
 "    border-radius: 3px;\n"
@@ -421,16 +421,38 @@ class Ui_home(object):
         self.gridLayout_6 = QtWidgets.QGridLayout(self.page_2)
         self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_6.setObjectName("gridLayout_6")
-        self.CheckBox_16 = CheckBox(self.page_2)
-        self.CheckBox_16.setObjectName("CheckBox_16")
-        self.gridLayout_6.addWidget(self.CheckBox_16, 0, 0, 1, 1)
-        self.BodyLabel_4 = BodyLabel(self.page_2)
-        self.BodyLabel_4.setObjectName("BodyLabel_4")
-        self.gridLayout_6.addWidget(self.BodyLabel_4, 1, 0, 1, 1)
         self.ComboBox_power_usage = ComboBox(self.page_2)
         self.ComboBox_power_usage.setObjectName("ComboBox_power_usage")
         self.gridLayout_6.addWidget(self.ComboBox_power_usage, 2, 0, 1, 1)
+        self.BodyLabel_4 = BodyLabel(self.page_2)
+        self.BodyLabel_4.setObjectName("BodyLabel_4")
+        self.gridLayout_6.addWidget(self.BodyLabel_4, 1, 0, 1, 1)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.CheckBox_is_use_power = CheckBox(self.page_2)
+        self.CheckBox_is_use_power.setObjectName("CheckBox_is_use_power")
+        self.horizontalLayout.addWidget(self.CheckBox_is_use_power)
+        self.ComboBox_power_day = ComboBox(self.page_2)
+        self.ComboBox_power_day.setObjectName("ComboBox_power_day")
+        self.horizontalLayout.addWidget(self.ComboBox_power_day)
+        self.BodyLabel_6 = BodyLabel(self.page_2)
+        self.BodyLabel_6.setObjectName("BodyLabel_6")
+        self.horizontalLayout.addWidget(self.BodyLabel_6)
+        self.gridLayout_6.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_6.addItem(spacerItem5, 3, 0, 1, 1)
         self.PopUpAniStackedWidget.addWidget(self.page_2)
+        self.page_3 = QtWidgets.QWidget()
+        self.page_3.setObjectName("page_3")
+        self.gridLayout_10 = QtWidgets.QGridLayout(self.page_3)
+        self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_10.setObjectName("gridLayout_10")
+        self.CheckBox_mail = CheckBox(self.page_3)
+        self.CheckBox_mail.setObjectName("CheckBox_mail")
+        self.gridLayout_10.addWidget(self.CheckBox_mail, 0, 0, 1, 1)
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_10.addItem(spacerItem6, 1, 0, 1, 1)
+        self.PopUpAniStackedWidget.addWidget(self.page_3)
         self.gridLayout_8.addWidget(self.PopUpAniStackedWidget, 1, 0, 1, 1)
         self.gridLayout_2.addWidget(self.SimpleCardWidget_2, 0, 1, 1, 1)
         self.SimpleCardWidget_4 = SimpleCardWidget(home)
@@ -469,7 +491,7 @@ class Ui_home(object):
         self.gridLayout_2.setRowStretch(0, 2)
 
         self.retranslateUi(home)
-        self.PopUpAniStackedWidget.setCurrentIndex(0)
+        self.PopUpAniStackedWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(home)
 
     def retranslateUi(self, home):
@@ -503,8 +525,10 @@ class Ui_home(object):
         self.CheckBox_buy_15.setText(_translate("home", "光纤轴突"))
         self.CheckBox_buy_11.setText(_translate("home", "高级职级认证"))
         self.CheckBox_buy_3.setText(_translate("home", "通用强化套件"))
-        self.CheckBox_16.setText(_translate("home", "自动使用期限2天内的体力药"))
         self.BodyLabel_4.setText(_translate("home", "选择体力使用方式"))
+        self.CheckBox_is_use_power.setText(_translate("home", "自动使用期限"))
+        self.BodyLabel_6.setText(_translate("home", "天内的体力药"))
+        self.CheckBox_mail.setText(_translate("home", "领取邮件"))
         self.TitleLabel_3.setText(_translate("home", "提醒"))
         self.BodyLabel_2.setText(_translate("home", "Body label"))
         self.TitleLabel.setText(_translate("home", "日志"))

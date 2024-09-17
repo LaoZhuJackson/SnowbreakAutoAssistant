@@ -307,7 +307,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_3">
@@ -360,7 +360,7 @@ border:None;</string>
                  <string notr="true">QFrame
 {
 	border:none;
-	background-color: rgba(0, 159, 170, 50);
+	background-color: rgba(0, 159, 170, 15);
 	min-height : 3px;
 	max-height : 3px;
 	border-radius: 3px;
@@ -620,7 +620,7 @@ border:None;</string>
                  <string notr="true">QFrame
 {
 	border:none;
-	background-color: rgba(0, 159, 170, 50);
+	background-color: rgba(0, 159, 170, 15);
 	min-height : 3px;
 	max-height : 3px;
 	border-radius: 3px;
@@ -680,7 +680,7 @@ border:None;</string>
                  <string notr="true">QFrame
 {
 	border:none;
-	background-color: rgba(0, 159, 170, 50);
+	background-color: rgba(0, 159, 170, 15);
 	min-height : 3px;
 	max-height : 3px;
 	border-radius: 3px;
@@ -790,7 +790,7 @@ border:None;</string>
                  <string notr="true">QFrame
 {
 	border:none;
-	background-color: rgba(0, 159, 170, 50);
+	background-color: rgba(0, 159, 170, 15);
 	min-height : 3px;
 	max-height : 3px;
 	border-radius: 3px;
@@ -900,7 +900,7 @@ border:None;</string>
                  <string notr="true">QFrame
 {
 	border:none;
-	background-color: rgba(0, 159, 170, 50);
+	background-color: rgba(0, 159, 170, 15);
 	min-height : 3px;
 	max-height : 3px;
 	border-radius: 3px;
@@ -928,12 +928,8 @@ border:None;</string>
         </widget>
         <widget class="QWidget" name="page_2">
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
-           <widget class="CheckBox" name="CheckBox_16">
-            <property name="text">
-             <string>自动使用期限2天内的体力药</string>
-            </property>
-           </widget>
+          <item row="2" column="0">
+           <widget class="ComboBox" name="ComboBox_power_usage"/>
           </item>
           <item row="1" column="0">
            <widget class="BodyLabel" name="BodyLabel_4">
@@ -942,8 +938,63 @@ border:None;</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="ComboBox" name="ComboBox_power_usage"/>
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="CheckBox" name="CheckBox_is_use_power">
+              <property name="text">
+               <string>自动使用期限</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="ComboBox" name="ComboBox_power_day"/>
+            </item>
+            <item>
+             <widget class="BodyLabel" name="BodyLabel_6">
+              <property name="text">
+               <string>天内的体力药</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_3">
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="0" column="0">
+           <widget class="CheckBox" name="CheckBox_mail">
+            <property name="text">
+             <string>领取邮件</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer name="verticalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
