@@ -72,4 +72,4 @@ if __name__ == '__main__':
     config.load_config()
     if config.get_value("CheckBox_is_use_power"):
         module.check_power(config.get_value("ComboBox_power_day")+1)
-    # module.by_maneuver()
+    module.by_maneuver()
