@@ -34,7 +34,7 @@ class use_stamina_module:
                 if is_exist_image(self.in_game + "time.png", confidence=0.5):
                     # print("times")
                     point = locate(self.in_game + "time.png", confidence=0.5)
-                    if point.x < pyautogui.size()[0] / 2:
+                    if point.x < pyautogui.size()[0] * 0.427:
                         ensure_click(point)
                         self.click_flag = True
             if self.click_flag:

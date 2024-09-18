@@ -76,5 +76,4 @@ class shopping_module:
 
 if __name__ == '__main__':
     module = shopping_module()
-    time.sleep(3)
     module.buy()

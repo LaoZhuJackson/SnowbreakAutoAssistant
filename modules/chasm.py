@@ -2,7 +2,7 @@ import time
 
 import pyautogui
 
-from utilities.operation import move_to_then_click, is_exist_image, locate
+from utilities.operation import move_to_then_click, is_exist_image, locate, wait_then_click
 
 
 class chasm_module:
@@ -11,7 +11,7 @@ class chasm_module:
         self.continue_flag = True
 
     def chasm(self):
-        move_to_then_click(self.chasm_root + "fight.png")
+        wait_then_click(self.chasm_root + "fight.png",time_out=5)
         move_to_then_click(self.chasm_root + "special.png", time_out=3)
         move_to_then_click(self.chasm_root + "chasm.png")
         self.fast_test()
@@ -40,5 +40,4 @@ class chasm_module:
 
 if __name__ == '__main__':
     module = chasm_module()
-    time.sleep(3)
     module.chasm()

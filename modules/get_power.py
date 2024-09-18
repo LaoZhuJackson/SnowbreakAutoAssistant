@@ -8,8 +8,8 @@ class get_power_module:
         self.in_game = "images/in_game/"
 
     def friends_power(self):
-        # 收赠体力
-        move_to_then_click(self.in_game + "friends.png")
+        # 收赠好友体力
+        wait_then_click(self.in_game + "friends.png", time_out=5)
         if is_exist_image(self.in_game + "power.png"):
             move_to_then_click(self.in_game + "power.png")
         back_to_home()
@@ -28,6 +28,5 @@ class get_power_module:
 
 if __name__ == '__main__':
     module = get_power_module()
-    time.sleep(3)
     module.friends_power()
     module.station_power()

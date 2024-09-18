@@ -157,6 +157,7 @@ def move_to_then_click(image_path, time_out=5, confidence=0.7):
                 return True
         except pyautogui.ImageNotFoundException:
             pass
+    print("检测超时，点击操作未执行，进行后续操作")
     return False
 
 
