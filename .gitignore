@@ -1,8 +1,1 @@
-/images/test/
-/config/user_config.json
-/modules/test.py
-/build/
-/dist/
-/.idea/
-/芬妮舞狮助手.exe
-/芬妮舞狮助手.spec
+/app/modules/test.py

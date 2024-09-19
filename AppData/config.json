@@ -1,0 +1,51 @@
+{
+    "home_interface_shopping": {
+        "CheckBox_buy_1": false,
+        "CheckBox_buy_10": false,
+        "CheckBox_buy_11": false,
+        "CheckBox_buy_12": false,
+        "CheckBox_buy_13": false,
+        "CheckBox_buy_14": false,
+        "CheckBox_buy_15": true,
+        "CheckBox_buy_2": false,
+        "CheckBox_buy_3": false,
+        "CheckBox_buy_4": false,
+        "CheckBox_buy_5": false,
+        "CheckBox_buy_6": false,
+        "CheckBox_buy_7": false,
+        "CheckBox_buy_8": false,
+        "CheckBox_buy_9": false
+    },
+    "home_interface_option": {
+        "CheckBox_chasm": true,
+        "CheckBox_entry": true,
+        "CheckBox_person": true,
+        "CheckBox_reward": true,
+        "CheckBox_shop": true,
+        "CheckBox_stamina": true,
+        "CheckBox_use_power": true
+    },
+    "home_interface_power": {
+        "CheckBox_is_use_power": true,
+        "ComboBox_power_day": 0,
+        "ComboBox_power_usage": 0
+    },
+    "home_interface_reward": {
+        "CheckBox_mail": true
+    },
+    "home_interface_after_use": {
+        "ComboBox_after_use": 0
+    },
+    "Update": {
+        "CheckUpdateAtStartUp": true
+    },
+    "MainWindow": {
+        "DpiScale": "Auto",
+        "Language": "zh_CN",
+        "MicaEnabled": false
+    },
+    "QFluentWidgets": {
+        "ThemeColor": "#ff009faa",
+        "ThemeMode": "Auto"
+    }
+}

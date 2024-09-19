@@ -1,0 +1,119 @@
+<RCC>
+    <qresource prefix="/app/resource/">
+        <file>images/icons/SettingsFilled_white.svg</file>
+        <file>images/icons/SettingsFilled_black.svg</file>
+        <file>images/icons/Settings_white.svg</file>
+        <file>images/icons/Settings_black.svg</file>
+        <file>images/logo.png</file>
+
+        <file>images/chasm/chasm.png</file>
+        <file>images/chasm/click.png</file>
+        <file>images/chasm/fast.png</file>
+        <file>images/chasm/fight.png</file>
+        <file>images/chasm/get.png</file>
+        <file>images/chasm/home.png</file>
+        <file>images/chasm/no_chance.png</file>
+        <file>images/chasm/reward.png</file>
+        <file>images/chasm/sign.png</file>
+        <file>images/chasm/special.png</file>
+        <file>images/chasm/yes.png</file>
+
+        <file>images/in_game/1_day.png</file>
+        <file>images/in_game/2_day.png</file>
+        <file>images/in_game/3_day.png</file>
+        <file>images/in_game/4_day.png</file>
+        <file>images/in_game/5_day.png</file>
+        <file>images/in_game/6_day.png</file>
+        <file>images/in_game/back.png</file>
+        <file>images/in_game/buy.png</file>
+        <file>images/in_game/click.png</file>
+        <file>images/in_game/daily_resources.png</file>
+        <file>images/in_game/fight.png</file>
+        <file>images/in_game/finish.png</file>
+        <file>images/in_game/flash_time.png</file>
+        <file>images/in_game/friends.png</file>
+        <file>images/in_game/home.png</file>
+        <file>images/in_game/personal_story.png</file>
+        <file>images/in_game/power.png</file>
+        <file>images/in_game/qiandao.png</file>
+        <file>images/in_game/quick_fight.png</file>
+        <file>images/in_game/quick_fight_2.png</file>
+        <file>images/in_game/setting_icon.png</file>
+        <file>images/in_game/stamina.png</file>
+        <file>images/in_game/start_fight.png</file>
+        <file>images/in_game/supply_station.png</file>
+        <file>images/in_game/supply_station_yes.png</file>
+        <file>images/in_game/test.png</file>
+        <file>images/in_game/time.png</file>
+        <file>images/in_game/wrong_time.png</file>
+        <file>images/in_game/yes.png</file>
+        <file>images/in_game/max.png</file>
+
+        <file>images/maneuver/jiyexingdong/back.png</file>
+        <file>images/maneuver/jiyexingdong/cancel.png</file>
+        <file>images/maneuver/jiyexingdong/chasm.png</file>
+        <file>images/maneuver/jiyexingdong/click.png</file>
+        <file>images/maneuver/jiyexingdong/entrance.png</file>
+        <file>images/maneuver/jiyexingdong/fast_fight.png</file>
+        <file>images/maneuver/jiyexingdong/finish.png</file>
+        <file>images/maneuver/jiyexingdong/get.png</file>
+        <file>images/maneuver/jiyexingdong/home.png</file>
+        <file>images/maneuver/jiyexingdong/material_entry.png</file>
+        <file>images/maneuver/jiyexingdong/max.png</file>
+        <file>images/maneuver/jiyexingdong/no_power.png</file>
+        <file>images/maneuver/jiyexingdong/reward.png</file>
+        <file>images/maneuver/jiyexingdong/start_fight.png</file>
+
+        <file>images/reward/click.png</file>
+        <file>images/reward/credential.png</file>
+        <file>images/reward/daily_work.png</file>
+        <file>images/reward/execution.png</file>
+        <file>images/reward/get.png</file>
+        <file>images/reward/get_2.png</file>
+        <file>images/reward/get_3.png</file>
+        <file>images/reward/home.png</file>
+        <file>images/reward/mail.png</file>
+        <file>images/reward/periodic.png</file>
+        <file>images/reward/reward.png</file>
+        <file>images/reward/work.png</file>
+
+        <file>images/shopping/1.png</file>
+        <file>images/shopping/1_red.png</file>
+        <file>images/shopping/2.png</file>
+        <file>images/shopping/2_red.png</file>
+        <file>images/shopping/3.png</file>
+        <file>images/shopping/4.png</file>
+        <file>images/shopping/5.png</file>
+        <file>images/shopping/6.png</file>
+        <file>images/shopping/7.png</file>
+        <file>images/shopping/8.png</file>
+        <file>images/shopping/9.png</file>
+        <file>images/shopping/10.png</file>
+        <file>images/shopping/11.png</file>
+        <file>images/shopping/12.png</file>
+        <file>images/shopping/13.png</file>
+        <file>images/shopping/14.png</file>
+        <file>images/shopping/15.png</file>
+        <file>images/shopping/buy.png</file>
+        <file>images/shopping/buy_success.png</file>
+        <file>images/shopping/flush.png</file>
+        <file>images/shopping/max.png</file>
+        <file>images/shopping/no_money.png</file>
+        <file>images/shopping/regular.png</file>
+        <file>images/shopping/store.png</file>
+
+        <file>images/start_game/age.png</file>
+        <file>images/start_game/already_in_game.png</file>
+        <file>images/start_game/start.png</file>
+        <file>images/start_game/start_2.png</file>
+        <file>images/start_game/update_game.png</file>
+        <file>images/start_game/update_yes.png</file>
+        <file>images/start_game/updating.png</file>
+
+        <file>i18n/app.zh_CN.qm</file>
+        <file>i18n/app.zh_HK.qm</file>
+
+        <file>qss/light/setting_interface.qss</file>
+        <file>qss/dark/setting_interface.qss</file>
+    </qresource>
+</RCC>
