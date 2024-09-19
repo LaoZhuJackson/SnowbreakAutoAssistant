@@ -1,6 +1,6 @@
 <div align="center">
 
-![芬妮舞狮](ui%2Fresource%2Ffenni-removebg.png)
+![logo.png](asset%2Flogo.png)![芬妮舞狮](ui%2Fresource%2Ffenni-removebg.png)
 # 芬妮舞狮助手
 
 <br>
