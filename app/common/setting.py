@@ -9,9 +9,9 @@ YEAR = 2024
 AUTHOR = "LaoZhu"
 VERSION = "v0.0.1"
 APP_NAME = "auto_chenbai"
-HELP_URL = "https://qfluentwidgets.com"
+HELP_URL = "https://github.com/LaoZhuJackson/auto_chenbai"
 REPO_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets"
-FEEDBACK_URL = "https://github.com/zhiyiYo/PyQt-Fluent-Widgets/issues"
+FEEDBACK_URL = "https://github.com/LaoZhuJackson/auto_chenbai/issues"
 DOC_URL = "https://qfluentwidgets.com/"
 
 CONFIG_FOLDER = Path('AppData').absolute()

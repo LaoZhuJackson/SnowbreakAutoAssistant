@@ -56,25 +56,25 @@ class SettingInterface(ScrollArea):
             ],
             parent=self.personalGroup
         )
-        self.zoomCard = ComboBoxSettingCard(
-            config.dpiScale,
-            FIF.ZOOM,
-            self.tr("Interface zoom"),
-            self.tr("Change the size of widgets and fonts"),
-            texts=[
-                "100%", "125%", "150%", "175%", "200%",
-                self.tr("Use system setting")
-            ],
-            parent=self.personalGroup
-        )
-        self.languageCard = ComboBoxSettingCard(
-            config.language,
-            FIF.LANGUAGE,
-            self.tr('Language'),
-            self.tr('Set your preferred language for UI'),
-            texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
-            parent=self.personalGroup
-        )
+        # self.zoomCard = ComboBoxSettingCard(
+        #     config.dpiScale,
+        #     FIF.ZOOM,
+        #     self.tr("Interface zoom"),
+        #     self.tr("Change the size of widgets and fonts"),
+        #     texts=[
+        #         "100%", "125%", "150%", "175%", "200%",
+        #         self.tr("Use system setting")
+        #     ],
+        #     parent=self.personalGroup
+        # )
+        # self.languageCard = ComboBoxSettingCard(
+        #     config.language,
+        #     FIF.LANGUAGE,
+        #     self.tr('Language'),
+        #     self.tr('Set your preferred language for UI'),
+        #     texts=['简体中文', '繁體中文', 'English', self.tr('Use system setting')],
+        #     parent=self.personalGroup
+        # )
 
         # update software
         self.updateSoftwareGroup = SettingCardGroup(
@@ -82,7 +82,7 @@ class SettingInterface(ScrollArea):
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
             self.tr('Check for updates when the application starts'),
-            self.tr('The new version will be more stable and have more features'),
+            '版本更稳定且拥有更多新功能',
             configItem=config.checkUpdateAtStartUp,
             parent=self.updateSoftwareGroup
         )
@@ -93,21 +93,20 @@ class SettingInterface(ScrollArea):
             HELP_URL,
             self.tr('Open help page'),
             FIF.HELP,
-            self.tr('Help'),
-            self.tr(
-                'Discover new features and learn useful tips about Fluent Client'),
+            '帮助',
+            '前往github获取帮助',
             self.aboutGroup
         )
         self.feedbackCard = PrimaryPushSettingCard(
             self.tr('Provide feedback'),
             FIF.FEEDBACK,
             self.tr('Provide feedback'),
-            self.tr('Help us improve Fluent Client by providing feedback'),
+            '提供反馈帮助我们完善尘白助手',
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
             self.tr('Check update'),
-            ":/qfluentwidgets/images/logo.png",
+            "app/resource/images/logo.png",
             self.tr('About'),
             '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
             self.tr('Version') + " " + VERSION,
@@ -142,8 +141,8 @@ class SettingInterface(ScrollArea):
 
         self.personalGroup.addSettingCard(self.micaCard)
         self.personalGroup.addSettingCard(self.themeCard)
-        self.personalGroup.addSettingCard(self.zoomCard)
-        self.personalGroup.addSettingCard(self.languageCard)
+        # self.personalGroup.addSettingCard(self.zoomCard)
+        # self.personalGroup.addSettingCard(self.languageCard)
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 

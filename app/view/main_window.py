@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen
 from qfluentwidgets import FluentIcon as FIF
 
+from .additional_features import Additional
+from .help import Help
 from .home import Home
 from .setting_interface import SettingInterface
 from ..common.config import config
@@ -22,6 +24,9 @@ class MainWindow(MSFluentWindow):
 
         # TODO: create sub interface
         self.homeInterface = Home('Home Interface', self)
+        self.additionalInterface = Additional('Additional Interface', self)
+
+        self.helpInterface = Help('Help Interface', self)
         self.settingInterface = SettingInterface(self)
 
         self.connectSignalToSlot()
@@ -37,10 +42,13 @@ class MainWindow(MSFluentWindow):
 
         # TODO: add navigation items
         self.addSubInterface(self.homeInterface, FIF.HOME, '主页', FIF.HOME_FILL)
+        self.addSubInterface(self.additionalInterface, FIF.APPLICATION, '小工具')
 
         # add custom widget to bottom
+        self.addSubInterface(self.helpInterface,FIF.HELP,'帮助',position=NavigationItemPosition.BOTTOM)
         self.addSubInterface(
-            self.settingInterface, Icon.SETTINGS, self.tr('Settings'), Icon.SETTINGS_FILLED, NavigationItemPosition.BOTTOM)
+            self.settingInterface, Icon.SETTINGS, self.tr('Settings'), Icon.SETTINGS_FILLED,
+            NavigationItemPosition.BOTTOM)
 
         self.splashScreen.finish()
 
@@ -61,7 +69,7 @@ class MainWindow(MSFluentWindow):
 
         desktop = QApplication.primaryScreen().availableGeometry()
         w, h = desktop.width(), desktop.height()
-        self.move(w//2 - self.width()//2, h//2 - self.height()//2)
+        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
         self.show()
         QApplication.processEvents()
 

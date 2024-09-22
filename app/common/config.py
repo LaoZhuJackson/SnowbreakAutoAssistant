@@ -74,8 +74,6 @@ class Config(QConfig):
 
     # main window
     micaEnabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())
-    dpiScale = OptionsConfigItem(
-        "MainWindow", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     language = OptionsConfigItem(
         "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
 
@@ -84,5 +82,5 @@ class Config(QConfig):
 
 
 config = Config()
-config.themeMode.value = Theme.AUTO
+config.themeMode.value = Theme.LIGHT
 qconfig.load(str(CONFIG_FILE.absolute()), config)

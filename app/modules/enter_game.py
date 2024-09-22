@@ -1,7 +1,8 @@
 import time
 
 from app.common.logger import logger
-from app.common.operation import click, wait_for_image, wait_then_click, is_exist_image, exist_then_click
+from app.common.operation import click, wait_for_image, wait_then_click, is_exist_image, exist_then_click, \
+    move_to_then_click
 
 
 class enter_game_module:
@@ -24,10 +25,12 @@ class enter_game_module:
                     wait_then_click(self.start_game + "start_2.png", 5)
                 # 首次登录与非首次登录进入主界面
                 while True:
-                    if exist_then_click(self.in_game + "qiandao.png"):
+                    if exist_then_click(self.in_game + "qiandao.png", wait_time=2):
                         click(self.in_game + "flash_time.png")
                         break
-                    if is_exist_image(self.in_game + "setting_icon.png"):
+                    else:
+                        move_to_then_click(self.in_game + "setting_icon.png")
+                    if is_exist_image(self.in_game + "setting_icon.png", confidence=0.9):
                         break
         else:
             print("已进入游戏")

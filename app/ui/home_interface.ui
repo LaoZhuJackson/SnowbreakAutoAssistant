@@ -59,6 +59,43 @@
       <property name="horizontalSpacing">
        <number>0</number>
       </property>
+      <item row="6" column="0" colspan="4">
+       <widget class="CheckBox" name="CheckBox_person_5">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>角色碎片</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="4">
+       <widget class="ToolButton" name="ToolButton_use_power"/>
+      </item>
+      <item row="3" column="0" colspan="4">
+       <widget class="CheckBox" name="CheckBox_stamina_2">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>领取体力</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
+       <widget class="ToolButton" name="ToolButton_stamina">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="PushButton" name="PushButton_select_all">
+        <property name="text">
+         <string>全选 </string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="2">
        <spacer name="verticalSpacer_6">
         <property name="orientation">
@@ -75,11 +112,29 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="4">
-       <widget class="ToolButton" name="ToolButton_entry"/>
+      <item row="10" column="3">
+       <widget class="PushButton" name="PushButton_no_select">
+        <property name="text">
+         <string>清空</string>
+        </property>
+       </widget>
       </item>
-      <item row="8" column="4">
-       <widget class="ToolButton" name="ToolButton_reward"/>
+      <item row="2" column="0" colspan="4">
+       <widget class="CheckBox" name="CheckBox_entry_1">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>自动登录</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="4">
+       <widget class="ToolButton" name="ToolButton_chasm">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="9" column="2">
        <spacer name="verticalSpacer_2">
@@ -97,34 +152,15 @@
         </property>
        </spacer>
       </item>
-      <item row="6" column="4">
-       <widget class="ToolButton" name="ToolButton_person"/>
-      </item>
-      <item row="7" column="4">
-       <widget class="ToolButton" name="ToolButton_chasm"/>
-      </item>
-      <item row="4" column="4">
-       <widget class="ToolButton" name="ToolButton_shop"/>
-      </item>
-      <item row="10" column="1">
-       <widget class="PushButton" name="PushButton_select_all">
+      <item row="7" column="0" colspan="4">
+       <widget class="CheckBox" name="CheckBox_chasm_6">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="text">
-         <string>全选 </string>
+         <string>精神拟境</string>
         </property>
        </widget>
-      </item>
-      <item row="3" column="4">
-       <widget class="ToolButton" name="ToolButton_stamina"/>
-      </item>
-      <item row="10" column="3">
-       <widget class="PushButton" name="PushButton_no_select">
-        <property name="text">
-         <string>清空</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="4">
-       <widget class="ToolButton" name="ToolButton_use_power"/>
       </item>
       <item row="8" column="0" colspan="4">
        <widget class="CheckBox" name="CheckBox_reward_7">
@@ -136,15 +172,8 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="4">
-       <widget class="CheckBox" name="CheckBox_person_5">
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>角色碎片</string>
-        </property>
-       </widget>
+      <item row="8" column="4">
+       <widget class="ToolButton" name="ToolButton_reward"/>
       </item>
       <item row="5" column="0" colspan="4">
        <widget class="CheckBox" name="CheckBox_use_power_4">
@@ -166,33 +195,20 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
-       <widget class="CheckBox" name="CheckBox_stamina_2">
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>领取体力</string>
+      <item row="4" column="4">
+       <widget class="ToolButton" name="ToolButton_shop"/>
+      </item>
+      <item row="6" column="4">
+       <widget class="ToolButton" name="ToolButton_person">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="4">
-       <widget class="CheckBox" name="CheckBox_entry_1">
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>自动登录</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0" colspan="4">
-       <widget class="CheckBox" name="CheckBox_chasm_6">
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="text">
-         <string>精神拟境</string>
+      <item row="2" column="4">
+       <widget class="ToolButton" name="ToolButton_entry">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -307,7 +323,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_3">
@@ -340,8 +356,8 @@ border:None;</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>282</width>
-               <height>555</height>
+               <width>305</width>
+               <height>554</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">

@@ -19,7 +19,7 @@ from ..modules.person import person_module
 from ..modules.shopping import shopping_module
 from ..modules.use_stamina import use_stamina_module
 from ..ui.home_interface import Ui_home
-from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton
+from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, PillToolButton
 
 from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
 from ..common.operation import back_to_home, move_to_then_click
@@ -79,15 +79,9 @@ class StartThread(QThread):
                         module.receive_credential()
                         if config.CheckBox_mail.value:
                             module.receive_mail()
-
-                    # process = subprocess.Popen(['python', f'./app/modules/{self.name_list[index]}'], stdout=subprocess.PIPE,
-                    #                            stderr=subprocess.STDOUT)
-                    # # 读取输出
-                    # while process.poll() is None:
-                    #     line = process.stdout.readline()
-                    #     result = line.decode('utf-8').strip('\r\n')
-                    #     if result:
-                    #         logger.info(result)
+                else:
+                    logger.info("已退出")
+                    break
         except Exception as e:
             logger.error(e)
         finally:
