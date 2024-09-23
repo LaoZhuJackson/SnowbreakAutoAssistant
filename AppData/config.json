@@ -17,13 +17,13 @@
         "CheckBox_buy_9": false
     },
     "home_interface_option": {
-        "CheckBox_chasm": true,
+        "CheckBox_chasm": false,
         "CheckBox_entry": true,
-        "CheckBox_person": true,
-        "CheckBox_reward": true,
-        "CheckBox_shop": true,
-        "CheckBox_stamina": true,
-        "CheckBox_use_power": true
+        "CheckBox_person": false,
+        "CheckBox_reward": false,
+        "CheckBox_shop": false,
+        "CheckBox_stamina": false,
+        "CheckBox_use_power": false
     },
     "home_interface_power": {
         "CheckBox_is_use_power": true,

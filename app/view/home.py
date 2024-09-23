@@ -48,8 +48,7 @@ class StartThread(QThread):
         self.is_running_signal.emit(True)
         try:
             for key, value in self.checkbox_dic.items():
-                logger.debug(self._is_running)
-                logger.debug(value)
+                logger.debug(f"是否正在运行：{self._is_running}")
                 if value and self._is_running:
                     index = int(re.search(r'\d+', key).group()) - 1
                     logger.info(f"当前任务：{self.name_list_zh[index]}")
