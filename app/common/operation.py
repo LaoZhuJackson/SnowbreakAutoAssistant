@@ -75,12 +75,12 @@ def wait_for_image(image_path, time_out=30, confidence=0.7):
             if location is None:
                 time.sleep(1)
             else:
-                print("已等到需要等的图片出现")
+                print("成功识别")
                 return True
         except pyautogui.ImageNotFoundException:
             # 如果跳过没有检测到图片就跳过
             pass
-    print("等待超时")
+    print("跳过wait_for_image，执行下一步")
     return False
 
 
@@ -94,13 +94,13 @@ def wait_then_click(image_path, time_out=30, confidence=0.7):
             if location is None:
                 time.sleep(1)
             else:
-                print("已等到需要等的图片出现，开始点击")
+                print("成功识别，开始点击")
                 ensure_click(location, image_path)
                 return True
         except pyautogui.ImageNotFoundException:
             # 如果跳过没有检测到图片就跳过
             pass
-    print("等待超时")
+    print("跳过wait_then_click，执行下一步")
     return False
 
 
@@ -156,7 +156,7 @@ def move_to_then_click(image_path, time_out=5, confidence=0.7):
                 return True
         except pyautogui.ImageNotFoundException:
             pass
-    print("检测超时，点击操作未执行，进行后续操作")
+    print("跳过move_to_then_click，执行下一步")
     return False
 
 
@@ -176,7 +176,6 @@ def match_all_by_x(image_path, confidence=0.7, wait_time=0.3):
         if locations_list:
             # 根据 left 属性的值对匹配项进行排序
             sortedMatches = sorted(locations_list, key=lambda box: box.left)
-            print(sortedMatches)
         if sortedMatches:
             # 手动剔除重复项
             unique_matches.append(sortedMatches[0])  # 添加第一个匹配项作为基准

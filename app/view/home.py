@@ -48,6 +48,8 @@ class StartThread(QThread):
         self.is_running_signal.emit(True)
         try:
             for key, value in self.checkbox_dic.items():
+                logger.debug(self._is_running)
+                logger.debug(value)
                 if value and self._is_running:
                     index = int(re.search(r'\d+', key).group()) - 1
                     logger.info(f"当前任务：{self.name_list_zh[index]}")
@@ -79,7 +81,7 @@ class StartThread(QThread):
                         module.receive_credential()
                         if config.CheckBox_mail.value:
                             module.receive_mail()
-                else:
+                elif not self._is_running:
                     logger.info("已退出")
                     break
         except Exception as e:

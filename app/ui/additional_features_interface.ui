@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Frame</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
    <item row="0" column="0">
     <widget class="SegmentedWidget" name="SegmentedWidget"/>
    </item>
@@ -23,18 +23,25 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="page_fishing">
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout_2" columnstretch="2,1">
        <item row="0" column="0">
-        <widget class="BodyLabel" name="BodyLabel">
+        <widget class="SimpleCardWidget" name="SimpleCardWidget"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="PushButton" name="PushButton_start_fishing">
          <property name="text">
-          <string>自动钓鱼页面</string>
+          <string>开始钓鱼</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="PushButton" name="PushButton">
-         <property name="text">
-          <string>开始钓鱼</string>
+       <item row="0" column="1" rowspan="2">
+        <widget class="QTextBrowser" name="textBrowser_log">
+         <property name="styleSheet">
+          <string notr="true">border-radius: 5px;
+border: 2px;</string>
+         </property>
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
         </widget>
        </item>
@@ -71,6 +78,18 @@
    <class>PushButton</class>
    <extends>QPushButton</extends>
    <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>CardWidget</class>
+   <extends>QFrame</extends>
+   <header>qfluentwidgets</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SimpleCardWidget</class>
+   <extends>CardWidget</extends>
+   <header>qfluentwidgets</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>BodyLabel</class>

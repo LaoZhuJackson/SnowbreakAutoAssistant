@@ -26,12 +26,20 @@ class Ui_additional_features(object):
         self.page_fishing.setObjectName("page_fishing")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.page_fishing)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.BodyLabel = BodyLabel(self.page_fishing)
-        self.BodyLabel.setObjectName("BodyLabel")
-        self.gridLayout_2.addWidget(self.BodyLabel, 0, 0, 1, 1)
-        self.PushButton = PushButton(self.page_fishing)
-        self.PushButton.setObjectName("PushButton")
-        self.gridLayout_2.addWidget(self.PushButton, 1, 0, 1, 1)
+        self.SimpleCardWidget = SimpleCardWidget(self.page_fishing)
+        self.SimpleCardWidget.setObjectName("SimpleCardWidget")
+        self.gridLayout_2.addWidget(self.SimpleCardWidget, 0, 0, 1, 1)
+        self.PushButton_start_fishing = PushButton(self.page_fishing)
+        self.PushButton_start_fishing.setObjectName("PushButton_start_fishing")
+        self.gridLayout_2.addWidget(self.PushButton_start_fishing, 1, 0, 1, 1)
+        self.textBrowser_log = QtWidgets.QTextBrowser(self.page_fishing)
+        self.textBrowser_log.setStyleSheet("border-radius: 5px;\n"
+"border: 2px;")
+        self.textBrowser_log.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.textBrowser_log.setObjectName("textBrowser_log")
+        self.gridLayout_2.addWidget(self.textBrowser_log, 0, 1, 2, 1)
+        self.gridLayout_2.setColumnStretch(0, 2)
+        self.gridLayout_2.setColumnStretch(1, 1)
         self.stackedWidget.addWidget(self.page_fishing)
         self.page_2 = QtWidgets.QWidget()
         self.page_2.setObjectName("page_2")
@@ -58,8 +66,7 @@ class Ui_additional_features(object):
     def retranslateUi(self, additional_features):
         _translate = QtCore.QCoreApplication.translate
         additional_features.setWindowTitle(_translate("additional_features", "Frame"))
-        self.BodyLabel.setText(_translate("additional_features", "自动钓鱼页面"))
-        self.PushButton.setText(_translate("additional_features", "开始钓鱼"))
+        self.PushButton_start_fishing.setText(_translate("additional_features", "开始钓鱼"))
         self.BodyLabel_2.setText(_translate("additional_features", "待开发"))
         self.BodyLabel_3.setText(_translate("additional_features", "待开发"))
-from qfluentwidgets import BodyLabel, PushButton, SegmentedWidget
+from qfluentwidgets import BodyLabel, PushButton, SegmentedWidget, SimpleCardWidget

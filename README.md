@@ -1,7 +1,8 @@
 <div align="center">
 
 ![logo.png](asset%2Flogo.png)
-# 芬妮舞狮助手
+# 尘白禁区自动化助手
+## Snowbreak Auto Assistant
 
 <br>
 尘白代理小助手

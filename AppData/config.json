@@ -40,12 +40,11 @@
         "CheckUpdateAtStartUp": true
     },
     "MainWindow": {
-        "DpiScale": "Auto",
         "Language": "zh_CN",
         "MicaEnabled": false
     },
     "QFluentWidgets": {
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Auto"
+        "ThemeMode": "Light"
     }
 }
