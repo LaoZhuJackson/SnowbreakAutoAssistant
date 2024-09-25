@@ -1,10 +1,9 @@
 import os
+import time
 from pathlib import Path
 from shutil import copy, copytree
 from distutils.sysconfig import get_python_lib
 
-# https://blog.csdn.net/qq_25262697/article/details/129302819
-# https://www.cnblogs.com/happylee666/articles/16158458.html
 args = [
     'nuitka',
     '--standalone',
@@ -21,9 +20,11 @@ args = [
     '--include-module=app',
     '--nofollow-import-to=pywin',
     '--follow-import-to=win32com,win32gui,win32print,qfluentwidgets,app',
-    '--output-dir=dist/main',
+    '--output-dir=dist',
     'main.py',
 ]
+
+start_time = time.time()
 
 os.system(' '.join(args))
 
@@ -62,3 +63,20 @@ for file in copied_files:
             copytree(src, dist)
     except:
         pass
+
+# 手动指定复制文件
+scipy_source = Path(r"D:\Learning\compilingEnvironment\miniconda\envs\autoplay\Lib\site-packages\scipy.libs\.load-order-scipy-1.10.1")
+scipy_dest_dir = Path(r"D:\Learning\Project\auto_chenbai\dist\main\main.dist\scipy.libs")
+
+# 确保目标文件夹存在
+os.makedirs(scipy_dest_dir, exist_ok=True)
+
+# 复制文件
+print(f"Copying `{scipy_source}` to `{scipy_dest_dir}`")
+
+try:
+    copy(scipy_source, scipy_dest_dir)
+except Exception as e:
+    print(f"Error copying file: {e}")
+
+print(f"打包用时：{time.time()-start_time}")

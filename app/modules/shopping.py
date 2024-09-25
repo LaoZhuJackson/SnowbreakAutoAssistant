@@ -63,8 +63,7 @@ class shopping_module:
                     # move_to_then_click(self.shopping_root + "regular.png", confidence=0.9)
                     move_to_then_click(self.shopping_root + "buy.png", confidence=0.9)
                 if is_exist_image(self.shopping_root + "buy_success.png", wait_time=3):
-                    pass
-                    # move_to_then_click(self.shopping_root + "buy_success.png")
+                    move_to_then_click(self.shopping_root + "buy_success.png")
         back_to_home()
 
     def ensure_click(self, num):

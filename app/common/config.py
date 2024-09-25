@@ -79,6 +79,7 @@ class Config(QConfig):
 
     # software update
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
+    update_proxies = ConfigItem("Update", "update_proxies", '7897')
 
 
 config = Config()

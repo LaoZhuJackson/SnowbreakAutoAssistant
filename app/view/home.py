@@ -206,6 +206,7 @@ class Home(QFrame, Ui_home):
                 children.currentIndexChanged.connect(partial(self.save_changed, children))
 
     def click_start(self):
+        logger.info("请确保游戏窗口是1600*900，并在三秒内确保游戏窗口置顶无遮挡")
         checkbox_dic = {}
         for checkbox in self.SimpleCardWidget_option.findChildren(CheckBox):
             if checkbox.isChecked():

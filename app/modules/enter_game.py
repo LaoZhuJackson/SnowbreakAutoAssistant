@@ -10,11 +10,11 @@ class enter_game_module:
         self.start_button_root = False
 
     def enter_game(self):
-        if is_exist_image(self.start_game + 'start.png'):
+        if is_exist_image(self.start_game + 'start.png', wait_time=3):
             print("已检测到黄色 开始游戏 按钮")
             self.start_button_root = self.start_game + 'start.png'
 
-        elif is_exist_image(self.start_game + 'start_blue.png'):
+        elif is_exist_image(self.start_game + 'start_blue.png', wait_time=3):
             print("已检测到蓝色 开始游戏 按钮")
             self.start_button_root = self.start_game + 'start_blue.png'
         else:
@@ -27,7 +27,6 @@ class enter_game_module:
                     wait_then_click(self.start_game + "update_yes.png")
                     while is_exist_image(self.start_game + "updating.png"):
                         time.sleep(1)
-                print(self.start_button_root)
                 wait_then_click(self.start_button_root, 5, 0.7)
                 if wait_for_image(self.start_game + "age.png"):
                     wait_then_click(self.start_game + "start_2.png", 5)

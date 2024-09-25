@@ -214,3 +214,7 @@ def back_to_home():
         else:
             pyautogui.press('esc')
         time.sleep(1)
+
+
+def ocr_click(image_path):
+    pass
