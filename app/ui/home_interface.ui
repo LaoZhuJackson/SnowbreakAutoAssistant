@@ -280,6 +280,9 @@
         <property name="text">
          <string>开始</string>
         </property>
+        <property name="shortcut">
+         <string>Ctrl+S</string>
+        </property>
        </widget>
       </item>
       <item row="5" column="0">

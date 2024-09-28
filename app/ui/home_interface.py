@@ -512,6 +512,7 @@ class Ui_home(object):
         self.CheckBox_shop_3.setText(_translate("home", "商店购买"))
         self.BodyLabel.setText(_translate("home", "结束后进行"))
         self.PushButton_start.setText(_translate("home", "开始"))
+        self.PushButton_start.setShortcut(_translate("home", "Ctrl+S"))
         self.TitleLabel_setting.setText(_translate("home", "设置"))
         self.CheckBox_buy_7.setText(_translate("home", "普通战斗记录"))
         self.CheckBox_buy_9.setText(_translate("home", "初级职级认证"))

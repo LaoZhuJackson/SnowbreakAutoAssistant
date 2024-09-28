@@ -1,20 +1,40 @@
 # coding:utf-8
+import time
+import traceback
+
 from qfluentwidgets import (SwitchSettingCard, FolderListSettingCard,
                             OptionsSettingCard, PushSettingCard,
                             HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
                             ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
-                            setTheme, setThemeColor, isDarkTheme, setFont)
+                            setTheme, setThemeColor, isDarkTheme, setFont, MessageBox, ProgressBar)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SettingCardGroup as CardGroup
 from qfluentwidgets import InfoBar
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths, QThread
 from PyQt5.QtGui import QDesktopServices, QFont
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog
+from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
 
+from updater import Updater
+from ..card.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
 from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
+
+
+class UpdatingThread(QThread):
+    progress = pyqtSignal(int)
+
+    def __init__(self, updater):
+        super().__init__()
+        self.updater = updater
+        self.updater.progress_callback = self.update_progress
+
+    def run(self):
+        self.updater.run()
+
+    def update_progress(self, value):
+        self.progress.emit(value)
 
 
 class SettingCardGroup(CardGroup):
@@ -31,6 +51,11 @@ class SettingInterface(ScrollArea):
         super().__init__(parent=parent)
         self.scrollWidget = QWidget()
         self.expandLayout = ExpandLayout(self.scrollWidget)
+
+        self.progressBar = ProgressBar(self)
+        self.progressBar.setVisible(False)
+
+        self.update_success = False
 
         # setting label
         self.settingLabel = QLabel(self.tr("Settings"), self)
@@ -89,27 +114,26 @@ class SettingInterface(ScrollArea):
 
         # application
         self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
-        self.helpCard = HyperlinkCard(
-            HELP_URL,
-            self.tr('Open help page'),
-            FIF.HELP,
-            '帮助',
-            '前往github获取帮助',
+        self.proxyCard = TextEditCard(
+            config.update_proxies,
+            FIF.GLOBE,
+            '代理端口',
+            "如‘7890’",
+            '设置你的代理端口，方便连接至github',
             self.aboutGroup
         )
         self.feedbackCard = PrimaryPushSettingCard(
-            self.tr('Provide feedback'),
+            '前往B站',
             FIF.FEEDBACK,
-            self.tr('Provide feedback'),
-            '提供反馈帮助我们完善尘白助手',
+            '提供反馈',
+            '唯一平台b站：芬妮舞狮，QQ群：996710620',
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
             self.tr('Check update'),
             "app/resource/images/logo.png",
             self.tr('About'),
-            '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
-            self.tr('Version') + " " + VERSION,
+            "本助手免费开源，当前版本：" + VERSION,
             self.aboutGroup
         )
 
@@ -139,6 +163,8 @@ class SettingInterface(ScrollArea):
     def __initLayout(self):
         self.settingLabel.move(36, 50)
 
+        self.aboutCard.vBoxLayout.addWidget(self.progressBar)
+
         self.personalGroup.addSettingCard(self.micaCard)
         self.personalGroup.addSettingCard(self.themeCard)
         # self.personalGroup.addSettingCard(self.zoomCard)
@@ -146,8 +172,8 @@ class SettingInterface(ScrollArea):
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
 
-        self.aboutGroup.addSettingCard(self.helpCard)
         self.aboutGroup.addSettingCard(self.feedbackCard)
+        self.aboutGroup.addSettingCard(self.proxyCard)
         self.aboutGroup.addSettingCard(self.aboutCard)
 
         # add setting card group to layout
@@ -175,8 +201,79 @@ class SettingInterface(ScrollArea):
         self.micaCard.checkedChanged.connect(signalBus.micaEnableChanged)
 
         # check update
-        self.aboutCard.clicked.connect(signalBus.checkUpdateSig)
+        self.aboutCard.clicked.connect(self.check_update)
 
         # about
         self.feedbackCard.clicked.connect(
             lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+
+    def check_update(self):
+        try:
+            updater = Updater()
+            current_version = VERSION
+            latest_version = updater.latest_version
+            if latest_version != current_version and latest_version:
+                title = '发现新版本'
+                content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
+                massage_box = MessageBox(title, content, self.window())
+                if massage_box.exec():
+                    self.progressBar.setValue(0)
+                    self.progressBar.setVisible(True)
+                    self.updating_thread = UpdatingThread(updater)
+                    self.updating_thread.progress.connect(self.update_progress)
+                    self.updating_thread.finished.connect(self.update_finished)
+                    self.updating_thread.start()
+                else:
+                    print('Cancel button is pressed')
+            elif latest_version is None:
+                title = '未获取到最新版本信息'
+                content = '无法连接至github，请检查你的网络，确保你的代理设置正确'
+                massage_box = MessageBox(title, content, self.window())
+                if massage_box.exec():
+                    pass
+                else:
+                    pass
+            else:
+                title = '没有发现新版本'
+                content = f'当前版本{current_version}已是最新版本'
+                massage_box = MessageBox(title, content, self.window())
+                if massage_box.exec():
+                    pass
+                else:
+                    pass
+        except Exception as e:
+            title = '网络错误'
+            content = '无法连接至github，请检查你的网络，确保你的代理设置正确'
+            massage_box = MessageBox(title, content, self.window())
+            if massage_box.exec():
+                pass
+            else:
+                pass
+            print(e)
+            # traceback.print_exc()
+
+    def update_progress(self, value):
+        """ Update the progress bar """
+        self.progressBar.setValue(value)
+        if value >= 99:
+            self.update_success = True
+
+    def update_finished(self):
+        """ Hide progress bar and show completion message """
+        self.progressBar.setVisible(False)
+        if self.update_success:
+            # todo 实现自动重启更新
+            InfoBar.success(
+                '更新下载完成',
+                '请到助手目录下的“temp”文件夹中剪切解压好的文件到exe目录下',
+                isClosable=True,
+                duration=-1,
+                parent=self
+            )
+        else:
+            InfoBar.error(
+                '更新下载失败',
+                '请前往github自行下载release，或者去群里找最新文件下载',
+                duration=2000,
+                parent=self
+            )

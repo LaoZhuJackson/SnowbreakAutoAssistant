@@ -35,6 +35,7 @@ def close_process(p1_pid):
 
 class StartThread(QThread):
     is_running_signal = pyqtSignal(bool)
+    stop_signal = pyqtSignal()  # 添加停止信号
 
     def __init__(self, checkbox_dic):
         super().__init__()
@@ -48,13 +49,13 @@ class StartThread(QThread):
         self.is_running_signal.emit(True)
         try:
             for key, value in self.checkbox_dic.items():
-                logger.debug(f"是否正在运行：{self._is_running}")
-                if value and self._is_running:
+                logger.debug(f"是否正在运行：{is_running}")
+                if value and is_running:
                     index = int(re.search(r'\d+', key).group()) - 1
                     logger.info(f"当前任务：{self.name_list_zh[index]}")
-
                     if index == 0:
                         module = enter_game_module()
+                        module.check_update()
                         module.enter_game()
                     elif index == 1:
                         module = get_power_module()
@@ -80,18 +81,17 @@ class StartThread(QThread):
                         module.receive_credential()
                         if config.CheckBox_mail.value:
                             module.receive_mail()
-                elif not self._is_running:
+                elif not is_running:
+                    self.is_running_signal.emit(False)
                     logger.info("已退出")
+                    break
+                else:
                     break
         except Exception as e:
             logger.error(e)
         finally:
             # 运行完成
             self.is_running_signal.emit(False)
-
-    def stop_subprocess(self):
-        self._is_running = False
-        logger.info("已发送停止指令，等待剩余动作执行完成后停止")
 
 
 def select_all(widget):
@@ -118,7 +118,6 @@ def get_all_children(widget):
         children.append(child)
         children.extend(get_all_children(child))  # 递归调用以获取后代控件
     return children
-
 
 class Home(QFrame, Ui_home):
     def __init__(self, text: str, parent=None):
@@ -206,7 +205,6 @@ class Home(QFrame, Ui_home):
                 children.currentIndexChanged.connect(partial(self.save_changed, children))
 
     def click_start(self):
-        logger.info("请确保游戏窗口是1600*900，并在三秒内确保游戏窗口置顶无遮挡")
         checkbox_dic = {}
         for checkbox in self.SimpleCardWidget_option.findChildren(CheckBox):
             if checkbox.isChecked():
@@ -234,16 +232,20 @@ class Home(QFrame, Ui_home):
     def toggle_button(self):
         # logger.debug(self.is_running)
         if not self.is_running:
+            logger.info("请确保游戏窗口是1600*900，并在三秒内确保游戏窗口置顶无遮挡")
+            global is_running
+            is_running = True
             self.start_thread.start()
             # self.is_running = True
             self.PushButton_start.setText("停止")
         else:
-            self.start_thread.stop_subprocess()
+            is_running = False
+            logger.info("已发生停止指令，等待当前任务完成，下一个任务执行前停止")
+            # self.start_thread.stop_signal.emit()
 
-    def set_is_running(self, is_running):
-        logger.debug(f"执行set_is_running:{is_running}")
-        self.is_running = is_running
-        if is_running:
+    def set_is_running(self, running):
+        self.is_running = running
+        if running:
             self.set_checkbox_enable(False)
             self.PushButton_start.setText("停止")
         else:

@@ -206,14 +206,20 @@ def drag(start_point, x_offset, y_offset, duration=1):
     pyautogui.mouseUp()
 
 
-def back_to_home():
+def back_to_home(time_out=3):
+    print("正在返回看板娘界面")
     root = "app/resource/images/in_game/"
-    while not is_exist_image(root + "setting_icon.png"):
-        if is_exist_image(root + "home.png"):
+    start_time = time.time()
+    while time.time() - start_time < time_out:
+        if is_exist_image(root + "setting_icon.png"):
+            print("返回成功")
+            break
+        elif is_exist_image(root + "home.png"):
             move_to_then_click(root + "home.png")
         else:
             pyautogui.press('esc')
         time.sleep(1)
+    print("返回失败")
 
 
 def ocr_click(image_path):

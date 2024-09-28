@@ -1,5 +1,6 @@
 import concurrent.futures
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -15,8 +16,11 @@ from app.common.setting import VERSION
 
 class Updater:
     def __init__(self, download_url=None, log_widget=None):
+        self.progress_callback = None
+
         self.log_widget = log_widget
         self.current_version = VERSION
+        self.latest_version = None
         self.api_urls = [
             "https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
             "https://github.kotori.top/https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
@@ -42,18 +46,20 @@ class Updater:
                         self.download_url = self.check_for_updates(data)
                         print(f"下载链接: {self.download_url}")
                     else:
-                        print("网站返回状态码不等于200")
+                        print(f"网站返回状态码不等于200:{response.status_code}")
             except Exception as e:
                 print(f"出现错误：{e}")
         else:
             print(f"下载链接: {self.download_url}")
-        self.download_file_path = os.path.join(self.temp_path, os.path.basename(self.download_url))
+        self.download_file_path = os.path.join(self.temp_path, os.path.basename(
+            self.download_url) if self.download_url else os.path.join(self.temp_path, 'update.zip'))
         self.extract_folder_path = self.temp_path
 
     def check_for_updates(self, data):
         print("检查更新中...")
         download_url = None
         latest_version = data['tag_name']
+        self.latest_version = latest_version
         for asset in data["assets"]:
             if "full" not in asset["browser_download_url"]:
                 # 增量更新
@@ -113,19 +119,35 @@ class Updater:
 
                 if os.path.exists(self.download_file_path):
                     command.insert(2, "--continue=true")
-                subprocess.run(command, check=True)
+                process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+                progress_pattern = re.compile(r'\[#\w+\s+\S+/\S+\((\d+)%\)')
+                try:
+                    for line in process.stdout:
+                        match = progress_pattern.search(line)
+                        # print(line)
+                        if match:
+                            # print(f"匹配内容：{match.group(1)}")
+                            progress = int(match.group(1))
+                            self.progress_callback(progress)
+                except Exception as e:
+                    print(e)
             else:
                 print("使用下载方式：requests.get")
-                response = requests.head(self.download_url, proxies=self.proxies)
+                response = requests.get(self.download_url, proxies=self.proxies, stream=True)
+                print(f"response:{response}")
                 file_size = int(response.headers.get('Content-Length', 0))
-                # 加入画进度条
-                with tqdm(total=file_size, unit='B', unit_scale=True, unit_divisor=1024) as pbar:
-                    with requests.get(self.download_url, proxies=self.proxies, stream=True, timeout=600) as r:
-                        with open(self.download_file_path, 'wb') as f:
-                            for chunk in r.iter_content(chunk_size=1024):
-                                if chunk:
-                                    f.write(chunk)
-                                    pbar.update(len(chunk))
+                print(f"size:{file_size}")
+                downloaded_size = 0
+
+                with requests.get(self.download_url, proxies=self.proxies, stream=True, timeout=600) as r:
+                    with open(self.download_file_path, 'wb') as f:
+                        for chunk in r.iter_content(chunk_size=1024):
+                            if chunk:
+                                f.write(chunk)
+                                downloaded_size += len(chunk)
+                                if self.progress_callback:
+                                    progress = int((downloaded_size / file_size) * 100)
+                                    self.progress_callback(progress)
             print("下载完成")
             return True
         except Exception as e:
@@ -174,9 +196,9 @@ class Updater:
         if self.download_update():
             self.extract_update()
             # self.apply_update()
+            # self.clean_up()
         else:
             print("无需更新或更新未成功")
-        self.clean_up()
 
 
 if __name__ == "__main__":

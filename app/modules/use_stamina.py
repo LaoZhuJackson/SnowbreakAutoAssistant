@@ -24,7 +24,6 @@ class use_stamina_module:
     def check_power(self, day_num):
         # 检查是否有过期体力
         move_to_then_click(self.in_game + "stamina.png", confidence=0.9)
-        # todo 2_day图片资源空缺
         for day in range(day_num, 0, -1):
             self.click_flag = False
             if is_exist_image(self.in_game + str(day) + "_day.png", confidence=0.9):
