@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 from app.common.config import config
 from app.common.setting import VERSION
+from app.common.signal_bus import signalBus
 
 
 class Updater:
@@ -128,7 +129,8 @@ class Updater:
                         if match:
                             # print(f"匹配内容：{match.group(1)}")
                             progress = int(match.group(1))
-                            self.progress_callback(progress)
+                            # self.progress_callback(progress)
+                            signalBus.checkUpdateSig.emit(progress)
                 except Exception as e:
                     print(e)
             else:

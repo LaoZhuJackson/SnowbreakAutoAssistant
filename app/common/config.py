@@ -35,7 +35,6 @@ def isWin11():
 class Config(QConfig):
     """ Config of application """
 
-    # TODO: ADD YOUR CONFIG GROUP HERE
     # 主页面
     CheckBox_entry_1 = ConfigItem("home_interface_option", "CheckBox_entry", False, BoolValidator())
     CheckBox_stamina_2 = ConfigItem("home_interface_option", "CheckBox_stamina", False, BoolValidator())
@@ -76,10 +75,14 @@ class Config(QConfig):
     micaEnabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())
     language = OptionsConfigItem(
         "MainWindow", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
+    is_ocr = ConfigItem("MainWindow", "is_ocr", False, BoolValidator())
 
     # software update
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
     update_proxies = ConfigItem("Update", "update_proxies", '7897')
+
+    # 自动化相关
+    game_title_name = ConfigItem("automation","game_title_name","尘白禁区")
 
 
 config = Config()

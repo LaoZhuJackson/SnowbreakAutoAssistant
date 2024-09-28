@@ -15,7 +15,7 @@ from PyQt5.QtGui import QDesktopServices, QFont
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
 
 from updater import Updater
-from ..card.text_edit_card import TextEditCard
+from ..repackage.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
 from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
 from ..common.signal_bus import signalBus
@@ -23,18 +23,13 @@ from ..common.style_sheet import StyleSheet
 
 
 class UpdatingThread(QThread):
-    progress = pyqtSignal(int)
 
     def __init__(self, updater):
         super().__init__()
         self.updater = updater
-        self.updater.progress_callback = self.update_progress
 
     def run(self):
         self.updater.run()
-
-    def update_progress(self, value):
-        self.progress.emit(value)
 
 
 class SettingCardGroup(CardGroup):
@@ -220,7 +215,7 @@ class SettingInterface(ScrollArea):
                     self.progressBar.setValue(0)
                     self.progressBar.setVisible(True)
                     self.updating_thread = UpdatingThread(updater)
-                    self.updating_thread.progress.connect(self.update_progress)
+                    signalBus.checkUpdateSig.connect(self.update_progress)
                     self.updating_thread.finished.connect(self.update_finished)
                     self.updating_thread.start()
                 else:
@@ -255,7 +250,7 @@ class SettingInterface(ScrollArea):
     def update_progress(self, value):
         """ Update the progress bar """
         self.progressBar.setValue(value)
-        if value >= 99:
+        if value >= 98:
             self.update_success = True
 
     def update_finished(self):
@@ -274,6 +269,7 @@ class SettingInterface(ScrollArea):
             InfoBar.error(
                 '更新下载失败',
                 '请前往github自行下载release，或者去群里找最新文件下载',
-                duration=2000,
+                isClosable=True,
+                duration=-1,
                 parent=self
             )

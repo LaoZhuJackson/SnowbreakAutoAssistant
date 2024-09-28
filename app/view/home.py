@@ -11,6 +11,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QFrame, QWidget
 
 from ..common.config import config
+from ..common.ppOCR import OCRInstaller
 from ..modules.chasm import chasm_module
 from ..modules.enter_game import enter_game_module
 from ..modules.get_power import get_power_module
@@ -19,9 +20,10 @@ from ..modules.person import person_module
 from ..modules.shopping import shopping_module
 from ..modules.use_stamina import use_stamina_module
 from ..ui.home_interface import Ui_home
-from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, PillToolButton
+from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, PillToolButton, \
+    MessageBoxBase
 
-from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
+from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr, Logger
 from ..common.operation import back_to_home, move_to_then_click
 
 
@@ -119,6 +121,7 @@ def get_all_children(widget):
         children.extend(get_all_children(child))  # 递归调用以获取后代控件
     return children
 
+
 class Home(QFrame, Ui_home):
     def __init__(self, text: str, parent=None):
         super().__init__()
@@ -130,6 +133,8 @@ class Home(QFrame, Ui_home):
 
         self.is_running = False
         # self.start_thread = StartThread([])
+
+        # self.logger = Logger(self.textBrowser_log)
 
         self._initWidget()
         self._connect_to_slot()

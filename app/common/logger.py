@@ -65,7 +65,7 @@ class LogMessageHandler(logging.Handler):
         self.text_stream.write(msg)
 
 
-# 创建一个logger实例，其他模块引用该实例来记录日志
+# 创建一个全局的logger实例，其他模块引用该实例来记录日志
 original_stdout = sys.stdout
 original_stderr = sys.stderr
 stdout_stream = Stream(original_stdout)
@@ -74,3 +74,35 @@ handler = LogMessageHandler(stdout_stream)
 logger = logging.getLogger()
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
+
+
+class Logger:
+    def __init__(self, log_widget: QTextBrowser):
+        self.log_widget = log_widget
+
+        self.original_stdout = sys.stdout
+        self.original_stderr = sys.stderr
+        self.stdout_stream = Stream(self.original_stdout)
+        self.stderr_stream = Stream(self.original_stderr)
+        self.handler = LogMessageHandler(self.stdout_stream)
+
+        self.logger = logging.getLogger()
+        self.logger.addHandler(self.handler)
+        self.logger.setLevel(logging.DEBUG)
+        if self.log_widget:
+            self.redirectOutput()
+
+    def redirectOutput(self):
+        # 普通输出
+        sys.stdout = self.stdout_stream
+        # 报错输出
+        sys.stderr = self.stderr_stream
+        # 将新消息信号连接到QTextEdit
+        self.stdout_stream.message.connect(self.updateDisplay)
+        self.stderr_stream.message.connect(self.updateDisplay)
+
+    def updateDisplay(self, message):
+        # 将消息添加到 QTextEdit，自动识别 HTML
+        self.log_widget.insertHtml(message)
+        self.log_widget.insertPlainText('\n')  # 为下一行消息留出空间
+        self.log_widget.ensureCursorVisible()  # 滚动到最新消息

@@ -5,8 +5,10 @@ from PyQt5.QtCore import QObject, pyqtSignal
 class SignalBus(QObject):
     """ Signal bus """
 
-    checkUpdateSig = pyqtSignal()
+    checkUpdateSig = pyqtSignal(int)
     micaEnableChanged = pyqtSignal(bool)
+
+    # check_ocr_progress = pyqtSignal(int, str)
 
 
 signalBus = SignalBus()
