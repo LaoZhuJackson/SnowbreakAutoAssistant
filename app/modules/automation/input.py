@@ -17,6 +17,16 @@ class Input:
         except Exception as e:
             self.logger.error(f"鼠标点击出错：{e}")
 
+    def move_click(self, x, y):
+        """在屏幕上的（x，y）位置执行鼠标双击操作"""
+        try:
+            pyautogui.moveTo(x, y)
+            time.sleep(0.2)
+            pyautogui.click(x, y)
+            self.logger.debug(f"鼠标移动后点击 ({x}, {y})")
+        except Exception as e:
+            self.logger.error(f"鼠标点击出错：{e}")
+
     def mouse_down(self, x, y):
         """在屏幕上的（x，y）位置按下鼠标按钮"""
         try:
@@ -42,7 +52,13 @@ class Input:
             self.logger.error(f"鼠标移动出错：{e}")
 
     def mouse_scroll(self, count, direction=-1, pause=True):
-        """滚动鼠标滚轮，方向和次数由参数指定"""
+        """
+        滚动鼠标滚轮，方向和次数由参数指定
+        :param count: 滚动次数
+        :param direction: 每次滚动长度，正数表示向上滚动。负数向下
+        :param pause:
+        :return:
+        """
         for _ in range(count):
             pyautogui.scroll(direction, _pause=pause)
         self.logger.debug(f"滚轮滚动 {count * direction} 次")

@@ -15,7 +15,7 @@ from .home import Home
 from .setting_interface import SettingInterface
 from ..common.config import config
 from ..common.icon import Icon
-from ..common.ppOCR import OCRInstaller, ocr_installer
+from ..common.ppOCR import OCRInstaller, ocr_installer, ocr
 from ..common.signal_bus import signalBus
 from ..common import resource # 不能删，设置页的样式需要
 
@@ -50,7 +50,7 @@ class MainWindow(MSFluentWindow):
         self.initNavigation()
 
         # 检查ocr组件是否安装
-        QTimer.singleShot(2000, self.check_ocr_install)
+        QTimer.singleShot(200, self.check_ocr_install)
 
     def connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
@@ -136,7 +136,7 @@ class MainWindow(MSFluentWindow):
             self.check_ocr_thread.start()
         except Exception as e:
             print(e)
-            traceback.print_exc()
+            # traceback.print_exc()
 
     def cancel_click(self):
         self.close()

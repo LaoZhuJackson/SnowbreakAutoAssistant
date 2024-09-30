@@ -1,13 +1,11 @@
 {
     "home_interface_shopping": {
-        "CheckBox_buy_1": false,
         "CheckBox_buy_10": false,
         "CheckBox_buy_11": false,
         "CheckBox_buy_12": false,
         "CheckBox_buy_13": false,
         "CheckBox_buy_14": false,
         "CheckBox_buy_15": true,
-        "CheckBox_buy_2": false,
         "CheckBox_buy_3": false,
         "CheckBox_buy_4": false,
         "CheckBox_buy_5": false,
@@ -18,16 +16,16 @@
     },
     "home_interface_option": {
         "CheckBox_chasm": false,
-        "CheckBox_entry": true,
+        "CheckBox_entry": false,
         "CheckBox_person": false,
-        "CheckBox_reward": false,
+        "CheckBox_reward": true,
         "CheckBox_shop": false,
         "CheckBox_stamina": false,
         "CheckBox_use_power": false
     },
     "home_interface_power": {
         "CheckBox_is_use_power": true,
-        "ComboBox_power_day": 0,
+        "ComboBox_power_day": 4,
         "ComboBox_power_usage": 0
     },
     "home_interface_reward": {
@@ -36,13 +34,45 @@
     "home_interface_after_use": {
         "ComboBox_after_use": 0
     },
+    "home_interface_person": {
+        "ComboBox_c1": 20,
+        "ComboBox_c2": 0,
+        "ComboBox_c3": 0,
+        "ComboBox_c4": 0
+    },
     "Update": {
         "CheckUpdateAtStartUp": true,
         "update_proxies": "7897"
     },
+    "automation": {
+        "game_title_name": "尘白禁区"
+    },
     "MainWindow": {
+        "is_ocr": false,
         "Language": "zh_CN",
         "MicaEnabled": false
+    },
+    "home_interface_shopping_person": {
+        "item_person_0": false,
+        "item_person_1": true,
+        "item_person_10": false,
+        "item_person_11": false,
+        "item_person_12": false,
+        "item_person_13": false,
+        "item_person_2": true,
+        "item_person_3": false,
+        "item_person_4": false,
+        "item_person_5": false,
+        "item_person_6": false,
+        "item_person_7": false,
+        "item_person_8": false,
+        "item_person_9": false
+    },
+    "home_interface_shopping_weapon": {
+        "item_weapon_0": true,
+        "item_weapon_1": true,
+        "item_weapon_2": false,
+        "item_weapon_3": false
     },
     "QFluentWidgets": {
         "ThemeColor": "#ff009faa",

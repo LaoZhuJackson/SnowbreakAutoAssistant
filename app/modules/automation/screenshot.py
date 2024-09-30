@@ -79,6 +79,8 @@ class Screenshot:
                 int(width * crop[2] * screenshot_scale_factor),
                 int(height * crop[3] * screenshot_scale_factor)
             )
+            # 预览截图
+            # screenshot.show()
 
             return screenshot, screenshot_pos, screenshot_scale_factor
 

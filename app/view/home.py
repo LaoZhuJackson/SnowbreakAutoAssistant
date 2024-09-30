@@ -1,24 +1,28 @@
+from datetime import datetime
 import os
 import re
 import subprocess
 import sys
+import time
+import traceback
 from functools import partial
 
 import psutil
 import pyautogui
 
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
-from PyQt5.QtWidgets import QFrame, QWidget
+from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QTreeWidgetItem
 
 from ..common.config import config
 from ..common.ppOCR import OCRInstaller
-from ..modules.chasm import chasm_module
-from ..modules.enter_game import enter_game_module
-from ..modules.get_power import get_power_module
-from ..modules.get_reward import get_reward_module
-from ..modules.person import person_module
-from ..modules.shopping import shopping_module
-from ..modules.use_stamina import use_stamina_module
+from ..modules.chasm.chasm import ChasmModule
+from ..modules.enter_game.enter_game import EnterGameModule
+from ..modules.get_power.get_power import GetPowerModule
+from ..modules.get_reward.get_reward import GetRewardModule
+from ..modules.person.person import PersonModule
+from ..modules.shopping.shopping import ShoppingModule
+from ..modules.use_stamina.use_stamina import UseStaminaModule
+from ..repackage.tree import TreeFrame_person, TreeFrame_weapon
 from ..ui.home_interface import Ui_home
 from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, PillToolButton, \
     MessageBoxBase
@@ -43,54 +47,51 @@ class StartThread(QThread):
         super().__init__()
         self.checkbox_dic = checkbox_dic
         self._is_running = True
-        self.name_list = ['enter_game.py', 'get_power.py', 'shopping.py', 'use_stamina.py', 'person.py', 'chasm.py',
-                          'get_reward.py']
         self.name_list_zh = ['自动登录', '领取体力', '商店购买', '刷体力', '刷碎片', '刷深渊', '领取奖励']
 
     def run(self):
         self.is_running_signal.emit(True)
         try:
             for key, value in self.checkbox_dic.items():
-                logger.debug(f"是否正在运行：{is_running}")
+                # print(f"value:{value}")
+                # print(f"is_running:{is_running}")
+                # logger.debug(f"是否正在运行：{is_running}")
                 if value and is_running:
                     index = int(re.search(r'\d+', key).group()) - 1
                     logger.info(f"当前任务：{self.name_list_zh[index]}")
+                    # 给每个任务增加时间间隔
+                    time.sleep(0.5)
                     if index == 0:
-                        module = enter_game_module()
-                        module.check_update()
-                        module.enter_game()
+                        module = EnterGameModule()
+                        module.run()
                     elif index == 1:
-                        module = get_power_module()
-                        module.friends_power()
-                        module.station_power()
+                        module = GetPowerModule()
+                        module.run()
                     elif index == 2:
-                        module = shopping_module()
-                        module.buy()
+                        module = ShoppingModule()
+                        module.run()
                     elif index == 3:
-                        module = use_stamina_module()
-                        if config.CheckBox_is_use_power.value:
-                            module.check_power(config.ComboBox_power_day.value + 1)
-                        module.by_maneuver()
+                        module = UseStaminaModule()
+                        module.run()
                     elif index == 4:
-                        module = person_module()
-                        module.person()
+                        module = PersonModule()
+                        module.run()
                     elif index == 5:
-                        module = chasm_module()
-                        module.chasm()
+                        module = ChasmModule()
+                        module.run()
                     elif index == 6:
-                        module = get_reward_module()
-                        module.receive_work()
-                        module.receive_credential()
-                        if config.CheckBox_mail.value:
-                            module.receive_mail()
+                        module = GetRewardModule()
+                        module.run()
                 elif not is_running:
                     self.is_running_signal.emit(False)
                     logger.info("已退出")
                     break
                 else:
-                    break
+                    # 如果value为false则进行下一个任务的判断
+                    continue
         except Exception as e:
             logger.error(e)
+            traceback.print_exc()
         finally:
             # 运行完成
             self.is_running_signal.emit(False)
@@ -125,7 +126,29 @@ def get_all_children(widget):
 class Home(QFrame, Ui_home):
     def __init__(self, text: str, parent=None):
         super().__init__()
-        self.setting_name_list = ['商店', '体力', '奖励']
+        self.setting_name_list = ['商店', '体力', '人物碎片', '奖励']
+        self.person_dic = {
+            "人物碎片": "item_person_0",
+            "肴": "item_person_1",
+            "安卡希雅": "item_person_2",
+            "里芙": "item_person_3",
+            "辰星": "item_person_4",
+            "茉莉安": "item_person_5",
+            "芬妮": "item_person_6",
+            "芙提雅": "item_person_7",
+            "瑟瑞斯": "item_person_8",
+            "琴诺": "item_person_9",
+            "猫汐尔": "item_person_10",
+            "晴": "item_person_11",
+            "恩雅": "item_person_12",
+            "妮塔": "item_person_13",
+        }
+        self.weapon_dic = {
+            "武器": "item_weapon_0",
+            "彩虹打火机": "item_weapon_1",
+            "草莓蛋糕": "item_weapon_2",
+            "深海呼唤": "item_weapon_3",
+        }
 
         self.setupUi(self)
         self.setObjectName(text.replace(' ', '-'))
@@ -136,6 +159,9 @@ class Home(QFrame, Ui_home):
 
         # self.logger = Logger(self.textBrowser_log)
 
+        self.select_person = TreeFrame_person(parent=self.ScrollArea, enableCheck=True)
+        self.select_weapon = TreeFrame_weapon(parent=self.ScrollArea, enableCheck=True)
+
         self._initWidget()
         self._connect_to_slot()
         self._redirectOutput()
@@ -144,18 +170,36 @@ class Home(QFrame, Ui_home):
         for tool_button in self.SimpleCardWidget_option.findChildren(ToolButton):
             tool_button.setIcon(FIF.SETTING)
 
-        self.ComboBox_after_use.setPlaceholderText("请选择")
+        # 设置combobox选项
         after_use_items = ['无动作', '退出游戏和代理', '退出代理', '退出游戏']
-        self.ComboBox_after_use.addItems(after_use_items)
-        self.ComboBox_power_day.setPlaceholderText("请选择")
         power_day_items = ['1', '2', '3', '4', '5', '6']
-        self.ComboBox_power_day.addItems(power_day_items)
         power_usage_items = ['活动材料本']
+        person_items = ["不选择", "凯茜娅-朝翼", "瑟瑞斯-瞬刻", "薇蒂雅-龙舌兰", "琴诺-悖谬", "里芙-无限之视",
+                        "凯茜娅-蓝闪", "肴-冬至", "芬妮-辉耀", "安卡希雅-辉夜", "里芙-狂猎", "茉莉安-雨燕",
+                        "芙提雅-缄默", "芬妮-咎冠", "恩雅-羽蜕", "伊切尔-豹豹", "苔丝-魔术师", "茉莉安-幽潮",
+                        "晴-藏锋", "猫汐尔-溯影", "辰星-云篆"]
+        self.ComboBox_after_use.addItems(after_use_items)
+        self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
+        self.ComboBox_c1.addItems(person_items)
+        self.ComboBox_c2.addItems(person_items)
+        self.ComboBox_c3.addItems(person_items)
+        self.ComboBox_c4.addItems(person_items)
 
         self.PopUpAniStackedWidget.setCurrentIndex(0)
 
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
+
+        # 获取当前日期和时间
+        now = datetime.now()
+        # 格式化成 "MM:DD" 的字符串
+        formatted_date = now.strftime("当前日期：%m月%d日")
+        # todo 根据日期生成对应活动提醒
+        self.BodyLabel_tip.setText(formatted_date)
+
+        # 查找 button1 在布局中的索引
+        self.gridLayout.addWidget(self.select_person, 1, 0)
+        self.gridLayout.addWidget(self.select_weapon, 2, 0)
 
         self._load_config()
         # 和其他控件有相关状态判断的，要放在load_config后
@@ -168,7 +212,11 @@ class Home(QFrame, Ui_home):
 
         self.ToolButton_shop.clicked.connect(lambda: self.set_current_index(0))
         self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(1))
-        self.ToolButton_reward.clicked.connect(lambda: self.set_current_index(2))
+        self.ToolButton_person.clicked.connect(lambda: self.set_current_index(2))
+        self.ToolButton_reward.clicked.connect(lambda: self.set_current_index(3))
+
+        self.select_person.itemStateChanged.connect(self.save_item_changed)
+        self.select_weapon.itemStateChanged.connect(self.save_item2_changed)
 
         self._connect_to_save_changed()
 
@@ -195,9 +243,24 @@ class Home(QFrame, Ui_home):
                 if config_item:
                     widget.setChecked(config_item.value)  # 使用配置项的值设置 CheckBox 的状态
             elif isinstance(widget, ComboBox):
+                widget.setPlaceholderText("未选择")
                 config_item = getattr(config, widget.objectName(), None)
                 if config_item:
                     widget.setCurrentIndex(config_item.value)
+        self._load_item_config()
+
+    def _load_item_config(self):
+        item = QTreeWidgetItemIterator(self.select_person.tree)
+        while item.value():
+            config_item = getattr(config, self.person_dic[item.value().text(0)], None)
+            item.value().setCheckState(0, Qt.Checked if config_item.value else Qt.Unchecked)
+            item += 1
+
+        item2 = QTreeWidgetItemIterator(self.select_weapon.tree)
+        while item2.value():
+            config_item2 = getattr(config, self.weapon_dic[item2.value().text(0)], None)
+            item2.value().setCheckState(0, Qt.Checked if config_item2.value else Qt.Unchecked)
+            item2 += 1
 
     def _connect_to_save_changed(self):
         children_list = get_all_children(self)
@@ -237,7 +300,8 @@ class Home(QFrame, Ui_home):
     def toggle_button(self):
         # logger.debug(self.is_running)
         if not self.is_running:
-            logger.info("请确保游戏窗口是1600*900，并在三秒内确保游戏窗口置顶无遮挡")
+            logger.info("请确保游戏窗口是全屏，分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+            # time.sleep(2)
             global is_running
             is_running = True
             self.start_thread.start()
@@ -288,6 +352,14 @@ class Home(QFrame, Ui_home):
                 self.ComboBox_power_day.setEnabled(widget.isChecked())
         if isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
+
+    def save_item_changed(self, index, check_state):
+        # print(index, check_state)
+        config.set(getattr(config, f"item_person_{index}", None), False if check_state == 0 else True)
+
+    def save_item2_changed(self, index, check_state):
+        # print(index, check_state)
+        config.set(getattr(config, f"item_weapon_{index}", None), False if check_state == 0 else True)
 
     def closeEvent(self, event):
         # 恢复原始标准输出
