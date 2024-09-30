@@ -16,7 +16,8 @@ class FishingModule:
         self.save_path = os.path.abspath("./fish")
 
     def run(self):
-        if auto.click_element("app/resource/images/fishing/fishing_rod.png", "image", max_retries=2, action="move_click"):
+        if auto.click_element("app/resource/images/fishing/fishing_rod.png", "image", max_retries=2,
+                              action="move_click"):
             if auto.find_element("有鱼儿上钩了", "text", include=True, max_retries=10):
                 auto.press_key("space", wait_time=0)
                 start_time = time.time()
@@ -28,28 +29,30 @@ class FishingModule:
                     bgr_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
                     is_in = self.count_yellow_blocks(bgr_image)
                     if is_in:
-                        print("指针进入了黄色区域!")
+                        print("到点，收杆!")
                         auto.press_key("space", wait_time=0)
                         start_time = time.time()
                     else:
                         # 识别出未进入黄色区域，则进行时间判断、
                         if time.time() - start_time > 2.2:
-                            print("超过单次收杆时间上限，强制收杆一次")
+                            print("咋回事？强制收杆一次")
                             auto.press_key("space", wait_time=0)
                             start_time = time.time()
                     if not auto.find_element("app/resource/images/fishing/fishing.png", "image",
                                              crop=(1645 / 1920, 845 / 1080, 1, 1), threshold=0.8):
                         break
                 if auto.find_element("本次获得", "text", max_retries=2):
-                    print("大丰收")
+                    print("钓鱼佬永不空军！")
                     if config.CheckBox_is_save_fish.value:
-                        if auto.find_element("新纪录", "text", include=True, max_retries=2):
+                        if auto.find_element("新纪录", "text", include=True, max_retries=2) or auto.find_element(
+                                "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
+                                crop=(1240 / 1920, 521 / 1080, 1368 / 1920, 561 / 1080), max_retries=2):
                             self.save_picture()
                     auto.press_key("esc")
                 elif auto.find_element("鱼跑掉了", "text", max_retries=2):
                     print("鱼跑了，空军！")
         else:
-            print("该钓鱼点已达上限")
+            print("放过这窝吧，已经没鱼了")
 
     def count_yellow_blocks(self, image):
         # 黄色的确切HSV值
@@ -74,10 +77,10 @@ class FishingModule:
         return len(contours) >= 2
 
     def save_picture(self):
-        current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        current_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         file_path = os.path.join(self.save_path, f"{current_date}.png")
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
         screenshot, _, _ = auto.take_screenshot()
         screenshot.save(file_path)
-        print(f"出现新纪录，已截图保存至：{file_path}")
+        print(f"出了条大的！已保存截图至：{file_path}")
