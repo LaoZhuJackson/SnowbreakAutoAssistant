@@ -1,3 +1,5 @@
+import time
+
 from app.modules.automation import auto
 
 
@@ -13,8 +15,8 @@ class GetPowerModule:
     def friends_power():
         auto.click_element("app/resource/images/get_power/friends.png", "image", threshold=0.8, max_retries=3,
                            action="move_click")
-        auto.click_element("app/resource/images/get_power/add_power.png", "image", threshold=0.8, max_retries=3,
-                           action="move_click")
+        time.sleep(0.5)
+        auto.click_element("键收赠", "text", include=True, max_retries=3, action="move_click")
         auto.press_key("esc")
 
     @staticmethod

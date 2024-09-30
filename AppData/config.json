@@ -16,12 +16,16 @@
     },
     "home_interface_option": {
         "CheckBox_chasm": false,
-        "CheckBox_entry": false,
+        "CheckBox_entry": true,
         "CheckBox_person": false,
-        "CheckBox_reward": true,
+        "CheckBox_reward": false,
         "CheckBox_shop": false,
         "CheckBox_stamina": false,
         "CheckBox_use_power": false
+    },
+    "add_fish": {
+        "CheckBox_is_save_fish": true,
+        "SpinBox_fish_times": 25
     },
     "home_interface_power": {
         "CheckBox_is_use_power": true,

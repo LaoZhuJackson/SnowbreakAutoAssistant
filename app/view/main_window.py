@@ -140,3 +140,8 @@ class MainWindow(MSFluentWindow):
 
     def cancel_click(self):
         self.close()
+
+    def closeEvent(self, a0):
+        print("关闭ocr子进程")
+        ocr.exit_ocr()
+        a0.accept()

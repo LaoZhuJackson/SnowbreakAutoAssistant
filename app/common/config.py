@@ -111,6 +111,10 @@ class Config(QConfig):
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")
 
+    # 钓鱼相关
+    CheckBox_is_save_fish = ConfigItem("add_fish", "CheckBox_is_save_fish", False, BoolValidator())
+    SpinBox_fish_times = ConfigItem("add_fish", "SpinBox_fish_times", 1)
+
 
 config = Config()
 config.themeMode.value = Theme.LIGHT

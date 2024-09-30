@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QTreeWidge
 
 from ..common.config import config
 from ..common.ppOCR import OCRInstaller
+from ..modules.automation import auto
 from ..modules.chasm.chasm import ChasmModule
 from ..modules.enter_game.enter_game import EnterGameModule
 from ..modules.get_power.get_power import GetPowerModule
@@ -28,7 +29,6 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
     MessageBoxBase
 
 from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr, Logger
-from ..common.operation import back_to_home, move_to_then_click
 
 
 def close_process(p1_pid):
@@ -52,6 +52,8 @@ class StartThread(QThread):
     def run(self):
         self.is_running_signal.emit(True)
         try:
+            logger.info("请确保游戏窗口是全屏，分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+            time.sleep(3)
             for key, value in self.checkbox_dic.items():
                 # print(f"value:{value}")
                 # print(f"is_running:{is_running}")
@@ -215,9 +217,6 @@ class Home(QFrame, Ui_home):
         self.ToolButton_person.clicked.connect(lambda: self.set_current_index(2))
         self.ToolButton_reward.clicked.connect(lambda: self.set_current_index(3))
 
-        self.select_person.itemStateChanged.connect(self.save_item_changed)
-        self.select_weapon.itemStateChanged.connect(self.save_item2_changed)
-
         self._connect_to_save_changed()
 
     def _redirectOutput(self):
@@ -263,6 +262,10 @@ class Home(QFrame, Ui_home):
             item2 += 1
 
     def _connect_to_save_changed(self):
+        # 人物和武器的单独保存
+        self.select_person.itemStateChanged.connect(self.save_item_changed)
+        self.select_weapon.itemStateChanged.connect(self.save_item2_changed)
+
         children_list = get_all_children(self)
         for children in children_list:
             # 此时不能用lambda，会使传参出错
@@ -284,8 +287,8 @@ class Home(QFrame, Ui_home):
             sorted_dict = dict(sorted(checkbox_dic.items(), key=lambda item: int(re.search(r'\d+', item[0]).group())))
             # logger.debug(sorted_dict)
             self.start_thread = StartThread(sorted_dict)
-            self.start_thread.is_running_signal.connect(self.set_is_running)
-            self.toggle_button()
+            self.start_thread.is_running_signal.connect(self.toggle_button)
+            self.set_is_running()
         else:
             InfoBar.error(
                 title='未勾选工作',
@@ -297,22 +300,23 @@ class Home(QFrame, Ui_home):
                 parent=self
             )
 
-    def toggle_button(self):
+    def set_is_running(self):
+        """根据主进程中的self.is_running控制全局变量is_running"""
         # logger.debug(self.is_running)
         if not self.is_running:
-            logger.info("请确保游戏窗口是全屏，分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
-            # time.sleep(2)
             global is_running
             is_running = True
             self.start_thread.start()
             # self.is_running = True
-            self.PushButton_start.setText("停止")
+            # self.PushButton_start.setText("停止")
         else:
             is_running = False
             logger.info("已发生停止指令，等待当前任务完成，下一个任务执行前停止")
             # self.start_thread.stop_signal.emit()
 
-    def set_is_running(self, running):
+    def toggle_button(self, running):
+        """设置按钮"""
+        # 更新self.is_running,当再次点击开始按钮时，会执行set_is_running将全局变量设置为false
         self.is_running = running
         if running:
             self.set_checkbox_enable(False)
@@ -321,16 +325,14 @@ class Home(QFrame, Ui_home):
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
             if self.ComboBox_after_use.currentIndex() == 1:
-                back_to_home()
-                pyautogui.press('esc')
-                move_to_then_click("images/in_game/yes.png")
+                auto.press_key("esc")
+                auto.click_element("确认", "text", max_retries=2,action="move_click")
                 self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
                 self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
-                back_to_home()
-                pyautogui.press('esc')
-                move_to_then_click("images/in_game/yes.png")
+                auto.press_key("esc")
+                auto.click_element("确认", "text", max_retries=2, action="move_click")
 
     def set_checkbox_enable(self, enable: bool):
         for checkbox in self.findChildren(CheckBox):
