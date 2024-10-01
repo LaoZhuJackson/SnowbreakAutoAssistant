@@ -175,7 +175,7 @@ class Home(QFrame, Ui_home):
         # 设置combobox选项
         after_use_items = ['无动作', '退出游戏和代理', '退出代理', '退出游戏']
         power_day_items = ['1', '2', '3', '4', '5', '6']
-        power_usage_items = ['活动材料本']
+        power_usage_items = ['活动材料本', '其他待开发']
         person_items = ["不选择", "凯茜娅-朝翼", "瑟瑞斯-瞬刻", "薇蒂雅-龙舌兰", "琴诺-悖谬", "里芙-无限之视",
                         "凯茜娅-蓝闪", "肴-冬至", "芬妮-辉耀", "安卡希雅-辉夜", "里芙-狂猎", "茉莉安-雨燕",
                         "芙提雅-缄默", "芬妮-咎冠", "恩雅-羽蜕", "伊切尔-豹豹", "苔丝-魔术师", "茉莉安-幽潮",
@@ -346,7 +346,7 @@ class Home(QFrame, Ui_home):
             logger.error(e)
 
     def save_changed(self, widget):
-        # logger.debug(f"触发save_changed:{widget.objectName()}")
+        logger.debug(f"触发save_changed:{widget.objectName()}")
         # 当与配置相关的控件状态改变时调用此函数保存配置
         if isinstance(widget, CheckBox):
             config.set(getattr(config, widget.objectName(), None), widget.isChecked())

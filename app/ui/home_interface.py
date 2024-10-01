@@ -108,6 +108,7 @@ class Ui_home(object):
         self.gridLayout_5.addWidget(self.BodyLabel, 1, 0, 1, 1)
         self.ComboBox_after_use = ComboBox(self.SimpleCardWidget_3)
         self.ComboBox_after_use.setDefault(False)
+        self.ComboBox_after_use.setProperty("items_", "")
         self.ComboBox_after_use.setObjectName("ComboBox_after_use")
         self.gridLayout_5.addWidget(self.ComboBox_after_use, 2, 0, 1, 1)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -148,7 +149,7 @@ class Ui_home(object):
         self.ScrollArea.setWidgetResizable(True)
         self.ScrollArea.setObjectName("ScrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 309, 553))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 309, 554))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -406,6 +407,7 @@ class Ui_home(object):
         self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_6.setObjectName("gridLayout_6")
         self.ComboBox_power_usage = ComboBox(self.page_2)
+        self.ComboBox_power_usage.setProperty("items_", "")
         self.ComboBox_power_usage.setObjectName("ComboBox_power_usage")
         self.gridLayout_6.addWidget(self.ComboBox_power_usage, 2, 0, 1, 1)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -442,6 +444,7 @@ class Ui_home(object):
         self.BodyLabel_3.setObjectName("BodyLabel_3")
         self.horizontalLayout_2.addWidget(self.BodyLabel_3)
         self.ComboBox_c1 = ComboBox(self.page_4)
+        self.ComboBox_c1.setProperty("items_", "")
         self.ComboBox_c1.setObjectName("ComboBox_c1")
         self.horizontalLayout_2.addWidget(self.ComboBox_c1)
         self.horizontalLayout_2.setStretch(0, 1)
@@ -456,27 +459,7 @@ class Ui_home(object):
         self.BodyLabel_8.setObjectName("BodyLabel_8")
         self.horizontalLayout_5.addWidget(self.BodyLabel_8)
         self.ComboBox_c4 = ComboBox(self.page_4)
-        self.ComboBox_c4.setProperty("items_", "不选择\n"
-"琴诺-悖谬\n"
-"里芙-无限之视\n"
-"凯茜娅-蓝闪\n"
-"肴-冬至\n"
-"芬妮-辉耀\n"
-"里芙-狂猎\n"
-"茉莉安-雨燕\n"
-"安卡希雅-辉夜\n"
-"芙提雅-缄默\n"
-"芬妮-咎冠\n"
-"恩雅-羽蜕\n"
-"凯茜娅-朝翼\n"
-"伊切尔-豹豹\n"
-"苔丝-魔术师\n"
-"茉莉安-幽潮\n"
-"晴-藏锋\n"
-"猫汐尔-溯影\n"
-"瑟瑞斯-瞬刻\n"
-"辰星-云篆\n"
-"薇蒂雅-龙舌兰")
+        self.ComboBox_c4.setProperty("items_", "")
         self.ComboBox_c4.setObjectName("ComboBox_c4")
         self.horizontalLayout_5.addWidget(self.ComboBox_c4)
         self.horizontalLayout_5.setStretch(0, 1)
@@ -488,27 +471,7 @@ class Ui_home(object):
         self.BodyLabel_5.setObjectName("BodyLabel_5")
         self.horizontalLayout_4.addWidget(self.BodyLabel_5)
         self.ComboBox_c3 = ComboBox(self.page_4)
-        self.ComboBox_c3.setProperty("items_", "不选择\n"
-"琴诺-悖谬\n"
-"里芙-无限之视\n"
-"凯茜娅-蓝闪\n"
-"肴-冬至\n"
-"芬妮-辉耀\n"
-"里芙-狂猎\n"
-"茉莉安-雨燕\n"
-"安卡希雅-辉夜\n"
-"芙提雅-缄默\n"
-"芬妮-咎冠\n"
-"恩雅-羽蜕\n"
-"凯茜娅-朝翼\n"
-"伊切尔-豹豹\n"
-"苔丝-魔术师\n"
-"茉莉安-幽潮\n"
-"晴-藏锋\n"
-"猫汐尔-溯影\n"
-"瑟瑞斯-瞬刻\n"
-"辰星-云篆\n"
-"薇蒂雅-龙舌兰")
+        self.ComboBox_c3.setProperty("items_", "")
         self.ComboBox_c3.setObjectName("ComboBox_c3")
         self.horizontalLayout_4.addWidget(self.ComboBox_c3)
         self.horizontalLayout_4.setStretch(0, 1)
@@ -520,26 +483,7 @@ class Ui_home(object):
         self.BodyLabel_4.setObjectName("BodyLabel_4")
         self.horizontalLayout_3.addWidget(self.BodyLabel_4)
         self.ComboBox_c2 = ComboBox(self.page_4)
-        self.ComboBox_c2.setProperty("items_", "琴诺-悖谬\n"
-"里芙-无限之视\n"
-"凯茜娅-蓝闪\n"
-"肴-冬至\n"
-"芬妮-辉耀\n"
-"里芙-狂猎\n"
-"茉莉安-雨燕\n"
-"安卡希雅-辉夜\n"
-"芙提雅-缄默\n"
-"芬妮-咎冠\n"
-"恩雅-羽蜕\n"
-"凯茜娅-朝翼\n"
-"伊切尔-豹豹\n"
-"苔丝-魔术师\n"
-"茉莉安-幽潮\n"
-"晴-藏锋\n"
-"猫汐尔-溯影\n"
-"瑟瑞斯-瞬刻\n"
-"辰星-云篆\n"
-"薇蒂雅-龙舌兰")
+        self.ComboBox_c2.setProperty("items_", "")
         self.ComboBox_c2.setObjectName("ComboBox_c2")
         self.horizontalLayout_3.addWidget(self.ComboBox_c2)
         self.horizontalLayout_3.setStretch(0, 1)
@@ -613,10 +557,6 @@ class Ui_home(object):
         self.CheckBox_use_power_4.setText(_translate("home", "刷体力"))
         self.CheckBox_shop_3.setText(_translate("home", "商店购买"))
         self.BodyLabel.setText(_translate("home", "结束后进行"))
-        self.ComboBox_after_use.setProperty("items_", _translate("home", "无动作\n"
-"退出游戏和代理\n"
-"退出代理\n"
-"退出游戏"))
         self.PushButton_start.setText(_translate("home", "开始"))
         self.PushButton_start.setShortcut(_translate("home", "Ctrl+S"))
         self.TitleLabel_setting.setText(_translate("home", "设置"))
@@ -634,7 +574,6 @@ class Ui_home(object):
         self.CheckBox_buy_7.setText(_translate("home", "普通战斗记录"))
         self.CheckBox_buy_8.setText(_translate("home", "优秀战斗记录"))
         self.CheckBox_buy_14.setText(_translate("home", "单极纤维"))
-        self.ComboBox_power_usage.setProperty("items_", _translate("home", "活动材料本"))
         self.CheckBox_is_use_power.setText(_translate("home", "自动使用期限"))
         self.ComboBox_power_day.setProperty("items_", _translate("home", "1\n"
 "2\n"
@@ -646,26 +585,6 @@ class Ui_home(object):
         self.StrongBodyLabel_2.setText(_translate("home", "选择体力使用方式"))
         self.BodyLabel_7.setText(_translate("home", "优先度从上到下，若选择角色超过2名时会自动用记忆补嵌包"))
         self.BodyLabel_3.setText(_translate("home", "角色1："))
-        self.ComboBox_c1.setProperty("items_", _translate("home", "琴诺-悖谬\n"
-"里芙-无限之视\n"
-"凯茜娅-蓝闪\n"
-"肴-冬至\n"
-"芬妮-辉耀\n"
-"里芙-狂猎\n"
-"茉莉安-雨燕\n"
-"安卡希雅-辉夜\n"
-"芙提雅-缄默\n"
-"芬妮-咎冠\n"
-"恩雅-羽蜕\n"
-"凯茜娅-朝翼\n"
-"伊切尔-豹豹\n"
-"苔丝-魔术师\n"
-"茉莉安-幽潮\n"
-"晴-藏锋\n"
-"猫汐尔-溯影\n"
-"瑟瑞斯-瞬刻\n"
-"辰星-云篆\n"
-"薇蒂雅-龙舌兰"))
         self.StrongBodyLabel_3.setText(_translate("home", "选择需要刷碎片的角色"))
         self.BodyLabel_8.setText(_translate("home", "角色4："))
         self.BodyLabel_5.setText(_translate("home", "角色3："))

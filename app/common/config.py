@@ -78,23 +78,23 @@ class Config(QConfig):
     item_weapon_2 = ConfigItem("home_interface_shopping_weapon", "item_weapon_2", False, BoolValidator())
     item_weapon_3 = ConfigItem("home_interface_shopping_weapon", "item_weapon_3", False, BoolValidator())
 
-    ComboBox_after_use = OptionsConfigItem("home_interface_after_use", "ComboBox_after_use", 0,
-                                           OptionsValidator([0, 1, 2, 3]))
+    ComboBox_after_use = OptionsConfigItem("home_interface_after_use", "ComboBox_after_use", -1,
+                                           OptionsValidator([-1, 0, 1, 2, 3]))
 
-    ComboBox_power_day = OptionsConfigItem("home_interface_power", "ComboBox_power_day", 0,
-                                           OptionsValidator([0, 1, 2, 3, 4, 5]))
-    ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", 0,
-                                             OptionsValidator([0, 1, 2, 3, 4, 5]))
+    ComboBox_power_day = OptionsConfigItem("home_interface_power", "ComboBox_power_day", -1,
+                                           OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
+    ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", -1,
+                                             OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     CheckBox_is_use_power = ConfigItem("home_interface_power", "CheckBox_is_use_power", False, BoolValidator())
 
-    ComboBox_c1 = OptionsConfigItem("home_interface_person", "ComboBox_c1", 0, OptionsValidator(
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
-    ComboBox_c2 = OptionsConfigItem("home_interface_person", "ComboBox_c2", 0, OptionsValidator(
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
-    ComboBox_c3 = OptionsConfigItem("home_interface_person", "ComboBox_c3", 0, OptionsValidator(
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
-    ComboBox_c4 = OptionsConfigItem("home_interface_person", "ComboBox_c4", 0, OptionsValidator(
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    ComboBox_c1 = OptionsConfigItem("home_interface_person", "ComboBox_c1", -1, OptionsValidator(
+        [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    ComboBox_c2 = OptionsConfigItem("home_interface_person", "ComboBox_c2", -1, OptionsValidator(
+        [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    ComboBox_c3 = OptionsConfigItem("home_interface_person", "ComboBox_c3", -1, OptionsValidator(
+        [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    ComboBox_c4 = OptionsConfigItem("home_interface_person", "ComboBox_c4", -1, OptionsValidator(
+        [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
 
     CheckBox_mail = ConfigItem("home_interface_reward", "CheckBox_mail", False, BoolValidator())
 

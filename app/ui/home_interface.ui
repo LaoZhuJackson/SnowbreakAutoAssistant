@@ -253,10 +253,7 @@
          <bool>false</bool>
         </property>
         <property name="items_" stdset="0">
-         <string>无动作
-退出游戏和代理
-退出代理
-退出游戏</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -370,7 +367,7 @@ border:None;</string>
                <x>0</x>
                <y>0</y>
                <width>309</width>
-               <height>553</height>
+               <height>554</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -898,7 +895,7 @@ border:None;</string>
           <item row="2" column="0">
            <widget class="ComboBox" name="ComboBox_power_usage">
             <property name="items_" stdset="0">
-             <string>活动材料本</string>
+             <string notr="true"/>
             </property>
            </widget>
           </item>
@@ -981,26 +978,7 @@ border:None;</string>
             <item>
              <widget class="ComboBox" name="ComboBox_c1">
               <property name="items_" stdset="0">
-               <string>琴诺-悖谬
-里芙-无限之视
-凯茜娅-蓝闪
-肴-冬至
-芬妮-辉耀
-里芙-狂猎
-茉莉安-雨燕
-安卡希雅-辉夜
-芙提雅-缄默
-芬妮-咎冠
-恩雅-羽蜕
-凯茜娅-朝翼
-伊切尔-豹豹
-苔丝-魔术师
-茉莉安-幽潮
-晴-藏锋
-猫汐尔-溯影
-瑟瑞斯-瞬刻
-辰星-云篆
-薇蒂雅-龙舌兰</string>
+               <string notr="true"/>
               </property>
              </widget>
             </item>
@@ -1025,27 +1003,7 @@ border:None;</string>
             <item>
              <widget class="ComboBox" name="ComboBox_c4">
               <property name="items_" stdset="0">
-               <string notr="true">不选择
-琴诺-悖谬
-里芙-无限之视
-凯茜娅-蓝闪
-肴-冬至
-芬妮-辉耀
-里芙-狂猎
-茉莉安-雨燕
-安卡希雅-辉夜
-芙提雅-缄默
-芬妮-咎冠
-恩雅-羽蜕
-凯茜娅-朝翼
-伊切尔-豹豹
-苔丝-魔术师
-茉莉安-幽潮
-晴-藏锋
-猫汐尔-溯影
-瑟瑞斯-瞬刻
-辰星-云篆
-薇蒂雅-龙舌兰</string>
+               <string notr="true"/>
               </property>
              </widget>
             </item>
@@ -1063,27 +1021,7 @@ border:None;</string>
             <item>
              <widget class="ComboBox" name="ComboBox_c3">
               <property name="items_" stdset="0">
-               <string notr="true">不选择
-琴诺-悖谬
-里芙-无限之视
-凯茜娅-蓝闪
-肴-冬至
-芬妮-辉耀
-里芙-狂猎
-茉莉安-雨燕
-安卡希雅-辉夜
-芙提雅-缄默
-芬妮-咎冠
-恩雅-羽蜕
-凯茜娅-朝翼
-伊切尔-豹豹
-苔丝-魔术师
-茉莉安-幽潮
-晴-藏锋
-猫汐尔-溯影
-瑟瑞斯-瞬刻
-辰星-云篆
-薇蒂雅-龙舌兰</string>
+               <string notr="true"/>
               </property>
              </widget>
             </item>
@@ -1101,26 +1039,7 @@ border:None;</string>
             <item>
              <widget class="ComboBox" name="ComboBox_c2">
               <property name="items_" stdset="0">
-               <string notr="true">琴诺-悖谬
-里芙-无限之视
-凯茜娅-蓝闪
-肴-冬至
-芬妮-辉耀
-里芙-狂猎
-茉莉安-雨燕
-安卡希雅-辉夜
-芙提雅-缄默
-芬妮-咎冠
-恩雅-羽蜕
-凯茜娅-朝翼
-伊切尔-豹豹
-苔丝-魔术师
-茉莉安-幽潮
-晴-藏锋
-猫汐尔-溯影
-瑟瑞斯-瞬刻
-辰星-云篆
-薇蒂雅-龙舌兰</string>
+               <string notr="true"/>
               </property>
              </widget>
             </item>
