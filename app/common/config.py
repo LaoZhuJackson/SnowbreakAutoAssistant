@@ -113,7 +113,11 @@ class Config(QConfig):
 
     # 钓鱼相关
     CheckBox_is_save_fish = ConfigItem("add_fish", "CheckBox_is_save_fish", False, BoolValidator())
+    CheckBox_is_limit_time = ConfigItem("add_fish", "CheckBox_is_limit_time", False, BoolValidator())
     SpinBox_fish_times = ConfigItem("add_fish", "SpinBox_fish_times", 1)
+    LineEdit_fish_base = ConfigItem("add_fish", "LineEdit_fish_base", "22,255,255")
+    LineEdit_fish_lower = ConfigItem("add_fish", "LineEdit_fish_lower", "20,220,245")
+    LineEdit_fish_upper = ConfigItem("add_fish", "LineEdit_fish_upper", "25,255,255")
 
 
 config = Config()

@@ -6,17 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
-    <height>667</height>
+    <width>701</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
-   <item row="0" column="0">
-    <widget class="SegmentedWidget" name="SegmentedWidget"/>
-   </item>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
@@ -24,38 +33,69 @@
      </property>
      <widget class="QWidget" name="page_fishing">
       <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0" columnstretch="2,1">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>6</number>
+       </property>
        <item row="0" column="0">
-        <widget class="SimpleCardWidget" name="SimpleCardWidget">
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="CheckBox" name="CheckBox_is_save_fish">
-            <property name="text">
-             <string>是否保存新纪录截图</string>
+        <widget class="SimpleCardWidget" name="SimpleCardWidget_fish">
+         <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,1,1">
+          <item row="6" column="1">
+           <widget class="LineEdit" name="LineEdit_fish_upper"/>
+          </item>
+          <item row="7" column="1">
+           <widget class="LineEdit" name="LineEdit_fish_lower"/>
+          </item>
+          <item row="5" column="1">
+           <widget class="LineEdit" name="LineEdit_fish_base">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2">
-            <item>
-             <widget class="BodyLabel" name="BodyLabel">
-              <property name="text">
-               <string>钓鱼次数：</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="SpinBox" name="SpinBox_fish_times">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <number>25</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="2" column="0">
+           <widget class="BodyLabel" name="BodyLabel">
+            <property name="text">
+             <string>钓鱼次数：</string>
+            </property>
+           </widget>
           </item>
-          <item row="3" column="0">
+          <item row="10" column="0" colspan="3">
+           <widget class="BodyLabel" name="BodyLabel_tip">
+            <property name="text">
+             <string>### 提示
+ * 珍奇钓鱼点每天最多钓25次
+* 稀有钓鱼点每天最多钓50次
+* 普通钓鱼点无次数限制
+* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::MarkdownText</enum>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="BodyLabel" name="BodyLabel_5">
+            <property name="text">
+             <string>基准HSV值</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -68,17 +108,107 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="0">
-           <widget class="BodyLabel" name="BodyLabel_4">
+          <item row="3" column="1">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="CheckBox" name="CheckBox_is_save_fish">
             <property name="text">
-             <string> * ﻿钓鱼每日有50次的上限,单个钓鱼点每天最多钓25次
-* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次</string>
+             <string>是否保存新纪录截图</string>
             </property>
-            <property name="textFormat">
-             <enum>Qt::MarkdownText</enum>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="BodyLabel" name="BodyLabel_7">
+            <property name="text">
+             <string>颜色查找下限</string>
             </property>
-            <property name="wordWrap">
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="SpinBox" name="SpinBox_fish_times">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>99999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="PushButton" name="PushButton_reset">
+            <property name="text">
+             <string>重置</string>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="2" rowspan="4">
+           <widget class="PixmapLabel" name="PixmapLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="scaledContents">
              <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="PrimaryPushButton" name="PrimaryPushButton_get_color">
+            <property name="text">
+             <string>校准颜色</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="BodyLabel" name="BodyLabel_6">
+            <property name="text">
+             <string>颜色查找上限</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="3">
+           <widget class="StrongBodyLabel" name="StrongBodyLabel">
+            <property name="text">
+             <string>校准完美收杆区域HSV（当收杆出错，日志说黄色块大于2时用）</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="CheckBox" name="CheckBox_is_limit_time">
+            <property name="text">
+             <string>是否限制单次收杆时间间隔上限</string>
             </property>
            </widget>
           </item>
@@ -129,6 +259,9 @@ border: 2px;</string>
      </widget>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="SegmentedWidget" name="SegmentedWidget"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -140,6 +273,16 @@ border: 2px;</string>
   <customwidget>
    <class>PushButton</class>
    <extends>QPushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>PrimaryPushButton</class>
+   <extends>PushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>PixmapLabel</class>
+   <extends>QLabel</extends>
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>
@@ -160,6 +303,11 @@ border: 2px;</string>
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>
+   <class>StrongBodyLabel</class>
+   <extends>QLabel</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
    <class>Pivot</class>
    <extends>QWidget</extends>
    <header>qfluentwidgets</header>
@@ -167,6 +315,11 @@ border: 2px;</string>
   <customwidget>
    <class>SegmentedWidget</class>
    <extends>Pivot</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>LineEdit</class>
+   <extends>QLineEdit</extends>
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>

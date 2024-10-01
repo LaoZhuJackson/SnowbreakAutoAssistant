@@ -4,8 +4,10 @@ from datetime import datetime
 
 import cv2
 import numpy as np
+import pyautogui
 
 from app.common.config import config
+from app.common.logger import logger
 from app.modules.automation import auto
 
 
@@ -14,13 +16,24 @@ class FishingModule:
         self.previous_yellow_block_count = 0
         self.previous_pixels = 0
         self.save_path = os.path.abspath("./fish")
+        self.is_use_time_judge = config.CheckBox_is_limit_time.value
+        self.upper_yellow = np.array([int(value) for value in config.LineEdit_fish_upper.value.split(',')])
+        self.lower_yellow = np.array([int(value) for value in config.LineEdit_fish_lower.value.split(',')])
+        self.start_time = time.time()
 
     def run(self):
+        if np.any(self.upper_yellow < self.lower_yellow):
+            logger.error("运行错误，存在上限的值小于下限")
+            return
         if auto.click_element("app/resource/images/fishing/fishing_rod.png", "image", max_retries=2,
                               action="move_click"):
+            # 如果点击了还没反应则尝试用空格激活钓鱼
+            if not auto.find_element("app/resource/images/fishing/wait_fish.png", "image", threshold=0.6):
+                auto.press_key("space")
             if auto.find_element("有鱼儿上钩了", "text", include=True, max_retries=10):
                 auto.press_key("space", wait_time=0)
-                start_time = time.time()
+                if self.is_use_time_judge:
+                    self.start_time = time.time()
                 while True:
                     rgb_image, _, _ = auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080))
                     # 将Pillow图像转换为NumPy数组
@@ -31,13 +44,15 @@ class FishingModule:
                     if is_in:
                         print("到点，收杆!")
                         auto.press_key("space", wait_time=0)
-                        start_time = time.time()
+                        if self.is_use_time_judge:
+                            self.start_time = time.time()
                     else:
-                        # 识别出未进入黄色区域，则进行时间判断、
-                        if time.time() - start_time > 2.2:
-                            print("咋回事？强制收杆一次")
-                            auto.press_key("space", wait_time=0)
-                            start_time = time.time()
+                        if self.is_use_time_judge:
+                            # 识别出未进入黄色区域，则进行时间判断、
+                            if time.time() - self.start_time > 2.2:
+                                print("咋回事？强制收杆一次")
+                                auto.press_key("space", wait_time=0)
+                                self.start_time = time.time()
                     if not auto.find_element("app/resource/images/fishing/fishing.png", "image",
                                              crop=(1645 / 1920, 845 / 1080, 1, 1), threshold=0.8):
                         break
@@ -56,26 +71,16 @@ class FishingModule:
 
     def count_yellow_blocks(self, image):
         # 黄色的确切HSV值
-        yellow_hsv = np.array([98, 255, 255])
         """计算图像中黄色像素的数量"""
         # 将图像转换为HSV颜色空间
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-        # 设定一个小范围以确保捕捉到所有的黄色像素
-        # lower_yellow = np.array([yellow_hsv[0] - 2, 200, 220])
-        # upper_yellow = np.array([yellow_hsv[0] + 2, 255, 255])
-        # lower_yellow = np.array([20, 255, 255])
-        # upper_yellow = np.array([23, 255, 255])
-        lower_yellow = np.array([20, 255, 255])
-        upper_yellow = np.array([70, 255, 255])
-        # lower_yellow = np.array([yellow_hsv[0], 255, 255])
-        # upper_yellow = np.array([yellow_hsv[0], 255, 255])
-
         # 创建黄色掩膜
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
 
         # 查找轮廓
         contours, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        print(f"黄色块数为：{len(contours)}")
         return len(contours) >= 2
 
     def save_picture(self):

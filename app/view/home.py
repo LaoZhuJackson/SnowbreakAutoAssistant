@@ -52,7 +52,7 @@ class StartThread(QThread):
     def run(self):
         self.is_running_signal.emit(True)
         try:
-            logger.info("请确保游戏窗口是全屏，分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+            logger.info("请确保游戏窗口分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
             time.sleep(3)
             for key, value in self.checkbox_dic.items():
                 # print(f"value:{value}")
@@ -236,15 +236,13 @@ class Home(QFrame, Ui_home):
 
     def _load_config(self):
         for widget in self.findChildren(QWidget):
-            if isinstance(widget, CheckBox):
-                # 动态获取 config 对象中与 widget.objectName() 对应的属性值
-                config_item = getattr(config, widget.objectName(), None)
-                if config_item:
+            # 动态获取 config 对象中与 widget.objectName() 对应的属性值
+            config_item = getattr(config, widget.objectName(), None)
+            if config_item:
+                if isinstance(widget, CheckBox):
                     widget.setChecked(config_item.value)  # 使用配置项的值设置 CheckBox 的状态
-            elif isinstance(widget, ComboBox):
-                widget.setPlaceholderText("未选择")
-                config_item = getattr(config, widget.objectName(), None)
-                if config_item:
+                elif isinstance(widget, ComboBox):
+                    widget.setPlaceholderText("未选择")
                     widget.setCurrentIndex(config_item.value)
         self._load_item_config()
 
@@ -352,7 +350,7 @@ class Home(QFrame, Ui_home):
             config.set(getattr(config, widget.objectName(), None), widget.isChecked())
             if widget.objectName() == 'CheckBox_is_use_power':
                 self.ComboBox_power_day.setEnabled(widget.isChecked())
-        if isinstance(widget, ComboBox):
+        elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
 
     def save_item_changed(self, index, check_state):
