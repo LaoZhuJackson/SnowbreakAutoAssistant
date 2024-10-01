@@ -45,9 +45,13 @@ class EnterGameModule:
                 auto.click_element("app/resource/images/start_game/newbird_cancel.png", "image", threshold=0.8,
                                    scale_range=(0.6, 1))
             auto.press_key("esc")
+            time.sleep(0.5)
+            # 如果触发退出游戏
+            if auto.click_element("取消", "text"):
+                time.sleep(1)
         # 勾引皮肤公告
         if auto.click_element("活动", "text", include=False, max_retries=3):
-            auto.press_key("esc")
+            auto.press_key("esc",wait_time=0.5)
         while not auto.find_element("基地", "text", include=True,
                                     crop=(1516 / 1920, 664 / 1080, 1693 / 1920, 762 / 1080)):
             if auto.find_element("app/resource/images/start_game/newbird_cancel.png", "image", threshold=0.8,
@@ -56,4 +60,8 @@ class EnterGameModule:
                                    max_retries=3, scale_range=(0.6, 1), action="move_click")
             else:
                 auto.press_key("esc")
+                time.sleep(0.5)
+                # 如果触发退出游戏
+                if auto.click_element("取消", "text"):
+                    time.sleep(1)
         print("已进入游戏")
