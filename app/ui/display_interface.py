@@ -143,7 +143,7 @@ class DisplayInterface(ScrollArea):
         quick_jump.addSampleCard(
             icon=os.path.join(self.basedir, "setting.svg"),
             title="设置",
-            content=self.tr("对每个功能进行对应设置"),
+            content=self.tr("软件相关设置"),
             routeKey="settingInterface",
             index=0,
         )
