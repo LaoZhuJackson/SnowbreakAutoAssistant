@@ -77,7 +77,7 @@ class FishingModule:
         return len(contours) >= 2
 
     def save_picture(self):
-        current_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+        current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         file_path = os.path.join(self.save_path, f"{current_date}.png")
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)

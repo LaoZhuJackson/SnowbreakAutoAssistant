@@ -1,0 +1,17 @@
+DisplayInterface,#view {
+    background-color: transparent;
+}
+
+QScrollArea {
+    /*使背景左上角有圆角*/
+    border: none;
+    background-color: transparent;
+}
+
+
+BannerWidget > #galleryLabel {
+    font: 42px 'Segoe UI SemiBold', 'Microsoft YaHei SemiBold';
+    background-color: transparent;
+    color: black;
+    padding-left: 28px;
+}
