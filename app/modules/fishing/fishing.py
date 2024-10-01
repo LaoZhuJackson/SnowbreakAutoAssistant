@@ -64,8 +64,10 @@ class FishingModule:
         # 设定一个小范围以确保捕捉到所有的黄色像素
         # lower_yellow = np.array([yellow_hsv[0] - 2, 200, 220])
         # upper_yellow = np.array([yellow_hsv[0] + 2, 255, 255])
+        # lower_yellow = np.array([20, 255, 255])
+        # upper_yellow = np.array([23, 255, 255])
         lower_yellow = np.array([20, 255, 255])
-        upper_yellow = np.array([23, 255, 255])
+        upper_yellow = np.array([70, 255, 255])
         # lower_yellow = np.array([yellow_hsv[0], 255, 255])
         # upper_yellow = np.array([yellow_hsv[0], 255, 255])
 
