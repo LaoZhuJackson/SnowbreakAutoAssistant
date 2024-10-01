@@ -119,7 +119,8 @@ class MainWindow(MSFluentWindow):
         else:
             self.messagebox = MessageBoxBase(self)
             title = SubtitleLabel('检测到未下载OCR组件', self)
-            self.content = BodyLabel('是否开始下载，若取消则退出程序', self)
+            self.content = BodyLabel('是否开始下载，若下载，点击下载后的命令窗口不要关，下载进度在主页的日志中查看，若取消则退出程序', self)
+            self.content.setWordWrap(True)
             # self.speed = BodyLabel('', self)
             # self.speed.setVisible(False)
             # self.progressRing = ProgressRing()
