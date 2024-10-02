@@ -55,7 +55,7 @@ class PersonModule:
 
     def enter_person(self):
         auto.click_element("战斗", "text", include=False, max_retries=3,
-                           crop=(1350 / 1920, 300 / 1080, 1870 / 1920, 800 / 1080), action="move_click")
+                           crop=(1541 / 1920, 468 / 1080, 90 / 1920, 48 / 1080), action="move_click")
         time.sleep(0.7)
         auto.click_element("个人故事", "text", include=False, max_retries=3, action="move_click")
 
@@ -176,7 +176,7 @@ class PersonModule:
             return False
 
     def update_ocr_result(self):
-        auto.take_screenshot(crop=(1360 / 1920, 0, 1600 / 1920, 76 / 1080))
+        auto.take_screenshot(crop=(1360 / 1920, 19/1080, 233 / 1920, 63 / 1080))
         auto.perform_ocr()
         original_result = auto.ocr_result
         # 提取每个子列表中的字符串部分

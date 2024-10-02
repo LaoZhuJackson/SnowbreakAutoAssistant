@@ -17,7 +17,7 @@ class ChasmModule:
 
     def chasm(self):
         auto.click_element("战斗", "text", include=False, max_retries=3,
-                           crop=(1350 / 1920, 300 / 1080, 1870 / 1920, 800 / 1080), action="move_click")
+                           crop=(1541 / 1920, 468 / 1080, 90 / 1920, 48 / 1080), action="move_click")
         time.sleep(0.7)
         auto.click_element("特别派遣", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("精神拟境", "text", include=False, max_retries=3, action="move_click")

@@ -35,7 +35,7 @@ class FishingModule:
                 if self.is_use_time_judge:
                     self.start_time = time.time()
                 while True:
-                    rgb_image, _, _ = auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080))
+                    rgb_image, _, _ = auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 370 / 1920, 330 / 1080))
                     # 将Pillow图像转换为NumPy数组
                     img_np = np.array(rgb_image)
                     # 将图像从RGB格式转换为BGR格式（OpenCV使用BGR）
@@ -53,19 +53,20 @@ class FishingModule:
                                 print("咋回事？强制收杆一次")
                                 auto.press_key("space", wait_time=0)
                                 self.start_time = time.time()
-                    if not auto.find_element("app/resource/images/fishing/fishing.png", "image",
-                                             crop=(1645 / 1920, 845 / 1080, 1, 1), threshold=0.8):
+                    if not auto.find_element("app/resource/images/fishing/fishing.png", "image", threshold=0.8):
                         break
                 if auto.find_element("本次获得", "text", max_retries=2):
                     print("钓鱼佬永不空军！")
                     if config.CheckBox_is_save_fish.value:
                         if auto.find_element("新纪录", "text", include=True, max_retries=2) or auto.find_element(
                                 "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
-                                crop=(1240 / 1920, 521 / 1080, 1368 / 1920, 561 / 1080), max_retries=2):
+                                crop=(1245 / 1920, 500 / 1080, 121 / 1920, 78 / 1080), max_retries=2):
                             self.save_picture()
                     auto.press_key("esc")
                 elif auto.find_element("鱼跑掉了", "text", max_retries=2):
                     print("鱼跑了，空军！")
+            else:
+                print("未识别到咬钩")
         else:
             print("放过这窝吧，已经没鱼了")
 

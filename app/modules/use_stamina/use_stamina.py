@@ -47,7 +47,7 @@ class UseStaminaModule:
         auto.press_key("esc")
 
     def click_text(self, text):
-        auto.click_element(text, "text", include=True, crop=(277 / 1920, 288 / 1080, 800 / 1920, 380 / 1080))
+        auto.click_element(text, "text", include=True, crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080))
         auto.click_element("确定", "text", include=False, action="move_click")
         time.sleep(0.2)
         auto.press_key("esc")
@@ -56,7 +56,7 @@ class UseStaminaModule:
         time.sleep(0.5)
 
     def update_ocr_result(self):
-        auto.take_screenshot(crop=(277 / 1920, 288 / 1080, 800 / 1920, 380 / 1080))
+        auto.take_screenshot(crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080))
         auto.perform_ocr()
         original_result = auto.ocr_result
         # 提取每个子列表中的字符串部分
@@ -81,7 +81,7 @@ class UseStaminaModule:
         auto.press_key("esc")
         auto.click_element("任务", "text", include=True, max_retries=5, action="move_click")
         if auto.click_element("领取", "text", include=True, max_retries=5, action="move_click",
-                              crop=(10 / 1920, 920 / 1080, 190 / 1920, 1)):
+                              crop=(6 / 1920, 933 / 1080, 267 / 1920, 134 / 1080)):
             auto.press_key("esc")
         auto.press_key("esc")
         auto.press_key("esc")
