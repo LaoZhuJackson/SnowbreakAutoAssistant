@@ -69,18 +69,19 @@ class UseStaminaModule:
         # 等待动画
         time.sleep(1)
         auto.click_element("材料", "text", include=True, max_retries=5, action="move_click")
-        auto.click_element("深渊", "text", include=True, max_retries=5, action="move_click")
-        while True:
-            auto.click_element("速战", "text", include=True, max_retries=5, action="move_click")
-            if auto.find_element("恢复感知", "text", include=True, max_retries=2):
-                auto.press_key("esc")
-                break
-            auto.click_element("最大", "text", include=True, max_retries=5, action="move_click")
-            auto.click_element("开始作战", "text", include=True, max_retries=5, action="move_click")
-            auto.click_element("完成", "text", include=True, max_retries=5, action="move_click")
+        if auto.click_element("深渊", "text", include=False, max_retries=5, action="move_click"):
+            while True:
+                auto.click_element("速战", "text", include=True, max_retries=5, action="move_click")
+                if auto.find_element("恢复感知", "text", include=True, max_retries=2):
+                    auto.press_key("esc")
+                    break
+                auto.click_element("最大", "text", include=True, max_retries=5, action="move_click")
+                auto.click_element("开始作战", "text", include=True, max_retries=5, action="move_click")
+                auto.click_element("完成", "text", include=True, max_retries=5, action="move_click")
         auto.press_key("esc")
         auto.click_element("任务", "text", include=True, max_retries=5, action="move_click")
-        if auto.click_element("领取", "text", include=True, max_retries=5, action="move_click",crop=(10/1920,920/1080,190/1920,1)):
+        if auto.click_element("领取", "text", include=True, max_retries=5, action="move_click",
+                              crop=(10 / 1920, 920 / 1080, 190 / 1920, 1)):
             auto.press_key("esc")
         auto.press_key("esc")
         auto.press_key("esc")

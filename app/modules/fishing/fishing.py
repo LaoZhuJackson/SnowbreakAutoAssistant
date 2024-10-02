@@ -30,7 +30,7 @@ class FishingModule:
             # 如果点击了还没反应则尝试用空格激活钓鱼
             if not auto.find_element("app/resource/images/fishing/wait_fish.png", "image", threshold=0.6):
                 auto.press_key("space")
-            if auto.find_element("有鱼儿上钩了", "text", include=True, max_retries=10):
+            if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, max_retries=10):
                 auto.press_key("space", wait_time=0)
                 if self.is_use_time_judge:
                     self.start_time = time.time()

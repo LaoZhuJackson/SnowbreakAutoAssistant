@@ -222,7 +222,7 @@ class SettingInterface(ScrollArea):
                     print('Cancel button is pressed')
             elif latest_version is None:
                 title = '未获取到最新版本信息'
-                content = '无法连接至github，请检查你的网络，确保你的代理设置正确'
+                content = f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确'
                 massage_box = MessageBox(title, content, self.window())
                 if massage_box.exec():
                     pass
@@ -238,7 +238,7 @@ class SettingInterface(ScrollArea):
                     pass
         except Exception as e:
             title = '网络错误'
-            content = '无法连接至github，请检查你的网络，确保你的代理设置正确'
+            content = f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确'
             massage_box = MessageBox(title, content, self.window())
             if massage_box.exec():
                 pass

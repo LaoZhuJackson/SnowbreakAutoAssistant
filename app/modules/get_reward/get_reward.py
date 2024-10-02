@@ -15,6 +15,9 @@ class GetRewardModule:
         if config.CheckBox_mail.value:
             time.sleep(0.5)
             self.receive_mail()
+        if config.CheckBox_fish_bait.value:
+            time.sleep(0.5)
+            self.receive_fish_bait()
 
     def receive_work(self):
         auto.click_element("任务", "text", include=False, max_retries=3,
@@ -48,3 +51,13 @@ class GetRewardModule:
         auto.press_key("esc")
         if not auto.find_element("凭证", "text", include=True):
             auto.press_key("esc")
+
+    def receive_fish_bait(self):
+        auto.click_element("战斗", "text", include=False, max_retries=3,
+                           crop=(1350 / 1920, 300 / 1080, 1870 / 1920, 800 / 1080), action="move_click")
+        auto.click_element("特别派遣", "text", include=False, max_retries=3, action="move_click")
+        auto.click_element("新星开拓", "text", include=False, max_retries=3, action="move_click")
+        auto.click_element("开拓目标", "text", include=False, max_retries=3, action="move_click")
+        auto.click_element("键领取", "text", include=False, max_retries=3, action="move_click")
+        auto.click_element("获得道具", "text", include=False, max_retries=3, action="move_click")
+        auto.click_element("app/resource/images/reward/home.png", "image", threshold=0.7, action="move_click")

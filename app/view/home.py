@@ -192,12 +192,7 @@ class Home(QFrame, Ui_home):
 
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
 
-        # 获取当前日期和时间
-        now = datetime.now()
-        # 格式化成 "MM:DD" 的字符串
-        formatted_date = now.strftime("当前日期：%m月%d日")
-        # todo 根据日期生成对应活动提醒
-        self.BodyLabel_tip.setText(formatted_date)
+        self.BodyLabel_tip.setText(self.get_tip())
 
         # 查找 button1 在布局中的索引
         self.gridLayout.addWidget(self.select_person, 1, 0)
@@ -344,7 +339,7 @@ class Home(QFrame, Ui_home):
             logger.error(e)
 
     def save_changed(self, widget):
-        logger.debug(f"触发save_changed:{widget.objectName()}")
+        # logger.debug(f"触发save_changed:{widget.objectName()}")
         # 当与配置相关的控件状态改变时调用此函数保存配置
         if isinstance(widget, CheckBox):
             config.set(getattr(config, widget.objectName(), None), widget.isChecked())
@@ -360,6 +355,14 @@ class Home(QFrame, Ui_home):
     def save_item2_changed(self, index, check_state):
         # print(index, check_state)
         config.set(getattr(config, f"item_weapon_{index}", None), False if check_state == 0 else True)
+
+    def get_tip(self):
+        # 获取当前日期和时间
+        now = datetime.now()
+        # 格式化成 "MM:DD" 的字符串
+        formatted_date = now.strftime("当前日期：%m月%d日")
+
+        return formatted_date
 
     def closeEvent(self, event):
         # 恢复原始标准输出

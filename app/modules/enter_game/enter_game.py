@@ -34,11 +34,9 @@ class EnterGameModule:
                                  scale_range=(0.6, 1)):
             auto.click_element("开始游戏", "text", max_retries=3)
             time.sleep(10)
-        while auto.find_element("app/resource/images/start_game/age.png", "image", threshold=0.9,
-                                scale_range=(0.6, 1)) is None:
+        while not auto.click_element("开始游戏", "text", threshold=0.8):
             time.sleep(1)
-        auto.click_element("开始游戏", "text", max_retries=10, threshold=0.6,
-                           crop=(650 / 1920, 800 / 1080, 1300 / 1920, 1))
+        time.sleep(5)
         while auto.find_element("基地", "text", include=True,
                                 crop=(1516 / 1920, 664 / 1080, 1693 / 1920, 762 / 1080)) is None:
             if auto.find_element("养生专家", "text", include=True):
@@ -51,7 +49,7 @@ class EnterGameModule:
                 time.sleep(1)
         # 勾引皮肤公告
         if auto.click_element("活动", "text", include=False, max_retries=3):
-            auto.press_key("esc",wait_time=0.5)
+            auto.press_key("esc", wait_time=0.5)
         while not auto.find_element("基地", "text", include=True,
                                     crop=(1516 / 1920, 664 / 1080, 1693 / 1920, 762 / 1080)):
             if auto.find_element("app/resource/images/start_game/newbird_cancel.png", "image", threshold=0.8,

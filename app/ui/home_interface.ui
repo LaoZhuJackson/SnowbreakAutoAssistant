@@ -333,7 +333,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_3">
@@ -366,8 +366,8 @@ border:None;</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>309</width>
-               <height>554</height>
+               <width>138</width>
+               <height>479</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1062,14 +1062,7 @@ border:None;</string>
         </widget>
         <widget class="QWidget" name="page_3">
          <layout class="QGridLayout" name="gridLayout_10">
-          <item row="0" column="0">
-           <widget class="CheckBox" name="CheckBox_mail">
-            <property name="text">
-             <string>领取邮件</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <spacer name="verticalSpacer_7">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1081,6 +1074,20 @@ border:None;</string>
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="0">
+           <widget class="CheckBox" name="CheckBox_mail">
+            <property name="text">
+             <string>领取邮件</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="CheckBox" name="CheckBox_fish_bait">
+            <property name="text">
+             <string>领取鱼饵</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

@@ -54,7 +54,8 @@ class ShoppingModule:
 
     @staticmethod
     def open_store():
-        auto.click_element("商店", "text", max_retries=3)
+        while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.9):
+            auto.click_element("商店", "text", max_retries=3)
         # 等待商店动画
         time.sleep(0.2)
         auto.click_element("提取物", "text", include=True, crop=(310 / 1920, 285 / 1080, 1, 1), action="move")

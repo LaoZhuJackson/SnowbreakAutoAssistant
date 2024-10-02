@@ -144,9 +144,12 @@ class PersonModule:
         if top_left and bottom_right:
             x, y = auto.calculate_click_position((top_left, bottom_right))
             distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)
-            if distance > 300:
-                return None
+            print(f"最近的“速战”距离：{distance}")
+            if distance > 400:
+                print(f"“速战”距离大于400：{distance}")
+                return None, None
             else:
+                print(f"找到对应的“速战”：{distance}")
                 return top_left, bottom_right
         else:
             return None
