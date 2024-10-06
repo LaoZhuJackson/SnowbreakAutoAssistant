@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
-    <height>900</height>
+       <width>882</width>
+       <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -208,7 +208,7 @@
       <item row="2" column="4">
        <widget class="ToolButton" name="ToolButton_entry">
         <property name="enabled">
-         <bool>false</bool>
+            <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -333,8 +333,77 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-         <number>3</number>
+            <number>0</number>
         </property>
+           <widget class="QWidget" name="page_5">
+               <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,1,1">
+                   <item row="4" column="0" colspan="3">
+                       <widget class="BodyLabel" name="BodyLabel_7">
+                           <property name="text">
+                               <string>### 提示
+                                   * 打开任务管理器可查看进程名
+                                   * 尘白禁区启动器：尘白禁区
+                                   * 西山居启动器：SeasunGame.exe
+                               </string>
+                           </property>
+                           <property name="textFormat">
+                               <enum>Qt::MarkdownText</enum>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="0" column="1" colspan="2">
+                       <widget class="ComboBox" name="ComboBox_starter"/>
+                   </item>
+                   <item row="0" column="0">
+                       <widget class="BodyLabel" name="BodyLabel_2">
+                           <property name="text">
+                               <string>启动器进程名：</string>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="5" column="0">
+                       <spacer name="verticalSpacer_9">
+                           <property name="orientation">
+                               <enum>Qt::Vertical</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                               <size>
+                                   <width>20</width>
+                                   <height>40</height>
+                               </size>
+                           </property>
+                       </spacer>
+                   </item>
+                   <item row="3" column="2">
+                       <widget class="PushButton" name="PushButton_select_directory">
+                           <property name="text">
+                               <string>选择</string>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="3" column="0" colspan="2">
+                       <widget class="CheckBox" name="CheckBox_auto_open_starter">
+                           <property name="text">
+                               <string>开启助手时自动打开启动器</string>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="2" column="0" colspan="3">
+                       <widget class="LineEdit" name="LineEdit_starter_directory">
+                           <property name="enabled">
+                               <bool>false</bool>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="1" column="0" colspan="3">
+                       <widget class="StrongBodyLabel" name="StrongBodyLabel_4">
+                           <property name="text">
+                               <string>启动器路径</string>
+                           </property>
+                       </widget>
+                   </item>
+               </layout>
+           </widget>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
@@ -953,30 +1022,17 @@ border:None;</string>
         </widget>
         <widget class="QWidget" name="page_4">
          <layout class="QGridLayout" name="gridLayout_11">
-          <item row="5" column="0">
-           <widget class="BodyLabel" name="BodyLabel_7">
-            <property name="text">
-             <string>优先度从上到下，若选择角色超过2名时会自动用记忆补嵌包</string>
-            </property>
-            <property name="scaledContents">
-             <bool>false</bool>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
+             <item row="4" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,2">
             <item>
-             <widget class="BodyLabel" name="BodyLabel_3">
+                <widget class="BodyLabel" name="BodyLabel_8">
               <property name="text">
-               <string>角色1：</string>
+                  <string>角色4：</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="ComboBox" name="ComboBox_c1">
+                <widget class="ComboBox" name="ComboBox_c4">
               <property name="items_" stdset="0">
                <string notr="true"/>
               </property>
@@ -991,17 +1047,30 @@ border:None;</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,2">
+             <item row="6" column="0">
+                 <spacer name="verticalSpacer_8">
+                     <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                         <size>
+                             <width>20</width>
+                             <height>40</height>
+                         </size>
+                     </property>
+                 </spacer>
+             </item>
+             <item row="1" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
             <item>
-             <widget class="BodyLabel" name="BodyLabel_8">
+                <widget class="BodyLabel" name="BodyLabel_3">
               <property name="text">
-               <string>角色4：</string>
+                  <string>角色1：</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="ComboBox" name="ComboBox_c4">
+                <widget class="ComboBox" name="ComboBox_c1">
               <property name="items_" stdset="0">
                <string notr="true"/>
               </property>
@@ -1009,17 +1078,17 @@ border:None;</string>
             </item>
            </layout>
           </item>
-          <item row="3" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2">
+             <item row="2" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
             <item>
-             <widget class="BodyLabel" name="BodyLabel_5">
+                <widget class="BodyLabel" name="BodyLabel_4">
               <property name="text">
-               <string>角色3：</string>
+                  <string>角色2：</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="ComboBox" name="ComboBox_c3">
+                <widget class="ComboBox" name="ComboBox_c2">
               <property name="items_" stdset="0">
                <string notr="true"/>
               </property>
@@ -1027,17 +1096,17 @@ border:None;</string>
             </item>
            </layout>
           </item>
-          <item row="2" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
+             <item row="3" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2">
             <item>
-             <widget class="BodyLabel" name="BodyLabel_4">
+                <widget class="BodyLabel" name="BodyLabel_5">
               <property name="text">
-               <string>角色2：</string>
+                  <string>角色3：</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="ComboBox" name="ComboBox_c2">
+                <widget class="ComboBox" name="ComboBox_c3">
               <property name="items_" stdset="0">
                <string notr="true"/>
               </property>
@@ -1045,18 +1114,12 @@ border:None;</string>
             </item>
            </layout>
           </item>
-          <item row="6" column="0">
-           <spacer name="verticalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <item row="5" column="0">
+                 <widget class="CheckBox" name="CheckBox_is_use_chip">
+                     <property name="text">
+                         <string>是否使用记忆嵌片</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
+                 </widget>
           </item>
          </layout>
         </widget>
@@ -1227,6 +1290,11 @@ border: 2px;</string>
   <customwidget>
    <class>TitleLabel</class>
    <extends>QLabel</extends>
+      <header>qfluentwidgets</header>
+  </customwidget>
+     <customwidget>
+         <class>LineEdit</class>
+         <extends>QLineEdit</extends>
    <header>qfluentwidgets</header>
   </customwidget>
  </customwidgets>

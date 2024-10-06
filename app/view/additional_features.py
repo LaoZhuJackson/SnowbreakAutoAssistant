@@ -6,8 +6,7 @@ from functools import partial
 
 import cv2
 import numpy as np
-from PyQt5.QtCore import QThread, pyqtSignal, Qt, QPointF
-from PyQt5.QtGui import QImage, QPixmap, QPainter, QPaintEvent
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QFrame, QWidget
 from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit
 
@@ -15,7 +14,6 @@ from app.common.config import config
 from app.common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
 from app.modules.automation import auto
 from app.modules.fishing.fishing import FishingModule
-
 from app.ui.additional_features_interface import Ui_additional_features
 
 
@@ -146,7 +144,7 @@ class Additional(QFrame, Ui_additional_features):
                 if isinstance(widget, CheckBox):
                     widget.setChecked(config_item.value)  # 使用配置项的值设置 CheckBox 的状态
                 elif isinstance(widget, ComboBox):
-                    widget.setPlaceholderText("未选择")
+                    # widget.setPlaceholderText("未选择")
                     widget.setCurrentIndex(config_item.value)
                 elif isinstance(widget, LineEdit):
                     if widget.objectName().split('_')[1] == 'fish':

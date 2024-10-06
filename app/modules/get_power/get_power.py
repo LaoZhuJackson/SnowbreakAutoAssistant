@@ -16,7 +16,8 @@ class GetPowerModule:
         auto.click_element("app/resource/images/get_power/friends.png", "image", threshold=0.8, max_retries=3,
                            action="move_click")
         time.sleep(0.5)
-        auto.click_element("键收赠", "text", include=True, max_retries=3, action="move_click")
+        auto.click_element("键收赠", "text", include=True, crop=(1545 / 1920, 965 / 1080, 360 / 1920, 106 / 1080),
+                           max_retries=3, action="move_click")
         auto.press_key("esc")
 
     @staticmethod

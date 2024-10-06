@@ -1,13 +1,12 @@
 # coding: utf-8
-import traceback
+import subprocess
 
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QFrame
-
-from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
-     BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
 from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
+    BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
 
 from .additional_features import Additional
 from .help import Help
@@ -15,9 +14,9 @@ from .home import Home
 from .setting_interface import SettingInterface
 from ..common.config import config
 from ..common.icon import Icon
+from ..common.logger import logger
 from ..common.ppOCR import ocr_installer, ocr
 from ..common.signal_bus import signalBus
-from ..common import resource  # 不能删，设置页的样式需要
 from ..ui.display_interface import DisplayInterface
 
 
@@ -55,6 +54,18 @@ class MainWindow(MSFluentWindow):
 
         # 检查ocr组件是否安装
         QTimer.singleShot(200, self.check_ocr_install)
+        if config.CheckBox_auto_open_starter.value:
+            self.open_starter()
+
+    def open_starter(self):
+        starter_path = config.LineEdit_starter_directory.value
+        try:
+            subprocess.Popen(starter_path)
+            logger.debug(f'打开 {starter_path} 成功')
+        except FileNotFoundError:
+            logger.error(f'没有找到对应启动器: {starter_path}')
+        except Exception as e:
+            logger.error(f'出现报错: {e}')
 
     def connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
@@ -114,23 +125,17 @@ class MainWindow(MSFluentWindow):
     def check_ocr_install(self):
         self.ocr_installer = ocr_installer
         if self.ocr_installer.check_ocr():
-            print('OCR组件已安装')
-            pass
+            logger.debug('OCR组件已安装')
+            # 初始化ocr
+            ocr.instance_ocr()
         else:
             self.messagebox = MessageBoxBase(self)
             title = SubtitleLabel('检测到未下载OCR组件', self)
             self.content = BodyLabel('是否开始下载，若下载，点击下载后的命令窗口不要关，下载进度在主页的日志中查看，若取消则退出程序', self)
             self.content.setWordWrap(True)
-            # self.speed = BodyLabel('', self)
-            # self.speed.setVisible(False)
-            # self.progressRing = ProgressRing()
-            # self.progressRing.setValue(0)
-            # self.progressRing.setVisible(False)
 
             self.messagebox.viewLayout.addWidget(title, 0, Qt.AlignLeft)
             self.messagebox.viewLayout.addWidget(self.content, 0, Qt.AlignLeft)
-            # self.messagebox.viewLayout.addWidget(self.progressRing, 0, Qt.AlignCenter)
-            # self.messagebox.viewLayout.addWidget(self.speed, 0, Qt.AlignCenter)
             self.messagebox.yesButton.setText('下载')
             self.messagebox.cancelButton.setText('退出')
             self.messagebox.yesButton.clicked.connect(self.yes_click)

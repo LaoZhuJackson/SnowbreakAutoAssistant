@@ -4,11 +4,11 @@ from datetime import datetime
 
 import cv2
 import numpy as np
-import pyautogui
 
 from app.common.config import config
 from app.common.logger import logger
 from app.modules.automation import auto
+from app.modules.automation.screenshot import Screenshot
 
 
 class FishingModule:
@@ -19,7 +19,10 @@ class FishingModule:
         self.is_use_time_judge = config.CheckBox_is_limit_time.value
         self.upper_yellow = np.array([int(value) for value in config.LineEdit_fish_upper.value.split(',')])
         self.lower_yellow = np.array([int(value) for value in config.LineEdit_fish_lower.value.split(',')])
+        # self.upper_white = np.array([92, 40, 255])
+        # self.lower_white = np.array([88, 0, 245])
         self.start_time = time.time()
+        self.window_title = config.game_title_name.value
 
     def run(self):
         if np.any(self.upper_yellow < self.lower_yellow):
@@ -30,12 +33,13 @@ class FishingModule:
             # 如果点击了还没反应则尝试用空格激活钓鱼
             if not auto.find_element("app/resource/images/fishing/wait_fish.png", "image", threshold=0.6):
                 auto.press_key("space")
-            if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,scale_range=(0.6,1.5), max_retries=10):
+            if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, scale_range=(0.6, 1.5),
+                                 max_retries=10):
                 auto.press_key("space", wait_time=0)
                 if self.is_use_time_judge:
                     self.start_time = time.time()
                 while True:
-                    rgb_image, _, _ = auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 370 / 1920, 330 / 1080))
+                    rgb_image = self.take_screenshot(crop=(1130 / 1920, 240 / 1080, 370 / 1920, 330 / 1080))
                     # 将Pillow图像转换为NumPy数组
                     img_np = np.array(rgb_image)
                     # 将图像从RGB格式转换为BGR格式（OpenCV使用BGR）
@@ -54,6 +58,8 @@ class FishingModule:
                                 auto.press_key("space", wait_time=0)
                                 self.start_time = time.time()
                     if not auto.find_element("app/resource/images/fishing/fishing.png", "image", threshold=0.8):
+                        # rgb_image = auto.take_screenshot()
+                        # rgb_image.save('./false.png')
                         break
                 if auto.find_element("本次获得", "text", max_retries=2):
                     print("钓鱼佬永不空军！")
@@ -77,18 +83,43 @@ class FishingModule:
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         # 创建黄色掩膜
-        mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
+        mask_yellow = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
+        # mask_white = cv2.inRange(hsv, self.lower_white, self.upper_white)
 
         # 查找轮廓
-        contours, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        print(f"黄色块数为：{len(contours)}")
-        return len(contours) >= 2
+        contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        print(f"黄色块数为：{len(contours_yellow)}")
+
+        # contours_white, _ = cv2.findContours(mask_white, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        # print(f"白色块数为：{len(contours_white)}")
+        return len(contours_yellow) >= 2
 
     def save_picture(self):
         current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         file_path = os.path.join(self.save_path, f"{current_date}.png")
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
-        screenshot, _, _ = auto.take_screenshot()
+        screenshot = self.take_screenshot()
         screenshot.save(file_path)
         print(f"出了条大的！已保存截图至：{file_path}")
+
+    def take_screenshot(self, crop=(0, 0, 1, 1)):
+        """
+        捕获游戏窗口的截图。
+        :param crop: 截图的裁剪区域，格式为(x1, y1, width, height)，默认为全屏。
+        :return: 成功时返回截图及其位置和缩放因子，失败时抛出异常。
+        """
+        start_time = time.time()
+        while True:
+            try:
+                result = Screenshot.take_screenshot(self.window_title, crop=crop)
+                if result:
+                    screenshot, screenshot_pos, screenshot_scale_factor = result
+                    return screenshot
+                else:
+                    logger.error("截图失败：没有找到游戏窗口")
+            except Exception as e:
+                logger.error(f"截图失败：{e}")
+            time.sleep(1)
+            if time.time() - start_time > 60:
+                raise RuntimeError("截图超时")

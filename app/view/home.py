@@ -1,20 +1,17 @@
-from datetime import datetime
-import os
 import re
-import subprocess
 import sys
 import time
 import traceback
+from datetime import datetime
 from functools import partial
 
 import psutil
-import pyautogui
-
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
-from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QTreeWidgetItem
+from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
+from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit
 
 from ..common.config import config
-from ..common.ppOCR import OCRInstaller
+from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
 from ..modules.automation import auto
 from ..modules.chasm.chasm import ChasmModule
 from ..modules.enter_game.enter_game import EnterGameModule
@@ -25,10 +22,6 @@ from ..modules.shopping.shopping import ShoppingModule
 from ..modules.use_stamina.use_stamina import UseStaminaModule
 from ..repackage.tree import TreeFrame_person, TreeFrame_weapon
 from ..ui.home_interface import Ui_home
-from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, PillToolButton, \
-    MessageBoxBase
-
-from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr, Logger
 
 
 def close_process(p1_pid):
@@ -128,7 +121,7 @@ def get_all_children(widget):
 class Home(QFrame, Ui_home):
     def __init__(self, text: str, parent=None):
         super().__init__()
-        self.setting_name_list = ['商店', '体力', '人物碎片', '奖励']
+        self.setting_name_list = ['登录', '商店', '体力', '人物碎片', '奖励']
         self.person_dic = {
             "人物碎片": "item_person_0",
             "肴": "item_person_1",
@@ -180,9 +173,11 @@ class Home(QFrame, Ui_home):
                         "凯茜娅-蓝闪", "肴-冬至", "芬妮-辉耀", "安卡希雅-辉夜", "里芙-狂猎", "茉莉安-雨燕",
                         "芙提雅-缄默", "芬妮-咎冠", "恩雅-羽蜕", "伊切尔-豹豹", "苔丝-魔术师", "茉莉安-幽潮",
                         "晴-藏锋", "猫汐尔-溯影", "辰星-云篆"]
+        starter_items = ['尘白禁区启动器', '西山居启动器']
         self.ComboBox_after_use.addItems(after_use_items)
         self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
+        self.ComboBox_starter.addItems(starter_items)
         self.ComboBox_c1.addItems(person_items)
         self.ComboBox_c2.addItems(person_items)
         self.ComboBox_c3.addItems(person_items)
@@ -206,11 +201,13 @@ class Home(QFrame, Ui_home):
         self.PushButton_start.clicked.connect(self.click_start)
         self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
         self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
+        self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
 
-        self.ToolButton_shop.clicked.connect(lambda: self.set_current_index(0))
-        self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(1))
-        self.ToolButton_person.clicked.connect(lambda: self.set_current_index(2))
-        self.ToolButton_reward.clicked.connect(lambda: self.set_current_index(3))
+        self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
+        self.ToolButton_shop.clicked.connect(lambda: self.set_current_index(1))
+        self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(2))
+        self.ToolButton_person.clicked.connect(lambda: self.set_current_index(3))
+        self.ToolButton_reward.clicked.connect(lambda: self.set_current_index(4))
 
         self._connect_to_save_changed()
 
@@ -237,8 +234,10 @@ class Home(QFrame, Ui_home):
                 if isinstance(widget, CheckBox):
                     widget.setChecked(config_item.value)  # 使用配置项的值设置 CheckBox 的状态
                 elif isinstance(widget, ComboBox):
-                    widget.setPlaceholderText("未选择")
+                    # widget.setPlaceholderText("未选择")
                     widget.setCurrentIndex(config_item.value)
+                elif isinstance(widget, LineEdit):
+                    widget.setText(config_item.value)
         self._load_item_config()
 
     def _load_item_config(self):
@@ -267,6 +266,8 @@ class Home(QFrame, Ui_home):
                 children.stateChanged.connect(partial(self.save_changed, children))
             elif isinstance(children, ComboBox):
                 children.currentIndexChanged.connect(partial(self.save_changed, children))
+            elif isinstance(children, LineEdit):
+                children.editingFinished.connect(partial(self.save_changed, children))
 
     def click_start(self):
         checkbox_dic = {}
@@ -292,6 +293,15 @@ class Home(QFrame, Ui_home):
                 duration=2000,
                 parent=self
             )
+
+    def on_select_directory_click(self):
+        """ 选择启动器路径 """
+        file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
+                                                   "Executable Files (*.exe);;All Files (*)")
+        if not file_path or config.LineEdit_starter_directory.value == file_path:
+            return
+        self.LineEdit_starter_directory.setText(file_path)
+        self.LineEdit_starter_directory.editingFinished.emit()
 
     def set_is_running(self):
         """根据主进程中的self.is_running控制全局变量is_running"""
@@ -319,12 +329,14 @@ class Home(QFrame, Ui_home):
             self.PushButton_start.setText("开始")
             if self.ComboBox_after_use.currentIndex() == 1:
                 auto.press_key("esc")
-                auto.click_element("确认", "text", max_retries=2,action="move_click")
+                time.sleep(1)
+                auto.click_element("确认", "text", max_retries=2, action="move_click")
                 self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
                 self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
                 auto.press_key("esc")
+                time.sleep(1)
                 auto.click_element("确认", "text", max_retries=2, action="move_click")
 
     def set_checkbox_enable(self, enable: bool):
@@ -347,6 +359,8 @@ class Home(QFrame, Ui_home):
                 self.ComboBox_power_day.setEnabled(widget.isChecked())
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
+        elif isinstance(widget, LineEdit):
+            config.set(getattr(config, widget.objectName(), None), widget.text())
 
     def save_item_changed(self, index, check_state):
         # print(index, check_state)

@@ -2,9 +2,9 @@
 import sys
 from enum import Enum
 
-from PyQt5.QtCore import QLocale, Qt
+from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
-                            OptionsValidator, Theme, FolderValidator, ConfigSerializer)
+                            OptionsValidator, Theme, ConfigSerializer)
 
 from .setting import CONFIG_FILE
 
@@ -36,6 +36,11 @@ class Config(QConfig):
     """ Config of application """
 
     # 主页面
+    ComboBox_starter = ConfigItem("home_interface_enter", "ComboBox_starter", 0, OptionsValidator([0, 1]))
+    LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
+    CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
+                                            BoolValidator())
+
     CheckBox_entry_1 = ConfigItem("home_interface_option", "CheckBox_entry", False, BoolValidator())
     CheckBox_stamina_2 = ConfigItem("home_interface_option", "CheckBox_stamina", False, BoolValidator())
     CheckBox_shop_3 = ConfigItem("home_interface_option", "CheckBox_shop", False, BoolValidator())
@@ -95,6 +100,7 @@ class Config(QConfig):
         [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
     ComboBox_c4 = OptionsConfigItem("home_interface_person", "ComboBox_c4", -1, OptionsValidator(
         [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    CheckBox_is_use_chip = ConfigItem("home_interface_person", "CheckBox_is_use_chip", False, BoolValidator())
 
     CheckBox_mail = ConfigItem("home_interface_reward", "CheckBox_mail", False, BoolValidator())
     CheckBox_fish_bait = ConfigItem("home_interface_reward", "CheckBox_fish_bait", False, BoolValidator())

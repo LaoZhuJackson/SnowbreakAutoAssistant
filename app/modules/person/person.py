@@ -11,7 +11,7 @@ class PersonModule:
     def __init__(self):
         self.config_data = config.toDict()
         self.select_person_dic = self.config_data["home_interface_person"]
-        self.count = 0  # 记录使用了多少次速战
+        self.break_flag = False
         self.name_dic = {
             0: '不选择',
             1: '朝翼',
@@ -35,20 +35,29 @@ class PersonModule:
             19: '溯影',
             20: '云篆',
         }
+        self.pages = math.ceil(len(self.name_dic) / 4) + 1
+        self.power_times = 0
 
     def run(self):
         try:
-            self.enter_person()
             is_all_zero = all(value == 0 for _, value in self.select_person_dic.items())
             if is_all_zero:
                 print("未选择任何需要刷碎片的角色")
-                auto.press_key("esc")
-                auto.press_key("esc")
+                auto.back_to_home()
                 return
             else:
+                self.enter_person()
                 # 等待动画
-                time.sleep(1)
-                self.fight()
+                time.sleep(0.7)
+                for _, value in self.select_person_dic.items():
+                    if self.break_flag:
+                        break
+                    self.update_power_times()
+                    if not config.CheckBox_is_use_chip.value and self.power_times == 0:
+                        break
+                    self.next_page("back")
+                    self.fight(value)
+                # auto.back_to_home()
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -59,63 +68,65 @@ class PersonModule:
         time.sleep(0.7)
         auto.click_element("个人故事", "text", include=False, max_retries=3, action="move_click")
 
-    def fight(self):
-        for key, value in self.select_person_dic.items():
-            if value == 0:
-                continue
+    def fight(self, value):
+        if value == 0:
+            pass
+        else:
+            if self.power_times == 0:
+                if config.CheckBox_is_use_chip.value:
+                    self.use_chip()
+                else:
+                    return
+            # 找name
+            if self.quick_fight_by_name(self.name_dic[value]):
+                print(f"{self.name_dic[value]}刷取成功")
             else:
-                name = self.name_dic[value]
-                times = math.ceil(len(self.name_dic) / 4) + 1
-                for i in range(times):
-                    result = auto.find_element(name, "text", include=True)
-                    # 如果找到了对应名字
-                    if result:
-                        top_left, bottom_right = result
-                        pos = auto.calculate_click_position((top_left, bottom_right))
-                        print(f"pos:{pos}")
-                        click_pos = self.corresponding_quick_fight(pos)
-                        if click_pos:
-                            self.quick_fight(click_pos)
-                        else:
-                            print(f"找到了{name},但未检测到{name}的“速战”")
-                            if self.is_exist_power():
-                                print(f"{name}已完成刷取")
-                                # 跳出循环
-                                break
-                            else:
-                                # 没体力了
-                                print("尝试使用记忆嵌片包")
-                                # 使用嵌片
-                                auto.click_element("app/resource/images/person/add_power.png", "image",
-                                                   action="move_click", max_retries=3)
-                                auto.click_element("最大", "text", include=False, max_retries=3, action="move_click")
-                                time.sleep(0.2)
-                                auto.click_element("确定", "text", include=False, max_retries=3, action="move_click")
-                                auto.press_key("esc")
-                                click_pos = self.corresponding_quick_fight(pos)
-                                if click_pos:
-                                    # 可以完成速战,完成后退出循环
-                                    self.quick_fight(click_pos)
-                                    break
-                                else:
-                                    print(f"角色 {name} 未达成速战条件")
-                                    # 退出翻页循环
-                                    break
-                    else:
-                        print(f"未找到对应角色：{name}")
-                        # 鼠标移动到可以翻页的位置
-                        auto.click_element("超元链接", "text", include=False, offset=(0, -200), action="move")
-                        # 未找到对应名字，则翻页
-                        auto.mouse_scroll(1, -7100)
-                key_num = int(re.search(r"\d+$", key).group())
-                if key_num != 4:
-                    # 翻完所有页之后，回到最开头
-                    print("开始返回最开头位置")
-                    auto.click_element("超元链接", "text", include=False, offset=(0, -200), action="move")
-                    auto.mouse_scroll(times, 7100)
-        # 结束所有循环，返回主页面
-        auto.press_key("esc")
-        auto.press_key("esc")
+                print(f"{self.name_dic[value]}速战未成功")
+
+    def use_chip(self):
+        print("尝试使用2个记忆嵌片")
+        auto.click_element("app/resource/images/person/add_power.png", "image", action="move_click", max_retries=1)
+        time.sleep(0.5)
+        if not auto.find_element("暂时没有该类道具", "text", include=False, max_retries=1,
+                                 crop=(821 / 1920, 511 / 1080, 271 / 1920, 57 / 1080)):
+            auto.click_element("app/resource/images/person/add_num.png", "image", action="move_click", max_retries=2)
+            auto.click_element("确定", "text", include=False, max_retries=3, action="move_click")
+            auto.press_key("esc")
+        else:
+            print("无可用记忆嵌片")
+            self.break_flag = True
+
+    def quick_fight_by_name(self, name):
+        for _ in range(self.pages):
+            name_pos = auto.find_element(name, "text", include=True,
+                                         crop=(13 / 1920, 713 / 1080, 1907 / 1920, 160 / 1080))
+            # print(f"name_pos:{name_pos}")
+            if name_pos:
+                quick_fight_pos = self.corresponding_quick_fight(name_pos[0])
+                # print(quick_fight_pos)
+                if quick_fight_pos:
+                    self.quick_fight(quick_fight_pos)
+                    return True
+                else:
+                    print(f"{name}未达成速战条件或无刷取次数")
+                    return False
+            else:
+                self.next_page()
+        return False
+
+    def next_page(self, next_type="next"):
+        """
+        翻页
+        :param next_type: 可选“next”或者“back”
+        :return:
+        """
+        # 鼠标移动到可以翻页的位置
+        auto.click_element("超元链接", "text", include=False, offset=(0, -200), action="move")
+        if next_type == "next":
+            # 未找到对应名字，则翻页
+            auto.mouse_scroll(1, -7100)
+        else:
+            auto.mouse_scroll(self.pages, 7100)
 
     def quick_fight(self, click_pos):
         """
@@ -123,7 +134,7 @@ class PersonModule:
         :param click_pos: 格式（（x1,y1），（x2,y2））
         :return:
         """
-        print(f"传入的click_pos:{click_pos}")
+        # print(f"传入的click_pos:{click_pos}")
         auto.click_element_with_pos(click_pos, action='move_click')
         if auto.click_element("最大", "text", include=False, max_retries=3,
                               action="move_click"):
@@ -131,7 +142,6 @@ class PersonModule:
                                action="move_click")
             auto.click_element("完成", "text", include=False, max_retries=3,
                                action="move_click")
-            self.count += 1
 
     def corresponding_quick_fight(self, source_pos):
         """
@@ -144,41 +154,55 @@ class PersonModule:
         if top_left and bottom_right:
             x, y = auto.calculate_click_position((top_left, bottom_right))
             distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)
-            print(f"最近的“速战”距离：{distance}")
-            if distance > 400:
-                print(f"“速战”距离大于400：{distance}")
-                return None, None
+            # print(f"最近的“速战”距离：{distance}")
+            if distance > 450:
+                print(f"“速战”距离大于450：{distance}")
+                return None
             else:
                 print(f"找到对应的“速战”：{distance}")
                 return top_left, bottom_right
         else:
             return None
 
-    def is_exist_power(self):
-        text = self.update_ocr_result()
-        target = None
-        is_exist = False
-        # print(text)
-        for item in text:
-            if "/12" in item:
-                target = item
-                is_exist = True
-                break
-        # print(target)
-        if is_exist:
-            power = int(target.split('/')[0])
-            if power != 0:
-                return True
-            else:
-                return False
-        else:
-            print("未检测到/12")
-            return False
-
-    def update_ocr_result(self):
-        auto.take_screenshot(crop=(1360 / 1920, 19/1080, 233 / 1920, 63 / 1080))
+    def find_text_in_area(self, pos):
+        """
+        通过位置找对应的文本内容
+        :param pos: 查找区域格式：（（x1,y1），（x2,y2））
+        :return: 对应区域内的文本列表
+        """
+        crop = (
+            pos[0][0] / 1920, pos[0][1] / 1080, (pos[1][0] - pos[0][0]) / 1920, (pos[1][1] - pos[0][1]) / 1080)
+        auto.take_screenshot(crop=crop)
         auto.perform_ocr()
         original_result = auto.ocr_result
         # 提取每个子列表中的字符串部分
         result = [item[1][0] for item in original_result]
+
         return result
+
+    def update_power_times(self):
+        pos = ((1421, 27), (1538, 76))
+        text_list = self.find_text_in_area(pos)
+        text = text_list[0]
+        times = self.detect_times(text)
+        if times is not None:
+            print(f"记忆嵌片更新成功：{times}")
+            self.power_times = times
+        else:
+            print(f"记忆嵌片更新失败：{text}")
+
+    def detect_times(self, text: str):
+        """
+        通过文本检查还有多少次刷取次数
+        :param text:格式为“**/**”,str
+        :return:
+        """
+        # 正则表达式模式，匹配任意以数字开头并有"/"的部分
+        pattern = r"(\d+)/"
+        match = re.search(pattern, text)
+        if match:
+            # 获取匹配到的第一个组，也就是“/”前的数字
+            times = match.group(1)
+            return int(times)
+        else:
+            return None

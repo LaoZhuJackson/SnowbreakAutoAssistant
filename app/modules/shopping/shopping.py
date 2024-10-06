@@ -51,6 +51,7 @@ class ShoppingModule:
     def run(self):
         self.open_store()
         self.buy()
+        auto.back_to_home()
 
     @staticmethod
     def open_store():
@@ -74,12 +75,15 @@ class ShoppingModule:
                     time.sleep(0.2)
                     auto.click_element("最大", "text", include=True, crop=(1791 / 1920, 827 / 1080, 88 / 1920, 50 / 1080),
                                        action="move_click")
-                    auto.click_element("购买", "text", include=False, crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
-                                       action="move_click")
-                    auto.press_key("esc")
+                    if auto.click_element("购买", "text", include=False,
+                                          crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
+                                          action="move_click"):
+                        auto.press_key("esc")
                     # 滚动至底部
+                    time.sleep(0.2)
+                    auto.click_element("提取物", "text", include=True,
+                                       crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080), action="move")
                     auto.mouse_scroll(4, -150)
-        auto.press_key("esc")
 
     def buy_from_dic(self, dic: dict, name: str):
         first_flag = True
