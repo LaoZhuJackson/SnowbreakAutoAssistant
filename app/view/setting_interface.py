@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
 from updater import Updater
 from ..repackage.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
-from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR
+from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR, QQ
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
 
@@ -121,7 +121,7 @@ class SettingInterface(ScrollArea):
             '前往B站',
             FIF.FEEDBACK,
             '提供反馈',
-            '唯一平台b站：芬妮舞狮，QQ群：996710620',
+            '唯一平台b站：芬妮舞狮，QQ群：' + QQ,
             self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(

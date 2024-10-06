@@ -18,6 +18,7 @@ from ..common.logger import logger
 from ..common.ppOCR import ocr_installer, ocr
 from ..common.signal_bus import signalBus
 from ..ui.display_interface import DisplayInterface
+from ..common import resource
 
 
 class InstallOcr(QThread):
