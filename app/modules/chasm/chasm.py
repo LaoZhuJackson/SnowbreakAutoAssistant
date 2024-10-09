@@ -22,7 +22,7 @@ class ChasmModule:
         auto.click_element("特别派遣", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("精神拟境", "text", include=False, max_retries=3, action="move_click")
         self.fast_test()
-        if self.continue_flag and self.is_after_thursday_4am():
+        if self.continue_flag and self.is_after_wednesday_4am():
             auto.click_element("精神拟境", "text", include=False, max_retries=3, offset=(0, 290), action="move_click")
             self.fast_test()
         time.sleep(0.2)
@@ -47,11 +47,11 @@ class ChasmModule:
         # print(tuesday_10am, now, next_monday_4am)
         return tuesday_10am <= now < next_monday_4am
 
-    def is_after_thursday_4am(self):
+    def is_after_wednesday_4am(self):
         now = datetime.now()  # 获取当前时间
         current_weekday = now.weekday()  # 获取当前是周几 (周一为0，周日为6)
         wednesday_4am = now.replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(
-            days=3 - current_weekday)
+            days=2 - current_weekday)
 
         # 判断当前时间是否在本周三凌晨4点之后
         return now > wednesday_4am
@@ -64,7 +64,7 @@ class ChasmModule:
                 auto.click_element("确定", "text", include=True, max_retries=3, action="move_click")
                 time.sleep(0.5)
             else:
-                print("无快速测评，跳出循环")
+                print("无快速测评")
                 break
             if auto.find_element("测评次数不足", "text", include=False):
                 self.continue_flag = False

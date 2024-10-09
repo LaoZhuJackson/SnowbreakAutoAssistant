@@ -7,7 +7,7 @@ from functools import partial
 import cv2
 import numpy as np
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QFrame, QWidget
+from PyQt5.QtWidgets import QFrame, QWidget, QTextBrowser
 from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit
 
 from app.common.config import config
@@ -41,6 +41,17 @@ class RunFishing(QThread):
         finally:
             self.is_running_fishing.emit(False)
 
+
+class RunAction(QThread):
+    is_running_action = pyqtSignal(bool)
+
+    def __init__(self):
+        super().__init__()
+        # self.module = FishingModule()
+
+    def run(self):
+        self.is_running_action.emit(True)
+        print("run action")
 
 class AdjustColor(QThread):
     color_changed = pyqtSignal()
@@ -117,13 +128,13 @@ class Additional(QFrame, Ui_additional_features):
         self._initWidget()
         self._load_config()
         self._connect_to_slot()
-        self._redirectOutput()
+        # self._redirectOutput()
 
     def _initWidget(self):
         # 正向链接
         self.SegmentedWidget.addItem(self.page_fishing.objectName(), '自动钓鱼',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_fishing))
-        self.SegmentedWidget.addItem(self.page_2.objectName(), '待开发1',
+        self.SegmentedWidget.addItem(self.page_2.objectName(), '自动常规行动',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_2))
         self.SegmentedWidget.addItem(self.page_3.objectName(), '待开发2',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_3))
@@ -177,26 +188,33 @@ class Additional(QFrame, Ui_additional_features):
             elif isinstance(children, LineEdit):
                 children.editingFinished.connect(partial(self.save_changed, children))
 
-    def _redirectOutput(self):
+    def _redirectOutput(self, log_widget):
         # 普通输出
         sys.stdout = stdout_stream
         # 报错输出
         sys.stderr = stderr_stream
-        # 将新消息信号连接到QTextEdit
-        stdout_stream.message.connect(self.__updateDisplay)
-        stderr_stream.message.connect(self.__updateDisplay)
+        # 先断开可能存在的所有连接
+        try:
+            stdout_stream.message.disconnect()
+            stderr_stream.message.disconnect()
+        except TypeError:
+            pass  # 没有连接存在时会抛出TypeError
+        # 将新消息信号连接到对应输出位置
+        stdout_stream.message.connect(lambda message: self.__updateDisplay(message, log_widget))
+        stderr_stream.message.connect(lambda message: self.__updateDisplay(message, log_widget))
 
-    def __updateDisplay(self, message):
-        # 将消息添加到 QTextEdit，自动识别 HTML
-        self.textBrowser_log.insertHtml(message)
-        self.textBrowser_log.insertPlainText('\n')  # 为下一行消息留出空间
-        self.textBrowser_log.ensureCursorVisible()  # 滚动到最新消息
+    def __updateDisplay(self, message, log_widget: QTextBrowser):
+        # 将消息添加到 textBrowser，自动识别 HTML
+        log_widget.insertHtml(message)
+        log_widget.insertPlainText('\n')  # 为下一行消息留出空间
+        log_widget.ensureCursorVisible()  # 滚动到最新消息
 
     def onCurrentIndexChanged(self, index):
         widget = self.stackedWidget.widget(index)
         self.SegmentedWidget.setCurrentItem(widget.objectName())
 
     def start_fishing(self):
+        self._redirectOutput(self.textBrowser_log_fishing)
         self.run_fishing_thread = RunFishing()
         self.run_fishing_thread.is_running_fishing.connect(self.toggle_fish_button)
         self.set_fish_running()
@@ -227,6 +245,10 @@ class Additional(QFrame, Ui_additional_features):
         else:
             is_running = False
             logger.info("已发生停止指令，等待当前钓鱼完成")
+
+    def start_action(self):
+        self._redirectOutput(self.textBrowser_log_action)
+        self.run_action_thread = RunAction()
 
     def save_changed(self, widget):
         if isinstance(widget, SpinBox):

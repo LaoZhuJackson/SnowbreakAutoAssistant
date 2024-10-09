@@ -1,5 +1,6 @@
 import time
 
+from app.common.config import config
 from app.modules.automation import auto
 
 
@@ -8,13 +9,17 @@ class EnterGameModule:
         self.enter_game_flag = False
 
     def run(self):
-        # if config.ComboBox_starter.value == 1:
-        #     auto.window_title = "SeasunGame.exe"
+        if config.ComboBox_starter.value == 1:
+            auto.window_title = "西山居启动器-尘白禁区"
+        elif config.ComboBox_starter.value == 2:
+            auto.window_title = "SnowBreak"
+        # 激活登录器窗口
+        auto.activate_window(auto.window_title)
         self.check_update()
         if not self.enter_game_flag:
             self.enter_game()
-        # # 结束进入游戏操作后将窗口名改回来
-        # auto.window_title = "尘白禁区"
+        # 结束进入游戏操作后将窗口名改回来
+        auto.window_title = "尘白禁区"
 
     def check_update(self):
         if auto.find_element("凭证", "text", include=True) is None:

@@ -8,10 +8,15 @@ from functools import partial
 import psutil
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
-from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit
+from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
+    BodyLabel, ProgressBar
 
 from ..common.config import config
 from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
+from ..common.setting import ACTIVITY_END_TIME, ACTIVITY_START_TIME, INTEREST_START_TIME, INTEREST_END_TIME, \
+    MAZES_START_TIME, MAZES_END_TIME, ONLINE_CHALLENGE_START_TIME, ONLINE_CHALLENGE_END_TIME, BOSS_CHALLENGE_START_TIME, \
+    BOSS_CHALLENGE_END_TIME, GAME_START_TIME, GAME_END_TIME, \
+    UPPER_START_TIME, UPPER_END_TIME, BOTTOM_START_TIME, BOTTOM_END_TIME
 from ..modules.automation import auto
 from ..modules.chasm.chasm import ChasmModule
 from ..modules.enter_game.enter_game import EnterGameModule
@@ -40,7 +45,7 @@ class StartThread(QThread):
         super().__init__()
         self.checkbox_dic = checkbox_dic
         self._is_running = True
-        self.name_list_zh = ['自动登录', '领取体力', '商店购买', '刷体力', '刷碎片', '刷深渊', '领取奖励']
+        self.name_list_zh = ['自动登录', '领取体力', '商店购买', '刷体力', '人物碎片', '精神拟境', '领取奖励']
 
     def run(self):
         self.is_running_signal.emit(True)
@@ -173,7 +178,7 @@ class Home(QFrame, Ui_home):
                         "凯茜娅-蓝闪", "肴-冬至", "芬妮-辉耀", "安卡希雅-辉夜", "里芙-狂猎", "茉莉安-雨燕",
                         "芙提雅-缄默", "芬妮-咎冠", "恩雅-羽蜕", "伊切尔-豹豹", "苔丝-魔术师", "茉莉安-幽潮",
                         "晴-藏锋", "猫汐尔-溯影", "辰星-云篆"]
-        starter_items = ['尘白禁区启动器', '西山居启动器']
+        starter_items = ['尘白禁区启动器', '西山居启动器', '国际服启动器']
         self.ComboBox_after_use.addItems(after_use_items)
         self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
@@ -187,7 +192,7 @@ class Home(QFrame, Ui_home):
 
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
 
-        self.BodyLabel_tip.setText(self.get_tip())
+        self.get_tips()
 
         # 查找 button1 在布局中的索引
         self.gridLayout.addWidget(self.select_person, 1, 0)
@@ -196,6 +201,7 @@ class Home(QFrame, Ui_home):
         self._load_config()
         # 和其他控件有相关状态判断的，要放在load_config后
         self.ComboBox_power_day.setEnabled(self.CheckBox_is_use_power.isChecked())
+        self.PushButton_select_directory.setEnabled(self.CheckBox_auto_open_starter.isChecked())
 
     def _connect_to_slot(self):
         self.PushButton_start.clicked.connect(self.click_start)
@@ -357,6 +363,8 @@ class Home(QFrame, Ui_home):
             config.set(getattr(config, widget.objectName(), None), widget.isChecked())
             if widget.objectName() == 'CheckBox_is_use_power':
                 self.ComboBox_power_day.setEnabled(widget.isChecked())
+            elif widget.objectName() == 'CheckBox_auto_open_starter':
+                self.PushButton_select_directory.setEnabled(widget.isChecked())
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
         elif isinstance(widget, LineEdit):
@@ -370,13 +378,64 @@ class Home(QFrame, Ui_home):
         # print(index, check_state)
         config.set(getattr(config, f"item_weapon_{index}", None), False if check_state == 0 else True)
 
-    def get_tip(self):
+    def get_time_difference(self, end_time_str: str, total_day=None, start_time_str=None):
+        """
+        通过给入终止时间获取剩余时间差和时间百分比
+        :param start_time_str: 开始时间，格式'2024-12-31'
+        :param total_day: 持续总天数
+        :param end_time_str: 结束时间，格式'2024-12-31'
+        :return:如果活动过期，则返回None,否则返回时间差，剩余百分比
+        """
+        # 终止时间，可以根据需要修改。例如，假设你要设置为 2024 年 12 月 31 日。
+        end_time = datetime.strptime(end_time_str, '%Y-%m-%d')
         # 获取当前日期和时间
         now = datetime.now()
-        # 格式化成 "MM:DD" 的字符串
-        formatted_date = now.strftime("当前日期：%m月%d日")
+        # 如果输入了开始日期
+        if start_time_str:
+            start_time = datetime.strptime(start_time_str, '%Y-%m-%d')
+            total_difference = end_time - start_time
+            total_day = total_difference.days
+            if now < start_time:
+                # 将当前日期替换成开始日期
+                now = start_time
+        # print(end_time)
+        # print(now)
+        time_difference = end_time - now
+        days_remaining = time_difference.days
+        if days_remaining < 0:
+            return None
 
-        return formatted_date
+        return days_remaining, (days_remaining / total_day) * 100
+
+    def get_tips(self):
+        tips_dic = {
+            "活动": self.get_time_difference(ACTIVITY_END_TIME, start_time_str=ACTIVITY_START_TIME),
+            "上半卡池": self.get_time_difference(UPPER_END_TIME, start_time_str=UPPER_START_TIME),
+            "下半卡池": self.get_time_difference(BOTTOM_END_TIME, start_time_str=BOTTOM_START_TIME),
+            "趣味关": self.get_time_difference(INTEREST_END_TIME, start_time_str=INTEREST_START_TIME),
+            "迷宫": self.get_time_difference(MAZES_END_TIME, start_time_str=MAZES_START_TIME),
+            "联机挑战": self.get_time_difference(ONLINE_CHALLENGE_END_TIME, start_time_str=ONLINE_CHALLENGE_START_TIME),
+            "boss挑战": self.get_time_difference(BOSS_CHALLENGE_END_TIME, start_time_str=BOSS_CHALLENGE_START_TIME),
+            "积分周常": self.get_time_difference(ONLINE_CHALLENGE_END_TIME, start_time_str=ONLINE_CHALLENGE_START_TIME),
+            "勇者游戏": self.get_time_difference(GAME_END_TIME, start_time_str=GAME_START_TIME),
+            "永续联战": self.get_time_difference(BOSS_CHALLENGE_END_TIME, start_time_str=BOSS_CHALLENGE_START_TIME),
+        }
+        label_children = self.SimpleCardWidget_tips.findChildren(BodyLabel)
+        progress_children = self.SimpleCardWidget_tips.findChildren(ProgressBar)
+        sorted_label_widgets = sorted(label_children, key=lambda widget: int(widget.objectName().split('_')[-1]))
+        sorted_progress_widgets = sorted(progress_children, key=lambda widget: int(widget.objectName().split('_')[-1]))
+
+        index = 0
+        # print(tips_dic['活动'])
+        try:
+            for key, value in tips_dic.items():
+                # print(value)
+                # print(type(value))
+                sorted_label_widgets[index].setText(f"{key}剩余：{value[0]}天")
+                sorted_progress_widgets[index].setValue(value[1])
+                index += 1
+        except Exception as e:
+            logger.error(e)
 
     def closeEvent(self, event):
         # 恢复原始标准输出

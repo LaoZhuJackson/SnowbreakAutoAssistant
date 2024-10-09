@@ -1,6 +1,7 @@
 # coding: utf-8
 import subprocess
 
+import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QFrame
@@ -59,6 +60,10 @@ class MainWindow(MSFluentWindow):
             self.open_starter()
 
     def open_starter(self):
+        windows = pyautogui.getWindowsWithTitle(config.game_title_name.value)
+        if windows:
+            logger.debug("已打开游戏")
+            return
         starter_path = config.LineEdit_starter_directory.value
         try:
             subprocess.Popen(starter_path)

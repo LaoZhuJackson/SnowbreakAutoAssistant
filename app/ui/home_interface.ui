@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-       <width>882</width>
-       <height>675</height>
+       <width>911</width>
+       <height>673</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,64 @@
    <property name="spacing">
     <number>0</number>
    </property>
+      <item row="0" column="2" rowspan="2">
+          <widget class="SimpleCardWidget" name="SimpleCardWidget">
+              <property name="minimumSize">
+                  <size>
+                      <width>246</width>
+                      <height>485</height>
+                  </size>
+              </property>
+              <property name="maximumSize">
+                  <size>
+                      <width>16777215</width>
+                      <height>16777215</height>
+                  </size>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_4">
+                  <property name="horizontalSpacing">
+                      <number>0</number>
+                  </property>
+                  <property name="verticalSpacing">
+                      <number>4</number>
+                  </property>
+                  <item row="0" column="0">
+                      <widget class="TitleLabel" name="TitleLabel">
+                          <property name="text">
+                              <string>日志</string>
+                          </property>
+                      </widget>
+                  </item>
+                  <item row="1" column="0">
+                      <widget class="QTextBrowser" name="textBrowser_log">
+                          <property name="focusPolicy">
+                              <enum>Qt::StrongFocus</enum>
+                          </property>
+                          <property name="toolTip">
+                              <string/>
+                          </property>
+                          <property name="toolTipDuration">
+                              <number>-1</number>
+                          </property>
+                          <property name="statusTip">
+                              <string/>
+                          </property>
+                          <property name="whatsThis">
+                              <string/>
+                          </property>
+                          <property name="styleSheet">
+                              <string notr="true">border-radius: 5px;
+                                  border: 2px;
+                              </string>
+                          </property>
+                          <property name="verticalScrollBarPolicy">
+                              <enum>Qt::ScrollBarAlwaysOff</enum>
+                          </property>
+                      </widget>
+                  </item>
+              </layout>
+          </widget>
+      </item>
    <item row="0" column="0">
     <widget class="SimpleCardWidget" name="SimpleCardWidget_option">
      <property name="minimumSize">
@@ -284,11 +342,23 @@
           <height>60</height>
          </size>
         </property>
+           <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+           </property>
+           <property name="toolTip">
+               <string/>
+           </property>
+           <property name="statusTip">
+               <string/>
+           </property>
+           <property name="whatsThis">
+               <string/>
+           </property>
         <property name="text">
          <string>开始</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+S</string>
+            <string>F1</string>
         </property>
        </widget>
       </item>
@@ -343,7 +413,8 @@
                                <string>### 提示
                                    * 打开任务管理器可查看进程名
                                    * 尘白禁区启动器：尘白禁区
-                                   * 西山居启动器：SeasunGame.exe
+                                   * 西山居启动器：西山居启动器-尘白禁区
+                                   * 国际服启动器：SnowBreak
                                </string>
                            </property>
                            <property name="textFormat">
@@ -384,7 +455,7 @@
                    <item row="3" column="0" colspan="2">
                        <widget class="CheckBox" name="CheckBox_auto_open_starter">
                            <property name="text">
-                               <string>开启助手时自动打开启动器</string>
+                               <string>自动打开启动器</string>
                            </property>
                        </widget>
                    </item>
@@ -1160,72 +1231,123 @@ border:None;</string>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="SimpleCardWidget" name="SimpleCardWidget_4">
+       <widget class="SimpleCardWidget" name="SimpleCardWidget_tips">
      <property name="minimumSize">
       <size>
        <width>237</width>
        <height>165</height>
       </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout_9" rowstretch="1,3">
+           <layout class="QGridLayout" name="gridLayout_9" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="1,3">
       <property name="verticalSpacing">
        <number>3</number>
       </property>
-      <item row="0" column="0">
-       <widget class="TitleLabel" name="TitleLabel_3">
+               <item row="2" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_1"/>
+               </item>
+               <item row="7" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_5">
+                       <property name="text">
+                           <string>Body label</string>
+                       </property>
+                   </widget>
+               </item>
+               <item row="8" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_6">
         <property name="text">
-         <string>提醒</string>
+            <string>Body label</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="BodyLabel" name="BodyLabel_tip">
+               <item row="5" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_3">
         <property name="text">
          <string>Body label</string>
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="2" rowspan="2">
-    <widget class="SimpleCardWidget" name="SimpleCardWidget">
-     <property name="minimumSize">
-      <size>
-       <width>246</width>
-       <height>485</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <property name="horizontalSpacing">
-       <number>0</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>4</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="TitleLabel" name="TitleLabel">
+               <item row="3" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_2">
+                       <property name="text">
+                           <string>Body label</string>
+                       </property>
+                   </widget>
+               </item>
+               <item row="2" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_1">
+                       <property name="text">
+                           <string>Body label</string>
+                       </property>
+                   </widget>
+               </item>
+               <item row="9" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_7"/>
+               </item>
+               <item row="10" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_8">
+                       <property name="text">
+                           <string>Body label</string>
+                       </property>
+                   </widget>
+               </item>
+               <item row="12" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_10">
+                       <property name="text">
+                           <string>Body label</string>
+                       </property>
+                   </widget>
+               </item>
+               <item row="5" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_3"/>
+               </item>
+               <item row="6" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_4"/>
+               </item>
+               <item row="8" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_6"/>
+               </item>
+               <item row="12" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_10"/>
+               </item>
+               <item row="11" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_9">
+                       <property name="text">
+                           <string>Body label</string>
+                       </property>
+                   </widget>
+               </item>
+               <item row="6" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_4">
         <property name="text">
-         <string>日志</string>
+            <string>Body label</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QTextBrowser" name="textBrowser_log">
-        <property name="styleSheet">
-         <string notr="true">border-radius: 5px;
-border: 2px;</string>
+               <item row="7" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_5"/>
+               </item>
+               <item row="3" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_2"/>
+               </item>
+               <item row="9" column="0">
+                   <widget class="BodyLabel" name="BodyLabel_tip_7">
+                       <property name="text">
+                           <string>Body label</string>
         </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </widget>
+               </item>
+               <item row="0" column="0">
+                   <widget class="TitleLabel" name="TitleLabel_3">
+                       <property name="text">
+                           <string>提醒</string>
         </property>
        </widget>
+               </item>
+               <item row="11" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_9"/>
+               </item>
+               <item row="10" column="1">
+                   <widget class="ProgressBar" name="ProgressBar_tip_8"/>
       </item>
      </layout>
     </widget>
@@ -1291,6 +1413,11 @@ border: 2px;</string>
    <class>TitleLabel</class>
    <extends>QLabel</extends>
       <header>qfluentwidgets</header>
+  </customwidget>
+     <customwidget>
+         <class>ProgressBar</class>
+         <extends>QProgressBar</extends>
+         <header>qfluentwidgets</header>
   </customwidget>
      <customwidget>
          <class>LineEdit</class>

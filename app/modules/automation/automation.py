@@ -3,6 +3,7 @@ import time
 
 import cv2
 import numpy as np
+import pyautogui
 
 from app.common.image_utils import ImageUtils
 from app.common.ppOCR import ocr
@@ -536,3 +537,10 @@ class Automation(metaclass=SingletonMeta):
                 time.sleep(1)
             else:
                 self.press_key("esc")
+
+    def activate_window(self, window_title='尘白禁区'):
+        window = Screenshot.get_window(window_title)
+        if window:
+            window.activate()
+        else:
+            print(f"未找到窗口:{window_title}")

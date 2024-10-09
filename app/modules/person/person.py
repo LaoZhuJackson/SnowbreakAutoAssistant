@@ -57,7 +57,7 @@ class PersonModule:
                         break
                     self.next_page("back")
                     self.fight(value)
-                # auto.back_to_home()
+                auto.back_to_home()
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -98,8 +98,7 @@ class PersonModule:
 
     def quick_fight_by_name(self, name):
         for _ in range(self.pages):
-            name_pos = auto.find_element(name, "text", include=True,
-                                         crop=(13 / 1920, 713 / 1080, 1907 / 1920, 160 / 1080))
+            name_pos = auto.find_element(name, "text", include=True)
             # print(f"name_pos:{name_pos}")
             if name_pos:
                 quick_fight_pos = self.corresponding_quick_fight(name_pos[0])
@@ -151,6 +150,9 @@ class PersonModule:
         """
         pos = auto.find_target_near_source("速战", include=False, source_pos=source_pos, position="bottom_right")
         top_left, bottom_right = pos
+        # print(pos)
+        # print(top_left)
+        # print(bottom_right)
         if top_left and bottom_right:
             x, y = auto.calculate_click_position((top_left, bottom_right))
             distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)

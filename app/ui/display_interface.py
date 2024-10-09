@@ -1,4 +1,5 @@
 import os
+import random
 
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QPixmap, QPainter, QPainterPath, QBrush
@@ -44,7 +45,9 @@ class BannerWidget(QWidget):
         self.galleryLabel.setGraphicsEffect(shadow)
 
         self.basedir = "app/resource/images/display"
-        banner_path = os.path.join(self.basedir, "background_1.jpg")
+        random_number = random.randint(1, 9)
+        # banner_path = os.path.join(self.basedir, f"background_{random_number}.jpg")
+        banner_path = os.path.join(self.basedir, f"background_1.jpg")
         self.banner = QPixmap(banner_path)
         # 超链接卡片
         self.linkCardView = LinkCardView(self)
