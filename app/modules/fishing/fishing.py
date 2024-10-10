@@ -34,7 +34,8 @@ class FishingModule:
         auto.press_key("space")
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, scale_range=(0.6, 1.5),
                              max_retries=10):
-            auto.press_key("space", wait_time=0)
+            time.sleep(0.2)
+            auto.press_key("space")
             if self.is_use_time_judge:
                 self.start_time = time.time()
             while True:

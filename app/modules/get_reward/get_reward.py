@@ -24,6 +24,9 @@ class GetRewardModule:
                            crop=(1445 / 1920, 321 / 1080, 107 / 1920, 77 / 1080), action="move_click")
         if not auto.find_element("目标达成", "text", include=True):
             if auto.click_element("键领取", "text", include=True, max_retries=1, action="move_click"):
+                # 等待是否有等级提升
+                time.sleep(2)
+                auto.click_element("等级提升", "text", include=False, max_retries=2, action="move_click")
                 auto.press_key("esc")
             if auto.click_element("app/resource/images/reward/execution.png", "image", threshold=0.7,
                                   action="move_click"):

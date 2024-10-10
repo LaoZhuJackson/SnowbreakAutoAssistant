@@ -250,7 +250,7 @@ border: 2px;</string>
                  <number>0</number>
              </property>
              <item row="2" column="0">
-                 <widget class="PushButton" name="PushButton">
+                 <widget class="PushButton" name="PushButton_start_action">
                      <property name="text">
                          <string>开始行动</string>
                      </property>
@@ -269,7 +269,7 @@ border: 2px;</string>
                  </widget>
              </item>
              <item row="1" column="0">
-                 <widget class="SimpleCardWidget" name="SimpleCardWidget">
+                 <widget class="SimpleCardWidget" name="SimpleCardWidget_action">
                      <layout class="QGridLayout" name="gridLayout_6">
                          <item row="0" column="0">
                              <widget class="BodyLabel" name="BodyLabel_4">
@@ -301,10 +301,10 @@ border: 2px;</string>
                          <item row="1" column="0" colspan="2">
                              <widget class="BodyLabel" name="BodyLabel_2">
                                  <property name="text">
-                                     <string># 提醒
+                                     <string>### 提示
                                          自动完成常规行动
                                          * 不消耗体力
-                                         * 重复刷指定次数教学第一关
+                                         * 重复刷指定次数实战训练第一关
                                      </string>
                                  </property>
                                  <property name="textFormat">

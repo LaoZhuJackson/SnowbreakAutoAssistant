@@ -14,6 +14,7 @@ from app.common.config import config
 from app.common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
 from app.modules.automation import auto
 from app.modules.fishing.fishing import FishingModule
+from app.modules.routine_action.routine_action import ActionModule
 from app.ui.additional_features_interface import Ui_additional_features
 
 
@@ -30,8 +31,8 @@ class RunFishing(QThread):
         time.sleep(3)
         try:
             for i in range(config.SpinBox_fish_times.value):
-                print(f"is_running_fishing:{is_running}")
-                if not is_running:
+                # print(f"is_running_fishing:{fish_running}")
+                if not fish_running:
                     break
                 logger.info(f"开始第 {i + 1} 次钓鱼")
                 self.module.run()
@@ -47,11 +48,30 @@ class RunAction(QThread):
 
     def __init__(self):
         super().__init__()
-        # self.module = FishingModule()
+        self.module = ActionModule()
 
     def run(self):
         self.is_running_action.emit(True)
-        print("run action")
+        logger.info("请确保游戏窗口分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+        time.sleep(3)
+        try:
+            # 进入训练界面
+            self.module.enter_train()
+            # 开始循环
+            for i in range(config.SpinBox_action_times.value):
+                # print(f"is_running_action:{fish_running}")
+                if not action_running:
+                    break
+                logger.info(f"开始第 {i + 1} 次行动")
+                self.module.run()
+            # 返回主页面
+            auto.back_to_home()
+        except Exception as e:
+            logger.error(e)
+            traceback.print_exc()
+        finally:
+            self.is_running_action.emit(False)
+
 
 class AdjustColor(QThread):
     color_changed = pyqtSignal()
@@ -122,6 +142,7 @@ class Additional(QFrame, Ui_additional_features):
         self.parent = parent
 
         self.is_running_fish = False
+        self.is_running_action = False
         self.color_pixmap = None
         self.hsv_value = None
 
@@ -167,7 +188,9 @@ class Additional(QFrame, Ui_additional_features):
     def _connect_to_slot(self):
         # 反向链接
         self.stackedWidget.currentChanged.connect(self.onCurrentIndexChanged)
+
         self.PushButton_start_fishing.clicked.connect(self.start_fishing)
+        self.PushButton_start_action.clicked.connect(self.start_action)
 
         # 链接各种需要保存修改的控件
         self._connect_to_save_changed()
@@ -220,7 +243,7 @@ class Additional(QFrame, Ui_additional_features):
         self.set_fish_running()
 
     def toggle_fish_button(self, running):
-        # logger.debug(f"执行set_is_running:{is_running}")
+        # logger.debug(f"执行set_is_running:{fish_running}")
         self.is_running_fish = running
         children = get_all_children(self.SimpleCardWidget_fish)
         if running:
@@ -239,16 +262,44 @@ class Additional(QFrame, Ui_additional_features):
 
     def set_fish_running(self):
         if not self.is_running_fish:
-            global is_running
-            is_running = True
+            global fish_running
+            fish_running = True
             self.run_fishing_thread.start()
         else:
-            is_running = False
+            fish_running = False
             logger.info("已发生停止指令，等待当前钓鱼完成")
 
     def start_action(self):
         self._redirectOutput(self.textBrowser_log_action)
         self.run_action_thread = RunAction()
+        self.run_action_thread.is_running_action.connect(self.toggle_action_button)
+        self.set_action_running()
+
+    def toggle_action_button(self, running):
+        # logger.debug(f"执行set_is_running:{fish_running}")
+        self.is_running_fish = running
+        children = get_all_children(self.SimpleCardWidget_action)
+        if running:
+            for child in children:
+                if isinstance(child, CheckBox) or isinstance(child, LineEdit) or isinstance(child, SpinBox):
+                    child.setEnabled(False)
+            self.PushButton_start_action.setText("停止行动")
+        else:
+            for child in children:
+                if isinstance(child, CheckBox) or isinstance(child, SpinBox):
+                    child.setEnabled(True)
+                elif isinstance(child, LineEdit):
+                    pass
+            self.PushButton_start_action.setText("开始行动")
+
+    def set_action_running(self):
+        if not self.is_running_fish:
+            global action_running
+            action_running = True
+            self.run_action_thread.start()
+        else:
+            action_running = False
+            logger.info("已发生停止指令，等待当前行动完成")
 
     def save_changed(self, widget):
         if isinstance(widget, SpinBox):

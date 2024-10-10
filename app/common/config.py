@@ -126,6 +126,9 @@ class Config(QConfig):
     LineEdit_fish_lower = ConfigItem("add_fish", "LineEdit_fish_lower", "20,220,245")
     LineEdit_fish_upper = ConfigItem("add_fish", "LineEdit_fish_upper", "25,255,255")
 
+    # 常规行动相关
+    SpinBox_action_times = ConfigItem("add_action", "SpinBox_action_times", 20)
+
 
 config = Config()
 config.themeMode.value = Theme.LIGHT

@@ -71,6 +71,9 @@ class UseStaminaModule:
                     break
                 auto.click_element("最大", "text", include=True, max_retries=5, action="move_click")
                 auto.click_element("开始作战", "text", include=True, max_retries=5, action="move_click")
+                # 等待是否有等级提升
+                time.sleep(2)
+                auto.click_element("等级提升", "text", include=False, max_retries=2, action="move_click")
                 auto.click_element("完成", "text", include=True, max_retries=5, action="move_click")
         auto.press_key("esc")
         auto.click_element("任务", "text", include=True, max_retries=5, action="move_click")

@@ -58,7 +58,8 @@ class EnterGameModule:
                 time.sleep(1)
         # 勾引皮肤公告
         if auto.click_element("活动", "text", include=False, max_retries=3):
-            auto.press_key("esc", wait_time=0.5)
+            time.sleep(0.5)
+            auto.press_key("esc")
         while not auto.find_element("基地", "text", include=True,
                                     crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080)):
             if auto.find_element("app/resource/images/start_game/newbird_cancel.png", "image", threshold=0.8,
