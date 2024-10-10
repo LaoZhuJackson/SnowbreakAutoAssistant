@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QFrame
 
+from app.common.style_sheet import StyleSheet
 from app.ui.help_interface import Ui_help
 
 
@@ -17,6 +18,7 @@ class Help(QFrame, Ui_help):
 
     def _initWidget(self):
         self.load_markdown()
+        StyleSheet.HELP_INTERFACE.apply(self)
 
     def _connect_to_slot(self):
         pass

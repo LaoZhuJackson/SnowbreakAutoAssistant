@@ -131,5 +131,5 @@ class Config(QConfig):
 
 
 config = Config()
-config.themeMode.value = Theme.LIGHT
+config.themeMode.value = Theme.AUTO
 qconfig.load(str(CONFIG_FILE.absolute()), config)

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
+       <width>688</width>
     <height>620</height>
    </rect>
   </property>
@@ -32,7 +32,7 @@
          <number>1</number>
      </property>
      <widget class="QWidget" name="page_fishing">
-      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0" columnstretch="2,1">
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -46,8 +46,31 @@
         <number>0</number>
        </property>
        <property name="spacing">
-        <number>6</number>
+           <number>2</number>
        </property>
+             <item row="0" column="1" rowspan="3">
+                 <widget class="SimpleCardWidget" name="SimpleCardWidget">
+                     <layout class="QGridLayout" name="gridLayout_7">
+                         <item row="0" column="0">
+                             <widget class="TitleLabel" name="TitleLabel">
+                                 <property name="text">
+                                     <string>日志</string>
+                                 </property>
+                             </widget>
+                         </item>
+                         <item row="1" column="0">
+                             <widget class="QTextBrowser" name="textBrowser_log_fishing">
+                                 <property name="styleSheet">
+                                     <string notr="true"/>
+                                 </property>
+                                 <property name="verticalScrollBarPolicy">
+                                     <enum>Qt::ScrollBarAlwaysOff</enum>
+                                 </property>
+                             </widget>
+                         </item>
+                     </layout>
+                 </widget>
+             </item>
        <item row="0" column="0">
         <widget class="SimpleCardWidget" name="SimpleCardWidget_fish">
          <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,1,1">
@@ -61,22 +84,8 @@
                      </property>
                  </widget>
           </item>
-             <item row="4" column="0" colspan="3">
-                 <widget class="StrongBodyLabel" name="StrongBodyLabel">
-                     <property name="text">
-                         <string>校准完美收杆区域HSV（当收杆出错，日志说黄色块大于2时用）</string>
-            </property>
-           </widget>
-          </item>
-             <item row="8" column="0">
-                 <widget class="PushButton" name="PushButton_reset">
-            <property name="text">
-                <string>重置</string>
-            </property>
-           </widget>
-          </item>
           <item row="10" column="0" colspan="3">
-           <widget class="BodyLabel" name="BodyLabel_tip">
+              <widget class="BodyLabel" name="BodyLabel_tip_fish">
             <property name="text">
              <string>### 提示
  * 珍奇钓鱼点每天最多钓25次
@@ -92,10 +101,17 @@
             </property>
            </widget>
           </item>
-             <item row="5" column="1">
-                 <widget class="LineEdit" name="LineEdit_fish_base">
-                     <property name="enabled">
-                         <bool>false</bool>
+             <item row="8" column="0">
+                 <widget class="PushButton" name="PushButton_reset">
+                     <property name="text">
+                         <string>重置</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="6" column="0">
+                 <widget class="BodyLabel" name="BodyLabel_6">
+                     <property name="text">
+                         <string>颜色查找上限</string>
                      </property>
                  </widget>
              </item>
@@ -118,52 +134,19 @@
                      </property>
                  </widget>
              </item>
-             <item row="6" column="0">
-                 <widget class="BodyLabel" name="BodyLabel_6">
-                     <property name="text">
-                         <string>颜色查找上限</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="1" column="0" colspan="3">
-                 <widget class="CheckBox" name="CheckBox_is_limit_time">
-                     <property name="text">
-                         <string>是否限制单次收杆时间间隔上限</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="7" column="1">
-                 <widget class="LineEdit" name="LineEdit_fish_lower"/>
-             </item>
-             <item row="6" column="1">
-                 <widget class="LineEdit" name="LineEdit_fish_upper"/>
-             </item>
-          <item row="5" column="0">
-           <widget class="BodyLabel" name="BodyLabel_5">
-            <property name="text">
-             <string>基准HSV值</string>
+             <item row="5" column="1">
+                 <widget class="LineEdit" name="LineEdit_fish_base">
+                     <property name="enabled">
+                         <bool>false</bool>
             </property>
            </widget>
           </item>
-             <item row="7" column="0">
-                 <widget class="BodyLabel" name="BodyLabel_7">
+             <item row="4" column="0" colspan="3">
+                 <widget class="StrongBodyLabel" name="StrongBodyLabel">
                      <property name="text">
-                         <string>颜色查找下限</string>
+                         <string>校准完美收杆区域HSV（当收杆出错，日志说黄色块大于2时用）</string>
             </property>
            </widget>
-          </item>
-          <item row="9" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
              <item row="11" column="0">
                  <spacer name="verticalSpacer_4">
@@ -191,10 +174,47 @@
             </property>
            </spacer>
           </item>
-          <item row="8" column="1">
-           <widget class="PrimaryPushButton" name="PrimaryPushButton_get_color">
+             <item row="8" column="1">
+                 <widget class="PrimaryPushButton" name="PrimaryPushButton_get_color">
+                     <property name="text">
+                         <string>校准颜色</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="6" column="1">
+                 <widget class="LineEdit" name="LineEdit_fish_upper"/>
+             </item>
+             <item row="1" column="0" colspan="3">
+                 <widget class="CheckBox" name="CheckBox_is_limit_time">
+                     <property name="text">
+                         <string>是否限制单次收杆时间间隔上限</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="9" column="1">
+                 <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+             <item row="7" column="0">
+                 <widget class="BodyLabel" name="BodyLabel_7">
+                     <property name="text">
+                         <string>颜色查找下限</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="5" column="0">
+                 <widget class="BodyLabel" name="BodyLabel_5">
             <property name="text">
-             <string>校准颜色</string>
+                <string>基准HSV值</string>
             </property>
            </widget>
           </item>
@@ -212,6 +232,9 @@
             </property>
            </widget>
           </item>
+             <item row="7" column="1">
+                 <widget class="LineEdit" name="LineEdit_fish_lower"/>
+             </item>
          </layout>
         </widget>
        </item>
@@ -222,97 +245,101 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1" rowspan="2">
-           <widget class="QTextBrowser" name="textBrowser_log_fishing">
-         <property name="styleSheet">
-          <string notr="true">border-radius: 5px;
-border: 2px;</string>
-         </property>
-         <property name="verticalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-         <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0" columnstretch="2,1">
-             <property name="leftMargin">
-                 <number>0</number>
-             </property>
-             <property name="topMargin">
-                 <number>0</number>
-             </property>
-             <property name="rightMargin">
-                 <number>0</number>
-             </property>
-             <property name="bottomMargin">
-                 <number>0</number>
-             </property>
-             <item row="2" column="0">
-                 <widget class="PushButton" name="PushButton_start_action">
-                     <property name="text">
-                         <string>开始行动</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="1" column="1" rowspan="2">
-                 <widget class="QTextBrowser" name="textBrowser_log_action">
-                     <property name="styleSheet">
-                         <string notr="true">border-radius: 5px;
-                             border: 2px;
-                         </string>
-                     </property>
-                     <property name="verticalScrollBarPolicy">
-                         <enum>Qt::ScrollBarAlwaysOff</enum>
-                     </property>
-                 </widget>
-             </item>
-             <item row="1" column="0">
-                 <widget class="SimpleCardWidget" name="SimpleCardWidget_action">
-                     <layout class="QGridLayout" name="gridLayout_6">
-                         <item row="0" column="0">
-                             <widget class="BodyLabel" name="BodyLabel_4">
-                                 <property name="text">
-                                     <string>刷取次数</string>
-                                 </property>
-                             </widget>
-                         </item>
-                         <item row="2" column="0">
-                             <spacer name="verticalSpacer_3">
-                                 <property name="orientation">
-                                     <enum>Qt::Vertical</enum>
-                                 </property>
-                                 <property name="sizeHint" stdset="0">
-                                     <size>
-                                         <width>20</width>
-                                         <height>40</height>
-                                     </size>
-                                 </property>
-                             </spacer>
-                         </item>
-                         <item row="0" column="1">
-                             <widget class="SpinBox" name="SpinBox_action_times">
-                                 <property name="value">
-                                     <number>20</number>
-                                 </property>
-                             </widget>
-                         </item>
-                         <item row="1" column="0" colspan="2">
-                             <widget class="BodyLabel" name="BodyLabel_2">
-                                 <property name="text">
-                                     <string>### 提示
-                                         自动完成常规行动
-                                         * 不消耗体力
-                                         * 重复刷指定次数实战训练第一关
-                                     </string>
-                                 </property>
-                                 <property name="textFormat">
-                                     <enum>Qt::MarkdownText</enum>
-                                 </property>
-                             </widget>
-                         </item>
-                     </layout>
+        <widget class="QWidget" name="page_action">
+            <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0" columnstretch="2,1">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <item row="2" column="0">
+                    <widget class="PushButton" name="PushButton_start_action">
+                        <property name="text">
+                            <string>开始行动</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="1" column="0">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_action">
+                        <layout class="QGridLayout" name="gridLayout_6">
+                            <item row="0" column="0">
+                                <widget class="BodyLabel" name="BodyLabel_4">
+                                    <property name="text">
+                                        <string>刷取次数</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="2" column="0">
+                                <spacer name="verticalSpacer_3">
+                                    <property name="orientation">
+                                        <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                        <size>
+                                            <width>20</width>
+                                            <height>40</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </item>
+                            <item row="0" column="1">
+                                <widget class="SpinBox" name="SpinBox_action_times">
+                                    <property name="value">
+                                        <number>20</number>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_action">
+                                    <property name="text">
+                                        <string>### 提示
+                                            自动完成常规行动
+                                            * 不消耗体力
+                                            * 重复刷指定次数实战训练第一关
+                                        </string>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="1" column="1" rowspan="2">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_2">
+                        <layout class="QGridLayout" name="gridLayout_8">
+                            <item row="0" column="0">
+                                <widget class="TitleLabel" name="TitleLabel_2">
+                                    <property name="text">
+                                        <string>日志</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0">
+                                <widget class="QTextBrowser" name="textBrowser_log_action">
+                                    <property name="styleSheet">
+                                        <string notr="true">
+                                        </string>
+                                    </property>
+                                    <property name="verticalScrollBarPolicy">
+                                        <enum>Qt::ScrollBarAlwaysOff</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
         </widget>
        </item>
       </layout>
@@ -375,6 +402,11 @@ border: 2px;</string>
   </customwidget>
   <customwidget>
    <class>StrongBodyLabel</class>
+      <extends>QLabel</extends>
+      <header>qfluentwidgets</header>
+  </customwidget>
+     <customwidget>
+         <class>TitleLabel</class>
    <extends>QLabel</extends>
    <header>qfluentwidgets</header>
   </customwidget>

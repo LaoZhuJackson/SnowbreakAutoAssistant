@@ -17,6 +17,7 @@ from ..common.setting import ACTIVITY_END_TIME, ACTIVITY_START_TIME, INTEREST_ST
     MAZES_START_TIME, MAZES_END_TIME, ONLINE_CHALLENGE_START_TIME, ONLINE_CHALLENGE_END_TIME, BOSS_CHALLENGE_START_TIME, \
     BOSS_CHALLENGE_END_TIME, GAME_START_TIME, GAME_END_TIME, \
     UPPER_START_TIME, UPPER_END_TIME, BOTTOM_START_TIME, BOTTOM_END_TIME
+from ..common.style_sheet import StyleSheet
 from ..modules.automation import auto
 from ..modules.chasm.chasm import ChasmModule
 from ..modules.enter_game.enter_game import EnterGameModule
@@ -202,6 +203,10 @@ class Home(QFrame, Ui_home):
         # 和其他控件有相关状态判断的，要放在load_config后
         self.ComboBox_power_day.setEnabled(self.CheckBox_is_use_power.isChecked())
         self.PushButton_select_directory.setEnabled(self.CheckBox_auto_open_starter.isChecked())
+
+        StyleSheet.HOME_INTERFACE.apply(self)
+        # 使背景透明，适应主题
+        self.ScrollArea.enableTransparentBackground()
 
     def _connect_to_slot(self):
         self.PushButton_start.clicked.connect(self.click_start)

@@ -36,8 +36,7 @@ class Ui_home(object):
         self.textBrowser_log.setToolTipDuration(-1)
         self.textBrowser_log.setStatusTip("")
         self.textBrowser_log.setWhatsThis("")
-        self.textBrowser_log.setStyleSheet("border-radius: 5px;\n"
-                                           "border: 2px;")
+        self.textBrowser_log.setStyleSheet("")
         self.textBrowser_log.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log.setObjectName("textBrowser_log")
         self.gridLayout_4.addWidget(self.textBrowser_log, 1, 0, 1, 1)
@@ -205,12 +204,11 @@ class Ui_home(object):
         self.gridLayout_3.setSpacing(3)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.ScrollArea = ScrollArea(self.page)
-        self.ScrollArea.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border:None;")
+        self.ScrollArea.setStyleSheet("")
         self.ScrollArea.setWidgetResizable(True)
         self.ScrollArea.setObjectName("ScrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 138, 479))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 300, 479))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -642,7 +640,7 @@ class Ui_home(object):
         self.gridLayout_2.setRowStretch(0, 2)
 
         self.retranslateUi(home)
-        self.PopUpAniStackedWidget.setCurrentIndex(0)
+        self.PopUpAniStackedWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(home)
 
     def retranslateUi(self, home):
@@ -663,10 +661,10 @@ class Ui_home(object):
         self.PushButton_start.setShortcut(_translate("home", "F1"))
         self.TitleLabel_setting.setText(_translate("home", "设置"))
         self.BodyLabel_7.setText(_translate("home", "### 提示\n"
-                                                    "* 打开任务管理器可查看进程名\n"
+                                                    " * 打开任务管理器可查看进程名\n"
                                                     "* 尘白禁区启动器：尘白禁区\n"
                                                     "* 西山居启动器：西山居启动器-尘白禁区\n"
-                                                    " * 国际服启动器：SnowBreak\n"
+                                                    "* 国际服启动器：SnowBreak\n"
                                                     ""))
         self.BodyLabel_2.setText(_translate("home", "启动器进程名："))
         self.PushButton_select_directory.setText(_translate("home", "选择"))

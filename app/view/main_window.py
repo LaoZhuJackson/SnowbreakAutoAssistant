@@ -56,7 +56,7 @@ class MainWindow(MSFluentWindow):
         self.initNavigation()
 
         # 检查ocr组件是否安装
-        QTimer.singleShot(200, self.check_ocr_install)
+        self.check_ocr_install()
         if config.CheckBox_auto_open_starter.value:
             self.open_starter()
 
@@ -115,7 +115,7 @@ class MainWindow(MSFluentWindow):
 
         # create splash screen
         self.splashScreen = SplashScreen(self.windowIcon(), self)
-        self.splashScreen.setIconSize(QSize(106, 106))
+        self.splashScreen.setIconSize(QSize(150, 150))
         self.splashScreen.raise_()
 
         desktop = QApplication.primaryScreen().availableGeometry()

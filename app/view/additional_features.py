@@ -12,6 +12,7 @@ from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit
 
 from app.common.config import config
 from app.common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
+from app.common.style_sheet import StyleSheet
 from app.modules.automation import auto
 from app.modules.fishing.fishing import FishingModule
 from app.modules.routine_action.routine_action import ActionModule
@@ -155,8 +156,8 @@ class Additional(QFrame, Ui_additional_features):
         # 正向链接
         self.SegmentedWidget.addItem(self.page_fishing.objectName(), '自动钓鱼',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_fishing))
-        self.SegmentedWidget.addItem(self.page_2.objectName(), '自动常规行动',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_2))
+        self.SegmentedWidget.addItem(self.page_action.objectName(), '自动常规行动',
+                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_action))
         self.SegmentedWidget.addItem(self.page_3.objectName(), '待开发2',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_3))
         self.SegmentedWidget.setCurrentItem(self.page_fishing.objectName())
@@ -167,6 +168,7 @@ class Additional(QFrame, Ui_additional_features):
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
         # self.PixmapLabel.setStyleSheet()
         # self.PixmapLabel.setPixmap(self.color_pixmap)
+        StyleSheet.ADDITIONAL_FEATURES_INTERFACE.apply(self)
 
     def _load_config(self):
         for widget in self.findChildren(QWidget):

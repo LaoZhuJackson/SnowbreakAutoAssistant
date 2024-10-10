@@ -75,9 +75,7 @@
                               <string/>
                           </property>
                           <property name="styleSheet">
-                              <string notr="true">border-radius: 5px;
-                                  border: 2px;
-                              </string>
+                              <string notr="true"/>
                           </property>
                           <property name="verticalScrollBarPolicy">
                               <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -403,7 +401,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
         </property>
            <widget class="QWidget" name="page_5">
                <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,1,1">
@@ -475,7 +473,7 @@
                    </item>
                </layout>
            </widget>
-        <widget class="QWidget" name="page">
+           <widget class="QWidget" name="page_shop">
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
            <number>0</number>
@@ -495,8 +493,7 @@
           <item row="0" column="0">
            <widget class="ScrollArea" name="ScrollArea">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);
-border:None;</string>
+                <string notr="true"/>
             </property>
             <property name="widgetResizable">
              <bool>true</bool>
@@ -506,7 +503,7 @@ border:None;</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>138</width>
+                  <width>300</width>
                <height>479</height>
               </rect>
              </property>

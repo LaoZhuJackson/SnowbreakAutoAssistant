@@ -13,6 +13,9 @@ class StyleSheet(StyleSheetBase, Enum):
     SETTING_INTERFACE = "setting_interface"
     VIEW_INTERFACE = "view_interface"
     DISPLAY_INTERFACE = "display_interface"
+    HOME_INTERFACE = "home_interface"
+    ADDITIONAL_FEATURES_INTERFACE = "additional_features_interface"
+    HELP_INTERFACE = "help_interface"
 
     def path(self, theme=Theme.AUTO):
         theme = qconfig.theme if theme == Theme.AUTO else theme

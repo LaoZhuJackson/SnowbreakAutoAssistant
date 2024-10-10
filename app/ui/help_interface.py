@@ -16,6 +16,7 @@ class Ui_help(object):
         help.setObjectName("help")
         help.resize(824, 679)
         self.gridLayout = QtWidgets.QGridLayout(help)
+        self.gridLayout.setContentsMargins(0, 0, 0, -1)
         self.gridLayout.setObjectName("gridLayout")
         self.TextEdit_markdown = TextEdit(help)
         self.TextEdit_markdown.setEnabled(True)
@@ -37,12 +38,6 @@ class Ui_help(object):
 "PlainTextEdit:disabled {\n"
 "    color: rgba(0, 0, 0, 150);\n"
 "    background-color: rgba(249, 249, 249, 0.3);\n"
-"}\n"
-"\n"
-"#lineEditButton {\n"
-"    background-color: transparent;\n"
-"    border-radius: 4px;\n"
-"    margin: 0;\n"
 "}\n"
 "")
         self.TextEdit_markdown.setObjectName("TextEdit_markdown")

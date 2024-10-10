@@ -9,10 +9,25 @@
         <file>i18n/app.zh_CN.qm</file>
         <file>i18n/app.zh_HK.qm</file>
 
+        <file>qss/light/home_interface.qss</file>
+        <file>qss/dark/home_interface.qss</file>
+
         <file>qss/light/setting_interface.qss</file>
         <file>qss/dark/setting_interface.qss</file>
+
         <file>qss/light/display_interface.qss</file>
+        <file>qss/dark/display_interface.qss</file>
+
         <file>qss/light/link_card.qss</file>
+        <file>qss/dark/link_card.qss</file>
+
         <file>qss/light/sample_card.qss</file>
+        <file>qss/dark/sample_card.qss</file>
+
+        <file>qss/light/additional_features_interface.qss</file>
+        <file>qss/dark/additional_features_interface.qss</file>
+
+        <file>qss/light/help_interface.qss</file>
+        <file>qss/dark/help_interface.qss</file>
     </qresource>
 </RCC>
