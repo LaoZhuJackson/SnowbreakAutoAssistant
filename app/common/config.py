@@ -113,7 +113,7 @@ class Config(QConfig):
 
     # software update
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
-    update_proxies = ConfigItem("Update", "update_proxies", '7897')
+    update_proxies = ConfigItem("Update", "update_proxies", '7890')
 
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")
@@ -125,6 +125,8 @@ class Config(QConfig):
     LineEdit_fish_base = ConfigItem("add_fish", "LineEdit_fish_base", "22,255,255")
     LineEdit_fish_lower = ConfigItem("add_fish", "LineEdit_fish_lower", "20,220,245")
     LineEdit_fish_upper = ConfigItem("add_fish", "LineEdit_fish_upper", "25,255,255")
+    ComboBox_fishing_mode = OptionsConfigItem("add_fish", "ComboBox_fishing_mode", 0, OptionsValidator(
+        [0, 1]))
 
     # 常规行动相关
     SpinBox_action_times = ConfigItem("add_action", "SpinBox_action_times", 20)

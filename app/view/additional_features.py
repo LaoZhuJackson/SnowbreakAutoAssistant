@@ -36,7 +36,10 @@ class RunFishing(QThread):
                 if not fish_running:
                     break
                 logger.info(f"开始第 {i + 1} 次钓鱼")
-                self.module.run()
+                if config.ComboBox_fishing_mode.value == 0:
+                    self.module.run()
+                else:
+                    self.module.run_low_performance()
         except Exception as e:
             logger.error(e)
             traceback.print_exc()
@@ -163,6 +166,9 @@ class Additional(QFrame, Ui_additional_features):
         self.SegmentedWidget.setCurrentItem(self.page_fishing.objectName())
 
         self.stackedWidget.setCurrentIndex(0)
+
+        self.ComboBox_fishing_mode.addItems(
+            ["高性能（cpu性能足够时使用，准确率高）", "低性能（检测频率较低时使用，准确率较低）"])
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
@@ -314,6 +320,8 @@ class Additional(QFrame, Ui_additional_features):
                 text = widget.text()
                 if self.is_valid_format(text):
                     config.set(getattr(config, widget.objectName(), None), text)
+        elif isinstance(widget, ComboBox):
+            config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
 
     def is_valid_format(self, input_string):
         # 正则表达式匹配三个整数，用逗号分隔

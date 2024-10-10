@@ -1,4 +1,5 @@
 QTextBrowser {
     background-color: transparent;
     border: none;
+    color: white;
 }

@@ -44,8 +44,8 @@ class FishingModule:
                 img_np = np.array(rgb_image)
                 # 将图像从RGB格式转换为BGR格式（OpenCV使用BGR）
                 bgr_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
-                is_in = self.count_yellow_blocks(bgr_image)
-                if is_in:
+                blocks_num = self.count_yellow_blocks(bgr_image)
+                if blocks_num >= 2:
                     print("到点，收杆!")
                     auto.press_key("space", wait_time=0)
                     if self.is_use_time_judge:
@@ -57,8 +57,45 @@ class FishingModule:
                             print("咋回事？强制收杆一次")
                             auto.press_key("space", wait_time=0)
                             self.start_time = time.time()
+                if blocks_num == 0:
+                    break
+            if auto.find_element("本次获得", "text", max_retries=2):
+                print("钓鱼佬永不空军！")
+                if config.CheckBox_is_save_fish.value:
+                    if auto.find_element("新纪录", "text", include=True, max_retries=2) or auto.find_element(
+                            "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
+                            crop=(1245 / 1920, 500 / 1080, 121 / 1920, 78 / 1080), max_retries=2):
+                        self.save_picture()
+                auto.press_key("esc")
+            elif auto.find_element("鱼跑掉了", "text", max_retries=2):
+                print("鱼跑了，空军！")
+        else:
+            print("未识别到咬钩")
+
+    def run_low_performance(self):
+        if np.any(self.upper_yellow < self.lower_yellow):
+            logger.error("运行错误，存在上限的值小于下限")
+            return
+        # 代码激活窗口
+        auto.activate_window()
+        time.sleep(0.2)
+        auto.press_key("space")
+        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, scale_range=(0.6, 1.5),
+                             max_retries=10):
+            time.sleep(0.2)
+            auto.press_key("space")
+            if self.is_use_time_judge:
+                self.start_time = time.time()
+            # 低性能循环替换成定时按空格
+            start_time = time.time()
+            while True:
+                if time.time() - start_time > 1.8:
+                    print("到点，收杆！")
+                    auto.press_key("space")
+                    start_time = time.time()
                 if not auto.find_element("app/resource/images/fishing/fishing.png", "image", threshold=0.8):
                     break
+
             if auto.find_element("本次获得", "text", max_retries=2):
                 print("钓鱼佬永不空军！")
                 if config.CheckBox_is_save_fish.value:
@@ -86,9 +123,7 @@ class FishingModule:
         contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         print(f"黄色块数为：{len(contours_yellow)}")
 
-        # contours_white, _ = cv2.findContours(mask_white, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        # print(f"白色块数为：{len(contours_white)}")
-        return len(contours_yellow) >= 2
+        return len(contours_yellow)
 
     def save_picture(self):
         current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
