@@ -1,17 +1,16 @@
 <div align="center">
+    <h1>
+        <img src="./asset/logo.png" width="200"/>
+        <br/>
+        尘白禁区自动化助手
+    </h1>
+    <h2>Snowbreak Auto Assistant</h2>
+    <br/>
 
-![logo.png](asset%2Flogo.png)
-# 尘白禁区自动化助手
-## Snowbreak Auto Assistant
-
-<br>
-尘白代理小助手
-
-让芬妮为你舞狮吧！
-
-基本功能已完成（不排除有bug，遇到bug请在issue中提出）
-
-`群号：996710620`
+![Static Badge](https://img.shields.io/badge/platfrom-Windows-blue)
+![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/LaoZhuJackson/SnowbreakAutoAssistant/total)
+[![Static Badge](https://img.shields.io/badge/QQ%E7%BE%A4-996710620-purple)](https://qm.qq.com/q/CIvpwI3qVy)
 </div>
 
 ## 目前已实现自动化的部分（日常操作已经全部完成）
