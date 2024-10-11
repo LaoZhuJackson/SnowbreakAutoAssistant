@@ -58,7 +58,17 @@ class FishingModule:
                             auto.press_key("space", wait_time=0)
                             self.start_time = time.time()
                 if blocks_num == 0:
-                    break
+                    # 加一次判断
+                    time.sleep(0.3)
+                    rgb_image = self.take_screenshot(crop=(1130 / 1920, 240 / 1080, 370 / 1920, 330 / 1080))
+                    # 将Pillow图像转换为NumPy数组
+                    img_np = np.array(rgb_image)
+                    # 将图像从RGB格式转换为BGR格式（OpenCV使用BGR）
+                    bgr_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+                    blocks_num = self.count_yellow_blocks(bgr_image)
+                    # 连续两次都是0才break
+                    if blocks_num == 0:
+                        break
             if auto.find_element("本次获得", "text", max_retries=2):
                 print("钓鱼佬永不空军！")
                 if config.CheckBox_is_save_fish.value:
@@ -80,8 +90,7 @@ class FishingModule:
         auto.activate_window()
         time.sleep(0.2)
         auto.press_key("space")
-        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, scale_range=(0.6, 1.5),
-                             max_retries=10):
+        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, max_retries=10):
             time.sleep(0.2)
             auto.press_key("space")
             if self.is_use_time_judge:

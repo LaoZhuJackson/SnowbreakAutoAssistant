@@ -179,15 +179,16 @@ class Home(QFrame, Ui_home):
                         "凯茜娅-蓝闪", "肴-冬至", "芬妮-辉耀", "安卡希雅-辉夜", "里芙-狂猎", "茉莉安-雨燕",
                         "芙提雅-缄默", "芬妮-咎冠", "恩雅-羽蜕", "伊切尔-豹豹", "苔丝-魔术师", "茉莉安-幽潮",
                         "晴-藏锋", "猫汐尔-溯影", "辰星-云篆"]
-        starter_items = ['尘白禁区启动器', '西山居启动器', '国际服启动器']
         self.ComboBox_after_use.addItems(after_use_items)
         self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
-        self.ComboBox_starter.addItems(starter_items)
         self.ComboBox_c1.addItems(person_items)
         self.ComboBox_c2.addItems(person_items)
         self.ComboBox_c3.addItems(person_items)
         self.ComboBox_c4.addItems(person_items)
+
+        self.BodyLabel_enter_tip.setText(
+            "### 提示\n* 日志说没有找到截图窗口需要调整自己的窗口进程名\n* 不同服，不同启动器的进程名都不同\n* 打开任务管理器可查看进程名\n* 启动器进程名可能和游戏窗口进程名不同")
 
         self.PopUpAniStackedWidget.setCurrentIndex(0)
 

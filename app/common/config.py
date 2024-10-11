@@ -36,8 +36,9 @@ class Config(QConfig):
     """ Config of application """
 
     # 主页面
-    ComboBox_starter = ConfigItem("home_interface_enter", "ComboBox_starter", 0, OptionsValidator([0, 1]))
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
+    LineEdit_starter_name = ConfigItem("home_interface_enter", "LineEdit_starter_name", "尘白禁区")
+    LineEdit_game_name = ConfigItem("home_interface_enter", "LineEdit_game_name", "尘白禁区")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
                                             BoolValidator())
 

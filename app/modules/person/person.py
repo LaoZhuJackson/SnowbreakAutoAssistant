@@ -164,6 +164,7 @@ class PersonModule:
                 print(f"找到对应的“速战”：{distance}")
                 return top_left, bottom_right
         else:
+            print(f"没找到速战position：{pos}")
             return None
 
     def find_text_in_area(self, pos):
