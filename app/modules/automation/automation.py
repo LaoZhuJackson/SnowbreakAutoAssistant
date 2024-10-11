@@ -318,6 +318,7 @@ class Automation(metaclass=SingletonMeta):
         target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
         min_distance = float('inf')
         target_pos = None
+        print(f"ocr_result:{self.ocr_result}")
         for box in self.ocr_result:
             text, _ = box[1]
             match, matched_text = self.is_text_match(text, target_texts, include)
@@ -331,7 +332,7 @@ class Automation(metaclass=SingletonMeta):
                         min_distance = distance
                         target_pos = pos
         if target_pos is None:
-            self.logger.debug(f"目标文字：{', '.join(target_texts)} 未找到匹配文字")
+            self.logger.debug(f"目标文字：{target_texts} 未找到匹配文字")
             return None, None
         return self.calculate_text_position2(target_pos)
 
