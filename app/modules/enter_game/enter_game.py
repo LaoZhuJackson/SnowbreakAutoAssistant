@@ -37,9 +37,9 @@ class EnterGameModule:
     def enter_game(self):
         if not auto.find_element("app/resource/images/start_game/age.png", "image", threshold=0.9,
                                  scale_range=(0.6, 1)):
-            auto.click_element("开始游戏", "text", max_retries=3)
+            auto.click_element("开始游戏", "text", include=True, max_retries=3)
             time.sleep(10)
-        while not auto.click_element("开始游戏", "text", threshold=0.8):
+        while not auto.click_element("开始游戏", "text", include=True, threshold=0.8):
             time.sleep(1)
         # 检查是否真的进入了
         self.ensure_enter()

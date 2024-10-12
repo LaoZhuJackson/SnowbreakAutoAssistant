@@ -5,7 +5,7 @@ import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QFrame
-from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
     BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
 
@@ -40,6 +40,9 @@ class MainWindow(MSFluentWindow):
         super().__init__()
         self.initWindow()
 
+        # create system theme listener
+        self.themeListener = SystemThemeListener(self)
+
         # TODO: create sub interface
         self.displayInterface = DisplayInterface(self)
         self.homeInterface = Home('Home Interface', self)
@@ -54,6 +57,10 @@ class MainWindow(MSFluentWindow):
 
         # add items to navigation interface
         self.initNavigation()
+        self.splashScreen.finish()
+
+        # start theme listener
+        self.themeListener.start()
 
         # 检查ocr组件是否安装
         self.check_ocr_install()
@@ -99,7 +106,6 @@ class MainWindow(MSFluentWindow):
             self.settingInterface, Icon.SETTINGS, self.tr('Settings'), Icon.SETTINGS_FILLED,
             NavigationItemPosition.BOTTOM)
 
-        self.splashScreen.finish()
 
     def initWindow(self):
         self.resize(960, 780)
@@ -109,8 +115,9 @@ class MainWindow(MSFluentWindow):
 
         setThemeColor("#009FAA")
 
+        # 触发重绘，使一开始的背景颜色正确
         # self.setCustomBackgroundColor(QColor(240, 244, 249), QColor(32, 32, 32))
-        self.setBackgroundColor(QColor(240, 244, 249))
+        # self.setBackgroundColor(QColor(240, 244, 249))
         self.setMicaEffectEnabled(config.get(config.micaEnabled))
 
         # create splash screen
@@ -197,4 +204,13 @@ class MainWindow(MSFluentWindow):
     def closeEvent(self, a0):
         print("关闭ocr子进程")
         ocr.exit_ocr()
-        a0.accept()
+        self.themeListener.terminate()
+        self.themeListener.deleteLater()
+        super().closeEvent(a0)
+
+    def _onThemeChangedFinished(self):
+        super()._onThemeChangedFinished()
+
+        # retry
+        if self.isMicaEffectEnabled():
+            QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
