@@ -43,7 +43,9 @@ class PersonModule:
 
     def run(self):
         try:
-            is_all_zero = all(value == 0 for _, value in self.select_person_dic.items())
+            character_list = [self.select_person_dic["ComboBox_c1"], self.select_person_dic["ComboBox_c2"],
+                              self.select_person_dic["ComboBox_c3"], self.select_person_dic["ComboBox_c4"]]
+            is_all_zero = all(value == 0 for value in character_list)
             if is_all_zero:
                 print("未选择任何需要刷碎片的角色")
                 auto.back_to_home()
@@ -52,7 +54,7 @@ class PersonModule:
                 self.enter_person()
                 # 等待动画
                 time.sleep(0.7)
-                for _, value in self.select_person_dic.items():
+                for value in character_list:
                     if self.break_flag:
                         break
                     self.update_power_times()
@@ -116,7 +118,7 @@ class PersonModule:
             name_pos = auto.find_element(name, "text", include=True)
             # 将坐标加上窗口左上角坐标做偏移
             window = self.get_window(config.LineEdit_game_name.value)
-            left, top, width, height = Screenshot.get_window_region(window)
+            left, top, _, _ = Screenshot.get_window_region(window)
             name_pos = ((name_pos[0][0] + left, name_pos[0][1] + top),
                         (name_pos[1][0] + left, name_pos[1][1] + top))
             print(f"name_pos:{name_pos}")
@@ -172,9 +174,6 @@ class PersonModule:
         print(f"{pos=}")
         print(f"{source_pos=}")
         top_left, bottom_right = pos
-        # print(pos)
-        # print(top_left)
-        # print(bottom_right)
         if top_left and bottom_right:
             x, y = auto.calculate_click_position((top_left, bottom_right))
             distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)
