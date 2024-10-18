@@ -54,7 +54,7 @@ class PersonModule:
                 auto.back_to_home()
                 return
             else:
-                # self.enter_person()
+                self.enter_person()
                 # 等待动画
                 time.sleep(0.7)
                 for value in character_list:
@@ -65,8 +65,7 @@ class PersonModule:
                         break
                     self.next_page("back")
                     self.fight(value)
-                    break
-                # auto.back_to_home()
+                auto.back_to_home()
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -165,11 +164,10 @@ class PersonModule:
     def corresponding_quick_fight(self, source_pos):
         """
         找到对应觉得速战
-        :param source_pos: 格式（x,y）
+        :param source_pos: 格式（x,y），是相对位置
         :return:如果pos存在且在对应距离内则返回对应位置((x1,y1),(x2,y2))，否则返回None
         """
         pos = auto.find_target_near_source("速战", include=False, source_pos=source_pos, position="bottom_right")
-        # pos = ((pos[0][0] + self.left, pos[0][1] + self.top), (pos[1][0] + self.left, pos[1][1] + self.top))
         top_left, bottom_right = pos
         if top_left and bottom_right:
             x, y = auto.calculate_click_position((top_left, bottom_right))
