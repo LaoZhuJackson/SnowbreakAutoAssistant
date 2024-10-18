@@ -292,8 +292,6 @@ class Automation(metaclass=SingletonMeta):
         :param position: 取值：'bottom_right'，'top_left'，'bottom_left'，'top_right'
         :return: 是否在条件方向上
         """
-        print(type(target_pos[0][0]))
-        print(type(source_pos[0]))
         dx = target_pos[0][0] - source_pos[0]
         dy = target_pos[0][1] - source_pos[1]
         if position == 'bottom_right':
@@ -574,8 +572,9 @@ class Automation(metaclass=SingletonMeta):
                     self.matched_text = matched_text  # 更新匹配的文本变量
                     min_distance = distance
                     target_pos = pos
-                    print(f"{target_pos=}")
+
         if target_pos is None:
             self.logger.debug(f"目标文字：{target_texts} 未找到匹配文字")
             return None, None
+        print(f"{target_pos=}")
         return self.calculate_text_position2(target_pos)

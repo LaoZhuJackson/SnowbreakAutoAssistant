@@ -3,8 +3,11 @@ import re
 import time
 import traceback
 
+import pyautogui
+
 from app.common.config import config
 from app.modules.automation import auto
+from app.modules.automation.screenshot import Screenshot
 
 
 class PersonModule:
@@ -96,13 +99,27 @@ class PersonModule:
             print("无可用记忆嵌片")
             self.break_flag = True
 
+    def get_window(self, title):
+        """
+        获取窗口
+        :param title: 窗口名
+        :return:
+        """
+        windows = pyautogui.getWindowsWithTitle(title)
+        if windows:
+            window = windows[0]
+            return window
+        return False
+
     def quick_fight_by_name(self, name):
         for _ in range(self.pages):
             name_pos = auto.find_element(name, "text", include=True)
             # 将坐标加上窗口左上角坐标做偏移
-            name_pos = ((name_pos[0][0] + auto.screenshot_pos[0], name_pos[0][1] + auto.screenshot_pos[1]),
-                        (name_pos[1][0] + auto.screenshot_pos[0], name_pos[1][1] + auto.screenshot_pos[1]))
-            # print(f"name_pos:{name_pos}")
+            window = self.get_window(config.LineEdit_game_name.value)
+            left, top, width, height = Screenshot.get_window_region(window)
+            name_pos = ((name_pos[0][0] + left, name_pos[0][1] + top),
+                        (name_pos[1][0] + left, name_pos[1][1] + top))
+            print(f"name_pos:{name_pos}")
             if name_pos:
                 quick_fight_pos = self.corresponding_quick_fight(name_pos[0])
                 # print(quick_fight_pos)
@@ -148,10 +165,10 @@ class PersonModule:
     def corresponding_quick_fight(self, source_pos):
         """
         找到对应觉得速战
-        :param source_pos: 格式（x,y）,此时提供的相对游戏窗口的，而不是绝对位置
+        :param source_pos: 格式（x,y）
         :return:如果pos存在且在对应距离内则返回对应位置((x1,y1),(x2,y2))，否则返回None
         """
-        pos = auto.find_target_near_source("速战", include=False, source_pos=source_pos, position="bottom_right")
+        pos = auto.find_target_near_source_2("速战", include=False, source_pos=source_pos, position="bottom_right")
         print(f"{pos=}")
         print(f"{source_pos=}")
         top_left, bottom_right = pos
