@@ -76,6 +76,17 @@ class SettingInterface(ScrollArea):
             ],
             parent=self.personalGroup
         )
+        self.enterCard = ComboBoxSettingCard(
+            config.enter_interface,
+            FIF.HOME,
+            '启动时进入',
+            self.tr("选择启动软件时直接进入哪个页面"),
+            texts=[
+                self.tr('展示页'), self.tr('主页'),
+                self.tr('小工具')
+            ],
+            parent=self.personalGroup
+        )
         # self.zoomCard = ComboBoxSettingCard(
         #     config.dpiScale,
         #     FIF.ZOOM,
@@ -162,6 +173,7 @@ class SettingInterface(ScrollArea):
 
         self.personalGroup.addSettingCard(self.micaCard)
         self.personalGroup.addSettingCard(self.themeCard)
+        self.personalGroup.addSettingCard(self.enterCard)
         # self.personalGroup.addSettingCard(self.zoomCard)
         # self.personalGroup.addSettingCard(self.languageCard)
 
