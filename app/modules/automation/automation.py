@@ -318,7 +318,7 @@ class Automation(metaclass=SingletonMeta):
         target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
         min_distance = float('inf')
         target_pos = None
-        print(f"ocr_result:{self.ocr_result}")
+        # print(f"ocr_result:{self.ocr_result}")
         for box in self.ocr_result:
             text, _ = box[1]
             match, matched_text = self.is_text_match(text, target_texts, include)
@@ -375,7 +375,7 @@ class Automation(metaclass=SingletonMeta):
 
     def calculate_click_position(self, coordinates, offset=(0, 0)):
         """
-        计算实际点击位置的坐标。
+        计算实际中心点击位置的坐标。
 
         参数:
         - coordinates: 元组，表示元素的坐标，格式为((left, top), (right, bottom))。
@@ -545,3 +545,37 @@ class Automation(metaclass=SingletonMeta):
             window.activate()
         else:
             print(f"未找到窗口:{window_title}")
+
+    def find_target_near_source_2(self, target, include, source_pos, position):
+        """
+        在指定方位查找距离源最近的目标文本。
+        :param target:目标文本
+        :param include:是否要进行包含式匹配
+        :param source_pos:源的位置坐标，用于计算与目标的距离,格式：（x,y）
+        :param position:取值：'bottom_right'，'top_left'，'bottom_left'，'top_right'
+        :return:最近目标文本的坐标，格式((x1,y1),(x2,y2))
+        """
+        target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
+        min_distance = float('inf')
+        target_pos = None
+        print(f"ocr_result:{self.ocr_result}")
+        for box in self.ocr_result:
+            text, _ = box[1]
+            print(f"{text=}")
+            match, matched_text = self.is_text_match(text, target_texts, include)
+            print(f"{match=}")
+            print(f"{matched_text=}")
+            if match:
+                pos = box[0]
+                print(f"{pos=}")
+                distance = math.sqrt((pos[0][0] - source_pos[0]) ** 2 + (pos[0][1] - source_pos[1]) ** 2)
+                self.logger.debug(f"目标文字：{matched_text} 距离：{distance}")
+                if distance < min_distance:
+                    self.matched_text = matched_text  # 更新匹配的文本变量
+                    min_distance = distance
+                    target_pos = pos
+                    print(f"{target_pos=}")
+        if target_pos is None:
+            self.logger.debug(f"目标文字：{target_texts} 未找到匹配文字")
+            return None, None
+        return self.calculate_text_position2(target_pos)

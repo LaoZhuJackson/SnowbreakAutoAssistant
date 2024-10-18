@@ -409,7 +409,7 @@ class Home(QFrame, Ui_home):
         time_difference = end_time - now
         days_remaining = time_difference.days
         if days_remaining < 0:
-            return None
+            return 0, 0
 
         return days_remaining, (days_remaining / total_day) * 100
 
@@ -437,7 +437,10 @@ class Home(QFrame, Ui_home):
             for key, value in tips_dic.items():
                 # print(value)
                 # print(type(value))
-                sorted_label_widgets[index].setText(f"{key}剩余：{value[0]}天")
+                if value[0] == 0:
+                    sorted_label_widgets[index].setText(f"{key}已结束")
+                else:
+                    sorted_label_widgets[index].setText(f"{key}剩余：{value[0]}天")
                 sorted_progress_widgets[index].setValue(value[1])
                 index += 1
         except Exception as e:
