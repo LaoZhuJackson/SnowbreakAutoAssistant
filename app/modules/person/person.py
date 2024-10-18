@@ -41,6 +41,9 @@ class PersonModule:
         self.pages = math.ceil(len(self.name_dic) / 4) + 1
         self.power_times = 0
 
+        window = self.get_window(config.LineEdit_game_name.value)
+        self.left, self.top, _, _ = Screenshot.get_window_region(window)
+
     def run(self):
         try:
             character_list = [self.select_person_dic["ComboBox_c1"], self.select_person_dic["ComboBox_c2"],
@@ -51,7 +54,7 @@ class PersonModule:
                 auto.back_to_home()
                 return
             else:
-                self.enter_person()
+                # self.enter_person()
                 # 等待动画
                 time.sleep(0.7)
                 for value in character_list:
@@ -62,7 +65,8 @@ class PersonModule:
                         break
                     self.next_page("back")
                     self.fight(value)
-                auto.back_to_home()
+                    break
+                # auto.back_to_home()
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -115,13 +119,7 @@ class PersonModule:
 
     def quick_fight_by_name(self, name):
         for _ in range(self.pages):
-            name_pos = auto.find_element(name, "text", include=True)
-            # 将坐标加上窗口左上角坐标做偏移
-            window = self.get_window(config.LineEdit_game_name.value)
-            left, top, _, _ = Screenshot.get_window_region(window)
-            name_pos = ((name_pos[0][0] + left, name_pos[0][1] + top),
-                        (name_pos[1][0] + left, name_pos[1][1] + top))
-            print(f"name_pos:{name_pos}")
+            name_pos = auto.find_element(name, "text", include=True, relative=True)
             if name_pos:
                 quick_fight_pos = self.corresponding_quick_fight(name_pos[0])
                 # print(quick_fight_pos)
@@ -170,16 +168,17 @@ class PersonModule:
         :param source_pos: 格式（x,y）
         :return:如果pos存在且在对应距离内则返回对应位置((x1,y1),(x2,y2))，否则返回None
         """
-        pos = auto.find_target_near_source_2("速战", include=False, source_pos=source_pos, position="bottom_right")
-        print(f"{pos=}")
-        print(f"{source_pos=}")
+        pos = auto.find_target_near_source("速战", include=False, source_pos=source_pos, position="bottom_right")
+        # pos = ((pos[0][0] + self.left, pos[0][1] + self.top), (pos[1][0] + self.left, pos[1][1] + self.top))
         top_left, bottom_right = pos
         if top_left and bottom_right:
             x, y = auto.calculate_click_position((top_left, bottom_right))
+            # 此时x,y是绝对位置，source_pos是相对游戏窗口左上角的位置，并非屏幕的绝对位置，所以需要转换成绝对位置，将坐标加上窗口左上角坐标做偏移
+            source_pos = (source_pos[0] + self.left, source_pos[1] + self.top)
+            print(f"{(x, y)},{source_pos}")
             distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)
-            # print(f"最近的“速战”距离：{distance}")
-            if distance > 450:
-                print(f"“速战”距离大于450：{distance}")
+            if distance > 250:
+                print(f"“速战”距离大于350：{distance}")
                 return None
             else:
                 print(f"找到对应的“速战”：{distance}")

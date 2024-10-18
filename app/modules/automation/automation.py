@@ -206,7 +206,7 @@ class Automation(metaclass=SingletonMeta):
             int(box[2][0] / self.screenshot_scale_factor), int(box[2][1] / self.screenshot_scale_factor))
 
         if not relative:
-            # 如果需要返回绝对位置，就加上偏移量
+            # 如果需要返回绝对位置，就加上偏移量,这个偏移量受crop的影响
             top_left = (top_left_relative[0] + self.screenshot_pos[0], top_left_relative[1] + self.screenshot_pos[1])
             bottom_right = (
                 bottom_right_relative[0] + self.screenshot_pos[0], bottom_right_relative[1] + self.screenshot_pos[1])
@@ -277,7 +277,7 @@ class Automation(metaclass=SingletonMeta):
         return self.search_text_in_ocr_results(target_texts, include, relative)
 
     def calculate_text_position2(self, pos):
-        """计算文本的位置坐标。"""
+        """计算文本的位置坐标。加入偏移量，直接计算绝对位置"""
         top_left = (int(pos[0][0] / self.screenshot_scale_factor) + self.screenshot_pos[0],
                     int(pos[0][1] / self.screenshot_scale_factor) + self.screenshot_pos[1])
         bottom_right = (int(pos[2][0] / self.screenshot_scale_factor) + self.screenshot_pos[0],
@@ -287,8 +287,8 @@ class Automation(metaclass=SingletonMeta):
     def is_position_matched(self, target_pos, source_pos, position):
         """
         根据方位判断目标位置是否符合条件。
-        :param target_pos:
-        :param source_pos:
+        :param target_pos: 速战的坐标，格式[[1670, 887], [1732, 887], [1732, 917], [1670, 917]]
+        :param source_pos: 名字的坐标，格式(2234, 1064)
         :param position: 取值：'bottom_right'，'top_left'，'bottom_left'，'top_right'
         :return: 是否在条件方向上
         """
@@ -543,38 +543,3 @@ class Automation(metaclass=SingletonMeta):
             window.activate()
         else:
             print(f"未找到窗口:{window_title}")
-
-    def find_target_near_source_2(self, target, include, source_pos, position):
-        """
-        在指定方位查找距离源最近的目标文本。
-        :param target:目标文本
-        :param include:是否要进行包含式匹配
-        :param source_pos:源的位置坐标，用于计算与目标的距离,格式：（x,y）
-        :param position:取值：'bottom_right'，'top_left'，'bottom_left'，'top_right'
-        :return:最近目标文本的坐标，格式((x1,y1),(x2,y2))
-        """
-        target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
-        min_distance = float('inf')
-        target_pos = None
-        print(f"ocr_result:{self.ocr_result}")
-        for box in self.ocr_result:
-            text, _ = box[1]
-            print(f"{text=}")
-            match, matched_text = self.is_text_match(text, target_texts, include)
-            print(f"{match=}")
-            print(f"{matched_text=}")
-            if match:
-                pos = box[0]
-                print(f"{pos=}")
-                distance = math.sqrt((pos[0][0] - source_pos[0]) ** 2 + (pos[0][1] - source_pos[1]) ** 2)
-                self.logger.debug(f"目标文字：{matched_text} 距离：{distance}")
-                if distance < min_distance:
-                    self.matched_text = matched_text  # 更新匹配的文本变量
-                    min_distance = distance
-                    target_pos = pos
-
-        if target_pos is None:
-            self.logger.debug(f"目标文字：{target_texts} 未找到匹配文字")
-            return None, None
-        print(f"{target_pos=}")
-        return self.calculate_text_position2(target_pos)
