@@ -68,7 +68,7 @@ class MainWindow(MSFluentWindow):
             self.open_starter()
 
     def open_starter(self):
-        windows = pyautogui.getWindowsWithTitle(config.game_title_name.value)
+        windows = pyautogui.getWindowsWithTitle(config.LineEdit_starter_name.value)
         if windows:
             logger.debug("已打开游戏")
             return

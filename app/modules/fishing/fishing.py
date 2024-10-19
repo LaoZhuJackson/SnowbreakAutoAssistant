@@ -22,14 +22,14 @@ class FishingModule:
         # self.upper_white = np.array([92, 40, 255])
         # self.lower_white = np.array([88, 0, 245])
         self.start_time = time.time()
-        self.window_title = config.game_title_name.value
+        self.window_title = config.LineEdit_game_name.value
 
     def run(self):
         if np.any(self.upper_yellow < self.lower_yellow):
             logger.error("运行错误，存在上限的值小于下限")
             return
         # 代码激活窗口
-        auto.activate_window()
+        auto.activate_window(window_title=self.window_title)
         time.sleep(0.2)
         auto.press_key("space")
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, scale_range=(0.6, 1.5),

@@ -62,6 +62,7 @@ class GetRewardModule:
                            crop=(1541 / 1920, 468 / 1080, 90 / 1920, 48 / 1080), action="move_click")
         auto.click_element("特别派遣", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("新星开拓", "text", include=False, max_retries=3, action="move_click")
+        time.sleep(0.5)
         auto.click_element("开拓目标", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("键领取", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("获得道具", "text", include=False, max_retries=3, action="move_click")

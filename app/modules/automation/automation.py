@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import pyautogui
 
+from app.common.config import config
 from app.common.image_utils import ImageUtils
 from app.common.ppOCR import ocr
 from app.common.singleton import SingletonMeta

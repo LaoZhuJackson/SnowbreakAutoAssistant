@@ -24,12 +24,15 @@ args = [
     'main.py',
 ]
 
-start_time = time.time()
 
-os.system(' '.join(args))
+# python -m nuitka --mingw64  --standalone --onefile --show-memory --show-progress --plugin-enable=pyqt5 --windows-uac-admin --windows-disable-console --windows-icon-from-ico=app/resource/images/logo.ico --output-dir=dist main.py　
+
+# start_time = time.time()
+#
+# os.system(' '.join(args))
 
 
-# # copy site-packages to dist folder
+# copy site-packages to dist folder
 # dist_folder = Path("dist/main/main.dist")
 # site_packages = Path(get_python_lib())
 #
@@ -101,4 +104,4 @@ dest_ocr = Path("dist/AppData/ocr_replacements.json")
 print(f"Copying file `{src_ocr}` to `{dest_ocr}`")
 copy_with_overwrite(src_ocr, dest_ocr)
 
-print(f"打包用时：{time.time() - start_time}")
+# print(f"打包用时：{time.time() - start_time}")
