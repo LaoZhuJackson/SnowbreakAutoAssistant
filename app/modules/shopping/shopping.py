@@ -55,7 +55,7 @@ class ShoppingModule:
 
     @staticmethod
     def open_store():
-        while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.9):
+        while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.7):
             auto.click_element("商店", "text", max_retries=3)
         # 等待商店动画
         time.sleep(0.2)
