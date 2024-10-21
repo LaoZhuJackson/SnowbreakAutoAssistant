@@ -35,8 +35,8 @@ class GetRewardModule:
                            max_retries=3,
                            action="move_click")
         if auto.click_element("键领取", "text", include=True, action="move_click"):
-            auto.press_key("esc")
-        auto.press_key("esc")
+            auto.back_to_home()
+        auto.back_to_home()
 
     def receive_credential(self):
         auto.click_element("凭证", "text", include=True, max_retries=3, action="move_click")
@@ -66,4 +66,4 @@ class GetRewardModule:
         auto.click_element("开拓目标", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("键领取", "text", include=False, max_retries=3, action="move_click")
         auto.click_element("获得道具", "text", include=False, max_retries=3, action="move_click")
-        auto.click_element("app/resource/images/reward/home.png", "image", threshold=0.7, action="move_click")
+        auto.back_to_home()

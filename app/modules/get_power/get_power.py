@@ -18,7 +18,7 @@ class GetPowerModule:
         time.sleep(0.5)
         auto.click_element("键收赠", "text", include=True, crop=(1545 / 1920, 965 / 1080, 360 / 1920, 106 / 1080),
                            max_retries=3, action="move_click")
-        auto.press_key("esc")
+        auto.back_to_home()
 
     @staticmethod
     def station_power():
@@ -28,4 +28,4 @@ class GetPowerModule:
         if auto.click_element("每日物资配给箱", "text", include=False, max_retries=1, action="move_click"):
             auto.click_element("购买", "text", include=False, max_retries=3, action="move_click")
             auto.press_key("esc")
-        auto.press_key("esc")
+        auto.back_to_home()

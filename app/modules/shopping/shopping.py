@@ -51,7 +51,6 @@ class ShoppingModule:
     def run(self):
         self.open_store()
         self.buy()
-        auto.back_to_home()
 
     @staticmethod
     def open_store():
@@ -84,6 +83,7 @@ class ShoppingModule:
                     auto.click_element("提取物", "text", include=True,
                                        crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080), action="move")
                     auto.mouse_scroll(4, -150)
+        auto.back_to_home()
 
     def buy_from_dic(self, dic: dict, name: str):
         first_flag = True

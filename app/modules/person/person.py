@@ -98,7 +98,7 @@ class PersonModule:
         if not auto.find_element("暂时没有该类道具", "text", include=False, max_retries=1,
                                  crop=(821 / 1920, 511 / 1080, 271 / 1920, 57 / 1080)):
             auto.click_element("app/resource/images/person/add_num.png", "image", action="move_click", max_retries=2)
-            auto.click_element("确定", "text", include=False, max_retries=3, action="move_click")
+            auto.click_element("确定", "text", include=True, max_retries=3, action="move_click")
             auto.press_key("esc")
         else:
             print("无可用记忆嵌片")
