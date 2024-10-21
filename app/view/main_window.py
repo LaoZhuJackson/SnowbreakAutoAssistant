@@ -1,4 +1,6 @@
 # coding: utf-8
+import os.path
+import re
 import subprocess
 
 import pyautogui
@@ -203,11 +205,53 @@ class MainWindow(MSFluentWindow):
                 self.stackedWidget.setCurrentWidget(w, False)
                 # w.scrollToCard(index)
 
+    def save_log(self):
+        """保存所有log到txt中"""
+
+        def is_empty_html(content):
+            """
+            判断 HTML 内容是否为空
+            """
+            # 使用正则表达式匹配空的段落 (<p>) 或者换行 (<br />)
+            empty_html_pattern = re.compile(r'<p[^>]*>\s*(<br\s*/?>)?\s*</p>', re.IGNORECASE)
+
+            # 去掉默认的头部信息后，检查是否只剩下空的段落
+            body_content = re.sub(r'<!DOCTYPE[^>]*>|<html[^>]*>|<head[^>]*>.*?</head>|<body[^>]*>|</body>|</html>', '',
+                                  content, flags=re.DOTALL)
+            return bool(empty_html_pattern.fullmatch(body_content.strip()))
+
+        def save_html(path, content):
+            # 使用了 strip() 方法来去掉内容中的空白字符（例如空格、换行符等）
+            # print(is_empty_html(content))
+            if is_empty_html(content):
+                return
+            if content:
+                # "w"模式实现先清空再写入
+                with open(path, "w", encoding='utf-8') as file:
+                    file.write(content)
+
+        log_dir = "./log"
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        home_log = self.homeInterface.textBrowser_log.toHtml()
+        fishing_log = self.additionalInterface.textBrowser_log_fishing.toHtml()
+        action_log = self.additionalInterface.textBrowser_log_action.toHtml()
+
+        save_html(os.path.join(log_dir, "home_log.html"), home_log)
+        save_html(os.path.join(log_dir, "fishing_log.html"), fishing_log)
+        save_html(os.path.join(log_dir, "action_log.html"), action_log)
+
     def closeEvent(self, a0):
         print("关闭ocr子进程")
         ocr.exit_ocr()
         self.themeListener.terminate()
         self.themeListener.deleteLater()
+        # 保存日志到文件
+        try:
+            self.save_log()
+        except Exception as e:
+            print(e)
         super().closeEvent(a0)
 
     def _onThemeChangedFinished(self):

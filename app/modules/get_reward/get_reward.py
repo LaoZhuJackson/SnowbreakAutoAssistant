@@ -54,7 +54,6 @@ class GetRewardModule:
                            action="move_click")
         auto.click_element("批量领取", "text", crop=(270/1920, 973/1080, 228/1920, 65/1080), include=True, max_retries=3,
                            action="move_click")
-        auto.press_key("esc")
         auto.back_to_home()
 
     def receive_fish_bait(self):

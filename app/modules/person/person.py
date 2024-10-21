@@ -58,6 +58,9 @@ class PersonModule:
                 # 等待动画
                 time.sleep(0.7)
                 for value in character_list:
+                    # 当选项为“不选择”时
+                    if value == 0:
+                        continue
                     if self.break_flag:
                         break
                     self.update_power_times()

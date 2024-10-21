@@ -28,8 +28,9 @@ class RunFishing(QThread):
 
     def run(self):
         self.is_running_fishing.emit(True)
-        logger.info("请确保游戏窗口分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+        logger.info("请确保游戏窗口分辨率是1920*1080，三秒后将自动激活窗口")
         time.sleep(3)
+        auto.activate_window(config.LineEdit_game_name.value)
         try:
             for i in range(config.SpinBox_fish_times.value):
                 # print(f"is_running_fishing:{fish_running}")
@@ -56,8 +57,9 @@ class RunAction(QThread):
 
     def run(self):
         self.is_running_action.emit(True)
-        logger.info("请确保游戏窗口分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+        logger.info("请确保游戏窗口分辨率是1920*1080，三秒后将自动激活窗口")
         time.sleep(3)
+        auto.activate_window(config.LineEdit_game_name.value)
         try:
             # 进入训练界面
             self.module.enter_train()

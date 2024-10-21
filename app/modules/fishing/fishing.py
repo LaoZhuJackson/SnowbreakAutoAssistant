@@ -32,7 +32,8 @@ class FishingModule:
         auto.activate_window(window_title=self.window_title)
         time.sleep(0.2)
         auto.press_key("space")
-        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, scale_range=(0.6, 1.5),
+        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
+                             crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080),
                              max_retries=10):
             time.sleep(0.2)
             auto.press_key("space")
@@ -90,7 +91,9 @@ class FishingModule:
         auto.activate_window()
         time.sleep(0.2)
         auto.press_key("space")
-        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7, max_retries=10):
+        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
+                             crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080),
+                             max_retries=10):
             time.sleep(0.2)
             auto.press_key("space")
             if self.is_use_time_judge:
@@ -102,7 +105,8 @@ class FishingModule:
                     print("到点，收杆！")
                     auto.press_key("space")
                     start_time = time.time()
-                if not auto.find_element("app/resource/images/fishing/fishing.png", "image", threshold=0.8):
+                if not auto.find_element("app/resource/images/fishing/fishing.png", "image",
+                                         crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080), threshold=0.8):
                     break
 
             if auto.find_element("本次获得", "text", max_retries=2):

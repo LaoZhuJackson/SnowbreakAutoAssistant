@@ -51,8 +51,9 @@ class StartThread(QThread):
     def run(self):
         self.is_running_signal.emit(True)
         try:
-            logger.info("请确保游戏窗口分辨率是1920*1080，并在三秒内确保游戏窗口置顶无遮挡")
+            logger.info("请确保游戏窗口分辨率是1920*1080，三秒后将自动激活窗口")
             time.sleep(3)
+            auto.activate_window(config.LineEdit_game_name.value)
             for key, value in self.checkbox_dic.items():
                 # print(f"value:{value}")
                 # print(f"is_running:{is_running}")

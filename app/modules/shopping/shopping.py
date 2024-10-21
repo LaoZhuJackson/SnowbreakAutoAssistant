@@ -54,11 +54,13 @@ class ShoppingModule:
 
     @staticmethod
     def open_store():
-        while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.7):
+        # while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.7):
+        while not auto.find_element("常规物资", "text", crop=(91 / 1920, 134 / 1080, 130 / 1920, 67 / 1080)):
             auto.click_element("商店", "text", max_retries=3)
         # 等待商店动画
         time.sleep(0.2)
-        auto.click_element("提取物", "text", include=True, crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080), action="move")
+        auto.click_element("提取物", "text", include=True, crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080),
+                           action="move")
         # 滚动至底部
         auto.mouse_scroll(4, -150)
 
@@ -72,7 +74,8 @@ class ShoppingModule:
                 text = self.name_dic[key]
                 if auto.click_element(text, "text", include=False, action="move_click"):
                     time.sleep(0.2)
-                    auto.click_element("最大", "text", include=True, crop=(1791 / 1920, 827 / 1080, 88 / 1920, 50 / 1080),
+                    auto.click_element("最大", "text", include=True,
+                                       crop=(1791 / 1920, 827 / 1080, 88 / 1920, 50 / 1080),
                                        action="move_click")
                     if auto.click_element("购买", "text", include=False,
                                           crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
@@ -99,6 +102,7 @@ class ShoppingModule:
                         text = self.weapon_dic_re[key]
                     if auto.click_element(text, "text", include=True, action="move_click"):
                         time.sleep(0.2)
-                        auto.click_element("购买", "text", include=False, crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
+                        auto.click_element("购买", "text", include=False,
+                                           crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
                                            action="move_click")
                         auto.press_key("esc")

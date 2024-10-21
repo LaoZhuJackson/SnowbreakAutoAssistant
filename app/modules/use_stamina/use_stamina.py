@@ -14,16 +14,14 @@ class UseStaminaModule:
         if config.CheckBox_is_use_power.value:
             self.day_num = config.ComboBox_power_day.value + 1
             self.check_power()
-            auto.back_to_home()
+
         if config.ComboBox_power_usage.value == 0:
             self.by_maneuver()
-            auto.back_to_home()
 
     def check_power(self):
         auto.click_element(self.root + "stamina.png", "image", threshold=0.8, action="move_click")
         time.sleep(0.5)
         day_num = 1
-        # self.update_ocr_result()
         while True:
             if day_num == 1:
                 has_colon = self.update_ocr_result()
@@ -32,10 +30,14 @@ class UseStaminaModule:
             if auto.click_element(f"app/resource/images/use_power/{day_num}_day.png", "image", threshold=0.9,
                                   action="move_click", crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080)):
                 self.use()
+            elif auto.click_element(f"{day_num}天", "text", action="move_click",
+                                    crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080)):
+                self.use()
             else:
                 day_num += 1
                 if day_num > self.day_num:
                     break
+        auto.back_to_home()
 
     def use(self, text=None):
         if text:
@@ -80,3 +82,4 @@ class UseStaminaModule:
         if auto.click_element("领取", "text", include=True, max_retries=2, action="move_click",
                               crop=(6 / 1920, 933 / 1080, 267 / 1920, 134 / 1080)):
             auto.press_key("esc")
+        auto.back_to_home()
