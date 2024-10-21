@@ -128,7 +128,7 @@ def get_all_children(widget):
 class Home(QFrame, Ui_home):
     def __init__(self, text: str, parent=None):
         super().__init__()
-        self.setting_name_list = ['登录', '商店', '体力', '人物碎片', '奖励']
+        self.setting_name_list = ['登录', '商店', '体力', '碎片', '奖励']
         self.person_dic = {
             "人物碎片": "item_person_0",
             "肴": "item_person_1",
@@ -190,12 +190,11 @@ class Home(QFrame, Ui_home):
 
         self.BodyLabel_enter_tip.setText(
             "### 提示\n* 日志说没有找到截图窗口需要调整自己的窗口进程名\n* 不同服，不同启动器的进程名都不同\n* 打开任务管理器可查看进程名\n* 启动器进程名可能和游戏窗口进程名不同")
-
         self.PopUpAniStackedWidget.setCurrentIndex(0)
-
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
-
         self.get_tips()
+        self.PushButton_start.setShortcut("F1")
+        self.PushButton_start.setToolTip("快捷键：F1")
 
         # 查找 button1 在布局中的索引
         self.gridLayout.addWidget(self.select_person, 1, 0)
