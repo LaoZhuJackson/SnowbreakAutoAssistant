@@ -15,68 +15,76 @@ from app.common.logger import logger, stdout_stream, stderr_stream, original_std
 from app.common.style_sheet import StyleSheet
 from app.modules.automation import auto
 from app.modules.fishing.fishing import FishingModule
+from app.modules.jigsaw.jigsaw import JigsawModule
 from app.modules.routine_action.routine_action import ActionModule
 from app.ui.additional_features_interface import Ui_additional_features
 
 
-class RunFishing(QThread):
-    is_running_fishing = pyqtSignal(bool)
+class SubTask(QThread):
+    is_running = pyqtSignal(bool)
 
-    def __init__(self):
+    def __init__(self, module):
         super().__init__()
-        self.module = FishingModule()
+        self.module = module()
 
     def run(self):
-        self.is_running_fishing.emit(True)
+        self.is_running.emit(True)
         logger.info("请确保游戏窗口分辨率是1920*1080，三秒后将自动激活窗口")
         time.sleep(3)
         auto.activate_window(config.LineEdit_game_name.value)
         try:
-            for i in range(config.SpinBox_fish_times.value):
-                # print(f"is_running_fishing:{fish_running}")
-                if not fish_running:
-                    break
-                logger.info(f"开始第 {i + 1} 次钓鱼")
-                if config.ComboBox_fishing_mode.value == 0:
-                    self.module.run()
-                else:
-                    self.module.run_low_performance()
+            self.sub_task()
         except Exception as e:
             logger.error(e)
             traceback.print_exc()
         finally:
-            self.is_running_fishing.emit(False)
+            self.is_running.emit(False)
+
+    def sub_task(self):
+        pass
 
 
-class RunAction(QThread):
-    is_running_action = pyqtSignal(bool)
-
+class RunFishing(SubTask):
     def __init__(self):
-        super().__init__()
-        self.module = ActionModule()
+        super().__init__(FishingModule)
 
-    def run(self):
-        self.is_running_action.emit(True)
-        logger.info("请确保游戏窗口分辨率是1920*1080，三秒后将自动激活窗口")
-        time.sleep(3)
-        auto.activate_window(config.LineEdit_game_name.value)
-        try:
-            # 进入训练界面
-            self.module.enter_train()
-            # 开始循环
-            for i in range(config.SpinBox_action_times.value):
-                # print(f"is_running_action:{fish_running}")
-                if not action_running:
-                    break
-                logger.info(f"开始第 {i + 1} 次行动")
+    def sub_task(self):
+        for i in range(config.SpinBox_fish_times.value):
+            # print(f"is_running_fishing:{fish_running}")
+            if not fish_running:
+                break
+            logger.info(f"开始第 {i + 1} 次钓鱼")
+            if config.ComboBox_fishing_mode.value == 0:
                 self.module.run()
-            # 返回主页面
-            auto.back_to_home()
-        except Exception as e:
-            logger.error(e)
-            traceback.print_exc()
-        finally:
-            self.is_running_action.emit(False)
+            else:
+                self.module.run_low_performance()
+
+
+class RunAction(SubTask):
+
+    def __init__(self):
+        super().__init__(ActionModule)
+
+    def sub_task(self):
+        # 进入训练界面
+        self.module.enter_train()
+        # 开始循环
+        for i in range(config.SpinBox_action_times.value):
+            # print(f"is_running_action:{fish_running}")
+            if not action_running:
+                break
+            logger.info(f"开始第 {i + 1} 次行动")
+            self.module.run()
+        # 返回主页面
+        auto.back_to_home()
+
+
+class RunJigsaw(SubTask):
+    def __init__(self):
+        super().__init__(JigsawModule)
+
+    def sub_task(self):
+        self.module.run()
 
 
 class AdjustColor(QThread):
@@ -149,6 +157,7 @@ class Additional(QFrame, Ui_additional_features):
 
         self.is_running_fish = False
         self.is_running_action = False
+        self.is_running_jigsaw = False
         self.color_pixmap = None
         self.hsv_value = None
 
@@ -163,14 +172,16 @@ class Additional(QFrame, Ui_additional_features):
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_fishing))
         self.SegmentedWidget.addItem(self.page_action.objectName(), '自动常规行动',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_action))
-        self.SegmentedWidget.addItem(self.page_3.objectName(), '待开发2',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_3))
+        self.SegmentedWidget.addItem(self.page_jigsaw.objectName(), '自动信源解析',
+                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_jigsaw))
         self.SegmentedWidget.setCurrentItem(self.page_fishing.objectName())
-
         self.stackedWidget.setCurrentIndex(0)
-
         self.ComboBox_fishing_mode.addItems(
             ["高性能（cpu性能足够时使用，准确率高）", "低性能（检测频率较低时使用，准确率较低）"])
+        self.BodyLabel_tip_fish.setText(
+            "### 提示\n* 珍奇钓鱼点每天最多钓25次\n* 稀有钓鱼点每天最多钓50次\n* 普通钓鱼点无次数限制\n* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次\n* 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域\n")
+        self.BodyLabel_tip_action.setText("### 提示\n自动完成常规行动\n* 不消耗体力\n* 重复刷指定次数实战训练第一关\n")
+        self.BodyLabel_tip_jigsaw.setText("### 提示\n* 功能未完成，请勿使用")
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
@@ -201,6 +212,7 @@ class Additional(QFrame, Ui_additional_features):
 
         self.PushButton_start_fishing.clicked.connect(self.start_fishing)
         self.PushButton_start_action.clicked.connect(self.start_action)
+        self.PushButton_start_jigsaw.clicked.connect(self.start_jigsaw)
 
         # 链接各种需要保存修改的控件
         self._connect_to_save_changed()
@@ -246,10 +258,11 @@ class Additional(QFrame, Ui_additional_features):
         widget = self.stackedWidget.widget(index)
         self.SegmentedWidget.setCurrentItem(widget.objectName())
 
+    #######################钓鱼########################################
     def start_fishing(self):
         self._redirectOutput(self.textBrowser_log_fishing)
         self.run_fishing_thread = RunFishing()
-        self.run_fishing_thread.is_running_fishing.connect(self.toggle_fish_button)
+        self.run_fishing_thread.is_running.connect(self.toggle_fish_button)
         self.set_fish_running()
 
     def toggle_fish_button(self, running):
@@ -279,15 +292,16 @@ class Additional(QFrame, Ui_additional_features):
             fish_running = False
             logger.info("已发生停止指令，等待当前钓鱼完成")
 
+    #######################周常########################################
     def start_action(self):
         self._redirectOutput(self.textBrowser_log_action)
         self.run_action_thread = RunAction()
-        self.run_action_thread.is_running_action.connect(self.toggle_action_button)
+        self.run_action_thread.is_running.connect(self.toggle_action_button)
         self.set_action_running()
 
     def toggle_action_button(self, running):
         # logger.debug(f"执行set_is_running:{fish_running}")
-        self.is_running_fish = running
+        self.is_running_action = running
         children = get_all_children(self.SimpleCardWidget_action)
         if running:
             for child in children:
@@ -303,12 +317,45 @@ class Additional(QFrame, Ui_additional_features):
             self.PushButton_start_action.setText("开始行动")
 
     def set_action_running(self):
-        if not self.is_running_fish:
+        if not self.is_running_action:
             global action_running
             action_running = True
             self.run_action_thread.start()
         else:
             action_running = False
+            logger.info("已发生停止指令，等待当前行动完成")
+
+    #######################拼图########################################
+    def start_jigsaw(self):
+        self._redirectOutput(self.textBrowser_log_jigsaw)
+        self.run_jigsaw_thread = RunJigsaw()
+        self.run_jigsaw_thread.is_running.connect(self.toggle_jigsaw_button)
+        self.set_jigsaw_running()
+
+    def toggle_jigsaw_button(self, running):
+        # logger.debug(f"执行set_is_running:{fish_running}")
+        self.is_running_jigsaw = running
+        children = get_all_children(self.SimpleCardWidget_jigsaw)
+        if running:
+            for child in children:
+                if isinstance(child, CheckBox) or isinstance(child, LineEdit) or isinstance(child, SpinBox):
+                    child.setEnabled(False)
+            self.PushButton_start_jigsaw.setText("停止拼图")
+        else:
+            for child in children:
+                if isinstance(child, CheckBox) or isinstance(child, SpinBox):
+                    child.setEnabled(True)
+                elif isinstance(child, LineEdit):
+                    pass
+            self.PushButton_start_jigsaw.setText("开始拼图")
+
+    def set_jigsaw_running(self):
+        if not self.is_running_jigsaw:
+            global jigsaw_running
+            jigsaw_running = True
+            self.run_jigsaw_thread.start()
+        else:
+            jigsaw_running = False
             logger.info("已发生停止指令，等待当前行动完成")
 
     def save_changed(self, widget):

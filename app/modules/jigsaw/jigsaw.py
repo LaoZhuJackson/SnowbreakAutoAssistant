@@ -1,90 +1,228 @@
-blocks = [
-    [[[1, 1], [1, 1]]],
-    [[[2, 2, 2, 2]], [[2], [2], [2], [2]]],
-    [[[3, 3, 0], [0, 3, 3]], [[0, 3], [3, 3], [3, 0]]],
-    [[[0, 4, 4], [4, 4, 0]], [[4, 0], [4, 4], [0, 4]]],
-    [[[5, 0, 0], [5, 5, 5]], [[5, 5], [5, 0], [5, 0]], [[5, 5, 5], [0, 0, 5]], [[0, 5], [0, 5], [5, 5]]],
-    [[[0, 0, 6], [6, 6, 6]], [[6, 6], [0, 6], [0, 6]], [[6, 6, 6], [6, 0, 0]], [[6, 0], [6, 0], [6, 6]]],
-    [[[0, 7, 0], [7, 7, 7]], [[7, 7, 7], [0, 7, 0]], [[7, 0], [7, 7], [7, 0]], [[0, 7], [7, 7], [0, 7]]],
-    [[[0, 8, 0], [8, 8, 8], [0, 8, 0]]],
-    [[[9]]],
-    [[[10, 10]], [[10], [10]]],
-    [[[11, 11], [11, 0]], [[11, 11], [0, 11]], [[0, 11], [11, 11]], [[11, 0], [11, 11]]]
-]
+import copy
 
-res = []
-m = n = a = l = None
+from app.common.logger import logger
+from app.modules.automation import auto
+
+boards = {
+    "1": [[0, 0, 0, 0, 0, -1],
+          [0, 0, 0, 0, 0, -1],
+          [0, 0, 0, 0, 0, 0],
+          [-1, 0, 0, 0, 0, 0],
+          [-1, 0, 0, 0, 0, 0]],
+    "2": [[-1, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, -1],
+          [0, 0, 0, 0, 0, 0],
+          [-1, 0, 0, 0, 0, 0]],
+    "3": [[0, 0, 0, 0, 0, -1],
+          [0, 0, 0, 0, -1, 0],
+          [0, 0, 0, -1, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0]],
+    "4": [[0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0]],
+    "5": [[0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0],
+          [0, 0, 0, 0, -1]],
+    "6": [[0, 0, 0, 0, 0, 0],
+          [0, 0, -1, -1, 0, 0],
+          [0, 0, -1, -1, 0, 0],
+          [0, 0, -1, -1, 0, 0],
+          [0, 0, 0, 0, 0, 0]],
+    "7": [[0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [-1, -1, -1, -1, -1, -1],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0]],
+    "8": [[0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, -1, -1, 0, 0]],
+    "9": [[-1, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, -1]],
+    "10": [[0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, -1, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, -1, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0]],
+    "11": [[-1, 0, 0, 0, 0, 0],
+           [-1, 0, 0, 0, 0, 0],
+           [-1, 0, 0, 0, 0, 0],
+           [-1, 0, 0, 0, 0, 0],
+           [-1, 0, 0, 0, 0, 0]],
+    "12": [[-1, -1, 0, 0, 0, 0],
+           [-1, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, -1],
+           [0, 0, 0, 0, -1, -1]],
+    "13": [[-1, 0, 0, 0, 0, 0],
+           [0, -1, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, -1, 0],
+           [0, 0, 0, 0, 0, -1]],
+    "14": [[0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, -1],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, -1],
+           [0, 0, 0, 0, 0, 0]],
+    "15": [[0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, -1, -1, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0]],
+}
+
+pieces = {
+    "1": [[1, 1],
+          [1, 1]],
+    "2": [[1],
+          [1],
+          [1],
+          [1]],
+    "3": [[1, 1, 0],
+          [0, 1, 1]],
+    "4": [[0, 1, 1],
+          [1, 1, 0]],
+    "5": [[0, 1],
+          [0, 1],
+          [0, 1],
+          [1, 1]],
+    "6": [[1, 0],
+          [1, 0],
+          [1, 0],
+          [1, 1]],
+    "7": [[1, 1, 1],
+          [0, 1, 0]],
+    "8": [[0, 1, 0],
+          [1, 1, 1],
+          [0, 1, 0]],
+    "9": [[1]],
+    "10": [[1],
+           [1]],
+    "11": [[1, 0],
+           [1, 1]]
+}
 
 
-def solve(arr, num):
-    global m, n, a, l, res
-    res = []
-    m = len(arr)
-    n = len(arr[0])
+class JigsawModule:
+    def __init__(self):
+        # 当前拼图板
+        self.board = None
+        self.piece_counts = {
+            "1": 3,
+            "2": 15,
+            "3": 10,
+            "4": 11,
+            "5": 8,
+            "6": 30,
+            "7": 9,
+            "8": 1,
+            "9": 9,
+            "10": 0,
+            "11": 1,
+        }
+        self.piece_solution = []  # 存储已放置的 piece
+        self.piece_priority = []
 
-    a = [[arr[i][j] for j in range(n)] for i in range(m)]
-    l = num[:]
+    def run(self):
+        self.identify_board()
+        if self.board:
+            self.update_priority()
+            self.fill_board()
+            print("填充后的 board:")
+            for row in self.board:
+                print(row)
+            if self.piece_solution:
+                print("放置的 pieces:")
+                for piece in self.piece_solution:
+                    print(f"Piece {piece[0]} 经过 {piece[1]} 次旋转后放置在行 {piece[2]}, 列 {piece[3]}")
+        else:
+            logger.error("未识别出对应的地图")
 
-    dfs(0)
+    def identify_board(self):
+        """判断当前board是哪个"""
+        for i in range(1, 4):
+            if auto.find_element(f"app/resource/images/jigsaw/{i}.png", "image", threshold=0.7,
+                                 crop=(596 / 1920, 203 / 1080, 901 / 1920, 718 / 1080)):
+                self.board = boards[str(i)]
 
-    # 按照不同元素数量排序，若相同则按最大元素值排序
-    res.sort(key=lambda A: (-len(set(sum(A, []))), -max(l[x - 1] for x in sum(A, []) if x > 0)))
+    def rotate_piece(self, piece):
+        """逆时针旋转拼图块90度"""
+        # 对整个list进行反转，然后*解包成matrix[0], matrix[1], matrix[2]，最后zip按列组合，类型转换为list后完成转置
+        return [list(row) for row in zip(*piece[::-1])]
 
-    return res
+    def can_place_piece(self, piece, row, col):
+        """检查是否可以在 board 的指定位置放置 piece"""
+        rows, cols = len(piece), len(piece[0])
 
+        # 如果 piece 超出了 board 的边界
+        if row + rows > len(self.board) or col + cols > len(self.board[0]):
+            return False
 
-def can_place_block(x, y, b, d):
-    pat = blocks[b][d]
-    offset = 0
-    while pat[0][offset] == 0:
-        offset += 1
-    y -= offset
-    if y < 0:
-        return False
-    for i in range(len(pat)):
-        for j in range(len(pat[0])):
-            if pat[i][j] and (x + i >= m or y + j >= n or a[x + i][y + j] != -1):
-                return False
-    return True
+        # 检查该区域是否为空
+        for r in range(rows):
+            for c in range(cols):
+                if piece[r][c] == 1 and self.board[row + r][col + c] != 0:
+                    return False
+        return True
 
+    def place_piece(self, piece, row, col, mark):
+        """放置或移除方块。mark为True表示放置，False表示移除。"""
+        for i in range(len(piece)):
+            for j in range(len(piece[0])):
+                if piece[i][j] == 1:
+                    self.board[row + i][col + j] = 1 if mark else 0
 
-def place_block(x, y, b, d, v):
-    pat = blocks[b][d]
-    offset = 0
-    while pat[0][offset] == 0:
-        offset += 1
-    y -= offset
-    for i in range(len(pat)):
-        for j in range(len(pat[0])):
-            if pat[i][j]:
-                a[x + i][y + j] = v
+    def fill_board(self):
+        """尝试填充整个board并返回所有解决方案。"""
 
+        def backtrack(used_pieces):
+            # 找到下一个空白位置
+            for row in range(len(self.board)):
+                for col in range(len(self.board[0])):
+                    if self.board[row][col] == 0:  # 为空位置
+                        for piece_id in self.piece_priority:
+                            # 取出拼图
+                            piece = pieces[piece_id]
+                            for rotations in range(4):
+                                # print(self.can_place_piece(piece, row, col),self.piece_counts[piece_id])
+                                if self.can_place_piece(piece, row, col) and self.piece_counts[piece_id] > 0:
+                                    self.place_piece(piece, row, col, True)
+                                    self.piece_counts[piece_id] -= 1  # 减少方块数量
+                                    # 更新所使用的方案
+                                    used_pieces.append((piece_id, rotations, row, col))
+                                    # 递归调用
+                                    backtrack(used_pieces)
+                                    # 撤回放置
+                                    self.place_piece(piece, row, col, False)
+                                    self.piece_counts[piece_id] += 1  # 恢复方块数量
+                                    # 移除记录的方块及旋转次数
+                                    used_pieces.pop()
+                                # 旋转方块
+                                piece = self.rotate_piece(piece)
+                        # 回溯后退出
+                        return
+            # 遍历完成，表示已填满
+            self.piece_solution.append(used_pieces.copy())
 
-def dfs(p):
-    if p == m * n:
-        x = [[a[i][j] for j in range(n)] for i in range(m)]
-        res.append(x)
-        if len(res) >= 10000:
-            print('方案数太多，仅计算前一万种。减少一些方块吧~')
-            return True
-        return False
+        backtrack([])
 
-    x, y = divmod(p, n)
+    def update_priority(self):
+        # 如果8号方块的数量大于0，则将其添加到优先级列表中
+        if self.piece_counts["8"] > 0:
+            self.piece_priority.append("8")
 
-    if a[x][y] != -1:
-        return dfs(p + 1)
-
-    for b in range(len(blocks)):
-        if not l[b]:
-            continue
-        for d in range(len(blocks[b])):
-            if not can_place_block(x, y, b, d):
-                continue
-            place_block(x, y, b, d, b + 1)
-            l[b] -= 1
-            if dfs(p + 1):
-                return True
-            l[b] += 1
-            place_block(x, y, b, d, -1)
-
-    return False
+        # 然后按数量和其他优先级添加剩余的方块
+        self.piece_priority.extend(sorted(
+            [k for k in pieces.keys() if k != "8"],  # 排除8号
+            key=lambda k: (self.piece_counts[k], int(k) not in [11, 10]),  # 11号和10号的优先级低于其他
+            reverse=True
+        ))

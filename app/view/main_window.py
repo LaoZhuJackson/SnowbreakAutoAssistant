@@ -237,10 +237,12 @@ class MainWindow(MSFluentWindow):
         home_log = self.homeInterface.textBrowser_log.toHtml()
         fishing_log = self.additionalInterface.textBrowser_log_fishing.toHtml()
         action_log = self.additionalInterface.textBrowser_log_action.toHtml()
+        jigsaw_log = self.additionalInterface.textBrowser_log_jigsaw.toHtml()
 
         save_html(os.path.join(log_dir, "home_log.html"), home_log)
         save_html(os.path.join(log_dir, "fishing_log.html"), fishing_log)
         save_html(os.path.join(log_dir, "action_log.html"), action_log)
+        save_html(os.path.join(log_dir, "jigsaw_log.html"), jigsaw_log)
 
     def closeEvent(self, a0):
         print("关闭ocr子进程")

@@ -29,7 +29,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
      </property>
      <widget class="QWidget" name="page_fishing">
          <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
@@ -136,13 +136,7 @@
              <item row="11" column="0" colspan="3">
                  <widget class="BodyLabel" name="BodyLabel_tip_fish">
                      <property name="text">
-                         <string>### 提示
-                             * 珍奇钓鱼点每天最多钓25次
-                             * 稀有钓鱼点每天最多钓50次
-                             * 普通钓鱼点无次数限制
-                             * 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次
-                             * 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域
-                         </string>
+                         <string/>
             </property>
                      <property name="textFormat">
                          <enum>Qt::MarkdownText</enum>
@@ -303,11 +297,7 @@
                             <item row="1" column="0" colspan="2">
                                 <widget class="BodyLabel" name="BodyLabel_tip_action">
                                     <property name="text">
-                                        <string>### 提示
-                                            自动完成常规行动
-                                            * 不消耗体力
-                                            * 重复刷指定次数实战训练第一关
-                                        </string>
+                                        <string/>
                                     </property>
                                     <property name="textFormat">
                                         <enum>Qt::MarkdownText</enum>
@@ -342,13 +332,64 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_3">
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="BodyLabel" name="BodyLabel_3">
-         <property name="text">
-          <string>待开发</string>
-         </property>
+        <widget class="QWidget" name="page_jigsaw">
+            <layout class="QGridLayout" name="gridLayout_4" columnstretch="2,1">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <item row="0" column="0">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_jigsaw">
+                        <layout class="QGridLayout" name="gridLayout_10">
+                            <item row="0" column="0">
+                                <widget class="BodyLabel" name="BodyLabel_tip_jigsaw">
+                                    <property name="text">
+                                        <string>Body label</string>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="1" column="0">
+                    <widget class="PushButton" name="PushButton_start_jigsaw">
+                        <property name="text">
+                            <string>开始拼图</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="0" column="1" rowspan="2">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_3">
+                        <layout class="QGridLayout" name="gridLayout_9">
+                            <item row="0" column="0">
+                                <widget class="TitleLabel" name="TitleLabel_log_jigsaw">
+                                    <property name="text">
+                                        <string>日志</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0">
+                                <widget class="QTextBrowser" name="textBrowser_log_jigsaw">
+                                    <property name="verticalScrollBarPolicy">
+                                        <enum>Qt::ScrollBarAlwaysOff</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
         </widget>
        </item>
       </layout>
