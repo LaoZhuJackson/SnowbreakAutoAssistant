@@ -77,8 +77,10 @@ class UseStaminaModule:
                 time.sleep(2)
                 auto.click_element("等级提升", "text", include=False, max_retries=2, action="move_click")
                 auto.click_element("完成", "text", include=True, max_retries=5, action="move_click")
-        auto.press_key("esc")
-        auto.click_element("任务", "text", include=True, max_retries=5, action="move_click")
+        while not auto.click_element("任务", "text", include=True, action="move_click",
+                                     crop=(19 / 1920, 965 / 1080, 561 / 1920, 111 / 1080)):
+            auto.press_key("esc")
+            time.sleep(1)
         if auto.click_element("领取", "text", include=True, max_retries=2, action="move_click",
                               crop=(6 / 1920, 933 / 1080, 267 / 1920, 134 / 1080)):
             auto.press_key("esc")
