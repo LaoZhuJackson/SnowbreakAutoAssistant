@@ -23,6 +23,7 @@ class EnterGameModule:
             print("开始检查是否需要更新")
             if auto.find_element("开始游戏", "text", include=False) is not None:
                 print("无需更新")
+                auto.click_element("开始游戏", "text", include=True, max_retries=3, action="move_click", need_ocr=False)
                 return
             print("需要更新")
             auto.click_element("获取更新", "text", max_retries=3)
@@ -30,7 +31,6 @@ class EnterGameModule:
             while auto.find_element("更新中", "text", include=True):
                 time.sleep(5)
             print("更新完成")
-            auto.click_element("开始游戏", "text", include=True, max_retries=3)
         else:
             print("已进入游戏")
             self.enter_game_flag = True
@@ -39,7 +39,7 @@ class EnterGameModule:
         while not auto.find_element("app/resource/images/start_game/network.png", "image",
                                     crop=(1787 / 1920, 10 / 1080, 129 / 1920, 334 / 1080), threshold=0.7):
             time.sleep(1)
-        auto.click_element("开始游戏", "text", include=True, max_retries=3)
+        auto.click_element("开始游戏", "text", include=True, max_retries=3, action="move_click")
         # 检查是否真的进入了
         self.ensure_enter()
 

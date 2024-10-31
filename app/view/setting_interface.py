@@ -87,17 +87,17 @@ class SettingInterface(ScrollArea):
             ],
             parent=self.personalGroup
         )
-        # self.zoomCard = ComboBoxSettingCard(
-        #     config.dpiScale,
-        #     FIF.ZOOM,
-        #     self.tr("Interface zoom"),
-        #     self.tr("Change the size of widgets and fonts"),
-        #     texts=[
-        #         "100%", "125%", "150%", "175%", "200%",
-        #         self.tr("Use system setting")
-        #     ],
-        #     parent=self.personalGroup
-        # )
+        self.zoomCard = ComboBoxSettingCard(
+            config.dpiScale,
+            FIF.ZOOM,
+            self.tr("Interface zoom"),
+            self.tr("Change the size of widgets and fonts"),
+            texts=[
+                "100%", "125%", "150%", "175%", "200%",
+                self.tr("Use system setting")
+            ],
+            parent=self.personalGroup
+        )
         # self.languageCard = ComboBoxSettingCard(
         #     config.language,
         #     FIF.LANGUAGE,
@@ -174,7 +174,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.micaCard)
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.enterCard)
-        # self.personalGroup.addSettingCard(self.zoomCard)
+        self.personalGroup.addSettingCard(self.zoomCard)
         # self.personalGroup.addSettingCard(self.languageCard)
 
         self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)

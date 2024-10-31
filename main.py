@@ -12,13 +12,13 @@ from app.view.main_window import MainWindow
 
 
 # enable dpi scale
-# if config.get(config.dpiScale) != "Auto":
-#     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
-#     os.environ["QT_SCALE_FACTOR"] = str(config.get(config.dpiScale))
-# else:
-#     QApplication.setHighDpiScaleFactorRoundingPolicy(
-#         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-#     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+if config.get(config.dpiScale) != "Auto":
+    os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
+    os.environ["QT_SCALE_FACTOR"] = str(config.get(config.dpiScale))
+else:
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
 # create application
 app = QApplication(sys.argv)
