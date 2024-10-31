@@ -543,5 +543,7 @@ class Automation(metaclass=SingletonMeta):
         window = Screenshot.get_window(window_title)
         if window:
             window.activate()
+            return True
         else:
             print(f"未找到窗口:{window_title}")
+            return False

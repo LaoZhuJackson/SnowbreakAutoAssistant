@@ -16,20 +16,21 @@ class EnterGameModule:
         if not self.enter_game_flag:
             # 结束启动器的进入游戏操作后将窗口名改回来
             auto.window_title = config.LineEdit_game_name.value
+            time.sleep(10)
             self.enter_game()
 
     def check_update(self):
-        if auto.find_element("凭证", "text", include=True) is None:
+        if not self.find_bases():
             print("开始检查是否需要更新")
-            if auto.find_element("开始游戏", "text", include=False) is not None:
+            if auto.click_element("开始游戏", "text", include=True, action="move_click", max_retries=3):
                 print("无需更新")
-                auto.click_element("开始游戏", "text", include=True, max_retries=3, action="move_click", need_ocr=False)
                 return
             print("需要更新")
             auto.click_element("获取更新", "text", max_retries=3)
             auto.click_element("确定", "text", max_retries=3)
             while auto.find_element("更新中", "text", include=True):
                 time.sleep(5)
+            auto.click_element("开始游戏", "text", include=True, action="move_click", max_retries=3)
             print("更新完成")
         else:
             print("已进入游戏")

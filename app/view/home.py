@@ -342,14 +342,14 @@ class Home(QFrame, Ui_home):
             if self.ComboBox_after_use.currentIndex() == 1:
                 auto.press_key("esc")
                 time.sleep(1)
-                if auto.click_element("确认", "text", max_retries=5, action="move_click"):
+                if auto.click_element("确定", "text", include=True, max_retries=5, action="move_click"):
                     self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
                 self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
                 auto.press_key("esc")
                 time.sleep(1)
-                auto.click_element("确认", "text", max_retries=2, action="move_click")
+                auto.click_element("确定", "text", include=True, max_retries=5, action="move_click")
 
     def set_checkbox_enable(self, enable: bool):
         for checkbox in self.findChildren(CheckBox):
