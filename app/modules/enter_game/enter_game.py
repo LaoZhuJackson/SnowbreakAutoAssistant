@@ -14,9 +14,9 @@ class EnterGameModule:
         auto.activate_window(auto.window_title)
         self.check_update()
         if not self.enter_game_flag:
+            # 结束启动器的进入游戏操作后将窗口名改回来
+            auto.window_title = config.LineEdit_game_name.value
             self.enter_game()
-        # 结束进入游戏操作后将窗口名改回来
-        auto.window_title = config.LineEdit_game_name.value
 
     def check_update(self):
         if auto.find_element("凭证", "text", include=True) is None:
@@ -30,16 +30,16 @@ class EnterGameModule:
             while auto.find_element("更新中", "text", include=True):
                 time.sleep(5)
             print("更新完成")
+            auto.click_element("开始游戏", "text", include=True, max_retries=3)
         else:
             print("已进入游戏")
             self.enter_game_flag = True
 
     def enter_game(self):
-        if not auto.find_element("app/resource/images/start_game/age.png", "image", threshold=0.9):
-            auto.click_element("开始游戏", "text", include=True, max_retries=3)
-            time.sleep(10)
-        while not auto.click_element("开始游戏", "text", include=True, threshold=0.8):
+        while not auto.find_element("app/resource/images/start_game/network.png", "image",
+                                    crop=(1787 / 1920, 10 / 1080, 129 / 1920, 334 / 1080), threshold=0.7):
             time.sleep(1)
+        auto.click_element("开始游戏", "text", include=True, max_retries=3)
         # 检查是否真的进入了
         self.ensure_enter()
 
@@ -66,8 +66,7 @@ class EnterGameModule:
                 auto.press_key("esc")
                 first_charm_flag = False
                 time.sleep(1)
-            is_enter = auto.find_element("基地", "text", include=True,
-                                         crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080))
+            is_enter = self.find_bases()
         print("已进入游戏")
 
     def find_bases(self):

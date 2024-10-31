@@ -20,10 +20,10 @@ class ChasmModule:
                            crop=(1541 / 1920, 468 / 1080, 90 / 1920, 48 / 1080), action="move_click")
         time.sleep(0.5)
         auto.click_element("特别派遣", "text", include=False, max_retries=3, action="move_click")
-        auto.click_element("精神拟境", "text", include=False, max_retries=3, action="move_click")
+        auto.click_element("精神", "text", include=True, max_retries=3, action="move_click")
         self.fast_test()
         if self.continue_flag and self.is_after_wednesday_4am():
-            auto.click_element("精神拟境", "text", include=False, max_retries=3, offset=(0, 290), action="move_click")
+            auto.click_element("精神", "text", include=True, max_retries=3, offset=(0, 290), action="move_click")
             self.fast_test()
         time.sleep(0.2)
         auto.click_element("app/resource/images/chasm/reward.png", "image", max_retries=3, action="move_click")
