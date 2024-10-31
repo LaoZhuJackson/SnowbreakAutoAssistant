@@ -224,14 +224,9 @@ class SettingInterface(ScrollArea):
                 content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
                 massage_box = MessageBox(title, content, self.window())
                 if massage_box.exec():
-                    self.progressBar.setValue(0)
-                    self.progressBar.setVisible(True)
-                    self.updating_thread = UpdatingThread(updater)
-                    signalBus.checkUpdateSig.connect(self.update_progress)
-                    self.updating_thread.finished.connect(self.update_finished)
-                    self.updating_thread.start()
+                    self.start_download(updater)
                 else:
-                    print('Cancel button is pressed')
+                    pass
             elif latest_version is None:
                 title = '未获取到最新版本信息'
                 content = f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确'
@@ -259,6 +254,14 @@ class SettingInterface(ScrollArea):
             print(e)
             # traceback.print_exc()
 
+    def start_download(self, updater):
+        self.progressBar.setValue(0)
+        self.progressBar.setVisible(True)
+        self.updating_thread = UpdatingThread(updater)
+        signalBus.checkUpdateSig.connect(self.update_progress)
+        self.updating_thread.finished.connect(self.update_finished)
+        self.updating_thread.start()
+
     def update_progress(self, value):
         """ Update the progress bar """
         self.progressBar.setValue(value)
@@ -285,3 +288,11 @@ class SettingInterface(ScrollArea):
                 duration=-1,
                 parent=self
             )
+
+    def scrollToAboutCard(self):
+        """ scroll to example card """
+        try:
+            w = self.aboutCard
+            self.verticalScrollBar().setValue(w.y())
+        except Exception as e:
+            print(e)

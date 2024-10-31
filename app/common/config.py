@@ -117,7 +117,7 @@ class Config(QConfig):
     # 设置相关
     enter_interface = OptionsConfigItem("setting_personal", "enter_interface", 0, OptionsValidator([0, 1, 2]))
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
-    update_proxies = ConfigItem("Update", "update_proxies", '7890')
+    update_proxies = ConfigItem("Update", "update_proxies", '')
 
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")

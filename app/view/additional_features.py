@@ -180,7 +180,8 @@ class Additional(QFrame, Ui_additional_features):
             ["高性能（cpu性能足够时使用，准确率高）", "低性能（检测频率较低时使用，准确率较低）"])
         self.BodyLabel_tip_fish.setText(
             "### 提示\n* 珍奇钓鱼点每天最多钓25次\n* 稀有钓鱼点每天最多钓50次\n* 普通钓鱼点无次数限制\n* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次\n* 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域\n")
-        self.BodyLabel_tip_action.setText("### 提示\n自动完成常规行动\n* 不消耗体力\n* 重复刷指定次数实战训练第一关\n")
+        self.BodyLabel_tip_action.setText(
+            "### 提示\n自动完成常规行动\n* 不消耗体力\n* 重复刷指定次数实战训练第一关\n* 用于完成凭证20次常规行动周常任务")
         self.BodyLabel_tip_jigsaw.setText("### 提示\n* 功能未完成，请勿使用")
 
         self.update_label_color()

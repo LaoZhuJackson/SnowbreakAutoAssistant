@@ -13,11 +13,11 @@ class EnterGameModule:
         # 激活登录器窗口
         auto.activate_window(auto.window_title)
         self.check_update()
-        if not self.enter_game_flag:
-            # 结束启动器的进入游戏操作后将窗口名改回来
-            auto.window_title = config.LineEdit_game_name.value
-            time.sleep(10)
-            self.enter_game()
+        # if not self.enter_game_flag:
+        #     # 结束启动器的进入游戏操作后将窗口名改回来
+        #     auto.window_title = config.LineEdit_game_name.value
+        #     time.sleep(10)
+        #     self.enter_game()
 
     def check_update(self):
         if not self.find_bases():

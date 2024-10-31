@@ -7,10 +7,11 @@ import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QFrame
-from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme
+from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
     BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
 
+from updater import Updater
 from .additional_features import Additional
 from .help import Help
 from .home import Home
@@ -19,6 +20,7 @@ from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.ppOCR import ocr_installer, ocr
+from ..common.setting import VERSION
 from ..common.signal_bus import signalBus
 from ..modules.automation import auto
 from ..ui.display_interface import DisplayInterface
@@ -68,6 +70,9 @@ class MainWindow(MSFluentWindow):
         self.check_ocr_install()
         if config.CheckBox_auto_open_starter.value:
             self.open_starter()
+        if config.checkUpdateAtStartUp.value:
+            QTimer.singleShot(100, lambda: self.check_update())
+
 
     def open_starter(self):
         windows = pyautogui.getWindowsWithTitle(config.LineEdit_starter_name.value)
@@ -203,7 +208,7 @@ class MainWindow(MSFluentWindow):
         for w in interfaces:
             if w.objectName() == routeKey:
                 self.stackedWidget.setCurrentWidget(w, False)
-                # w.scrollToCard(index)
+                w.scrollToCard(index)
 
     def save_log(self):
         """保存所有log到txt中"""
@@ -262,3 +267,23 @@ class MainWindow(MSFluentWindow):
         # retry
         if self.isMicaEffectEnabled():
             QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
+
+    def check_update(self):
+        try:
+            updater = Updater()
+            current_version = VERSION
+            latest_version = updater.latest_version
+            if latest_version != current_version and latest_version:
+                title = '发现新版本'
+                content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
+                massage_box = MessageBox(title, content, self.window())
+                if massage_box.exec():
+                    w = self.settingInterface
+                    self.stackedWidget.setCurrentWidget(w, False)
+                    w.scrollToAboutCard()
+                    self.settingInterface.start_download(updater)
+                else:
+                    pass
+        except Exception as e:
+            logger.error(e)
+            logger.error(f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确')

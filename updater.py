@@ -4,6 +4,7 @@ import re
 import shutil
 import subprocess
 import time
+import traceback
 import zipfile
 from urllib.request import urlopen
 
@@ -23,14 +24,17 @@ class Updater:
         self.current_version = VERSION
         self.latest_version = None
         self.api_urls = [
-            "https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
-            "https://github.kotori.top/https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
+            "https://gitee.com/laozhu520/auto_chenbai/releases/latest",
+            # "https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
         ]
         # 设置代理
-        self.proxies = {
-            'http': f'http://127.0.0.1:{config.update_proxies.value}',
-            'https': f'http://127.0.0.1:{config.update_proxies.value}'
-        }
+        if config.update_proxies.value:
+            self.proxies = {
+                'http': f'http://127.0.0.1:{config.update_proxies.value}',
+                'https': f'http://127.0.0.1:{config.update_proxies.value}'
+            }
+        else:
+            self.proxies = None
         self.download_url = download_url
         self.cover_folder_path = os.path.abspath('./')
         self.temp_path = os.path.abspath("./temp")
@@ -44,19 +48,24 @@ class Updater:
                 with requests.get(fastest_mirror, proxies=self.proxies, stream=True) as response:
                     if response.status_code == 200:
                         data = response.json()
-                        self.download_url = self.check_for_updates(data)
+                        # print(f"{data=}")
+                        if "github" in fastest_mirror:
+                            self.download_url = self.check_for_updates_github(data)
+                        else:
+                            self.download_url = self.check_for_updates_gitee(data['release'])
                         print(f"下载链接: {self.download_url}")
                     else:
                         print(f"网站返回状态码不等于200:{response.status_code}")
             except Exception as e:
                 print(f"出现错误：{e}")
+                traceback.print_exc()
         else:
             print(f"下载链接: {self.download_url}")
         self.download_file_path = os.path.join(self.temp_path, os.path.basename(
             self.download_url) if self.download_url else os.path.join(self.temp_path, 'update.zip'))
         self.extract_folder_path = self.temp_path
 
-    def check_for_updates(self, data):
+    def check_for_updates_github(self, data):
         print("检查更新中...")
         download_url = None
         latest_version = data['tag_name']
@@ -79,25 +88,58 @@ class Updater:
         # 返回带文件名的url
         return download_url
 
+    def check_for_updates_gitee(self, data):
+        print("检查更新中...")
+        download_url = None
+        latest_version = data['tag']['name']
+        self.latest_version = latest_version
+        for asset in data["release"]["attach_files"]:
+            if "full" not in asset:
+                # 增量更新
+                download_url = asset['cli_download_url']
+                break
+        if download_url is None:
+            raise Exception("没有找到增量更新包")
+
+        # 比较版本号
+        if latest_version != self.current_version:
+            print(f"发现新版本：{self.current_version} -> {latest_version}")
+        else:
+            print(f"本地版本: {self.current_version}")
+            print(f"远程版本: {latest_version}")
+            print("当前已是最新版本")
+        # 返回带文件名的url
+        return download_url
+
     def find_fastest_mirror(self, mirror_urls, timeout=5):
         """测速并找到最快的镜像。"""
-
         def check_mirror(mirror_url):
             try:
                 start_time = time.time()
-                response = requests.head(mirror_url, timeout=timeout, allow_redirects=True)
+                response = requests.head(mirror_url, proxies=self.proxies, timeout=timeout, allow_redirects=True)
                 end_time = time.time()
                 if response.status_code == 200:
+                    # print(f"{mirror_url=},{end_time - start_time}")
                     return mirror_url, end_time - start_time
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
             return None, None
 
-        # 并发执行多个测速请求
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(check_mirror, url) for url in mirror_urls]
-            fastest_mirror, _ = min((future.result() for future in concurrent.futures.as_completed(futures)),
-                                    key=lambda x: (x[1] is not None, x[1]), default=(None, None))
+        # 初始化最快的镜像变量
+        fastest_mirror = None
+        fastest_time = float('inf')
+
+        # 遍历 URL 进行测速
+        for url in mirror_urls:
+            mirror, response_time = check_mirror(url)
+            if mirror and response_time < fastest_time:
+                fastest_mirror = mirror
+                fastest_time = response_time
+
+        # if fastest_mirror:
+        #     print(f"最快的镜像是: {fastest_mirror}，响应时间: {fastest_time}")
+        # else:
+        #     print("没有可用的镜像")
 
         return fastest_mirror if fastest_mirror else mirror_urls[0]
 
@@ -154,6 +196,7 @@ class Updater:
             return True
         except Exception as e:
             print(f"下载失败: {e}")
+            traceback.print_exc()
             return False
 
     def extract_update(self):
