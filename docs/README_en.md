@@ -7,10 +7,11 @@
     <h2>Snowbreak Auto Assistant</h2>
     <br/>
 
-![Static Badge](https://img.shields.io/badge/platfrom-Windows-blue)
-![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/LaoZhuJackson/SnowbreakAutoAssistant/total)
-[![Static Badge](https://img.shields.io/badge/QQ_Group-996710620-purple)](https://qm.qq.com/q/CIvpwI3qVy)
+![Static Badge](https://img.shields.io/badge/platfrom-Windows-%2329F1FF)
+![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant?color=%2329F1FF)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/LaoZhuJackson/SnowbreakAutoAssistant/total?color=%2329F1FF)
+[![Static Badge](https://img.shields.io/badge/QQ_Group-996710620-%2329F1FF)](https://qm.qq.com/q/CIvpwI3qVy)
+![Discord](https://img.shields.io/discord/1301841513919152158?logo=discord&color=%2329F1FF)
 
 <a href="../README.md">简体中文</a> | English
 </div>
