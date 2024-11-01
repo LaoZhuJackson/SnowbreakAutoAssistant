@@ -1,6 +1,6 @@
 <div align="center">
     <h1>
-        <img src="./asset/logo.png" width="200"/>
+        <img src="../asset/logo.png" width="200"/>
         <br/>
         Snowbreak Auto Assistant
     </h1>
@@ -10,7 +10,7 @@
 ![Static Badge](https://img.shields.io/badge/platfrom-Windows-blue)
 ![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/LaoZhuJackson/SnowbreakAutoAssistant/total)
-[![Static Badge](https://img.shields.io/badge/QQ%E7%BE%A4-996710620-purple)](https://qm.qq.com/q/CIvpwI3qVy)
+[![Static Badge](https://img.shields.io/badge/QQ_Group-996710620-purple)](https://qm.qq.com/q/CIvpwI3qVy)
 
 <a href="../README.md">简体中文</a> | English
 </div>
