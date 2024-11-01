@@ -187,7 +187,7 @@ class MainWindow(MSFluentWindow):
     def onSupport(self):
         view = FlyoutView(
             title="赞助作者",
-            content="如果这个助手帮助到你，而你恰巧财力雄厚，可以考虑为作者更新时加杯奶茶(>ω･* )ﾉ",
+            content="如果这个助手帮助到你，可以考虑赞助作者一杯奶茶(>ω･* )ﾉ",
             image="asset/support.png",
             isClosable=True,
         )
@@ -286,4 +286,6 @@ class MainWindow(MSFluentWindow):
                     pass
         except Exception as e:
             logger.error(e)
-            logger.error(f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确')
+            if config.update_proxies.value:
+                logger.error(
+                    f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值')

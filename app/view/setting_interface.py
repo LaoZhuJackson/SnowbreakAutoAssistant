@@ -1,6 +1,10 @@
 # coding:utf-8
+import os.path
+import subprocess
+import sys
 import time
 import traceback
+from functools import partial
 
 from qfluentwidgets import (SwitchSettingCard, FolderListSettingCard,
                             OptionsSettingCard, PushSettingCard,
@@ -44,13 +48,12 @@ class SettingInterface(ScrollArea):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.parent = parent
         self.scrollWidget = QWidget()
         self.expandLayout = ExpandLayout(self.scrollWidget)
 
         self.progressBar = ProgressBar(self)
         self.progressBar.setVisible(False)
-
-        self.update_success = False
 
         # setting label
         self.settingLabel = QLabel(self.tr("Settings"), self)
@@ -125,7 +128,7 @@ class SettingInterface(ScrollArea):
             FIF.GLOBE,
             '代理端口',
             "如‘7890’",
-            '设置你的代理端口，方便连接至github',
+            '如果选择开代理则需要填入代理端口，不开代理则置空',
             self.aboutGroup
         )
         self.feedbackCard = PrimaryPushSettingCard(
@@ -229,7 +232,10 @@ class SettingInterface(ScrollArea):
                     pass
             elif latest_version is None:
                 title = '未获取到最新版本信息'
-                content = f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确'
+                if config.update_proxies.value:
+                    content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
+                else:
+                    content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
                 massage_box = MessageBox(title, content, self.window())
                 if massage_box.exec():
                     pass
@@ -245,7 +251,10 @@ class SettingInterface(ScrollArea):
                     pass
         except Exception as e:
             title = '网络错误'
-            content = f'端口{config.update_proxies.value}无法连接至github，请检查你的网络，确保你的代理设置正确'
+            if config.update_proxies.value:
+                content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
+            else:
+                content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
             massage_box = MessageBox(title, content, self.window())
             if massage_box.exec():
                 pass
@@ -259,31 +268,29 @@ class SettingInterface(ScrollArea):
         self.progressBar.setVisible(True)
         self.updating_thread = UpdatingThread(updater)
         signalBus.checkUpdateSig.connect(self.update_progress)
-        self.updating_thread.finished.connect(self.update_finished)
+        self.updating_thread.finished.connect(partial(self.update_finished, updater.download_file_path))
         self.updating_thread.start()
 
     def update_progress(self, value):
         """ Update the progress bar """
         self.progressBar.setValue(value)
-        if value >= 98:
-            self.update_success = True
 
-    def update_finished(self):
+    def update_finished(self, zip_path):
         """ Hide progress bar and show completion message """
         self.progressBar.setVisible(False)
-        if self.update_success:
+        if os.path.exists(zip_path):
             # todo 实现自动重启更新
-            InfoBar.success(
-                '更新下载完成',
-                '请到助手目录下的“temp”文件夹中剪切解压好的文件到exe目录下',
-                isClosable=True,
-                duration=-1,
-                parent=self
-            )
+            title = '更新完成'
+            content = f'压缩包已下载至{zip_path}，是否重启更新？'
+            massage_box = MessageBox(title, content, self.window())
+            massage_box.cancelButton.isVisible(False)
+            if massage_box.exec():
+                subprocess.Popen([sys.executable, 'update.py', zip_path])
+                self.parent.close()
         else:
             InfoBar.error(
                 '更新下载失败',
-                '请前往github自行下载release，或者去群里找最新文件下载',
+                f'请前往github/gitee自行下载release，或者去群{QQ}找最新文件下载',
                 isClosable=True,
                 duration=-1,
                 parent=self

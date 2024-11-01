@@ -11,6 +11,8 @@
 ![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/LaoZhuJackson/SnowbreakAutoAssistant/total)
 [![Static Badge](https://img.shields.io/badge/QQ%E7%BE%A4-996710620-purple)](https://qm.qq.com/q/CIvpwI3qVy)
+
+简体中文 | <a href="docs/README_en.md">English</a>
 </div>
 
 ## 目前已实现自动化的部分（日常操作已经全部完成）
@@ -45,4 +47,5 @@
 - maa明日方舟助手 https://github.com/MaaAssistantArknights/MaaAssistantArknights
 - 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 ## 赞助
-![support.png](asset%2Fsupport.png)
+
+<img src="./asset/support.png" width="200"/>
