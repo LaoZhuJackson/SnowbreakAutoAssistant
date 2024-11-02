@@ -188,7 +188,7 @@ class MainWindow(MSFluentWindow):
         view = FlyoutView(
             title="赞助作者",
             content="如果这个助手帮助到你，可以考虑赞助作者一杯奶茶(>ω･* )ﾉ",
-            image="asset/support.png",
+            image="app/resource/images/support.png",
             isClosable=True,
         )
         view.widgetLayout.insertSpacing(1, 5)
@@ -208,7 +208,7 @@ class MainWindow(MSFluentWindow):
         for w in interfaces:
             if w.objectName() == routeKey:
                 self.stackedWidget.setCurrentWidget(w, False)
-                w.scrollToCard(index)
+                # w.scrollToCard(index)
 
     def save_log(self):
         """保存所有log到txt中"""
