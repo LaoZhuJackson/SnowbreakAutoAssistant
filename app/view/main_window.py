@@ -2,6 +2,7 @@
 import os.path
 import re
 import subprocess
+import threading
 
 import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
@@ -71,7 +72,9 @@ class MainWindow(MSFluentWindow):
         if config.CheckBox_auto_open_starter.value:
             self.open_starter()
         if config.checkUpdateAtStartUp.value:
-            QTimer.singleShot(100, lambda: self.check_update())
+            # QTimer.singleShot(100, lambda: self.check_update())
+            update_thread = threading.Thread(target=self.check_update)
+            update_thread.start()
 
 
     def open_starter(self):

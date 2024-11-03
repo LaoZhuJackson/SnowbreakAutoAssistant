@@ -52,7 +52,8 @@ class GetRewardModule:
     def receive_mail(self):
         auto.click_element("app/resource/images/reward/mail.png", "image", threshold=0.7, max_retries=3,
                            action="move_click")
-        auto.click_element("批量领取", "text", crop=(270/1920, 973/1080, 228/1920, 65/1080), include=True, max_retries=3,
+        auto.click_element("批量领取", "text", crop=(270 / 1920, 973 / 1080, 228 / 1920, 65 / 1080), include=True,
+                           max_retries=3,
                            action="move_click")
         auto.back_to_home()
 
@@ -63,6 +64,7 @@ class GetRewardModule:
         auto.click_element("新星开拓", "text", include=False, max_retries=3, action="move_click")
         time.sleep(0.5)
         auto.click_element("开拓目标", "text", include=False, max_retries=3, action="move_click")
-        auto.click_element("键领取", "text", include=False, max_retries=3, action="move_click")
-        auto.click_element("获得道具", "text", include=False, max_retries=3, action="move_click")
+        if auto.click_element("键领取", "text", include=True, crop=(0, 917 / 1080, 261 / 1920, 158 / 1080),
+                              max_retries=3, action="move_click"):
+            auto.click_element("获得道具", "text", include=False, max_retries=3, action="move_click")
         auto.back_to_home()

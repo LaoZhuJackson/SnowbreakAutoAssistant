@@ -56,7 +56,8 @@ class ShoppingModule:
     def open_store():
         # while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.7):
         while not auto.find_element("常规物资", "text", crop=(91 / 1920, 134 / 1080, 130 / 1920, 67 / 1080)):
-            auto.click_element("商店", "text", max_retries=3)
+            auto.click_element("商店", "text", max_retries=1, action="move_click",
+                               crop=(1750 / 1920, 988 / 1080, 109 / 1920, 83 / 1080))
         # 等待商店动画
         time.sleep(0.2)
         auto.click_element("提取物", "text", include=True, crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080),
@@ -100,7 +101,8 @@ class ShoppingModule:
                         text = self.person_dic_re[key]
                     else:
                         text = self.weapon_dic_re[key]
-                    if auto.click_element(text, "text", include=True, action="move_click"):
+                    if auto.click_element(text, "text", include=True, action="move_click",
+                                          crop=(298 / 1920, 192 / 1080, 1582 / 1920, 823 / 1080)):
                         time.sleep(0.2)
                         auto.click_element("购买", "text", include=False,
                                            crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),

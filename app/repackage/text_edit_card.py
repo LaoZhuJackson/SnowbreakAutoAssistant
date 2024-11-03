@@ -43,8 +43,7 @@ class TextEditCard(SettingCard):
     def __textChanged(self):
         try:
             text = self.line_edit.text()
-            if text:
-                self.setValue(text)
+            self.setValue(text)
             # self.textChanged.emit(text)
         except Exception as e:
             print(e)
@@ -59,6 +58,6 @@ class TextEditCard(SettingCard):
     def setValue(self, text: str):
         try:
             qconfig.set(self.configItem, text)
-            print(f"执行setValue:{qconfig.get(self.configItem)}")
+            # print(f"执行setValue:{qconfig.get(self.configItem)}")
         except Exception as e:
             print(e)
