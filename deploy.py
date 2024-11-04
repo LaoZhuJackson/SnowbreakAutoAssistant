@@ -41,6 +41,18 @@ try:
 except subprocess.CalledProcessError as e:
     print("An error occurred during Nuitka compilation:", e.stderr)
 
+# 删除指定文件夹及其子文件夹
+folders_to_delete = [
+    Path("dist/main.build"),
+    Path("dist/main.dist"),
+    Path("dist/main.onefile-build")
+]
+
+for folder in folders_to_delete:
+    if folder.exists() and folder.is_dir():
+        rmtree(folder)
+        print(f"Deleted folder: {folder}")
+
 # 复制文件和文件夹
 src_dest_pairs = [
     (Path("app/resource/images"), Path("dist/app/resource/images")),
@@ -58,12 +70,14 @@ def create_zip_with_exclusions(output_filename, source_dir, exclusions):
     with zipfile.ZipFile(output_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for foldername, subfolders, filenames in os.walk(source_dir):
             # 检查是否在排除的文件夹路径中
-            if any(Path(foldername).resolve().match(excl) for excl in exclusions):
+            if any(e in str(Path(foldername)) for e in exclusions):
+                print(f"压缩排除：{foldername}")
                 continue
             for filename in filenames:
                 file_path = Path(foldername) / filename
                 # 检查是否是排除的文件
                 if any(file_path.resolve().match(excl) for excl in exclusions):
+                    print(f"压缩排除：{file_path}")
                     continue
                 zipf.write(file_path, file_path.relative_to(source_dir))
 
@@ -71,7 +85,7 @@ def create_zip_with_exclusions(output_filename, source_dir, exclusions):
 # 设置打包输出文件名和排除列表
 output_filename = f"SAA_{config.version.value}.zip"
 source_dir = Path("dist")
-exclusions = ["dist/AppData/config.json", "dist/APP/common/*"]
+exclusions = ["dist\\AppData\\config.json", "dist\\app\\common", "dist\\log"]
 
 # 打包
 create_zip_with_exclusions(output_filename, source_dir, exclusions)
