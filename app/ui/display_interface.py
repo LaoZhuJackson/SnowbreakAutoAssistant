@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import (
 )
 from qfluentwidgets import ScrollArea, FluentIcon
 
-from app.common.setting import VERSION, REPO_URL, GITHUB_FEEDBACK_URL
+from app.common.config import config
+from app.common.setting import REPO_URL, GITHUB_FEEDBACK_URL
 from app.common.style_sheet import StyleSheet
 
 from app.repackage.link_card import LinkCardView
@@ -29,7 +30,7 @@ class BannerWidget(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         # 大标题
         self.galleryLabel = QLabel(
-            f'尘白自动化助手 {VERSION}\nSnowbreak Auto Assistant', self
+            f'尘白自动化助手 {config.version.value}\nSnowbreak Auto Assistant', self
         )
         self.galleryLabel.setStyleSheet(
             "color: #ECF9F8;font-size: 30px; font-weight: 600;"

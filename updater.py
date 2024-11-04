@@ -12,7 +12,6 @@ import requests
 from tqdm import tqdm
 
 from app.common.config import config
-from app.common.setting import VERSION
 from app.common.signal_bus import signalBus
 
 
@@ -21,11 +20,11 @@ class Updater:
         self.progress_callback = None
 
         self.log_widget = log_widget
-        self.current_version = VERSION
+        self.current_version = config.version.value
         self.latest_version = None
         self.api_urls = [
             "https://gitee.com/laozhu520/auto_chenbai/releases/latest",
-            # "https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
+            "https://api.github.com/repos/LaoZhuJackson/SnowbreakAutoAssistant/releases/latest",
         ]
         # 设置代理
         if config.update_proxies.value:

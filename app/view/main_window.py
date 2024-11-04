@@ -21,7 +21,6 @@ from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.ppOCR import ocr_installer, ocr
-from ..common.setting import VERSION
 from ..common.signal_bus import signalBus
 from ..modules.automation import auto
 from ..ui.display_interface import DisplayInterface
@@ -274,7 +273,7 @@ class MainWindow(MSFluentWindow):
     def check_update(self):
         try:
             updater = Updater()
-            current_version = VERSION
+            current_version = config.version.value
             latest_version = updater.latest_version
             if latest_version != current_version and latest_version:
                 title = '发现新版本'

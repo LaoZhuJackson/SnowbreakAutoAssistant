@@ -7,7 +7,7 @@ DEBUG = "__compiled__" not in globals()
 
 YEAR = 2024
 AUTHOR = "LaoZhu"
-VERSION = "v1.1.7"
+# VERSION = "v1.1.8"
 APP_NAME = "SnowbreakAutoAssistant"
 HELP_URL = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant"
 REPO_URL = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant"

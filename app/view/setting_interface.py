@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
 from updater import Updater
 from ..repackage.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
-from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, VERSION, YEAR, QQ
+from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, YEAR, QQ
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
 
@@ -142,7 +142,7 @@ class SettingInterface(ScrollArea):
             self.tr('Check update'),
             "app/resource/images/logo.png",
             self.tr('About'),
-            "本助手免费开源，当前版本：" + VERSION,
+            "本助手免费开源，当前版本：" + config.version.value,
             self.aboutGroup
         )
 
@@ -220,7 +220,7 @@ class SettingInterface(ScrollArea):
     def check_update(self):
         try:
             updater = Updater()
-            current_version = VERSION
+            current_version = config.version.value
             latest_version = updater.latest_version
             if latest_version != current_version and latest_version:
                 title = '发现新版本'
