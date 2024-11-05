@@ -1,8 +1,11 @@
 # coding: utf-8
+import datetime
 import os.path
 import re
 import subprocess
 import threading
+import time
+import traceback
 
 import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
@@ -74,7 +77,6 @@ class MainWindow(MSFluentWindow):
             # QTimer.singleShot(100, lambda: self.check_update())
             update_thread = threading.Thread(target=self.check_update)
             update_thread.start()
-
 
     def open_starter(self):
         windows = pyautogui.getWindowsWithTitle(config.LineEdit_starter_name.value)
@@ -237,19 +239,39 @@ class MainWindow(MSFluentWindow):
                 with open(path, "w", encoding='utf-8') as file:
                     file.write(content)
 
-        log_dir = "./log"
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
+        def clean_old_logs(log_dir, max_files=30):
+            """检查日志文件夹，删除最早的文件以保持最多 `max_files` 个文件"""
+            # 获取所有日志文件并按文件创建时间排序
+            all_logs = [f for f in os.listdir(log_dir) if f.endswith('.html')]
+            all_logs.sort(key=lambda x: os.path.getctime(os.path.join(log_dir, x)))  # 按创建时间排序
+
+            # 如果文件数量超过 max_files，则删除最早的文件
+            if len(all_logs) >= max_files:
+                # 删除最早的文件
+                os.remove(os.path.join(log_dir, all_logs[0]))
+
+        home_log_dir = "./log/home"
+        fishing_log_dir = "./log/fishing"
+        action_log_dir = "./log/action"
+        jigsaw_log_dir = "./log/jigsaw"
+        log_path_list = [home_log_dir, fishing_log_dir, action_log_dir, jigsaw_log_dir]
+        for log_dir in log_path_list:
+            if not os.path.exists(log_dir):
+                os.makedirs(log_dir)
+            else:
+                # 清理旧日志文件（如果存在超过 30 个文件）
+                clean_old_logs(log_dir)
 
         home_log = self.homeInterface.textBrowser_log.toHtml()
         fishing_log = self.additionalInterface.textBrowser_log_fishing.toHtml()
         action_log = self.additionalInterface.textBrowser_log_action.toHtml()
         jigsaw_log = self.additionalInterface.textBrowser_log_jigsaw.toHtml()
 
-        save_html(os.path.join(log_dir, "home_log.html"), home_log)
-        save_html(os.path.join(log_dir, "fishing_log.html"), fishing_log)
-        save_html(os.path.join(log_dir, "action_log.html"), action_log)
-        save_html(os.path.join(log_dir, "jigsaw_log.html"), jigsaw_log)
+        name_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        save_html(os.path.join(home_log_dir, f"home_log_{name_time}.html"), home_log)
+        save_html(os.path.join(fishing_log_dir, f"fishing_log_{name_time}.html"), fishing_log)
+        save_html(os.path.join(action_log_dir, f"action_log_{name_time}.html"), action_log)
+        save_html(os.path.join(jigsaw_log_dir, f"jigsaw_log_{name_time}.html"), jigsaw_log)
 
     def closeEvent(self, a0):
         print("关闭ocr子进程")
@@ -261,6 +283,7 @@ class MainWindow(MSFluentWindow):
             self.save_log()
         except Exception as e:
             print(e)
+            traceback.print_exc()
         super().closeEvent(a0)
 
     def _onThemeChangedFinished(self):
@@ -283,7 +306,11 @@ class MainWindow(MSFluentWindow):
                     w = self.settingInterface
                     self.stackedWidget.setCurrentWidget(w, False)
                     w.scrollToAboutCard()
-                    self.settingInterface.start_download(updater)
+                    try:
+                        self.settingInterface.start_download(updater)
+                    except Exception as e:
+                        print(e)
+                        traceback.print_exc()
                 else:
                     pass
         except Exception as e:

@@ -3,17 +3,23 @@ import sys
 import time
 import traceback
 from functools import partial
+from typing import Union
 
 import cv2
 import numpy as np
-from PyQt5.QtCore import QThread, pyqtSignal
+import pyautogui
+from PyQt5.QtCore import QThread, pyqtSignal, QRect
+from PyQt5.QtGui import QColor, QPixmap, QPainter
 from PyQt5.QtWidgets import QFrame, QWidget, QTextBrowser
-from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit
+from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit, InfoBar
 
 from app.common.config import config
 from app.common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
+from app.common.ppOCR import ocr
+from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.modules.automation import auto
+from app.modules.automation.screenshot import Screenshot
 from app.modules.fishing.fishing import FishingModule
 from app.modules.jigsaw.jigsaw import JigsawModule
 from app.modules.routine_action.routine_action import ActionModule
@@ -82,8 +88,84 @@ class RunAction(SubTask):
 class RunJigsaw(SubTask):
     def __init__(self):
         super().__init__(JigsawModule)
+        self.config_data = config.toDict()
+        self.piece_counts = self.config_data["pieces_num"]
+
+    def update_pieces_num(self):
+        def get_window(title):
+            """
+            获取窗口
+            :param title: 窗口名
+            :return:
+            """
+            windows = pyautogui.getWindowsWithTitle(title)
+            if windows:
+                window = windows[0]
+                return window
+            return False
+
+        def find_num(pos):
+            window = get_window(config.LineEdit_game_name.value)
+            left, top, _, _ = Screenshot.get_window_region(window)
+            offset = (-36, 40)
+            pos = (pos[0] - left + offset[0], pos[1] - top + offset[1])
+            width = 40
+            height = 50
+            crop = ((pos[0] - width) / 1920, pos[1] / 1080, width / 1920, height / 1080)
+            num = None
+            try:
+                screenshot, screenshot_pos, screenshot_scale_factor = Screenshot.take_screenshot(
+                    config.LineEdit_game_name.value, crop=crop)
+                ocr_result = ocr.recognize_multi_lines(np.array(screenshot))
+                # print(f"{ocr_result=}")
+                if not ocr_result:
+                    logger.debug(f"未识别出任何文字")
+                    # screenshot.show()
+                    # input("回车继续")
+                else:
+                    num = int(ocr_result[0][1][0])
+            except Exception as e:
+                logger.error(f"OCR识别失败：{e}")
+            return num
+
+        for i in range(1, 12):
+            key_name = "LineEdit_jigsaw_piece_" + str(i)
+            if i == 1:
+                # 只有第一次需要ocr截图
+                source = auto.click_element(f"app/resource/images/jigsaw/piece_{i}.png", "image", threshold=0.7,
+                                            crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080), action="move")
+            else:
+                source = auto.click_element(f"app/resource/images/jigsaw/piece_{i}.png", "image", threshold=0.7,
+                                            crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080), action="move",
+                                            need_ocr=False)
+            if source:
+                mouse_position = pyautogui.position()
+                source_pos = (mouse_position.x, mouse_position.y)
+                # print(f"{source_pos=}")
+                piece_num = find_num(source_pos)
+                # print(f"{text=}")
+                if piece_num:
+                    self.piece_counts[key_name] = int(piece_num)
+                else:
+                    self.piece_counts[key_name] = -1
+                    InfoBar.error(
+                        'OCR未正确识别',
+                        f'{key_name}号碎片数量未正确识别，请手动输入并取消自动识别后再点击‘开始拼图’',
+                        isClosable=True,
+                        duration=-1,
+                        parent=self
+                    )
+            else:
+                self.piece_counts[key_name] = 0
+        # print(self.piece_counts)
+        signalBus.updatePiecesNum.emit(self.piece_counts)
 
     def sub_task(self):
+        if config.CheckBox_auto_update_pieces_num.value:
+            try:
+                self.update_pieces_num()
+            except Exception as e:
+                traceback.print_exc()
         self.module.run()
 
 
@@ -160,6 +242,7 @@ class Additional(QFrame, Ui_additional_features):
         self.is_running_jigsaw = False
         self.color_pixmap = None
         self.hsv_value = None
+        self.jigsaw_solution_pixmap = None
 
         self._initWidget()
         self._load_config()
@@ -182,7 +265,8 @@ class Additional(QFrame, Ui_additional_features):
             "### 提示\n* 珍奇钓鱼点每天最多钓25次\n* 稀有钓鱼点每天最多钓50次\n* 普通钓鱼点无次数限制\n* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次\n* 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域\n")
         self.BodyLabel_tip_action.setText(
             "### 提示\n自动完成常规行动\n* 不消耗体力\n* 重复刷指定次数实战训练第一关\n* 用于完成凭证20次常规行动周常任务")
-        self.BodyLabel_tip_jigsaw.setText("### 提示\n* 功能未完成，请勿使用")
+        self.BodyLabel_tip_jigsaw.setText(
+            "### 提示\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量")
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
@@ -220,6 +304,9 @@ class Additional(QFrame, Ui_additional_features):
 
         self.PrimaryPushButton_get_color.clicked.connect(self.adjust_color)
         self.PushButton_reset.clicked.connect(self.reset_color)
+
+        signalBus.jigsawDisplaySignal.connect(self.paint_best_solution)
+        signalBus.updatePiecesNum.connect(self.update_pieces_num)
 
     def _connect_to_save_changed(self):
         children_list = get_all_children(self)
@@ -344,10 +431,8 @@ class Additional(QFrame, Ui_additional_features):
             self.PushButton_start_jigsaw.setText("停止拼图")
         else:
             for child in children:
-                if isinstance(child, CheckBox) or isinstance(child, SpinBox):
+                if isinstance(child, CheckBox) or isinstance(child, LineEdit) or isinstance(child, SpinBox):
                     child.setEnabled(True)
-                elif isinstance(child, LineEdit):
-                    pass
             self.PushButton_start_jigsaw.setText("开始拼图")
 
     def set_jigsaw_running(self):
@@ -370,6 +455,11 @@ class Additional(QFrame, Ui_additional_features):
                 text = widget.text()
                 if self.is_valid_format(text):
                     config.set(getattr(config, widget.objectName(), None), text)
+            elif widget.objectName().split('_')[1] == 'jigsaw':
+                text = widget.text()
+                if text == "-1":
+                    text = "0"
+                config.set(getattr(config, widget.objectName(), None), text)
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
 
@@ -427,6 +517,79 @@ class Additional(QFrame, Ui_additional_features):
         self.LineEdit_fish_upper.setText(config.LineEdit_fish_upper.value)
         self.LineEdit_fish_lower.setText(config.LineEdit_fish_lower.value)
         self.update_label_color()
+
+    def paint_best_solution(self, best_solution_board: list):
+        def get_color_for_value(piece_id: int):
+            """根据数组中的值返回相应的颜色"""
+            if piece_id == 1:
+                return QColor(169, 199, 218)
+            elif piece_id == 2:
+                return QColor(162, 164, 216)
+            elif piece_id == 3:
+                return QColor(119, 159, 193)
+            elif piece_id == 4:
+                return QColor(145, 200, 198)
+            elif piece_id == 5:
+                return QColor(181, 206, 156)
+            elif piece_id == 6:
+                return QColor(146, 191, 146)
+            elif piece_id == 7:
+                return QColor(180, 165, 132)
+            elif piece_id == 8:
+                return QColor(214, 217, 132)
+            elif piece_id == 9:
+                return QColor(216, 183, 205)
+            elif piece_id == 10:
+                return QColor(204, 139, 159)
+            elif piece_id == 11:
+                return QColor(156, 162, 198)
+            elif piece_id == -1:
+                return QColor(215, 226, 231)  # 不可用区域
+            else:
+                return QColor(170, 179, 186)
+
+        def generate_pixmap():
+            spacing = 5
+            rows = len(best_solution_board)
+            cols = len(best_solution_board[0])
+            total_height = 400
+
+            # 根据total_height计算每个小方块的高和宽
+            tile_height = tile_width = (total_height - spacing * (rows - 1)) / rows
+            total_width = tile_width * cols + spacing * (cols - 1)
+            pixmap = QPixmap(total_width, total_height)
+            pixmap.fill(QColor(228, 237, 245))  # 设置背景色为白色
+
+            # 在 QPixmap 上绘制
+            painter = QPainter(pixmap)
+            for now in range(rows * cols):
+                x, y = divmod(now, cols)
+                value = best_solution_board[x][y]
+                # 根据值选择颜色
+                color = get_color_for_value(value)
+
+                # 计算每个单元格的位置，考虑间隔
+                x_pos = y * (tile_width + spacing)
+                y_pos = x * (tile_height + spacing)
+
+                rect = QRect(x_pos, y_pos, tile_width, tile_height)
+                painter.fillRect(rect, color)
+            painter.end()
+
+            self.jigsaw_solution_pixmap = pixmap
+            self.PixmapLabel_best_solution.setPixmap(self.jigsaw_solution_pixmap)
+
+        generate_pixmap()
+
+    def update_pieces_num(self, pieces_num: dict):
+        try:
+            for key, value in pieces_num.items():
+                line_edit = self.SimpleCardWidget_jigsaw.findChildren(LineEdit, key)[0]
+                line_edit.setText(str(value))
+                line_edit.editingFinished.emit()
+        except Exception as e:
+            logger.error(e)
+            traceback.print_exc()
 
     def closeEvent(self, event):
         # 恢复原始标准输出

@@ -151,7 +151,6 @@ class PersonModule:
 
     def quick_fight(self, click_pos):
         """
-
         :param click_pos: 格式（（x1,y1），（x2,y2））
         :return:
         """
@@ -166,7 +165,7 @@ class PersonModule:
 
     def corresponding_quick_fight(self, source_pos):
         """
-        找到对应觉得速战
+        找到对应角色的速战
         :param source_pos: 格式（x,y），是相对位置
         :return:如果pos存在且在对应距离内则返回对应位置((x1,y1),(x2,y2))，否则返回None
         """
@@ -176,7 +175,7 @@ class PersonModule:
             x, y = auto.calculate_click_position((top_left, bottom_right))
             # 此时x,y是绝对位置，source_pos是相对游戏窗口左上角的位置，并非屏幕的绝对位置，所以需要转换成绝对位置，将坐标加上窗口左上角坐标做偏移
             source_pos = (source_pos[0] + self.left, source_pos[1] + self.top)
-            print(f"{(x, y)},{source_pos}")
+            # print(f"{(x, y)},{source_pos}")
             distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)
             if distance > 250:
                 print(f"“速战”距离大于350：{distance}")

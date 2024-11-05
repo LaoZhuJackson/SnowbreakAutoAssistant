@@ -135,6 +135,20 @@ class Config(QConfig):
 
     # 常规行动相关
     SpinBox_action_times = ConfigItem("add_action", "SpinBox_action_times", 20)
+    # 信源解析相关
+    SpinBox_max_solutions = ConfigItem("jigsaw", "SpinBox_max_solutions", 10)
+    CheckBox_auto_update_pieces_num = ConfigItem("jigsaw", "CheckBox_auto_update_pieces_num", True, BoolValidator())
+    LineEdit_jigsaw_piece_1 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_1", "0")
+    LineEdit_jigsaw_piece_2 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_2", "0")
+    LineEdit_jigsaw_piece_3 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_3", "0")
+    LineEdit_jigsaw_piece_4 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_4", "0")
+    LineEdit_jigsaw_piece_5 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_5", "0")
+    LineEdit_jigsaw_piece_6 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_6", "0")
+    LineEdit_jigsaw_piece_7 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_7", "0")
+    LineEdit_jigsaw_piece_8 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_8", "0")
+    LineEdit_jigsaw_piece_9 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_9", "0")
+    LineEdit_jigsaw_piece_10 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_10", "0")
+    LineEdit_jigsaw_piece_11 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_11", "0")
 
 
 config = Config()

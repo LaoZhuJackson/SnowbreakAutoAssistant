@@ -8,6 +8,8 @@ class SignalBus(QObject):
     checkUpdateSig = pyqtSignal(int)
     micaEnableChanged = pyqtSignal(bool)
     switchToSampleCard = pyqtSignal(str, int)
+    updatePiecesNum = pyqtSignal(dict)
+    jigsawDisplaySignal = pyqtSignal(list)
 
     # check_ocr_progress = pyqtSignal(int, str)
 

@@ -111,7 +111,7 @@ class Automation(metaclass=SingletonMeta):
                 matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, threshold,
                                                                          scale_range)  # 执行缩放并匹配模板
 
-            self.logger.debug(f"目标图片：{target.replace('./assets/images/', '')} 相似度：{matchVal:.2f}")
+            self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
 
             # # 获取模板图像的宽度和高度
             # template_width = template.shape[1]
@@ -367,7 +367,7 @@ class Automation(metaclass=SingletonMeta):
         source_pos = self.find_source_position(source, source_type, include)
 
         if source_pos is None:
-            self.logger.debug(f"目标内容：{source.replace('./assets/images/', '')} 未找到")
+            self.logger.debug(f"目标内容：{source.replace('app/resource/images/', '')} 未找到")
             return None, None
 
         return self.find_target_near_source(target, include, source_pos, position)
