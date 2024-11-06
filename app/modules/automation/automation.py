@@ -38,6 +38,7 @@ class Automation(metaclass=SingletonMeta):
         self.mouse_down = self.input_handler.mouse_down
         self.mouse_up = self.input_handler.mouse_up
         self.mouse_move = self.input_handler.mouse_move
+        self.drag_mouse = self.input_handler.drag_mouse
         self.mouse_scroll = self.input_handler.mouse_scroll
         self.press_key = self.input_handler.press_key
         self.secretly_press_key = self.input_handler.secretly_press_key

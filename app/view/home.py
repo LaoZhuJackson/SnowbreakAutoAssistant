@@ -13,10 +13,7 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
 
 from ..common.config import config
 from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
-from ..common.setting import ACTIVITY_END_TIME, ACTIVITY_START_TIME, INTEREST_START_TIME, INTEREST_END_TIME, \
-    MAZES_START_TIME, MAZES_END_TIME, ONLINE_CHALLENGE_START_TIME, ONLINE_CHALLENGE_END_TIME, BOSS_CHALLENGE_START_TIME, \
-    BOSS_CHALLENGE_END_TIME, GAME_START_TIME, GAME_END_TIME, \
-    UPPER_START_TIME, UPPER_END_TIME, BOTTOM_START_TIME, BOTTOM_END_TIME
+from ..common.setting import ACTIVITY
 from ..common.style_sheet import StyleSheet
 from ..modules.automation import auto
 from ..modules.chasm.chasm import ChasmModule
@@ -384,11 +381,10 @@ class Home(QFrame, Ui_home):
         # print(index, check_state)
         config.set(getattr(config, f"item_weapon_{index}", None), False if check_state == 0 else True)
 
-    def get_time_difference(self, end_time_str: str, total_day=None, start_time_str=None):
+    def get_time_difference(self, start_time_str: str, end_time_str: str):
         """
         通过给入终止时间获取剩余时间差和时间百分比
         :param start_time_str: 开始时间，格式'2024-12-31'
-        :param total_day: 持续总天数
         :param end_time_str: 结束时间，格式'2024-12-31'
         :return:如果活动过期，则返回None,否则返回时间差，剩余百分比
         """
@@ -396,14 +392,12 @@ class Home(QFrame, Ui_home):
         end_time = datetime.strptime(end_time_str, '%Y-%m-%d')
         # 获取当前日期和时间
         now = datetime.now()
-        # 如果输入了开始日期
-        if start_time_str:
-            start_time = datetime.strptime(start_time_str, '%Y-%m-%d')
-            total_difference = end_time - start_time
-            total_day = total_difference.days
-            if now < start_time:
-                # 将当前日期替换成开始日期
-                now = start_time
+        start_time = datetime.strptime(start_time_str, '%Y-%m-%d')
+        total_difference = end_time - start_time
+        total_day = total_difference.days
+        if now < start_time:
+            # 将当前日期替换成开始日期
+            now = start_time
         # print(end_time)
         # print(now)
         time_difference = end_time - now
@@ -411,21 +405,12 @@ class Home(QFrame, Ui_home):
         if days_remaining < 0:
             return 0, 0
 
-        return days_remaining, (days_remaining / total_day) * 100
+        return days_remaining, (days_remaining / total_day) * 100, days_remaining == total_day
 
     def get_tips(self):
-        tips_dic = {
-            "活动": self.get_time_difference(ACTIVITY_END_TIME, start_time_str=ACTIVITY_START_TIME),
-            "上半卡池": self.get_time_difference(UPPER_END_TIME, start_time_str=UPPER_START_TIME),
-            "下半卡池": self.get_time_difference(BOTTOM_END_TIME, start_time_str=BOTTOM_START_TIME),
-            "趣味关": self.get_time_difference(INTEREST_END_TIME, start_time_str=INTEREST_START_TIME),
-            "迷宫": self.get_time_difference(MAZES_END_TIME, start_time_str=MAZES_START_TIME),
-            "联机挑战": self.get_time_difference(ONLINE_CHALLENGE_END_TIME, start_time_str=ONLINE_CHALLENGE_START_TIME),
-            "boss挑战": self.get_time_difference(BOSS_CHALLENGE_END_TIME, start_time_str=BOSS_CHALLENGE_START_TIME),
-            "积分周常": self.get_time_difference(ONLINE_CHALLENGE_END_TIME, start_time_str=ONLINE_CHALLENGE_START_TIME),
-            "勇者游戏": self.get_time_difference(GAME_END_TIME, start_time_str=GAME_START_TIME),
-            "永续联战": self.get_time_difference(BOSS_CHALLENGE_END_TIME, start_time_str=BOSS_CHALLENGE_START_TIME),
-        }
+        tips_dic = {}
+        for activity in ACTIVITY:
+            tips_dic[activity[0]] = self.get_time_difference(activity[1], activity[2])
         label_children = self.SimpleCardWidget_tips.findChildren(BodyLabel)
         progress_children = self.SimpleCardWidget_tips.findChildren(ProgressBar)
         sorted_label_widgets = sorted(label_children, key=lambda widget: int(widget.objectName().split('_')[-1]))
@@ -440,7 +425,10 @@ class Home(QFrame, Ui_home):
                 if value[0] == 0:
                     sorted_label_widgets[index].setText(f"{key}已结束")
                 else:
-                    sorted_label_widgets[index].setText(f"{key}剩余：{value[0]}天")
+                    if value[2]:
+                        sorted_label_widgets[index].setText(f"{key}未开始")
+                    else:
+                        sorted_label_widgets[index].setText(f"{key}剩余：{value[0]}天")
                 sorted_progress_widgets[index].setValue(value[1])
                 index += 1
         except Exception as e:

@@ -132,10 +132,10 @@ class RunJigsaw(SubTask):
             key_name = "LineEdit_jigsaw_piece_" + str(i)
             if i == 1:
                 # 只有第一次需要ocr截图
-                source = auto.click_element(f"app/resource/images/jigsaw/piece_{i}.png", "image", threshold=0.7,
+                source = auto.click_element(f"app/resource/images/jigsaw/piece_{i}_0.png", "image", threshold=0.7,
                                             crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080), action="move")
             else:
-                source = auto.click_element(f"app/resource/images/jigsaw/piece_{i}.png", "image", threshold=0.7,
+                source = auto.click_element(f"app/resource/images/jigsaw/piece_{i}_0.png", "image", threshold=0.7,
                                             crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080), action="move",
                                             need_ocr=False)
             if source:
@@ -266,13 +266,21 @@ class Additional(QFrame, Ui_additional_features):
         self.BodyLabel_tip_action.setText(
             "### 提示\n自动完成常规行动\n* 不消耗体力\n* 重复刷指定次数实战训练第一关\n* 用于完成凭证20次常规行动周常任务")
         self.BodyLabel_tip_jigsaw.setText(
-            "### 提示\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量")
+            "### 提示\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量\n* 使用自动获取碎片数量需要保证所有碎片没有被旋转过（如果旋转过就重新进一次信源解析界面）")
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
         # self.PixmapLabel.setStyleSheet()
         # self.PixmapLabel.setPixmap(self.color_pixmap)
         StyleSheet.ADDITIONAL_FEATURES_INTERFACE.apply(self)
+        # 初始化拼图结果
+        self.paint_best_solution([
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+        ])
 
     def _load_config(self):
         for widget in self.findChildren(QWidget):

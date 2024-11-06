@@ -4,7 +4,6 @@ from pathlib import Path
 # change DEBUG to False if you want to compile the code to exe
 DEBUG = "__compiled__" not in globals()
 
-
 YEAR = 2024
 AUTHOR = "LaoZhu"
 # VERSION = "v1.1.8"
@@ -16,37 +15,18 @@ GITHUB_FEEDBACK_URL = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/i
 DOC_URL = "https://qfluentwidgets.com/"
 QQ = "996710620"
 
-# 活动起止时间
-ACTIVITY_START_TIME = '2024-9-26'
-ACTIVITY_END_TIME = '2024-11-7'
-
-# 趣味关起止时间
-INTEREST_START_TIME = '2024-9-26'
-INTEREST_END_TIME = '2024-10-21'
-
-# 悖论迷宫起止时间
-MAZES_START_TIME = '2024-10-10'
-MAZES_END_TIME = '2024-10-31'
-
-# 联机挑战关、积分周常起止时间
-ONLINE_CHALLENGE_START_TIME = '2024-10-14'
-ONLINE_CHALLENGE_END_TIME = '2024-10-28'
-
-# boss挑战关、永续联战起止时间
-BOSS_CHALLENGE_START_TIME = '2024-9-30'
-BOSS_CHALLENGE_END_TIME = '2024-10-14'
-
-# 勇者游戏起止时间
-GAME_START_TIME = '2024-10-24'
-GAME_END_TIME = '2024-11-7'
-
-# 上半卡池
-UPPER_START_TIME = '2024-9-26'
-UPPER_END_TIME = '2024-10-26'
-
-# 下半卡池
-BOTTOM_START_TIME = '2024-10-17'
-BOTTOM_END_TIME = '2024-11-7'
+ACTIVITY = [
+    ["活动", "2024-11-7", "2024-12-19"],
+    ["上半卡池", "2024-11-7", "2024-12-19"],
+    ["下半卡池", "2024-11-28", "2024-12-19"],
+    ["肉鸽挑战", "2024-11-7", "2024-12-16"],
+    ["趣味关", "2024-12-5", "2024-12-19"],
+    ["boss挑战", "2024-11-11", "2024-11-25"],
+    ["火线突击", "2024-11-11", "2024-11-25"],
+    ["积分周常", "2024-11-18", "2024-12-2"],
+    ["绝地防线", "2024-11-25", "2024-12-9"],
+    ["勇者游戏", "2024-12-2", "2024-12-16"],
+]
 
 CONFIG_FOLDER = Path('AppData').absolute()
 CONFIG_FILE = CONFIG_FOLDER / "config.json"

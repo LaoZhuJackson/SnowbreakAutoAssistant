@@ -535,7 +535,7 @@
                             <item row="1" column="0" colspan="3">
                                 <widget class="CheckBox" name="CheckBox_auto_update_pieces_num">
                                     <property name="text">
-                                        <string>是否自动识别每个碎片数量</string>
+                                        <string>是否自动获取当前碎片数量</string>
                                     </property>
                                 </widget>
                             </item>

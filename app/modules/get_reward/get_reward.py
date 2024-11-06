@@ -9,12 +9,12 @@ class GetRewardModule:
         pass
 
     def run(self):
+        if config.CheckBox_mail.value:
+            self.receive_mail()
+            time.sleep(0.5)
         self.receive_work()
         time.sleep(0.5)
         self.receive_credential()
-        if config.CheckBox_mail.value:
-            time.sleep(0.5)
-            self.receive_mail()
         if config.CheckBox_fish_bait.value:
             time.sleep(0.5)
             self.receive_fish_bait()
@@ -39,15 +39,16 @@ class GetRewardModule:
         auto.back_to_home()
 
     def receive_credential(self):
-        auto.click_element("凭证", "text", include=True, max_retries=3, action="move_click")
-        auto.click_element("每日任务", "text", include=False, max_retries=3, action="move_click")
-        if auto.click_element("键领取", "text", include=True, crop=(0, 950 / 1080, 295 / 1920, 123 / 1080),
-                              action="move_click"):
-            auto.press_key("esc")
-        auto.click_element("奖励", "text", include=False, max_retries=3, action="move_click")
-        if auto.click_element("键领取", "text", include=True, action="move_click"):
-            auto.press_key("esc")
-        auto.back_to_home()
+        if auto.click_element("凭证", "text", include=True, max_retries=3, action="move_click",
+                              crop=(231 / 1920, 545 / 1080, 175 / 1920, 66 / 1080)):
+            auto.click_element("每日任务", "text", include=False, max_retries=3, action="move_click")
+            if auto.click_element("键领取", "text", include=True, crop=(0, 950 / 1080, 295 / 1920, 123 / 1080),
+                                  action="move_click"):
+                auto.press_key("esc")
+            auto.click_element("奖励", "text", include=False, max_retries=3, action="move_click")
+            if auto.click_element("键领取", "text", include=True, action="move_click"):
+                auto.press_key("esc")
+            auto.back_to_home()
 
     def receive_mail(self):
         auto.click_element("app/resource/images/reward/mail.png", "image", threshold=0.7, max_retries=3,

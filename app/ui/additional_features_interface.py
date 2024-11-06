@@ -336,7 +336,7 @@ class Ui_additional_features(object):
         self.BodyLabel_14.setText(_translate("additional_features", "5号碎片"))
         self.BodyLabel_15.setText(_translate("additional_features", "6号碎片"))
         self.BodyLabel_9.setText(_translate("additional_features", "当前用户碎片数量："))
-        self.CheckBox_auto_update_pieces_num.setText(_translate("additional_features", "是否自动识别每个碎片数量"))
+        self.CheckBox_auto_update_pieces_num.setText(_translate("additional_features", "是否自动获取当前碎片数量"))
         self.PushButton_start_jigsaw.setText(_translate("additional_features", "开始拼图"))
         self.TitleLabel_log_jigsaw.setText(_translate("additional_features", "日志"))
 

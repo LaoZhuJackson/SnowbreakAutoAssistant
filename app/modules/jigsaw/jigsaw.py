@@ -1,7 +1,9 @@
 import copy
+import time
 
 import numpy as np
 import pyautogui
+import pydirectinput
 from qfluentwidgets import InfoBar
 
 from app.common.config import config
@@ -86,6 +88,11 @@ boards = {
            [0, 0, -1, -1, 0, 0],
            [0, 0, 0, 0, 0, 0],
            [0, 0, 0, 0, 0, 0]],
+    "16": [[0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0]],
 }
 # 每个拼图块及其旋转变体
 pieces = [
@@ -97,13 +104,13 @@ pieces = [
     ],
     [
         [
-            [2, 2, 2, 2]
-        ],
-        [
             [2],
             [2],
             [2],
             [2]
+        ],
+        [
+            [2, 2, 2, 2]
         ]
     ],
     [
@@ -130,6 +137,11 @@ pieces = [
     ],
     [
         [
+            [0, 5],
+            [0, 5],
+            [5, 5]
+        ],
+        [
             [5, 0, 0],
             [5, 5, 5]
         ],
@@ -142,16 +154,16 @@ pieces = [
             [5, 5, 5],
             [0, 0, 5]
         ],
-        [
-            [0, 5],
-            [0, 5],
-            [5, 5]
-        ]
     ],
     [
         [
-            [0, 0, 6],
-            [6, 6, 6]
+            [6, 0],
+            [6, 0],
+            [6, 6]
+        ],
+        [
+            [6, 6, 6],
+            [6, 0, 0]
         ],
         [
             [6, 6],
@@ -159,33 +171,28 @@ pieces = [
             [0, 6]
         ],
         [
-            [6, 6, 6],
-            [6, 0, 0]
-        ],
-        [
-            [6, 0],
-            [6, 0],
-            [6, 6]
+            [0, 0, 6],
+            [6, 6, 6]
         ]
     ],
     [
-        [
-            [0, 7, 0],
-            [7, 7, 7]
-        ],
         [
             [7, 7, 7],
             [0, 7, 0]
         ],
         [
-            [7, 0],
-            [7, 7],
-            [7, 0]
-        ],
-        [
             [0, 7],
             [7, 7],
             [0, 7]
+        ],
+        [
+            [0, 7, 0],
+            [7, 7, 7]
+        ],
+        [
+            [7, 0],
+            [7, 7],
+            [7, 0]
         ]
     ],
     [
@@ -202,30 +209,30 @@ pieces = [
     ],
     [
         [
-            [10, 10]
-        ],
-        [
             [10],
             [10]
+        ],
+        [
+            [10, 10]
         ]
     ],
     [
         [
-            [11, 11],
             [11, 0],
+            [11, 11]
         ],
         [
             [11, 11],
+            [11, 0]
+        ],
+        [
+            [11, 11],
+            [0, 11]
+        ],
+        [
             [0, 11],
-        ],
-        [
-            [0, 11],
-            [11, 11],
-        ],
-        [
-            [11, 0],
-            [11, 11],
-        ],
+            [11, 11]
+        ]
     ]
 ]
 
@@ -254,40 +261,56 @@ class JigsawModule:
         self.used_pieces = []  # 存储单次方案中已放置的块编号，以及它的旋转状态，放置位置
         self.piece_priority = []
         self.solutions_score = [0] * config.SpinBox_max_solutions.value  # 存储每个方案的得分
+        self.board_top_left = []  # 拼图板左上角坐标
+        self.board_bottom_right = []  # 拼图板右下角坐标
 
     def run(self):
-        self.identify_board()
-        if self.board:
-            self.update_pieces_num()
-            self.update_priority()
-            self.fill_board(config.SpinBox_max_solutions.value)
-            # print("填充后的 board:")
-            # for row in self.board:
-            #     print(row)
-            if self.piece_solution:
-                # print("最后的solution")
-                # print(self.piece_solution)
-                best_solution = self.give_score_and_display_best()
-                if len(self.piece_solution) < config.SpinBox_max_solutions.value:
-                    logger.warn(
-                        f'目前总共只有{len(self.piece_solution)}种能填满全部格子的方案，不足{config.SpinBox_max_solutions.value}')
-                self.place_jigsaw(best_solution)
+        for i in range(3):
+            self.identify_board()
+            if self.board:
+                self.update_pieces_num()
+                self.update_priority()
+                self.fill_board(config.SpinBox_max_solutions.value)
+                if self.piece_solution:
+                    best_solution = self.give_score_and_display_best()
+                    if len(self.piece_solution) < config.SpinBox_max_solutions.value:
+                        logger.warn(
+                            f'目前总共只有{len(self.piece_solution)}种能填满全部格子的方案，不足{config.SpinBox_max_solutions.value}')
+                    if self.place_jigsaw(best_solution):
+                        if self.after_place():
+                            if auto.click_element("继续", "text", include=True, max_retries=3, action="move_click"):
+                                continue
+                            else:
+                                auto.click_element("退出", "text", include=True, max_retries=3, action="move_click")
+                                break
+                        else:
+                            break
+                    else:
+                        logger.error("未能正确拼完，可以按照给出的最优方案手动拼完")
+                        break
+                else:
+                    logger.warn("没有找到能填满全部格子的方案")
             else:
-                logger.warn("没有找到能填满全部格子的方案")
-        else:
-            logger.error("未识别出对应的地图")
+                logger.error("未识别出对应的地图")
+                break
 
     def identify_board(self):
         """判断当前board是哪个"""
-        for i in range(1, 4):
-            if auto.find_element(f"app/resource/images/jigsaw/{i}.png", "image", threshold=0.7,
-                                 crop=(596 / 1920, 203 / 1080, 901 / 1920, 718 / 1080)):
-                # 需要deepcopy,不然下次不更新
-                self.board = copy.deepcopy(boards[str(i)])
-                # 获取board的长宽信息
-                self.board_rows = len(self.board)
-                self.board_cols = len(self.board[0])
-                break
+        for i in range(1, 17):
+            try:
+                result = auto.find_element(f"app/resource/images/jigsaw/{i}.png", "image", threshold=0.7,
+                                           crop=(596 / 1920, 203 / 1080, 901 / 1920, 718 / 1080))
+                if result:
+                    # 更新左上角坐标
+                    self.board_top_left, self.board_bottom_right = result
+                    # 需要deepcopy,不然下次不更新
+                    self.board = copy.deepcopy(boards[str(i)])
+                    # 获取board的长宽信息
+                    self.board_rows = len(self.board)
+                    self.board_cols = len(self.board[0])
+                    break
+            except Exception as e:
+                pass
 
     def place_piece(self, x, y, piece_id: int, rotation: int, mark: bool):
         """
@@ -462,6 +485,151 @@ class JigsawModule:
         return self.piece_solution[best_score_index]
 
     def place_jigsaw(self, best_solution):
-        print("最优方案放置方法：")
+        path_dict = {
+            "1": ["app/resource/images/jigsaw/piece_1_0.png"],
+            "2": ["app/resource/images/jigsaw/piece_2_0.png", "app/resource/images/jigsaw/piece_2_1.png",
+                  "app/resource/images/jigsaw/piece_2_2.png", "app/resource/images/jigsaw/piece_2_3.png"],
+            "3": ["app/resource/images/jigsaw/piece_3_0.png", "app/resource/images/jigsaw/piece_3_1.png",
+                  "app/resource/images/jigsaw/piece_3_2.png", "app/resource/images/jigsaw/piece_3_3.png"],
+            "4": ["app/resource/images/jigsaw/piece_4_0.png", "app/resource/images/jigsaw/piece_4_1.png",
+                  "app/resource/images/jigsaw/piece_4_2.png", "app/resource/images/jigsaw/piece_4_3.png"],
+            "5": ["app/resource/images/jigsaw/piece_5_0.png", "app/resource/images/jigsaw/piece_5_1.png",
+                  "app/resource/images/jigsaw/piece_5_2.png", "app/resource/images/jigsaw/piece_5_3.png"],
+            "6": ["app/resource/images/jigsaw/piece_6_0.png", "app/resource/images/jigsaw/piece_6_1.png",
+                  "app/resource/images/jigsaw/piece_6_2.png", "app/resource/images/jigsaw/piece_6_3.png"],
+            "7": ["app/resource/images/jigsaw/piece_7_0.png", "app/resource/images/jigsaw/piece_7_1.png",
+                  "app/resource/images/jigsaw/piece_7_2.png", "app/resource/images/jigsaw/piece_7_3.png"],
+            "8": ["app/resource/images/jigsaw/piece_8_0.png"],
+            "9": ["app/resource/images/jigsaw/piece_9_0.png"],
+            "10": ["app/resource/images/jigsaw/piece_10_0.png", "app/resource/images/jigsaw/piece_10_1.png"],
+            "11": ["app/resource/images/jigsaw/piece_11_0.png", "app/resource/images/jigsaw/piece_11_1.png",
+                   "app/resource/images/jigsaw/piece_11_2.png", "app/resource/images/jigsaw/piece_11_3.png"],
+        }
+
+        def calculate_grid_centers(top_left, bottom_right, grid_size=128):
+            x1, y1 = top_left
+            x2, y2 = bottom_right
+            # 计算网格的行数和列数
+            num_rows = (y2 - y1) // grid_size
+            num_cols = (x2 - x1) // grid_size
+
+            # 创建二维列表存储每个网格的中心点
+            grid_centers = []
+
+            # 逐行逐列计算每个网格的中心点坐标
+            for row in range(num_rows):
+                row_centers = []
+                for col in range(num_cols):
+                    center_x = x1 + col * grid_size + grid_size // 2
+                    center_y = y1 + row * grid_size + grid_size // 2
+                    row_centers.append((center_x, center_y))
+                grid_centers.append(row_centers)
+
+            return grid_centers
+
+        def find_and_click(p_id, state):
+            """找到当前步骤需要拖拽的拼图块，并点击选中，为接下来旋转做准备"""
+            for index, path in enumerate(path_dict[p_id]):
+                if auto.click_element(path, "image", threshold=0.75,
+                                      crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080),
+                                      action="move"):
+                    now_rotation_state = index
+                    # 计算需要点击的旋转次数,+len确保非负
+                    if (p_id == "2" or p_id == "3" or p_id == "4") and now_rotation_state == 3:
+                        times = (state - 1 + len(path_dict[p_id])) % len(path_dict[p_id])
+                    elif (p_id == "2" or p_id == "3" or p_id == "4") and now_rotation_state == 4:
+                        times = (state - 2 + len(path_dict[p_id])) % len(path_dict[p_id])
+                    else:
+                        times = (state - now_rotation_state + len(path_dict[p_id])) % len(path_dict[p_id])
+                    return times, now_rotation_state
+            return None, None
+
+        def drag_piece(end_x, end_y, id, rotation_state):
+            """根据id和移动状态给出对应的偏移后坐标后拖动"""
+            grid_size = 128
+            offset_dict = {
+                "1": [[0.5, 0.5]],
+                "2": [[0.25, 1.5], [1.5, 0]],
+                "3": [[1.25, 0.5], [0.5, 1.25]],
+                "4": [[1, 0.5], [0.5, 1.25]],
+                "5": [[0.5, 1], [1.25, 0.5], [0.5, 1], [1.25, 0.5]],
+                "6": [[0.5, 1], [1.5, 0.5], [0.5, 1], [1.5, 0.5]],
+                "7": [[1, 0.5], [0.75, 1.75], [1, 0.5], [0.75, 0.25]],
+                "8": [[1.25, 1]],
+                "9": [[0.25, 0]],
+                "10": [[0, 0.5], [0.5, 0]],
+                "11": [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]
+            }
+            # 加入偏移量
+            end_x += offset_dict[id][rotation_state][0] * grid_size
+            end_y += offset_dict[id][rotation_state][1] * grid_size
+            now_point = pyautogui.position()
+            time.sleep(0.5)
+            pydirectinput.mouseDown()
+            pyautogui.moveTo(now_point.x + 250, now_point.y, duration=2)
+            pyautogui.moveTo(end_x - 50, end_y)
+            pyautogui.moveRel(50, 0, duration=2)
+            time.sleep(0.5)
+            pydirectinput.mouseUp()
+
+        # print("最优方案放置方法：")
+        # for piece in best_solution:
+        #     print(f"Piece {piece[0]} 经过 {piece[1]} 次旋转后放置在行 {piece[2]}, 列 {piece[3]}")
+        grid_point = calculate_grid_centers(self.board_top_left, self.board_bottom_right)
         for piece in best_solution:
-            print(f"Piece {piece[0]} 经过 {piece[1]} 次旋转后放置在行 {piece[2]}, 列 {piece[3]}")
+            piece_id = piece[0]
+            # 滚动鼠标滚轮调整到对应位置
+            auto.click_element("00", "text", include=True, crop=(148 / 1920, 70 / 1080, 69 / 1920, 37 / 1080),
+                               offset=(65, 369), action="move")
+            time.sleep(0.5)
+            if piece_id == "11":
+                auto.mouse_scroll(1, -500)
+                # pyautogui.dragRel(0, -300, button="left", duration=1)
+            else:
+                # pyautogui.dragRel(0, 300, button="left", duration=1)
+                auto.mouse_scroll(1, 500)
+            need_rotation_state = piece[1]
+            place_row = piece[2]
+            place_col = piece[3]
+            click_times, now_state = find_and_click(piece_id, need_rotation_state)
+            print(f"piece{piece_id}旋转次数:{click_times},当前状态：{now_state}")
+            # 旋转到对应状态
+            if click_times is not None:
+                threshold = 0.75
+                # 旋转到需要的状态
+                if click_times > 0:
+                    for i in range(click_times):
+                        # print(f"当前状态：{now_state}")
+                        while not auto.find_element(
+                                f"app/resource/images/jigsaw/piece_{piece_id}_{(now_state + 1) % len(path_dict[piece_id])}.png",
+                                "image",
+                                threshold=threshold, crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080)):
+                            auto.click_element(f"app/resource/images/jigsaw/piece_{piece_id}_{now_state}.png", "image",
+                                               threshold=0.75, crop=(76 / 1920, 128 / 1080, 338 / 1920, 855 / 1080),
+                                               action="move_click")
+                        now_state = (now_state + 1) % len(path_dict[piece_id])
+                        time.sleep(0.3)
+                else:
+                    pass
+                # 拖到对应位置
+                drag_piece(grid_point[place_row][place_col][0], grid_point[place_row][place_col][1], piece_id,
+                           now_state)
+            else:
+                logger.error(f"未识别出旋转状态：piece_{piece_id}_{need_rotation_state},跳过该拼图块")
+                continue
+
+        if auto.find_element("00", "text", include=True, crop=(1652 / 1920, 160 / 1080, 144 / 1920, 79 / 1080),
+                             max_retries=2):
+            return True
+        return False
+
+    def after_place(self):
+        if auto.click_element("完美研析", "text", include=True, max_retries=3,
+                              crop=(1667 / 1920, 1008 / 1080, 150 / 1920, 43 / 1080), action="move_click"):
+            auto.click_element("确定", "text", include=True, max_retries=3,
+                               crop=(1355 / 1920, 732 / 1080, 198 / 1920, 70 / 1080), action="move_click")
+            if auto.click_element("领取", "text", include=True, max_retries=3,
+                                  crop=(894 / 1920, 940 / 1080, 149 / 1920, 56 / 1080), action="move_click"):
+                auto.press_key("esc")
+                return True
+        return False
