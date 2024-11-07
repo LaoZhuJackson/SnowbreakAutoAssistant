@@ -60,7 +60,8 @@ class UseStaminaModule:
         return has_colon
 
     def by_maneuver(self):
-        auto.click_element("app/resource/images/use_power/entrance.png", "image", max_retries=5, action="move_click")
+        auto.click_element("app/resource/images/use_power/entrance.png", "image", max_retries=5, action="move_click",
+                           crop=(1351 / 1920, 403 / 1080, 203 / 1920, 176 / 1080))
         # 等待动画
         time.sleep(1)
         auto.click_element("材料", "text", include=True, max_retries=3, action="move_click")
