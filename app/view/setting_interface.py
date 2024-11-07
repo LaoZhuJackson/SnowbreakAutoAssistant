@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
 from updater import Updater
 from ..repackage.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
-from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, YEAR, QQ
+from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, YEAR, QQ, VERSION
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
 
@@ -142,7 +142,7 @@ class SettingInterface(ScrollArea):
             self.tr('Check update'),
             "app/resource/images/logo.png",
             self.tr('About'),
-            "本助手免费开源，当前版本：" + config.version.value,
+            "本助手免费开源，当前版本：" + VERSION,
             self.aboutGroup
         )
 
@@ -220,7 +220,7 @@ class SettingInterface(ScrollArea):
     def check_update(self):
         try:
             updater = Updater()
-            current_version = config.version.value
+            current_version = VERSION
             latest_version = updater.latest_version
             if latest_version != current_version and latest_version:
                 title = '发现新版本'
@@ -279,12 +279,11 @@ class SettingInterface(ScrollArea):
         """ Hide progress bar and show completion message """
         self.progressBar.setVisible(False)
         if os.path.exists(zip_path):
-            # todo 实现自动重启更新
             title = '更新完成'
-            content = f'压缩包已下载至{zip_path}，是否重启更新？'
-            massage_box = MessageBox(title, content, self.window())
-            massage_box.cancelButton.isVisible(False)
-            if massage_box.exec():
+            content = f'压缩包已下载至{zip_path}，即将重启更新'
+            message_box = MessageBox(title, content, self.parent.window())
+            message_box.cancelButton.setVisible(False)
+            if message_box.exec():
                 subprocess.Popen([sys.executable, 'update.py', zip_path])
                 self.parent.close()
         else:

@@ -11,7 +11,7 @@ import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QFrame
-from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox
+from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox, Dialog
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
     BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
 
@@ -24,6 +24,7 @@ from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.ppOCR import ocr_installer, ocr
+from ..common.setting import VERSION
 from ..common.signal_bus import signalBus
 from ..modules.automation import auto
 from ..ui.display_interface import DisplayInterface
@@ -66,6 +67,8 @@ class MainWindow(MSFluentWindow):
         self.initNavigation()
         self.splashScreen.finish()
 
+        self.updater = None
+
         # start theme listener
         self.themeListener.start()
 
@@ -75,6 +78,7 @@ class MainWindow(MSFluentWindow):
             self.open_starter()
         if config.checkUpdateAtStartUp.value:
             # QTimer.singleShot(100, lambda: self.check_update())
+            # 当采用其他线程调用时，需要保证messageBox是主线程调用的，使用信号槽机制在主线程调用 QMessageBox
             update_thread = threading.Thread(target=self.check_update)
             update_thread.start()
 
@@ -95,6 +99,7 @@ class MainWindow(MSFluentWindow):
     def connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
         signalBus.switchToSampleCard.connect(self.switchToSample)
+        signalBus.showMessageBox.connect(self.showMessageBox)
         # signalBus.check_ocr_progress.connect(self.update_ring)
 
     def initNavigation(self):
@@ -295,26 +300,27 @@ class MainWindow(MSFluentWindow):
 
     def check_update(self):
         try:
-            updater = Updater()
-            current_version = config.version.value
-            latest_version = updater.latest_version
+            self.updater = Updater()
+            current_version = VERSION
+            latest_version = self.updater.latest_version
             if latest_version != current_version and latest_version:
                 title = '发现新版本'
                 content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
-                massage_box = MessageBox(title, content, self.window())
-                if massage_box.exec():
-                    w = self.settingInterface
-                    self.stackedWidget.setCurrentWidget(w, False)
-                    w.scrollToAboutCard()
-                    try:
-                        self.settingInterface.start_download(updater)
-                    except Exception as e:
-                        print(e)
-                        traceback.print_exc()
-                else:
-                    pass
+                signalBus.showMessageBox.emit(title, content)
         except Exception as e:
             logger.error(e)
+            traceback.print_exc()
             if config.update_proxies.value:
                 logger.error(
                     f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值')
+
+    def showMessageBox(self, title, content):
+        massage = MessageBox(title, content, self)
+        if massage.exec():
+            w = self.settingInterface
+            self.stackedWidget.setCurrentWidget(w, False)
+            w.scrollToAboutCard()
+            if self.updater:
+                self.settingInterface.start_download(self.updater)
+        else:
+            pass

@@ -118,7 +118,6 @@ class Config(QConfig):
     enter_interface = OptionsConfigItem("setting_personal", "enter_interface", 0, OptionsValidator([0, 1, 2]))
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
     update_proxies = ConfigItem("Update", "update_proxies", '')
-    version = ConfigItem("about", "version", 'v1.1.8')
     cpu_support_avx2 = ConfigItem("about", "cpu_support_avx2", None)
 
     # 自动化相关

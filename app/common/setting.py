@@ -6,7 +6,24 @@ DEBUG = "__compiled__" not in globals()
 
 YEAR = 2024
 AUTHOR = "LaoZhu"
-# VERSION = "v1.1.8"
+
+
+def read_version_from_file(filename):
+    """从文件中读取版本号"""
+    try:
+        with open(filename, 'r') as file:
+            version = file.readline().strip()
+        return version
+    except FileNotFoundError:
+        print(f"文件 {filename} 未找到。")
+        return "未知版本"
+    except Exception as e:
+        print(f"读取文件时发生错误: {e}")
+        return "错误版本"
+
+
+VERSION = read_version_from_file("./AppData/version.txt")
+
 APP_NAME = "SnowbreakAutoAssistant"
 HELP_URL = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant"
 REPO_URL = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant"
