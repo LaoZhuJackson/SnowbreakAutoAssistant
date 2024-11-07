@@ -89,7 +89,8 @@ if __name__ == "__main__":
     src_dest_pairs = [
         (Path("app/resource/images"), Path("dist/app/resource/images")),
         (Path("app/resource/help.md"), Path("dist/app/resource/help.md")),
-        (Path("AppData/ocr_replacements.json"), Path("dist/AppData/ocr_replacements.json"))
+        (Path("AppData/ocr_replacements.json"), Path("dist/AppData/ocr_replacements.json")),
+        (Path("AppData/version.txt"), Path("dist/AppData/version.txt"))
     ]
 
     for src, dest in src_dest_pairs:
