@@ -28,14 +28,17 @@ class OCRInstaller:
         """
         根据 CPU 是否支持 AVX2 指令集来决定使用的 OCR 工具。
         """
-        if self._cpu_support_avx2():
+        if config.cpu_support_avx2.value is None:
+            is_support = self._cpu_support_avx2()
+            config.set(config.cpu_support_avx2, is_support)
+        if config.cpu_support_avx2.value:
             ocr_name = "PaddleOCR-json"
             ocr_path = "./app/common/ppOCR/PaddleOCR-json_v1.4.1_windows_x64/PaddleOCR-json.exe"
-            print(f"CPU 支持 AVX2 指令集，使用 {ocr_name}")
+            # print(f"CPU 支持 AVX2 指令集，使用 {ocr_name}")
         else:
             ocr_name = "RapidOCR-json"
             ocr_path = "./app/common/ppOCR/RapidOCR-json_v0.2.0/RapidOCR-json.exe"
-            print(f"CPU 不支持 AVX2 指令集，使用 {ocr_name}")
+            # print(f"CPU 不支持 AVX2 指令集，使用 {ocr_name}")
         return ocr_name, ocr_path
 
     def install_ocr(self):

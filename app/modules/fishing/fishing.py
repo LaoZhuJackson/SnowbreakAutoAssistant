@@ -23,6 +23,7 @@ class FishingModule:
         # self.lower_white = np.array([88, 0, 245])
         self.start_time = time.time()
         self.window_title = config.LineEdit_game_name.value
+        self.press_key = config.LineEdit_fish_key.value
 
     def run(self):
         if np.any(self.upper_yellow < self.lower_yellow):
@@ -31,12 +32,12 @@ class FishingModule:
         # 代码激活窗口
         auto.activate_window(window_title=self.window_title)
         time.sleep(0.2)
-        auto.press_key("space")
+        auto.press_key(self.press_key)
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
                              crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080),
                              max_retries=10):
             time.sleep(0.2)
-            auto.press_key("space")
+            auto.press_key(self.press_key)
             if self.is_use_time_judge:
                 self.start_time = time.time()
             while True:
@@ -48,7 +49,7 @@ class FishingModule:
                 blocks_num = self.count_yellow_blocks(bgr_image)
                 if blocks_num >= 2:
                     print("到点，收杆!")
-                    auto.press_key("space", wait_time=0)
+                    auto.press_key(self.press_key, wait_time=0)
                     if self.is_use_time_judge:
                         self.start_time = time.time()
                 else:
@@ -56,7 +57,7 @@ class FishingModule:
                         # 识别出未进入黄色区域，则进行时间判断、
                         if time.time() - self.start_time > 2.2:
                             print("咋回事？强制收杆一次")
-                            auto.press_key("space", wait_time=0)
+                            auto.press_key(self.press_key, wait_time=0)
                             self.start_time = time.time()
                 if blocks_num == 0:
                     # 加一次判断
@@ -90,12 +91,12 @@ class FishingModule:
         # 代码激活窗口
         auto.activate_window()
         time.sleep(0.2)
-        auto.press_key("space")
+        auto.press_key(self.press_key)
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
                              crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080),
                              max_retries=10):
             time.sleep(0.2)
-            auto.press_key("space")
+            auto.press_key(self.press_key)
             if self.is_use_time_judge:
                 self.start_time = time.time()
             # 低性能循环替换成定时按空格
@@ -103,7 +104,7 @@ class FishingModule:
             while True:
                 if time.time() - start_time > 1.8:
                     print("到点，收杆！")
-                    auto.press_key("space")
+                    auto.press_key(self.press_key)
                     start_time = time.time()
                 if not auto.find_element("app/resource/images/fishing/fishing.png", "image",
                                          crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080), threshold=0.8):

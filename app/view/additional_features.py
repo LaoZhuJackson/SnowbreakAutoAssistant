@@ -460,9 +460,12 @@ class Additional(QFrame, Ui_additional_features):
         elif isinstance(widget, LineEdit):
             # 如果是钓鱼相关的lineEdit
             if widget.objectName().split('_')[1] == 'fish':
-                text = widget.text()
-                if self.is_valid_format(text):
-                    config.set(getattr(config, widget.objectName(), None), text)
+                if widget.objectName().split('_')[2] == 'key':
+                    config.set(getattr(config, widget.objectName(), None), widget.text())
+                else:
+                    text = widget.text()
+                    if self.is_valid_format(text):
+                        config.set(getattr(config, widget.objectName(), None), text)
             elif widget.objectName().split('_')[1] == 'jigsaw':
                 text = widget.text()
                 if text == "-1":

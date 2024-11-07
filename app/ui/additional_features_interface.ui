@@ -29,7 +29,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
      </property>
      <widget class="QWidget" name="page_fishing">
          <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
@@ -74,10 +74,14 @@
        <item row="0" column="0">
         <widget class="SimpleCardWidget" name="SimpleCardWidget_fish">
          <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,1,1">
-             <item row="8" column="1">
-                 <widget class="LineEdit" name="LineEdit_fish_lower"/>
+             <item row="10" column="1">
+                 <widget class="PrimaryPushButton" name="PrimaryPushButton_get_color">
+                     <property name="text">
+                         <string>校准颜色</string>
+                     </property>
+                 </widget>
              </item>
-             <item row="6" column="2" rowspan="4">
+             <item row="7" column="2" rowspan="4">
                  <widget class="PixmapLabel" name="PixmapLabel">
                      <property name="sizePolicy">
                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -96,44 +100,7 @@
                      </property>
                  </widget>
              </item>
-             <item row="6" column="1">
-                 <widget class="LineEdit" name="LineEdit_fish_base">
-                     <property name="enabled">
-                         <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-             <item row="9" column="0">
-                 <widget class="PushButton" name="PushButton_reset">
-                     <property name="text">
-                         <string>重置</string>
-            </property>
-           </widget>
-          </item>
-             <item row="10" column="1">
-                 <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-             <item row="1" column="0" colspan="3">
-                 <widget class="CheckBox" name="CheckBox_is_save_fish">
-                     <property name="text">
-                         <string>是否保存新纪录截图</string>
-            </property>
-                 </widget>
-             </item>
-             <item row="0" column="1" colspan="2">
-                 <widget class="ComboBox" name="ComboBox_fishing_mode"/>
-             </item>
-             <item row="11" column="0" colspan="3">
+             <item row="12" column="0" colspan="3">
                  <widget class="BodyLabel" name="BodyLabel_tip_fish">
                      <property name="text">
                          <string/>
@@ -146,45 +113,41 @@
                      </property>
                  </widget>
           </item>
-             <item row="9" column="1">
-                 <widget class="PrimaryPushButton" name="PrimaryPushButton_get_color">
-                     <property name="text">
-                         <string>校准颜色</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="7" column="1">
-                 <widget class="LineEdit" name="LineEdit_fish_upper"/>
-             </item>
-             <item row="3" column="0">
-                 <widget class="BodyLabel" name="BodyLabel">
-                     <property name="text">
-                         <string>钓鱼次数：</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="6" column="0">
-                 <widget class="BodyLabel" name="BodyLabel_5">
-                     <property name="text">
-                         <string>基准HSV值</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="8" column="0">
+             <item row="9" column="0">
                  <widget class="BodyLabel" name="BodyLabel_7">
                      <property name="text">
                          <string>颜色查找下限</string>
                      </property>
                  </widget>
              </item>
-             <item row="7" column="0">
+             <item row="4" column="1" colspan="2">
+                 <widget class="SpinBox" name="SpinBox_fish_times">
+                     <property name="minimum">
+                         <number>1</number>
+                     </property>
+                     <property name="maximum">
+                         <number>99999</number>
+                     </property>
+                 </widget>
+             </item>
+             <item row="8" column="0">
                  <widget class="BodyLabel" name="BodyLabel_6">
                      <property name="text">
                          <string>颜色查找上限</string>
                      </property>
                  </widget>
              </item>
-             <item row="4" column="1">
+             <item row="0" column="1" colspan="2">
+                 <widget class="ComboBox" name="ComboBox_fishing_mode"/>
+             </item>
+             <item row="7" column="1">
+                 <widget class="LineEdit" name="LineEdit_fish_base">
+                     <property name="enabled">
+                         <bool>false</bool>
+                     </property>
+                 </widget>
+             </item>
+             <item row="5" column="1">
                  <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -197,15 +160,25 @@
             </property>
            </spacer>
           </item>
-             <item row="3" column="1" colspan="2">
-                 <widget class="SpinBox" name="SpinBox_fish_times">
-                     <property name="minimum">
-                         <number>1</number>
-                     </property>
-                     <property name="maximum">
-                         <number>99999</number>
+             <item row="10" column="0">
+                 <widget class="PushButton" name="PushButton_reset">
+                     <property name="text">
+                         <string>重置</string>
                      </property>
                  </widget>
+             </item>
+             <item row="11" column="1">
+                 <spacer name="verticalSpacer">
+                     <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                         <size>
+                             <width>20</width>
+                             <height>40</height>
+                         </size>
+                     </property>
+                 </spacer>
              </item>
              <item row="0" column="0">
                  <widget class="BodyLabel" name="BodyLabel_2">
@@ -215,16 +188,57 @@
            </widget>
           </item>
              <item row="2" column="0" colspan="3">
-                 <widget class="CheckBox" name="CheckBox_is_limit_time">
+                 <widget class="CheckBox" name="CheckBox_is_save_fish">
             <property name="text">
-                <string>是否限制单次收杆时间间隔上限</string>
+                <string>是否保存新纪录截图</string>
             </property>
            </widget>
           </item>
-             <item row="5" column="0" colspan="3">
+             <item row="8" column="1">
+                 <widget class="LineEdit" name="LineEdit_fish_upper"/>
+             </item>
+             <item row="6" column="0" colspan="3">
                  <widget class="StrongBodyLabel" name="StrongBodyLabel">
             <property name="text">
                 <string>校准完美收杆区域HSV（当收杆出错，日志说黄色块大于2时用）</string>
+            </property>
+                 </widget>
+             </item>
+             <item row="7" column="0">
+                 <widget class="BodyLabel" name="BodyLabel_5">
+                     <property name="text">
+                         <string>基准HSV值</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="9" column="1">
+                 <widget class="LineEdit" name="LineEdit_fish_lower"/>
+             </item>
+             <item row="4" column="0">
+                 <widget class="BodyLabel" name="BodyLabel">
+                     <property name="text">
+                         <string>钓鱼次数：</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="3" column="0" colspan="3">
+                 <widget class="CheckBox" name="CheckBox_is_limit_time">
+                     <property name="text">
+                         <string>是否限制单次收杆时间间隔上限</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="1" column="0">
+                 <widget class="BodyLabel" name="BodyLabel_21">
+                     <property name="text">
+                         <string>自定义钓鱼键（默认空格）</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="1" column="1" colspan="2">
+                 <widget class="LineEdit" name="LineEdit_fish_key">
+                     <property name="placeholderText">
+                         <string>钓鱼键与尘白闪避键绑定</string>
             </property>
            </widget>
           </item>

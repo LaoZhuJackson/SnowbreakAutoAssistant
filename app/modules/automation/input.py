@@ -82,9 +82,9 @@ class Input:
     def press_key(self, key, wait_time=0.2):
         """模拟键盘按键，可以指定按下的时间"""
         try:
-            pyautogui.keyDown(key)
+            pydirectinput.keyDown(key)
             time.sleep(wait_time)  # 等待指定的时间
-            pyautogui.keyUp(key)
+            pydirectinput.keyUp(key)
             self.logger.debug(f"键盘按下 {key}")
         except Exception as e:
             self.logger.error(f"键盘按下 {key} 出错：{e}")
