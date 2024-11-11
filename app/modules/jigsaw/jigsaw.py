@@ -290,12 +290,20 @@ class JigsawModule:
                         break
                 else:
                     logger.warn("没有找到能填满全部格子的方案")
+                    break
             else:
                 logger.error("未识别出对应的地图")
                 break
 
     def identify_board(self):
         """判断当前board是哪个"""
+        # 初始化
+        self.piece_solution = []
+        self.used_pieces = []
+        self.solutions_score = [0] * config.SpinBox_max_solutions.value
+        self.board_bottom_right = []
+        self.board_top_left = []
+
         for i in range(1, 17):
             try:
                 result = auto.find_element(f"app/resource/images/jigsaw/{i}.png", "image", threshold=0.7,
@@ -553,7 +561,7 @@ class JigsawModule:
                 "3": [[1.25, 0.5], [0.5, 1.25]],
                 "4": [[1, 0.5], [0.5, 1.25]],
                 "5": [[0.5, 1], [1.25, 0.5], [0.5, 1], [1.25, 0.5]],
-                "6": [[0.5, 1], [1.5, 0.5], [0.5, 1], [1.5, 0.5]],
+                "6": [[0.5, 1], [1.5, 0.5], [0.5, 1], [1.25, 0.5]],
                 "7": [[1, 0.5], [0.75, 1.75], [1, 0.5], [0.75, 0.25]],
                 "8": [[1.25, 1]],
                 "9": [[0.25, 0]],
