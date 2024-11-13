@@ -534,7 +534,7 @@ class Automation(metaclass=SingletonMeta):
     def back_to_home(self):
         """返回看板娘页面"""
         while not self.find_element("基地", "text", include=True,
-                                    crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080)):
+                                    crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080), threshold=0.9):
             if self.click_element("app/resource/images/reward/home.png", "image", threshold=0.7):
                 time.sleep(1)
             else:
