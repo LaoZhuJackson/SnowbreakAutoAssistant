@@ -17,7 +17,6 @@
 </div>
 
 ## Parts Currently Automated (All Daily Operations Are Completed)
-
 - Game login
 - Collecting stamina from friends and supply station
 - Store purchases
@@ -27,6 +26,7 @@
 - Collecting rewards after completing daily tasks
 - Follow-up operations after proxy run
 - Auto fishing
+- Automatic source parsing
 
 ![2.png](../asset%2F2.png)
 ![3.png](../asset%2F3.png)
