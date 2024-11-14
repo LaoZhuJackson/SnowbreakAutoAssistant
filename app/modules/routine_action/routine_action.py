@@ -1,5 +1,6 @@
 import time
 
+from app.common.config import config
 from app.modules.automation import auto
 
 
@@ -15,7 +16,16 @@ class ActionModule:
         while not auto.find_element("黄色区域", "text", include=True,
                                     crop=(827 / 1920, 233 / 1080, 258 / 1920, 43 / 1080)):
             time.sleep(2)
-        auto.press_key("w", 10.0)
+        auto.key_down("w")
+        if config.ComboBox_run.value == 0:
+            # 切换疾跑
+            auto.press_key("shift")
+            time.sleep(6)
+        else:
+            for i in range(5):
+                auto.press_key("shift", 1)
+                time.sleep(0.3)
+        auto.key_up("w")
         auto.click_element("退出", "text", include=False, max_retries=20,
                            crop=(903 / 1920, 938 / 1080, 114 / 1920, 66 / 1080), action="move_click")
 

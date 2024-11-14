@@ -136,6 +136,7 @@ class Config(QConfig):
 
     # 常规行动相关
     SpinBox_action_times = ConfigItem("add_action", "SpinBox_action_times", 20)
+    ComboBox_run = OptionsConfigItem("add_action", "ComboBox_run", 0, OptionsValidator([0, 1]))
     # 信源解析相关
     SpinBox_max_solutions = ConfigItem("jigsaw", "SpinBox_max_solutions", 10)
     CheckBox_auto_update_pieces_num = ConfigItem("jigsaw", "CheckBox_auto_update_pieces_num", True, BoolValidator())
