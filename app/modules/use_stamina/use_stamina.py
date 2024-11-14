@@ -22,21 +22,19 @@ class UseStaminaModule:
         auto.click_element(self.root + "stamina.png", "image", threshold=0.8, action="move_click")
         time.sleep(0.5)
         day_num = 1
-        while True:
-            if day_num == 1:
-                has_colon = self.update_ocr_result()
-                if has_colon:
-                    self.use(":")
-            if auto.click_element(f"app/resource/images/use_power/{day_num}_day.png", "image", threshold=0.9,
-                                  action="move_click", crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080)):
+        while day_num <= self.day_num:
+            if (auto.click_element(f"app/resource/images/use_power/{day_num}_day.png", "image", threshold=0.9,
+                                   action="move_click", crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080)) or
+                    auto.click_element(f"{day_num}天", "text", action="move_click",
+                                       crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080))):
                 self.use()
-            elif auto.click_element(f"{day_num}天", "text", action="move_click",
-                                    crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080)):
-                self.use()
-            else:
-                day_num += 1
-                if day_num > self.day_num:
-                    break
+                continue
+            has_colon = self.update_ocr_result()
+            if has_colon:
+                self.use(":")
+                continue
+            day_num += 1
+
         auto.back_to_home()
 
     def use(self, text=None):
