@@ -173,20 +173,18 @@ class Home(QFrame, Ui_home):
         after_use_items = ['无动作', '退出游戏和代理', '退出代理', '退出游戏']
         power_day_items = ['1', '2', '3', '4', '5', '6']
         power_usage_items = ['活动材料本', '其他待开发']
-        person_items = ["不选择", "凯茜娅-朝翼", "瑟瑞斯-瞬刻", "薇蒂雅-龙舌兰", "琴诺-悖谬", "里芙-无限之视",
-                        "凯茜娅-蓝闪", "肴-冬至", "芬妮-辉耀", "安卡希雅-辉夜", "里芙-狂猎", "茉莉安-雨燕",
-                        "芙提雅-缄默", "芬妮-咎冠", "恩雅-羽蜕", "伊切尔-豹豹", "苔丝-魔术师", "茉莉安-幽潮",
-                        "晴-藏锋", "猫汐尔-溯影", "辰星-云篆"]
         self.ComboBox_after_use.addItems(after_use_items)
         self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
-        self.ComboBox_c1.addItems(person_items)
-        self.ComboBox_c2.addItems(person_items)
-        self.ComboBox_c3.addItems(person_items)
-        self.ComboBox_c4.addItems(person_items)
+        self.LineEdit_c1.setPlaceholderText("未输入")
+        self.LineEdit_c2.setPlaceholderText("未输入")
+        self.LineEdit_c3.setPlaceholderText("未输入")
+        self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
             "### 提示\n* 日志说没有找到截图窗口需要调整自己的窗口进程名\n* 不同服，不同启动器的进程名都不同\n* 打开任务管理器可查看进程名\n* 启动器进程名可能和游戏窗口进程名不同")
+        self.BodyLabel_person_tip.setText(
+            "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
         self.get_tips()

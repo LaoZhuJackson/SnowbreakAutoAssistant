@@ -401,7 +401,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-            <number>0</number>
+            <number>3</number>
         </property>
            <widget class="QWidget" name="page_5">
                <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,1,1">
@@ -508,8 +508,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-                  <width>408</width>
-               <height>479</height>
+                  <width>285</width>
+                  <height>503</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1105,70 +1105,23 @@
              </widget>
             </item>
             <item>
-                <widget class="ComboBox" name="ComboBox_c4">
-              <property name="items_" stdset="0">
-               <string notr="true"/>
-              </property>
-             </widget>
+                <widget class="LineEdit" name="LineEdit_c4"/>
             </item>
            </layout>
           </item>
-          <item row="0" column="0">
-           <widget class="StrongBodyLabel" name="StrongBodyLabel_3">
+             <item row="7" column="0">
+                 <widget class="BodyLabel" name="BodyLabel_person_tip">
             <property name="text">
-             <string>选择需要刷碎片的角色</string>
+                <string>Body label</string>
             </property>
-           </widget>
-          </item>
-             <item row="6" column="0">
-                 <spacer name="verticalSpacer_8">
-                     <property name="orientation">
-                         <enum>Qt::Vertical</enum>
+                     <property name="textFormat">
+                         <enum>Qt::MarkdownText</enum>
                      </property>
-                     <property name="sizeHint" stdset="0">
-                         <size>
-                             <width>20</width>
-                             <height>40</height>
-                         </size>
+                     <property name="wordWrap">
+                         <bool>true</bool>
                      </property>
-                 </spacer>
+                 </widget>
              </item>
-             <item row="1" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
-            <item>
-                <widget class="BodyLabel" name="BodyLabel_3">
-              <property name="text">
-                  <string>角色1：</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-                <widget class="ComboBox" name="ComboBox_c1">
-              <property name="items_" stdset="0">
-               <string notr="true"/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-             <item row="2" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
-            <item>
-                <widget class="BodyLabel" name="BodyLabel_4">
-              <property name="text">
-                  <string>角色2：</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-                <widget class="ComboBox" name="ComboBox_c2">
-              <property name="items_" stdset="0">
-               <string notr="true"/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
              <item row="3" column="0">
                  <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2">
             <item>
@@ -1179,11 +1132,7 @@
              </widget>
             </item>
             <item>
-                <widget class="ComboBox" name="ComboBox_c3">
-              <property name="items_" stdset="0">
-               <string notr="true"/>
-              </property>
-             </widget>
+                <widget class="LineEdit" name="LineEdit_c3"/>
             </item>
            </layout>
           </item>
@@ -1191,8 +1140,56 @@
                  <widget class="CheckBox" name="CheckBox_is_use_chip">
                      <property name="text">
                          <string>是否使用记忆嵌片</string>
-            </property>
+                     </property>
                  </widget>
+             </item>
+             <item row="1" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
+            <item>
+                <widget class="BodyLabel" name="BodyLabel_3">
+                    <property name="text">
+                        <string>角色1：</string>
+              </property>
+             </widget>
+            </item>
+                     <item>
+                         <widget class="LineEdit" name="LineEdit_c1"/>
+            </item>
+           </layout>
+          </item>
+             <item row="0" column="0">
+                 <widget class="StrongBodyLabel" name="StrongBodyLabel_3">
+                     <property name="text">
+                         <string>选择需要刷碎片的角色</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="2" column="0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
+            <item>
+                <widget class="BodyLabel" name="BodyLabel_4">
+                    <property name="text">
+                        <string>角色2：</string>
+              </property>
+             </widget>
+            </item>
+                     <item>
+                         <widget class="LineEdit" name="LineEdit_c2"/>
+                     </item>
+           </layout>
+          </item>
+             <item row="8" column="0">
+                 <spacer name="verticalSpacer_8">
+                     <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+            </property>
+                     <property name="sizeHint" stdset="0">
+                         <size>
+                             <width>20</width>
+                             <height>40</height>
+                         </size>
+                     </property>
+                 </spacer>
           </item>
          </layout>
         </widget>

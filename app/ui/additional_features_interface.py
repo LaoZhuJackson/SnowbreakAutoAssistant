@@ -311,7 +311,7 @@ class Ui_additional_features(object):
         self.gridLayout.addWidget(self.SegmentedWidget, 0, 0, 1, 1)
 
         self.retranslateUi(additional_features)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(additional_features)
 
     def retranslateUi(self, additional_features):

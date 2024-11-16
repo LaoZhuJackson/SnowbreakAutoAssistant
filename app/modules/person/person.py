@@ -38,7 +38,7 @@ class PersonModule:
             19: '溯影',
             20: '云篆',
         }
-        self.pages = math.ceil(len(self.name_dic) / 4) + 1
+        self.pages = math.ceil(34 / 4) + 1
         self.power_times = 0
 
         window = self.get_window(config.LineEdit_game_name.value)
@@ -46,11 +46,11 @@ class PersonModule:
 
     def run(self):
         try:
-            character_list = [self.select_person_dic["ComboBox_c1"], self.select_person_dic["ComboBox_c2"],
-                              self.select_person_dic["ComboBox_c3"], self.select_person_dic["ComboBox_c4"]]
-            is_all_zero = all(value == 0 for value in character_list)
-            if is_all_zero:
-                print("未选择任何需要刷碎片的角色")
+            character_list = [self.select_person_dic["LineEdit_c1"], self.select_person_dic["LineEdit_c2"],
+                              self.select_person_dic["LineEdit_c3"], self.select_person_dic["LineEdit_c4"]]
+            is_all_none = all(value == "" for value in character_list)
+            if is_all_none:
+                print("未输入任何需要刷碎片的角色")
                 auto.back_to_home()
                 return
             else:
@@ -59,7 +59,7 @@ class PersonModule:
                 time.sleep(0.7)
                 for value in character_list:
                     # 当选项为“不选择”时
-                    if value == 0:
+                    if value == "":
                         continue
                     if self.break_flag:
                         break
@@ -80,19 +80,16 @@ class PersonModule:
         auto.click_element("个人故事", "text", include=False, max_retries=3, action="move_click")
 
     def fight(self, value):
-        if value == 0:
-            pass
-        else:
-            if self.power_times == 0:
-                if config.CheckBox_is_use_chip.value:
-                    self.use_chip()
-                else:
-                    return
-            # 找name
-            if self.quick_fight_by_name(self.name_dic[value]):
-                print(f"{self.name_dic[value]}刷取成功")
+        if self.power_times == 0:
+            if config.CheckBox_is_use_chip.value:
+                self.use_chip()
             else:
-                print(f"{self.name_dic[value]}速战未成功")
+                return
+        # 找name
+        if self.quick_fight_by_name(value):
+            print(f"{value}刷取成功")
+        else:
+            print(f"{value}速战未成功")
 
     def use_chip(self):
         print("尝试使用2个记忆嵌片")

@@ -55,7 +55,8 @@ def update_version_in_file(filename, new_version):
 
 
 if __name__ == "__main__":
-    update_version_in_file('./AppData/version.txt', 'v1.2.0')
+    version = "1.2.1"
+    update_version_in_file('./AppData/version.txt', version)
 
     # 运行 Nuitka 命令
     command = [
@@ -98,7 +99,7 @@ if __name__ == "__main__":
         copy_with_overwrite(src, dest)
 
     # 设置打包输出文件名和排除列表
-    output_filename = f"SAA_{VERSION}.zip"
+    output_filename = f"SAA_{version}.zip"
     source_dir = Path("dist")
     exclusions = ["dist\\AppData\\config.json", "dist\\app\\common", "dist\\log"]
 
