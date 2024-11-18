@@ -26,8 +26,11 @@ class ActionModule:
                 auto.press_key("shift", 1)
                 time.sleep(0.3)
         auto.key_up("w")
-        auto.click_element("退出", "text", include=False, max_retries=20,
-                           crop=(903 / 1920, 938 / 1080, 114 / 1920, 66 / 1080), action="move_click")
+        time.sleep(15)
+        while not auto.click_element("退出", "text", include=False,
+                                     crop=(903 / 1920, 938 / 1080, 114 / 1920, 66 / 1080), action="move_click"):
+            time.sleep(1)
+
 
     def enter_train(self):
         auto.click_element("战斗", "text", include=False, max_retries=3,
