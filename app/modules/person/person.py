@@ -95,7 +95,7 @@ class PersonModule:
         print("尝试使用2个记忆嵌片")
         auto.click_element("app/resource/images/person/add_power.png", "image", action="move_click", max_retries=1)
         time.sleep(0.5)
-        if not auto.find_element("暂时没有该类道具", "text", include=False, max_retries=1,
+        if not auto.find_element("没有该类道具", "text", include=True, max_retries=1,
                                  crop=(821 / 1920, 511 / 1080, 271 / 1920, 57 / 1080)):
             auto.click_element("app/resource/images/person/add_num.png", "image", action="move_click", max_retries=2)
             auto.click_element("确定", "text", include=True, max_retries=3, action="move_click")
