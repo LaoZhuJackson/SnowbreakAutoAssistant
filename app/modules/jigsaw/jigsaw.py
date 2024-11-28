@@ -279,6 +279,7 @@ class JigsawModule:
                     if self.place_jigsaw(best_solution):
                         if self.after_place():
                             if auto.click_element("继续", "text", include=True, max_retries=3, action="move_click"):
+                                time.sleep(2)
                                 continue
                             else:
                                 auto.click_element("退出", "text", include=True, max_retries=3, action="move_click")
