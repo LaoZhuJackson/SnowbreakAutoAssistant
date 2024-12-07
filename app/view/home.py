@@ -341,7 +341,7 @@ class Home(QFrame, Ui_home):
                     self.parent.close()
             elif self.ComboBox_after_use.currentIndex() == 2:
                 self.parent.close()
-            elif self.ComboBox_after_use.currentIndex() == 2:
+            elif self.ComboBox_after_use.currentIndex() == 3:
                 auto.press_key("esc")
                 time.sleep(1)
                 auto.click_element("确定", "text", include=True, max_retries=5, action="move_click")
