@@ -142,10 +142,15 @@ class MainWindow(MSFluentWindow):
         self.splashScreen.setIconSize(QSize(150, 150))
         self.splashScreen.raise_()
 
-        desktop = QApplication.primaryScreen().availableGeometry()
-        w, h = desktop.width(), desktop.height()
-        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
-        self.show()
+        position = config.position.value
+        if position:
+            self.move(position[0], position[1])
+            self.show()
+        else:
+            desktop = QApplication.primaryScreen().availableGeometry()
+            w, h = desktop.width(), desktop.height()
+            self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
+            self.show()
         QApplication.processEvents()
 
     def resizeEvent(self, e):
@@ -278,14 +283,21 @@ class MainWindow(MSFluentWindow):
         save_html(os.path.join(action_log_dir, f"action_log_{name_time}.html"), action_log)
         save_html(os.path.join(jigsaw_log_dir, f"jigsaw_log_{name_time}.html"), jigsaw_log)
 
+    def save_position(self):
+        # 获取当前窗口的位置和大小
+        geometry = self.geometry()
+        position = (geometry.left(), geometry.top())
+        config.set(config.position, position)
+
     def closeEvent(self, a0):
         print("关闭ocr子进程")
         ocr.exit_ocr()
         self.themeListener.terminate()
         self.themeListener.deleteLater()
-        # 保存日志到文件
         try:
+            # 保存日志到文件
             self.save_log()
+            self.save_position()
         except Exception as e:
             print(e)
             traceback.print_exc()
