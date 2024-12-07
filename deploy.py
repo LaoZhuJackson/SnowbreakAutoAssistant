@@ -55,7 +55,8 @@ def update_version_in_file(filename, new_version):
 
 
 if __name__ == "__main__":
-    version = "1.2.1"
+    # 运行时修改
+    version = "1.2.2"
     update_version_in_file('./AppData/version.txt', version)
 
     # 运行 Nuitka 命令
@@ -91,7 +92,8 @@ if __name__ == "__main__":
         (Path("app/resource/images"), Path("dist/app/resource/images")),
         (Path("app/resource/help.md"), Path("dist/app/resource/help.md")),
         (Path("AppData/ocr_replacements.json"), Path("dist/AppData/ocr_replacements.json")),
-        (Path("AppData/version.txt"), Path("dist/AppData/version.txt"))
+        (Path("AppData/version.txt"), Path("dist/AppData/version.txt")),
+        (Path("update.py"), Path("dist/update.py"))
     ]
 
     for src, dest in src_dest_pairs:

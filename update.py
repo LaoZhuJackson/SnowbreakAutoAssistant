@@ -5,13 +5,15 @@ import shutil
 import subprocess
 
 # 从命令行参数获取 zip 文件路径
-update_zip_path = sys.argv[1] if len(sys.argv) > 1 else "./temp/update.zip"
+update_zip_path = sys.argv[1] if len(sys.argv) > 1 else "./dist/temp/SAA_1.2.2.zip"
 extract_folder = "./temp/extracted_files"
 
 
 def extract_update():
-    with zipfile.ZipFile(update_zip_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_folder)
+    exe_path = os.path.abspath("./app/resource/binary/7za.exe")
+    temp_path = './'
+    # -aoa 是 7-Zip 的 "Always Overwrite" 选项
+    subprocess.run([exe_path, "x", update_zip_path, f"-o{temp_path}", "-aoa"], check=True)
 
 
 def replace_old_files():
@@ -30,8 +32,8 @@ def clean_temp_folder():
 
 def main():
     extract_update()
-    replace_old_files()
-    clean_temp_folder()
+    # replace_old_files()
+    # clean_temp_folder()
     subprocess.Popen(["./main.exe"])
 
 

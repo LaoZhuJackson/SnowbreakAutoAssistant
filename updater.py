@@ -37,7 +37,7 @@ class Updater:
             self.proxies = None
         self.download_url = download_url
         self.cover_folder_path = os.path.abspath('./')
-        self.temp_path = os.path.abspath("./temp")
+        self.temp_path = os.path.abspath("./")
         self.exe_path = os.path.abspath("./app/resource/binary/7za.exe")
         self.aria2_path = os.path.abspath("./app/resource/binary/aria2c.exe")
 
@@ -146,8 +146,11 @@ class Updater:
     def download_update(self):
         print("下载更新中...")
         try:
+            if os.path.exists(self.download_file_path):
+                print("文件已存在")
+                return True
             os.makedirs(os.path.dirname(self.download_file_path), exist_ok=True)
-            print(self.aria2_path)
+            # print(self.aria2_path)
             if os.path.exists(self.aria2_path):
                 print("使用下载方式：aria2")
                 command = [self.aria2_path, "--max-connection-per-server=16",
@@ -239,7 +242,8 @@ class Updater:
 
     def run(self):
         if self.download_update():
-            self.extract_update()
+            print("下载完成")
+            # self.extract_update()
             # self.apply_update()
             # self.clean_up()
         else:
