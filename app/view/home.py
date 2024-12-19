@@ -392,14 +392,14 @@ class Home(QFrame, Ui_home):
         now = datetime.now()
         start_time = datetime.strptime(start_time_str, '%Y-%m-%d')
         total_difference = end_time - start_time
-        total_day = total_difference.days
+        total_day = total_difference.days + 1
         if now < start_time:
             # 将当前日期替换成开始日期
             now = start_time
         # print(end_time)
         # print(now)
         time_difference = end_time - now
-        days_remaining = time_difference.days
+        days_remaining = time_difference.days + 1
         if days_remaining < 0:
             return 0, 0
 
@@ -407,7 +407,20 @@ class Home(QFrame, Ui_home):
 
     def get_tips(self):
         tips_dic = {}
-        for activity in ACTIVITY:
+        # config.set(config.date_tip, [
+        #     ["活动", "2024-12-19", "2025-1-23"],
+        #     ["豹豹卡池", "2024-12-19", "2025-1-9"],
+        #     ["朝翼卡池", "2025-1-2", "2025-1-23"],
+        #     ["噬神斗场", "2024-12-19", "2025-1-16"],
+        #     ["心意寄语", "2024-12-31", "2025-1-14"],
+        #     ["珍宝行囊", "2024-12-19", "2025-1-23"],
+        #     ["七日派对", "2024-12-26", "2025-1-9"],
+        #     ["远山沉沉", "2024-12-30", "2025-1-13"],
+        #     ["永续联机", "2024-12-23", "2025-1-6"],
+        #     ["禁区协议", "2025-1-6", "2025-1-20"],
+        # ])
+        date_tip = config.date_tip.value
+        for activity in date_tip:
             tips_dic[activity[0]] = self.get_time_difference(activity[1], activity[2])
         label_children = self.SimpleCardWidget_tips.findChildren(BodyLabel)
         progress_children = self.SimpleCardWidget_tips.findChildren(ProgressBar)

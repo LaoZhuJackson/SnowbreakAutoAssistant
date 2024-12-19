@@ -36,6 +36,18 @@ class Config(QConfig):
     """ Config of application """
 
     # 主页面
+    date_tip = ConfigItem("home_interface_enter", "date_tip", [
+        ["活动", "2024-12-19", "2025-1-23"],
+        ["豹豹卡池", "2024-12-19", "2025-1-9"],
+        ["朝翼卡池", "2025-1-2", "2025-1-23"],
+        ["噬神斗场", "2024-12-19", "2025-1-16"],
+        ["心意寄语", "2024-12-31", "2025-1-14"],
+        ["珍宝行囊", "2024-12-19", "2025-1-23"],
+        ["七日派对", "2024-12-26", "2025-1-9"],
+        ["远山沉沉", "2024-12-30", "2025-1-13"],
+        ["永续联机", "2024-12-23", "2025-1-6"],
+        ["禁区协议", "2025-1-6", "2025-1-20"],
+    ])
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
     LineEdit_starter_name = ConfigItem("home_interface_enter", "LineEdit_starter_name", "尘白禁区")
     LineEdit_game_name = ConfigItem("home_interface_enter", "LineEdit_game_name", "尘白禁区")
