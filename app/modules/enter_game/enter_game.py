@@ -26,9 +26,9 @@ class EnterGameModule:
                 print("无需更新")
                 return
             print("需要更新")
-            auto.click_element("获取更新", "text", max_retries=3)
+            auto.click_element("更新", "text", include=True, max_retries=3, crop=(0.5, 0.5, 1, 1))
             auto.click_element("确定", "text", max_retries=3)
-            while auto.find_element("更新中", "text", include=True):
+            while auto.find_element("更新中", "text", include=True) or auto.find_element("正在更新", "text", include=True):
                 time.sleep(5)
             auto.click_element("开始游戏", "text", include=True, action="move_click", max_retries=3)
             print("更新完成")
