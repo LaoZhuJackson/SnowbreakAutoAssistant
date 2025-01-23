@@ -36,7 +36,8 @@ class FishingModule:
             return
         # 代码激活窗口
         auto.activate_window(window_title=self.window_title)
-        time.sleep(0.2)
+        auto.press_key('f')
+        time.sleep(1)
         auto.press_key(self.press_key)
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
                              crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),

@@ -56,24 +56,24 @@ def update_version_in_file(filename, new_version):
 
 if __name__ == "__main__":
     # 运行时修改
-    version = "1.2.2"
+    version = "1.2.4"
     update_version_in_file('./AppData/version.txt', version)
 
-    # 运行 Nuitka 命令
-    command = [
-        "python", "-m", "nuitka", "--mingw64", "--standalone", "--onefile",
-        "--show-memory", "--show-progress", "--plugin-enable=pyqt5",
-        "--windows-uac-admin", "--windows-disable-console",
-        "--windows-icon-from-ico=app/resource/images/logo.ico",
-        "--output-dir=dist", "main.py"
-    ]
-
-    try:
-        result = subprocess.run(command, check=True, capture_output=True, text=True)
-        print("Nuitka Output:", result.stdout)
-        print("Nuitka Errors:", result.stderr)
-    except subprocess.CalledProcessError as e:
-        print("An error occurred during Nuitka compilation:", e.stderr)
+    # # 运行 Nuitka 命令
+    # command = [
+    #     "python", "-m", "nuitka", "--mingw64", "--standalone", "--onefile",
+    #     "--show-memory", "--show-progress", "--plugin-enable=pyqt5",
+    #     "--windows-uac-admin", "--windows-console-mode=disable",
+    #     "--windows-icon-from-ico=app/resource/images/logo.ico",
+    #     "--output-dir=dist", "main.py"
+    # ]
+    #
+    # try:
+    #     result = subprocess.run(command, check=True, capture_output=True, text=True)
+    #     print("Nuitka Output:", result.stdout)
+    #     print("Nuitka Errors:", result.stderr)
+    # except subprocess.CalledProcessError as e:
+    #     print("An error occurred during Nuitka compilation:", e.stderr)
 
     # 删除指定文件夹及其子文件夹
     folders_to_delete = [
