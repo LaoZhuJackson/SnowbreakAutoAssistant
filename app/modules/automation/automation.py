@@ -554,3 +554,19 @@ class Automation(metaclass=SingletonMeta):
         else:
             print(f"未找到窗口:{window_title}")
             return False
+
+    def find_text_in_area(self, pos):
+        """
+        通过位置找对应的文本内容
+        :param pos: 查找区域格式：（（x1,y1），（x2,y2））
+        :return: 对应区域内的文本列表
+        """
+        crop = (
+            pos[0][0] / 1920, pos[0][1] / 1080, (pos[1][0] - pos[0][0]) / 1920, (pos[1][1] - pos[0][1]) / 1080)
+        self.take_screenshot(crop=crop)
+        self.perform_ocr()
+        original_result = self.ocr_result
+        # 提取每个子列表中的字符串部分
+        result = [item[1][0] for item in original_result]
+
+        return result

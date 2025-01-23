@@ -7,6 +7,7 @@ import numpy as np
 
 from app.common.config import config
 from app.common.logger import logger
+from app.common.signal_bus import signalBus
 from app.modules.automation import auto
 from app.modules.automation.screenshot import Screenshot
 
@@ -26,6 +27,10 @@ class FishingModule:
         self.press_key = config.LineEdit_fish_key.value
 
     def run(self):
+        if not self.press_key:
+            if not self.get_press_key():
+                # 未识别且未手动设置钓鱼按键则停止
+                return
         if np.any(self.upper_yellow < self.lower_yellow):
             logger.error("运行错误，存在上限的值小于下限")
             return
@@ -34,7 +39,7 @@ class FishingModule:
         time.sleep(0.2)
         auto.press_key(self.press_key)
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
-                             crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080),
+                             crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
                              max_retries=10):
             time.sleep(0.2)
             auto.press_key(self.press_key)
@@ -146,7 +151,7 @@ class FishingModule:
             os.makedirs(self.save_path)
         screenshot = self.take_screenshot()
         screenshot.save(file_path)
-        print(f"出了条大的！已保存截图至：{file_path}")
+        print(f"出了条大的！截图已保存至：{file_path}")
 
     def take_screenshot(self, crop=(0, 0, 1, 1)):
         """
@@ -168,3 +173,22 @@ class FishingModule:
             time.sleep(1)
             if time.time() - start_time > 60:
                 raise RuntimeError("截图超时")
+
+    def get_press_key(self):
+        """
+        自动获取钓鱼按键
+        """
+        pos = ((1706, 1024), (1820, 1066))
+        text_list = auto.find_text_in_area(pos)
+        text = text_list[0]
+        # 根据文本内容模糊匹配键盘按键
+        key_list = config.fish_key_list.value
+        for key in key_list:
+            if key in text.lower():
+                logger.info(f"钓鱼按键识别成功：{key}")
+                self.press_key = key
+                signalBus.updateFishKey.emit(key)
+                config.set(config.LineEdit_fish_key, key)
+                return True
+        logger.error(f"识别失败：{text}，请手动设置")
+        return False

@@ -296,7 +296,7 @@ class Additional(QFrame, Ui_additional_features):
                     widget.setCurrentIndex(config_item.value)
                 elif isinstance(widget, LineEdit):
                     if widget.objectName().split('_')[2] == 'key':
-                        widget.setPlaceholderText("space")
+                        widget.setPlaceholderText("例如空格输入‘space’，置空则自动识别")
                     elif widget.objectName().split('_')[1] == 'fish':
                         widget.setPlaceholderText("“int,int,int”")
                     widget.setText(config_item.value)
@@ -319,6 +319,7 @@ class Additional(QFrame, Ui_additional_features):
 
         signalBus.jigsawDisplaySignal.connect(self.paint_best_solution)
         signalBus.updatePiecesNum.connect(self.update_pieces_num)
+        signalBus.updateFishKey.connect(self.update_fish_key)
 
     def _connect_to_save_changed(self):
         children_list = get_all_children(self)
@@ -605,6 +606,9 @@ class Additional(QFrame, Ui_additional_features):
         except Exception as e:
             logger.error(e)
             traceback.print_exc()
+
+    def update_fish_key(self, key):
+        self.LineEdit_fish_key.setText(key)
 
     def closeEvent(self, event):
         # 恢复原始标准输出

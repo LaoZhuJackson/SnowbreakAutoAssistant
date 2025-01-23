@@ -15,29 +15,6 @@ class PersonModule:
         self.config_data = config.toDict()
         self.select_person_dic = self.config_data["home_interface_person"]
         self.break_flag = False
-        self.name_dic = {
-            0: '不选择',
-            1: '朝翼',
-            2: '瞬刻',
-            3: '龙舌兰',
-            4: '悖谬',
-            5: '无限之视',
-            6: '蓝闪',
-            7: '冬至',
-            8: '辉耀',
-            9: '辉夜',
-            10: '狂猎',
-            11: '雨燕',
-            12: '缄默',
-            13: '咎冠',
-            14: '羽蜕',
-            15: '豹豹',
-            16: '魔术师',
-            17: '幽潮',
-            18: '藏锋',
-            19: '溯影',
-            20: '云篆',
-        }
         self.pages = math.ceil(34 / 4) + 1
         self.power_times = 0
 
@@ -184,25 +161,25 @@ class PersonModule:
             print(f"没找到速战position：{pos}")
             return None
 
-    def find_text_in_area(self, pos):
-        """
-        通过位置找对应的文本内容
-        :param pos: 查找区域格式：（（x1,y1），（x2,y2））
-        :return: 对应区域内的文本列表
-        """
-        crop = (
-            pos[0][0] / 1920, pos[0][1] / 1080, (pos[1][0] - pos[0][0]) / 1920, (pos[1][1] - pos[0][1]) / 1080)
-        auto.take_screenshot(crop=crop)
-        auto.perform_ocr()
-        original_result = auto.ocr_result
-        # 提取每个子列表中的字符串部分
-        result = [item[1][0] for item in original_result]
-
-        return result
+    # def find_text_in_area(self, pos):
+    #     """
+    #     通过位置找对应的文本内容
+    #     :param pos: 查找区域格式：（（x1,y1），（x2,y2））
+    #     :return: 对应区域内的文本列表
+    #     """
+    #     crop = (
+    #         pos[0][0] / 1920, pos[0][1] / 1080, (pos[1][0] - pos[0][0]) / 1920, (pos[1][1] - pos[0][1]) / 1080)
+    #     auto.take_screenshot(crop=crop)
+    #     auto.perform_ocr()
+    #     original_result = auto.ocr_result
+    #     # 提取每个子列表中的字符串部分
+    #     result = [item[1][0] for item in original_result]
+    #
+    #     return result
 
     def update_power_times(self):
         pos = ((1421, 27), (1538, 76))
-        text_list = self.find_text_in_area(pos)
+        text_list = auto.find_text_in_area(pos)
         text = text_list[0]
         times = self.detect_times(text)
         if times is not None:

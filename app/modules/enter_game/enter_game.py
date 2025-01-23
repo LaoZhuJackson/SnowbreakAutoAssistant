@@ -39,7 +39,7 @@ class EnterGameModule:
     def enter_game(self):
         while not auto.find_element("app/resource/images/start_game/network.png", "image",
                                     crop=(1787 / 1920, 10 / 1080, 129 / 1920, 334 / 1080), threshold=0.7):
-            time.sleep(1)
+            time.sleep(3)
         auto.click_element("开始游戏", "text", include=True, max_retries=3, action="move_click")
         # 检查是否真的进入了
         self.ensure_enter()

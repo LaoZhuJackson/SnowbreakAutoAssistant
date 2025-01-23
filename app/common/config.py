@@ -149,7 +149,8 @@ class Config(QConfig):
     LineEdit_fish_upper = ConfigItem("add_fish", "LineEdit_fish_upper", "25,255,255")
     ComboBox_fishing_mode = OptionsConfigItem("add_fish", "ComboBox_fishing_mode", 0, OptionsValidator(
         [0, 1]))
-    LineEdit_fish_key = ConfigItem("add_fish", "LineEdit_fish_key", "space")
+    LineEdit_fish_key = ConfigItem("add_fish", "LineEdit_fish_key", "")
+    fish_key_list = ConfigItem("add_fish","fish_key_list", ['shift', 'space', 'ctrl'])
 
     # 常规行动相关
     SpinBox_action_times = ConfigItem("add_action", "SpinBox_action_times", 20)
