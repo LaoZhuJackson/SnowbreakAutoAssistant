@@ -62,7 +62,7 @@ class Automation(metaclass=SingletonMeta):
                     self.screenshot, self.screenshot_pos, self.screenshot_scale_factor = result
                     return result
                 else:
-                    self.logger.error("截图失败：没有找到游戏窗口")
+                    self.logger.error(f"截图失败：没有找到游戏窗口{self.window_title}")
             except Exception as e:
                 self.logger.error(f"截图失败：{e}")
             time.sleep(1)

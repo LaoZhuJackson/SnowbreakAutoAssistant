@@ -59,7 +59,7 @@ class StartThread(QThread):
                     index = int(re.search(r'\d+', key).group()) - 1
                     logger.info(f"当前任务：{self.name_list_zh[index]}")
                     # 给每个任务增加时间间隔
-                    time.sleep(2)
+                    time.sleep(3)
                     if index == 0:
                         module = EnterGameModule()
                         module.run()

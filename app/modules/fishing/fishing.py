@@ -4,6 +4,7 @@ from datetime import datetime
 
 import cv2
 import numpy as np
+from fuzzywuzzy import process
 
 from app.common.config import config
 from app.common.logger import logger
@@ -23,8 +24,9 @@ class FishingModule:
         # self.upper_white = np.array([92, 40, 255])
         # self.lower_white = np.array([88, 0, 245])
         self.start_time = time.time()
-        self.window_title = config.LineEdit_game_name.value
+        # self.window_title = config.LineEdit_game_name.value
         self.press_key = config.LineEdit_fish_key.value
+        self.window_title = config.LineEdit_game_name.value
 
     def run(self):
         if not self.press_key:
@@ -34,10 +36,6 @@ class FishingModule:
         if np.any(self.upper_yellow < self.lower_yellow):
             logger.error("运行错误，存在上限的值小于下限")
             return
-        # 代码激活窗口
-        auto.activate_window(window_title=self.window_title)
-        auto.press_key('f')
-        time.sleep(1)
         auto.press_key(self.press_key)
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
                              crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
@@ -62,7 +60,7 @@ class FishingModule:
                     if self.is_use_time_judge:
                         # 识别出未进入黄色区域，则进行时间判断、
                         if time.time() - self.start_time > 2.2:
-                            print("咋回事？强制收杆一次")
+                            logger.warn("咋回事？强制收杆一次")
                             auto.press_key(self.press_key, wait_time=0)
                             self.start_time = time.time()
                 if blocks_num == 0:
@@ -86,20 +84,23 @@ class FishingModule:
                         self.save_picture()
                 auto.press_key("esc")
             elif auto.find_element("鱼跑掉了", "text", max_retries=2):
-                print("鱼跑了，空军！")
+                logger.warn("鱼跑了，空军！")
+            return True
         else:
-            print("未识别到咬钩")
+            logger.error("未识别到咬钩或鱼饵数量不够")
+            return False
 
     def run_low_performance(self):
+        if not self.press_key:
+            if not self.get_press_key():
+                # 未识别且未手动设置钓鱼按键则停止
+                return
         if np.any(self.upper_yellow < self.lower_yellow):
             logger.error("运行错误，存在上限的值小于下限")
             return
-        # 代码激活窗口
-        auto.activate_window()
-        time.sleep(0.2)
         auto.press_key(self.press_key)
         if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
-                             crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080),
+                             crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
                              max_retries=10):
             time.sleep(0.2)
             auto.press_key(self.press_key)
@@ -112,7 +113,7 @@ class FishingModule:
                     print("到点，收杆！")
                     auto.press_key(self.press_key)
                     start_time = time.time()
-                if not auto.find_element("app/resource/images/fishing/fishing.png", "image",
+                if not auto.find_element("app/resource/images/fishing/fishing_rod.png", "image",
                                          crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080), threshold=0.8):
                     break
 
@@ -125,9 +126,11 @@ class FishingModule:
                         self.save_picture()
                 auto.press_key("esc")
             elif auto.find_element("鱼跑掉了", "text", max_retries=2):
-                print("鱼跑了，空军！")
+                logger.warn("鱼跑了，空军！")
+            return True
         else:
-            print("未识别到咬钩")
+            logger.error("未识别到咬钩或鱼饵数量不够")
+            return False
 
     def count_yellow_blocks(self, image):
         # 黄色的确切HSV值
@@ -181,15 +184,17 @@ class FishingModule:
         """
         pos = ((1706, 1024), (1820, 1066))
         text_list = auto.find_text_in_area(pos)
-        text = text_list[0]
-        # 根据文本内容模糊匹配键盘按键
-        key_list = config.fish_key_list.value
-        for key in key_list:
-            if key in text.lower():
-                logger.info(f"钓鱼按键识别成功：{key}")
-                self.press_key = key
-                signalBus.updateFishKey.emit(key)
-                config.set(config.LineEdit_fish_key, key)
-                return True
-        logger.error(f"识别失败：{text}，请手动设置")
-        return False
+        try:
+            text = text_list[0]
+            # 根据文本内容模糊匹配键盘按键
+            key_list = config.fish_key_list.value
+            best_match = process.extractOne(text, key_list)
+            logger.info(f"钓鱼按键识别最佳匹配为：{best_match}")
+            key = best_match[0]
+            self.press_key = key
+            signalBus.updateFishKey.emit(key)
+            config.set(config.LineEdit_fish_key, key)
+            return True
+        except Exception as e:
+            logger.error(f"未识别出按键文字，请手动设置{e}")
+            return False

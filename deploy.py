@@ -56,7 +56,8 @@ def update_version_in_file(filename, new_version):
 
 if __name__ == "__main__":
     # 运行时修改
-    version = "1.2.4"
+    version_num = "1.2.4"
+    version = f"v{version_num}"
     update_version_in_file('./AppData/version.txt', version)
 
     # # 运行 Nuitka 命令
