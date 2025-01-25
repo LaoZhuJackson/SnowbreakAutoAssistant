@@ -20,6 +20,7 @@ from .additional_features import Additional
 from .help import Help
 from .home import Home
 from .setting_interface import SettingInterface
+from .trigger import Trigger
 from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
@@ -55,6 +56,7 @@ class MainWindow(MSFluentWindow):
         self.displayInterface = DisplayInterface(self)
         self.homeInterface = Home('Home Interface', self)
         self.additionalInterface = Additional('Additional Interface', self)
+        self.triggerInterface = Trigger('Trigger Interface', self)
 
         self.helpInterface = Help('Help Interface', self)
         self.settingInterface = SettingInterface(self)
@@ -109,6 +111,7 @@ class MainWindow(MSFluentWindow):
         self.addSubInterface(self.displayInterface, FIF.PHOTO, '展示页')
         self.addSubInterface(self.homeInterface, FIF.HOME, '主页', FIF.HOME_FILL)
         self.addSubInterface(self.additionalInterface, FIF.APPLICATION, '小工具')
+        self.addSubInterface(self.triggerInterface, FIF.COMPLETED, '触发器')
 
         # add custom widget to bottom
         self.navigationInterface.addWidget(
