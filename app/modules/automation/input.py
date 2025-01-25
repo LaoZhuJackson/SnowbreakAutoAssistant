@@ -1,6 +1,6 @@
 import pyautogui
 import time
-
+import ctypes
 import pydirectinput
 
 
@@ -82,10 +82,32 @@ class Input:
     def press_key(self, key, wait_time=0.2):
         """模拟键盘按键，可以指定按下的时间"""
         try:
-            pydirectinput.keyDown(key)
-            time.sleep(wait_time)  # 等待指定的时间
-            pydirectinput.keyUp(key)
-            self.logger.debug(f"键盘按下 {key}")
+            # 按下鼠标侧键
+            if key in ["mouse5", "mouse4"]:
+                # 定义鼠标事件常量
+                MOUSEEVENTF_XDOWN = 0x0080  # 侧键按下
+                MOUSEEVENTF_XUP = 0x0100  # 侧键松开
+                # 定义侧键按钮
+                XBUTTON1 = 0x0001  # 后退按钮
+                XBUTTON2 = 0x0002  # 前进按钮
+
+                # 模拟鼠标侧键点击
+                def click_side_button(button):
+                    ctypes.windll.user32.mouse_event(MOUSEEVENTF_XDOWN, 0, 0, button, 0)  # 按下
+                    ctypes.windll.user32.mouse_event(MOUSEEVENTF_XUP, 0, 0, button, 0)  # 松开
+
+                if key == 'mouse5':
+                    # 模拟“前进”按钮点击
+                    click_side_button(XBUTTON2)
+                else:
+                    # 模拟“后退”按钮点击
+                    click_side_button(XBUTTON1)
+                self.logger.debug(f"鼠标按下 {key}")
+            else:
+                pydirectinput.keyDown(key)
+                time.sleep(wait_time)  # 等待指定的时间
+                pydirectinput.keyUp(key)
+                self.logger.debug(f"键盘按下 {key}")
         except Exception as e:
             self.logger.error(f"键盘按下 {key} 出错：{e}")
 

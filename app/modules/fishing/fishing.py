@@ -115,6 +115,7 @@ class FishingModule:
                     start_time = time.time()
                 if not auto.find_element("app/resource/images/fishing/fishing_rod.png", "image",
                                          crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080), threshold=0.8):
+                    time.sleep(1)
                     break
 
             if auto.find_element("本次获得", "text", max_retries=2):

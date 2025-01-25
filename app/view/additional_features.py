@@ -11,6 +11,7 @@ import pyautogui
 from PyQt5.QtCore import QThread, pyqtSignal, QRect
 from PyQt5.QtGui import QColor, QPixmap, QPainter
 from PyQt5.QtWidgets import QFrame, QWidget, QTextBrowser
+from fuzzywuzzy import process
 from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit, InfoBar
 
 from app.common.config import config
@@ -342,6 +343,8 @@ class Additional(QFrame, Ui_additional_features):
         self.PrimaryPushButton_get_color.clicked.connect(self.adjust_color)
         self.PushButton_reset.clicked.connect(self.reset_color)
 
+        self.LineEdit_fish_key.editingFinished.connect(lambda: self.update_fish_key(self.LineEdit_fish_key.text()))
+
         signalBus.jigsawDisplaySignal.connect(self.paint_best_solution)
         signalBus.updatePiecesNum.connect(self.update_pieces_num)
         signalBus.updateFishKey.connect(self.update_fish_key)
@@ -633,6 +636,11 @@ class Additional(QFrame, Ui_additional_features):
             traceback.print_exc()
 
     def update_fish_key(self, key):
+        # 添加模糊查询
+        choices = ["ctrl", "space", "shift", "mouse5", "mouse4"]
+        best_match = process.extractOne(key, choices)
+        if best_match[1] > 60:
+            key = best_match[0]
         self.LineEdit_fish_key.setText(key)
 
     def closeEvent(self, event):
