@@ -570,3 +570,55 @@ class Automation(metaclass=SingletonMeta):
         result = [item[1][0] for item in original_result]
 
         return result
+
+    def find_fish_bite_element(self, target, find_type, threshold=None, max_retries=1, crop=(0, 0, 1, 1), take_screenshot=True,
+                     relative=False, scale_range=None, include=None, need_ocr=True, source=None, source_type=None,
+                     pixel_bgr=None, position="bottom_right"):
+        """
+        查找元素，并根据指定的查找类型执行不同的查找策略。
+        :param target: 查找目标，可以是图像路径或文字。
+        :param find_type: 查找类型，例如'image', 'text'等。
+        :param threshold: 查找阈值，用于图像查找时的相似度匹配。
+        :param max_retries: 最大重试次数。
+        :param crop: 截图的裁剪区域。
+        :param take_screenshot: 是否需要先截图。
+        :param relative: 返回相对位置还是绝对位置。
+        :param scale_range: 图像查找时的缩放范围。
+        :param include: 文字查找时是否包含目标字符串。
+        :param need_ocr: 是否需要执行OCR识别。
+        :param source: 查找参照物，用于距离最小化查找。
+        :param source_type: 查找参照物的类型。
+        :param pixel_bgr: 颜色查找时的BGR值。
+        :param position: 查找方位，'top_left', 'top_right', 'bottom_left', 或 'bottom_right'。
+        :return: 查找到的元素位置，或者在图像计数查找时返回计数。
+        """
+        take_screenshot = take_screenshot and need_ocr
+        max_retries = 1 if not take_screenshot else max_retries
+        for i in range(max_retries):
+            if take_screenshot:
+                screenshot_result = self.take_screenshot(crop)
+                if not screenshot_result:
+                    continue  # 如果截图失败，则跳过本次循环
+            if find_type in ['image', 'image_threshold', 'text', "min_distance_text"]:
+                if find_type in ['image', 'image_threshold']:
+                    top_left, bottom_right, image_threshold = self.find_image_element(target, threshold, scale_range,
+                                                                                      relative)
+                elif find_type == 'text':
+                    top_left, bottom_right = self.find_text_element(target, include, need_ocr, relative)
+                elif find_type == 'min_distance_text':
+                    top_left, bottom_right = self.find_min_distance_text_element(target, source, source_type, include,
+                                                                                 need_ocr, position)
+                if top_left and bottom_right:
+                    if find_type == 'image_threshold':
+                        return image_threshold
+                    return top_left, bottom_right
+            elif find_type in ['image_count']:
+                return self.find_image_and_count(target, threshold, pixel_bgr)
+            elif find_type in ['image_with_multiple_targets']:
+                return self.find_image_with_multiple_targets(target, threshold, scale_range, relative)
+            else:
+                raise ValueError("错误的类型")
+
+            if i < max_retries - 1:
+                time.sleep(0.1)  # 在重试前等待一定时间
+        return None

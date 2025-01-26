@@ -5,7 +5,9 @@ import shutil
 import subprocess
 
 # 从命令行参数获取 zip 文件路径
-update_zip_path = sys.argv[1] if len(sys.argv) > 1 else "./dist/temp/SAA_1.2.2.zip"
+with open('AppData/version.txt','r', encoding='utf-8') as file:
+    version = file.readline().strip()
+update_zip_path = sys.argv[1] if len(sys.argv) > 1 else f"./dist/temp/SAA_{version}.zip"
 extract_folder = "./temp/extracted_files"
 
 

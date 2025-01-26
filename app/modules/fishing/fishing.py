@@ -37,9 +37,9 @@ class FishingModule:
             logger.error("运行错误，存在上限的值小于下限")
             return
         auto.press_key(self.press_key)
-        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
-                             crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
-                             max_retries=10):
+        if auto.find_fish_bite_element("app/resource/images/fishing/bite.png", "image", threshold=0.5,
+                                       crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
+                                       max_retries=100):
             time.sleep(0.2)
             auto.press_key(self.press_key)
             if self.is_use_time_judge:
@@ -99,9 +99,9 @@ class FishingModule:
             logger.error("运行错误，存在上限的值小于下限")
             return
         auto.press_key(self.press_key)
-        if auto.find_element("app/resource/images/fishing/bite.png", "image", threshold=0.7,
-                             crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
-                             max_retries=10):
+        if auto.find_fish_bite_element("app/resource/images/fishing/bite.png", "image", threshold=0.5,
+                                       crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
+                                       max_retries=100):
             time.sleep(0.2)
             auto.press_key(self.press_key)
             if self.is_use_time_judge:
