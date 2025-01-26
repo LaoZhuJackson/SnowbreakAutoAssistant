@@ -150,8 +150,9 @@ class Config(QConfig):
     ComboBox_fishing_mode = OptionsConfigItem("add_fish", "ComboBox_fishing_mode", 0, OptionsValidator(
         [0, 1]))
     LineEdit_fish_key = ConfigItem("add_fish", "LineEdit_fish_key", "")
-    fish_key_list = ConfigItem("add_fish","fish_key_list", ['shift', 'space', 'ctrl'])
-    ComboBox_lure_type = OptionsConfigItem("add_fish", "ComboBox_lure_type", 0, OptionsValidator([0, 1, 2, 3]))
+    fish_key_list = ConfigItem("add_fish", "fish_key_list", ['shift', 'space', 'ctrl'])
+    ComboBox_lure_type = OptionsConfigItem("add_fish", "ComboBox_lure_type", 0,
+                                           OptionsValidator([0, 1, 2, 3, 4, 5, 6, 7]))
     # 常规行动相关
     SpinBox_action_times = ConfigItem("add_action", "SpinBox_action_times", 20)
     ComboBox_run = OptionsConfigItem("add_action", "ComboBox_run", 0, OptionsValidator([0, 1]))

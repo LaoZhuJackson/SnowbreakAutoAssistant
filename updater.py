@@ -37,7 +37,7 @@ class Updater:
             self.proxies = None
         self.download_url = download_url
         self.cover_folder_path = os.path.abspath('./')
-        self.temp_path = os.path.abspath("./")
+        self.temp_path = os.path.abspath("./temp")
         self.exe_path = os.path.abspath("./app/resource/binary/7za.exe")
         self.aria2_path = os.path.abspath("./app/resource/binary/aria2c.exe")
 

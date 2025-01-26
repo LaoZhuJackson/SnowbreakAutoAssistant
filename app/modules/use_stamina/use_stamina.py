@@ -41,7 +41,7 @@ class UseStaminaModule:
         if text:
             auto.click_element(text, "text", include=True, crop=(282 / 1920, 294 / 1080, 517 / 1920, 93 / 1080))
         auto.click_element("确定", "text", include=False, action="move_click")
-        time.sleep(0.2)
+        time.sleep(1)
         auto.press_key("esc")
         time.sleep(0.5)
         auto.click_element(self.root + "stamina.png", "image", threshold=0.8, action="move_click")
@@ -76,6 +76,7 @@ class UseStaminaModule:
                 time.sleep(2)
                 auto.click_element("等级提升", "text", include=False, max_retries=2, action="move_click")
                 auto.click_element("完成", "text", include=True, max_retries=5, action="move_click")
+        time.sleep(1)
         while not auto.click_element("任务", "text", include=True, action="move_click",
                                      crop=(19 / 1920, 965 / 1080, 561 / 1920, 111 / 1080)):
             auto.press_key("esc")
