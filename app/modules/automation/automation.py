@@ -5,6 +5,7 @@ import time
 import traceback
 
 import cv2
+import numpy as np
 import win32gui
 
 from app.common.config import config
@@ -134,6 +135,9 @@ class Automation:
                                                                                            self.hwnd)
                     else:
                         self.current_screenshot = self.first_screenshot
+                    # 添加一像素杂色，防止cv2.TM_CCOEFF_NORMED报错
+                    if np.all(self.current_screenshot == 0):
+                        self.current_screenshot[0, 0, 0] = 1  # 将左上角像素的B通道值改为1
                     # self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
                     return result
                 else:

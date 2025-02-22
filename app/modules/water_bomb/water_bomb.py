@@ -54,6 +54,9 @@ class WaterBombModule(BaseTask):
         while True:
             self.auto.take_screenshot()
 
+            if self.auto.find_element(['重新开始', '翻倍连战'], 'text',
+                                      crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080)):
+                break
             if self.auto.find_element('本局对战少女', 'text', crop=(796 / 1920, 187 / 1080, 1103 / 1920, 261 / 1080)):
                 break
             if self.auto.find_element('查看道具', 'text', crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080)):
@@ -99,21 +102,18 @@ class WaterBombModule(BaseTask):
                 # self.update_items_list(is_player=True)
                 continue
             if not is_speed_up:
-                crop_image = self.auto.get_crop_form_first_screenshot(
-                    crop=(1743 / 1920, 54 / 1080, 1772 / 1920, 94 / 1080))
-                ssim = ImageUtils.calculate_ssim('app/resource/images/water_bomb/speed.png', crop_image)
-                # print(ssim)
-                if ssim < 0.5:
+                if not self.auto.find_element('app/resource/images/water_bomb/speed.png', 'image',
+                                              crop=(1700 / 1920, 30 / 1080, 1800 / 1920, 130 / 1080),
+                                              match_method=cv2.TM_CCOEFF_NORMED):
                     self.auto.move_click(1742 / self.auto.scale_x, 80 / self.auto.scale_y, press_time=0.1)
                     time.sleep(0.5)
+                    continue
                 else:
                     is_speed_up = True
             # 确认加速后进入主循环
             else:
                 # 检查是否进入自己的回合
-                if self.auto.find_element('app/resource/images/water_bomb/shoot_self.png', 'image',
-                                          crop=(1487 / 1920, 815 / 1080, 1723 / 1920, 900 / 1080),
-                                          match_method=cv2.TM_CCOEFF_NORMED):
+                if self.auto.find_element('查看道具', 'text', crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080)):
                     is_player_round = True
                 else:
                     is_player_round = False
@@ -134,10 +134,11 @@ class WaterBombModule(BaseTask):
                         self.update_hp_and_bullet()
                         self.update_extra_status()
                         win_prob, current_strategy = self.get_action_and_probability()
+                        self.logger.warn(self.get_status_dic())
                         self.logger.info(f'当前最佳操作为：{current_strategy}, 胜率为：{win_prob}')
                         if win_prob == 0:
                             self.restart()
-                            break
+                            continue
                         if win_prob < 0.4 and 'reset_hammer' in self.player_items and len(self.player_items) > 1:
                             current_strategy = 'reset_hammer'
                         # print(self.get_status_dic())
@@ -223,40 +224,56 @@ class WaterBombModule(BaseTask):
     def handle_shooting(self, person):
         """处理开枪策略下的逻辑"""
         # todo 更新已经射击的子弹类型
-        timeout = Timer(10).start()
+        timeout = Timer(20).start()
         path = f'app/resource/images/water_bomb/{person}.png'
         while True:
             self.auto.take_screenshot()
 
+            # 开完枪后回合转换
+            if self.auto.find_element('回合转换', 'text', crop=(872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080)):
+                self.is_reversal = False
+                self.current_power = 1
+                # 开完枪不管下一发是什么，都把子弹类型重置为-1
+                self.bullet_type = -1
+                return True
             # 开完枪之后进入新一轮道具画面
             if self.auto.click_element('点击屏幕继续', 'text', crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080)):
+                return True
+            # 开完枪后对局结束
+            if self.auto.find_element(['重新开始', '翻倍连战'], 'text',
+                                      crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080)):
+                self.have_extra_shoot = False
+                self.sustain = False
+                self.is_reversal = False
+                self.current_power = 1
+                self.bullet_type = -1
                 return True
             if 'self' in person:
                 if self.auto.find_element('回合追加', 'text', crop=(872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080)):
                     self.is_reversal = False
                     self.current_power = 1
+                    self.bullet_type = -1
                     return True
-                if self.auto.click_element(path, 'image', crop=(1487 / 1920, 815 / 1080, 1723 / 1920, 900 / 1080)):
+                if self.auto.click_element(path, 'image', crop=(1487 / 1920, 815 / 1080, 1723 / 1920, 900 / 1080),
+                                           match_method=cv2.TM_CCOEFF_NORMED):
                     continue
             # 射击敌人
             else:
-                if self.auto.find_element('回合转换', 'text', crop=(872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080)):
-                    self.is_reversal = False
-                    self.current_power = 1
-                    return True
                 if self.have_extra_shoot and self.auto.find_element('回合追加', 'text', crop=(
                         872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080)):
                     self.have_extra_shoot = False
                     self.sustain = False
                     self.is_reversal = False
                     self.current_power = 1
+                    self.bullet_type = -1
                     return True
                 if self.auto.find_element('app/resource/images/water_bomb/gun.png', 'image',
                                           crop=(1494 / 1920, 352 / 1080, 1714 / 1920, 581 / 1080),
                                           match_method=cv2.TM_CCOEFF_NORMED):
                     self.auto.move_click(int(960 / self.auto.scale_x), int(540 / self.auto.scale_y))
                     continue
-                if self.auto.click_element(path, 'image', crop=(1640 / 1920, 900 / 1080, 1880 / 1920, 994 / 1080)):
+                if self.auto.click_element(path, 'image', crop=(1640 / 1920, 900 / 1080, 1880 / 1920, 994 / 1080),
+                                           match_method=cv2.TM_CCOEFF_NORMED):
                     continue
 
             if timeout.reached():
@@ -419,10 +436,12 @@ class WaterBombModule(BaseTask):
 
     def update_extra_status(self):
         """检查当前对面是否被铐上手铐"""
-        crop_image = self.auto.get_crop_form_first_screenshot(crop=(1026 / 1920, 66 / 1080, 1211 / 1920, 116 / 1080))
-        ssim = ImageUtils.calculate_ssim('app/resource/images/water_bomb/is_handcuffs.png', crop_image)
+        # crop_image = self.auto.get_crop_form_first_screenshot(crop=(1026 / 1920, 66 / 1080, 1211 / 1920, 116 / 1080))
+        # ssim = ImageUtils.calculate_ssim('app/resource/images/water_bomb/is_handcuffs.png', crop_image)
         # print(ssim)
-        if ssim > 0.5 and self.have_extra_shoot:
+        # if ssim > 0.5 and self.have_extra_shoot:
+        if self.auto.find_element('app/resource/images/water_bomb/is_handcuffs.png', 'image',
+                                  crop=(980 / 1920, 30 / 1080, 1250 / 1920, 150 / 1080)):
             self.sustain = True
             self.have_extra_shoot = False
         else:

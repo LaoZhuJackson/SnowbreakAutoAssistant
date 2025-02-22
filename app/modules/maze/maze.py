@@ -24,9 +24,9 @@ class MazeModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.find_element(['击败', '目标'], 'text', crop=(43 / 1920, 114 / 1080, 330 / 1920, 180 / 1080)):
-                self.auto.press_key('e', 2)
+                self.auto.press_key('e', 1.5)
                 if need_move_forward:
-                    self.auto.press_key('w', 1.5)
+                    self.auto.press_key('w', 1.2)
                     need_move_forward = False
                 # 30%概率尝试放个大招
                 if random.random() < 0.3:
@@ -35,7 +35,7 @@ class MazeModule(BaseTask):
 
             if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440)):
                 continue
-            if self.auto.click_element('丢弃', 'text', crop=(274 / 1920, 970 / 1080, 361 / 1920, 1016 / 1080)):
+            if self.auto.click_element('丢弃', 'text', crop=(187 / 2560, 1180 / 1440, 703 / 2560, 1)):
                 time.sleep(0.3)
                 continue
             if self.auto.find_element('选择增益', 'text', crop=(842 / 1920, 36 / 1080, 1073 / 1920, 115 / 1080)):

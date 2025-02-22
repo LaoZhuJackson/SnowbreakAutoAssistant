@@ -103,7 +103,7 @@ class UsePowerModule(BaseTask):
                     continue
                 if self.auto.click_element("app/resource/images/use_power/entrance.png", "image",
                                            crop=(1361 / 1920, 411 / 1080, 1562 / 1920, 554 / 1080)):
-                    time.sleep(1)
+                    time.sleep(2)
                     continue
             else:
                 if finish_flag:

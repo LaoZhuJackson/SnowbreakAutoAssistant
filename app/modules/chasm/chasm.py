@@ -71,9 +71,11 @@ class ChasmModule(BaseTask):
             self.auto.take_screenshot()
 
             if enter_flag:
+                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                    break
                 if self.auto.click_element('键领取', 'text', crop=(2226 / 2560, 1300 / 1440, 2430 / 2560, 1362 / 1440)):
                     continue
-                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                else:
                     break
             if self.auto.find_element('排行奖励', 'text', crop=(0, 0, 233 / 1920, 118 / 1080)):
                 enter_flag = True
@@ -81,7 +83,7 @@ class ChasmModule(BaseTask):
             if not enter_flag:
                 if self.auto.click_element('app/resource/images/chasm/reward.png', 'image',
                                            crop=(112 / 1920, 885 / 1080, 171 / 1920, 942 / 1080)):
-                    time.sleep(0.5)
+                    time.sleep(1)
                     continue
 
             if timeout.reached():

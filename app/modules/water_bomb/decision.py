@@ -284,7 +284,7 @@ class Round:
             gem_of_life = self.optimal_strategy(status.gem_of_life())[0]
             return gem_of_life, 'gem_of_life'
 
-        # 拘束手铐 (优先使用) 
+        # 拘束手铐 (优先使用)
         if 'handcuffs' in status.sitems and not status.extra_opp:
             handcuffs = self.optimal_strategy(status.handcuffs())[0]
             return handcuffs, 'handcuffs'
@@ -367,8 +367,8 @@ class Round:
                 shoot_self += blank_prob * self.optimal_strategy(status.shoot(False, False))[0]
 
         # 取最优策略并记忆化
-        if shoot_enemy < shoot_self or (blank_prob > live_prob and not status.reversal) or (
-                live_prob > blank_prob and status.reversal):
+        if shoot_enemy < shoot_self or (blank_prob > live_prob and not status.reversal and status.power == 1) or (
+                live_prob > blank_prob and status.reversal and status.power == 1):
             shoot = 'shoot_self'
         else:
             shoot = 'shoot_enemy'
