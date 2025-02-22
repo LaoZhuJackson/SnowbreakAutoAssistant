@@ -4,6 +4,9 @@ from app.common.config import config
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
+from paddleocr import PaddleOCR
+from app.modules.ocr import ocr
+
 
 class AlienGuardianModule(BaseTask):
     def __init__(self):
@@ -52,6 +55,7 @@ class AlienGuardianModule(BaseTask):
     def fight_normal(self):
         timeout = Timer(1800).start()
         select_flag = False
+        i = 0
         while True:
             self.auto.take_screenshot()
 
@@ -68,11 +72,10 @@ class AlienGuardianModule(BaseTask):
                 if self.auto.click_element('确定', 'text', crop=(1220 / 2560, 1295 / 1440, 1330 / 2560, 1352 / 1440)):
                     select_flag = False
                 continue
+
             if self.auto.find_element('设置', 'text', crop=(1174 / 2560, 773 / 1440, 1348 / 2560, 847 / 1440)):
                 self.auto.press_key('esc')
                 time.sleep(0.5)
-                continue
-            if self.auto.click_element('惊喜奖励', 'text'):
                 continue
             if self.auto.click_element('退出', 'text', crop=(710 / 1920, 934 / 1080, 813 / 1920, 996 / 1080)):
                 break
@@ -111,7 +114,7 @@ class AlienGuardianModule(BaseTask):
                 self.auto.press_key('esc')
                 time.sleep(0.5)
                 continue
-            if self.auto.click_element('惊喜奖励', 'text'):
+            if self.auto.click_element('惊喜奖励', 'text', crop=(856 / 1920, 34 / 1080, 1069 / 1920, 110 / 1080)):
                 continue
             if self.auto.click_element('退出', 'text', crop=(710 / 1920, 934 / 1080, 1365 / 1920, 1062 / 1080)):
                 continue

@@ -1,4 +1,5 @@
 import sys
+import traceback
 
 import cv2
 import numpy as np
@@ -10,6 +11,7 @@ from app.common.logger import logger, original_stdout, original_stderr
 from app.modules.automation.automation import instantiate_automation
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
+from app.modules.ocr import ocr
 
 
 class SubTask(QThread, BaseTask):
@@ -27,6 +29,9 @@ class SubTask(QThread, BaseTask):
         try:
             self.module.run()
         except Exception as e:
+            # print(traceback.format_exc())
+            # 停止时清除ocr缓存
+            ocr.stop_ocr()
             self.logger.warn(e)
         self.is_running.emit(False)
 

@@ -60,7 +60,6 @@ class Automation:
         self.is_starter = window_class != config.LineEdit_game_class.value
         self.logger = logger
         self.hwnd = self.get_hwnd()
-        self.img_cache = {}
         self.screenshot = Screenshot(self.logger)
         # 当前截图
         self.current_screenshot = None
@@ -179,16 +178,9 @@ class Automation:
         :return: 左上，右下相对坐标，寻找到的目标的置信度
         """
         try:
-            if target in self.img_cache:
-                mask = self.img_cache[target]['mask']
-                template = self.img_cache[target]['template']
-            else:
-                # 获取透明部分的掩码（允许模版图像有透明处理）
-                mask = ImageUtils.get_template_mask(target)
-                template = cv2.imread(target)  # 读取模板图片
-                if cacheable:
-                    # 存入字典缓存
-                    self.img_cache[target] = {'mask': mask, 'template': template}
+            # 获取透明部分的掩码（允许模版图像有透明处理）
+            mask = ImageUtils.get_template_mask(target)
+            template = cv2.imread(target)  # 读取模板图片
             if mask is not None:
                 matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template, mask,
                                                                (self.scale_x, self.scale_y),
@@ -267,6 +259,7 @@ class Automation:
             return text in targets, text if text in targets else None
 
     def search_text_in_ocr_results(self, targets, include):
+        """从ocr识别结果中找目标文字"""
         for result in self.ocr_result:
             match, matched_text = self.is_text_match(result[0], targets, include)
             if match:

@@ -66,7 +66,7 @@ def auto_crop_image(img):
 
 
 class Screenshot:
-    _screenshot_interval = Timer(0.1)
+    _screenshot_interval = Timer(0.5)
 
     def __init__(self, logger=None):
         self.base_width = 1920

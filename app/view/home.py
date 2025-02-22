@@ -21,6 +21,7 @@ from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
 from app.modules.enter_game.enter_game import EnterGameModule
 from app.modules.get_reward.get_reward import GetRewardModule
+from app.modules.ocr import ocr
 from app.modules.person.person import PersonModule
 from app.modules.shopping.shopping import ShoppingModule
 from app.modules.use_power.use_power import UsePowerModule
@@ -72,7 +73,8 @@ class StartThread(QThread, BaseTask):
                     # 如果value为false则进行下一个任务的判断
                     continue
         except Exception as e:
-            self.logger.error(e)
+            ocr.stop_ocr()
+            self.logger.warn(e)
             # traceback.print_exc()
         finally:
             # 运行完成

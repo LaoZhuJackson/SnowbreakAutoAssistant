@@ -1,7 +1,6 @@
-import time
-
 import cv2
-import paddleocr
+import gc
+import time
 from paddleocr import PaddleOCR
 
 from app.common.image_utils import ImageUtils
@@ -13,6 +12,7 @@ class OCR:
         self.ocr = None
         self.logger = logger
         self.replacements = replacements
+        self.time = time.time()
 
     def run(self, image, extract: list = None):
         """
@@ -34,6 +34,11 @@ class OCR:
                 image = ImageUtils.extract_letters(image, letter, threshold)
                 # ImageUtils.show_ndarray(image)
             original_result = self.ocr(image)
+
+            if time.time() - self.time >= 30:
+                self.stop_ocr()
+                self.time = time.time()
+
             if original_result:
                 return self.format_and_replace(original_result)
             else:
@@ -99,22 +104,28 @@ class OCR:
                 use_gpu = False
                 # print(f"{use_gpu=}")
                 self.logger.debug("开始初始化OCR...")
-                # self.ocr = PaddleOCR(use_gpu=use_gpu, use_angle_cls=False, lang='ch')
                 self.ocr = PaddleOCR(
                     det_model_dir='app/resource/paddleocr/whl/det/ch',
                     rec_model_dir='app/resource/paddleocr/whl/rec/ch',
                     cls_model_dir='app/resource/paddleocr/whl/cls',
                     use_gpu=use_gpu,
                     use_angle_cls=False,
+                    warmup=False,
+                    max_batch_size=1,
+                    rec_batch_num=1,
+                    benchmark=False,
                     lang='ch'
                 )
-
             except Exception as e:
                 self.logger.error(f"初始化OCR失败：{e}")
                 raise Exception("初始化OCR失败")
 
     def exit_ocr(self):
         """退出OCR实例，清理资源"""
-        self.logger.info("关闭ocr子进程")
+        self.logger.info("关闭ocr")
         if self.ocr is not None:
             del self.ocr
+
+    def stop_ocr(self):
+        self.ocr = None
+        gc.collect()

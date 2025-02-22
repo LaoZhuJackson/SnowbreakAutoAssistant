@@ -285,7 +285,7 @@ class MainWindow(MSFluentWindow):
         config.set(config.position, position)
 
     def closeEvent(self, a0):
-        ocr.exit_ocr()
+        ocr.stop_ocr()
         self.themeListener.terminate()
         self.themeListener.deleteLater()
         try:
