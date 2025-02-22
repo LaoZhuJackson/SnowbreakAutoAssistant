@@ -22,7 +22,7 @@ def read_version_from_file(filename):
         return "错误版本"
 
 
-VERSION = read_version_from_file("./AppData/version.txt")
+VERSION = read_version_from_file("AppData/version.txt")
 
 APP_NAME = "SnowbreakAutoAssistant"
 HELP_URL = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant"

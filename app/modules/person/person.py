@@ -1,198 +1,198 @@
 import math
 import re
 import time
-import traceback
-
-import pyautogui
 
 from app.common.config import config
-from app.modules.automation import auto
-from app.modules.automation.screenshot import Screenshot
+from app.modules.automation.timer import Timer
+from app.modules.base_task.base_task import BaseTask
 
 
-class PersonModule:
+class PersonModule(BaseTask):
     def __init__(self):
+        super().__init__()
+        self.power_times = None
         self.config_data = config.toDict()
         self.select_person_dic = self.config_data["home_interface_person"]
-        self.break_flag = False
-        self.pages = math.ceil(34 / 4) + 1
-        self.power_times = 0
-
-        window = self.get_window(config.LineEdit_game_name.value)
-        self.left, self.top, _, _ = Screenshot.get_window_region(window)
+        self.character_list = [self.select_person_dic["LineEdit_c1"], self.select_person_dic["LineEdit_c2"],
+                               self.select_person_dic["LineEdit_c3"], self.select_person_dic["LineEdit_c4"]]
+        all_characters = config.all_characters.value
+        self.pages = math.ceil(all_characters / 4) + 1
+        self.no_chip = False
 
     def run(self):
-        try:
-            character_list = [self.select_person_dic["LineEdit_c1"], self.select_person_dic["LineEdit_c2"],
-                              self.select_person_dic["LineEdit_c3"], self.select_person_dic["LineEdit_c4"]]
-            is_all_none = all(value == "" for value in character_list)
-            if is_all_none:
-                print("未输入任何需要刷碎片的角色")
-                auto.back_to_home()
-                return
-            else:
-                self.enter_person()
-                # 等待动画
-                time.sleep(0.7)
-                for value in character_list:
-                    # 当选项为“不选择”时
-                    if value == "":
-                        continue
-                    if self.break_flag:
-                        break
-                    self.update_power_times()
-                    if not config.CheckBox_is_use_chip.value and self.power_times == 0:
-                        break
-                    self.next_page("back")
-                    self.fight(value)
-                auto.back_to_home()
-        except Exception as e:
-            print(e)
-            traceback.print_exc()
+        self.back_to_home()
+        self.enter_person()
+        for character in self.character_list:
+            if character == '':
+                continue
+            self.find_person_and_quick_fight(character)
+            if self.no_chip:
+                break
+            self.scroll_page(-1, self.pages)
+        self.back_to_home()
 
     def enter_person(self):
-        auto.click_element("战斗", "text", include=False, max_retries=3,
-                           crop=(1541 / 1920, 468 / 1080, 90 / 1920, 48 / 1080), action="move_click")
-        time.sleep(0.7)
-        auto.click_element("个人故事", "text", include=False, max_retries=3, action="move_click")
+        timeout = Timer(30).start()
+        while True:
+            self.auto.take_screenshot()
+            # 已进入
+            if self.auto.find_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080)):
+                break
+            if self.auto.click_element("个人故事", "text", crop=(673 / 1920, 806 / 1080, 953 / 1920, 889 / 1080)):
+                time.sleep(0.3)
+                continue
+            if self.auto.click_element("战斗", "text", crop=(1536 / 1920, 470 / 1080, 1632 / 1920, 516 / 1080)):
+                time.sleep(0.3)
+                continue
 
-    def fight(self, value):
-        if self.power_times == 0:
-            if config.CheckBox_is_use_chip.value:
-                self.use_chip()
+            if timeout.reached():
+                self.logger.error("进入任务碎片界面超时")
+                break
+
+    def find_person_and_quick_fight(self, person_name):
+        timeout = Timer(50).start()
+        finish_flag = False
+        fight_flag = False
+        pos = None
+        while True:
+            self.auto.take_screenshot()
+
+            if timeout.reached():
+                self.logger.error("刷取角色碎片超时")
+                break
+
+            if fight_flag and self.auto.find_element('完成', 'text',
+                                                     crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080)):
+                finish_flag = True
+            if finish_flag:
+                if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080)):
+                    time.sleep(0.5)
+                    if not self.auto.find_element('完成', 'text',
+                                                  crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                                  take_screenshot=True):
+                        break
+                else:
+                    self.update_power_times()
+                    if self.auto.find_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080)) and (
+                            self.power_times == 0 or self.power_times == 6):
+                        break
+                continue
+            if self.auto.find_element("快速作战", "text", crop=(856 / 1920, 229 / 1080, 1056 / 1920, 295 / 1080)):
+                self.auto.click_element('最大', 'text', crop=(1225 / 1920, 683 / 1080, 1341 / 1920, 750 / 1080))
+                self.auto.click_element('开始作战', 'text', crop=(873 / 1920, 807 / 1080, 1047 / 1920, 864 / 1080))
+                fight_flag = True
+                time.sleep(2.5)
+                continue
+            pos = self.auto.find_element(person_name, "text", crop=(0, 738 / 1080, 1, 838 / 1080))
+            # 找到对应角色
+            if pos:
+                # 找到角色之后更新嵌片数量
+                self.update_power_times()
+                # 如果没有嵌片，则尝试使用
+                if self.power_times == 0 and config.CheckBox_is_use_chip.value:
+                    if not self.use_chip():
+                        # 没有记忆嵌片
+                        if self.no_chip:
+                            break
+                        continue
+                top_left, bottom_right = pos
+                # 传入bottom_right更准确一点
+                quick_fight_pos = self.find_quick_fight(bottom_right)
+                if quick_fight_pos:
+                    self.auto.click_element_with_pos(quick_fight_pos, is_calculate=False)
+                    time.sleep(0.5)
+                    continue
+                else:
+                    self.logger.warn(f"未找到对应速战，检查是否已刷取或是否解锁{person_name}的速战")
+                    break
             else:
-                return
-        # 找name
-        if self.quick_fight_by_name(value):
-            print(f"{value}刷取成功")
-        else:
-            print(f"{value}速战未成功")
+                self.scroll_page()
+                time.sleep(0.5)
+                continue
+
+    def find_quick_fight(self, name_pos):
+        """
+        根据角色名寻找最佳的速战
+        :param name_pos: (x,y)
+        :return: (x,y)|none
+        """
+        pos, min_distance = self.auto.find_target_near_source('速战', name_pos, crop=(0, 868 / 1080, 1, 940 / 1080))
+        if pos:
+            # 适配屏幕缩放
+            if min_distance < 250 / self.auto.scale_x:
+                self.logger.info(f"找到对应的“速战”：({pos},{min_distance})")
+                return pos
+            else:
+                self.logger.error(f"“速战”距离大于{250 / self.auto.scale_x}：({pos},{min_distance})")
+                return None
+        return pos
 
     def use_chip(self):
-        print("尝试使用2个记忆嵌片")
-        auto.click_element("app/resource/images/person/add_power.png", "image", action="move_click", max_retries=1)
-        time.sleep(0.5)
-        if not auto.find_element("没有该类道具", "text", include=True, max_retries=1,
-                                 crop=(821 / 1920, 511 / 1080, 271 / 1920, 57 / 1080)):
-            auto.click_element("app/resource/images/person/add_num.png", "image", action="move_click", max_retries=2)
-            auto.click_element("确定", "text", include=True, max_retries=3, action="move_click")
-            auto.press_key("esc")
-        else:
-            print("无可用记忆嵌片")
-            self.break_flag = True
+        timeout = Timer(20).start()
+        confirm_flag = False
+        while True:
+            self.auto.take_screenshot()
 
-    def get_window(self, title):
-        """
-        获取窗口
-        :param title: 窗口名
-        :return:
-        """
-        windows = pyautogui.getWindowsWithTitle(title)
-        if windows:
-            window = windows[0]
-            return window
-        return False
-
-    def quick_fight_by_name(self, name):
-        for _ in range(self.pages):
-            name_pos = auto.find_element(name, "text", include=True, relative=True)
-            if name_pos:
-                quick_fight_pos = self.corresponding_quick_fight(name_pos[0])
-                # print(quick_fight_pos)
-                if quick_fight_pos:
-                    self.quick_fight(quick_fight_pos)
+            # 道具不足，返回false
+            if self.auto.find_element('没有该类道具', 'text', crop=(821 / 1920, 511 / 1080, 1092 / 1920, 568 / 1080)):
+                self.no_chip = True
+                return False
+            if self.auto.find_element("是否", "text", crop=(588 / 1920, 309 / 1080, 1324 / 1920, 384 / 1080)):
+                confirm_flag = True
+            if confirm_flag:
+                self.auto.take_screenshot(crop=(907 / 1920, 590 / 1080, 1010 / 1920, 654 / 1080))
+                self.auto.perform_ocr()
+                current_num = int(self.auto.ocr_result[0][0])
+                # 还原self.current_screenshot
+                self.auto.take_screenshot()
+                if current_num < 2:
+                    self.auto.click_element("app/resource/images/person/add_num.png", "image",
+                                            crop=(1163 / 1920, 591 / 1080, 1275 / 1920, 664 / 1080))
+                if current_num > 2 and current_num != 1:
+                    self.auto.click_element("app/resource/images/person/del_num.png", "image",
+                                            crop=(634 / 1920, 593 / 1080, 766 / 1920, 663 / 1080))
+                if current_num == 2 or current_num == 1:
+                    self.auto.click_element('确定', 'text', crop=(1353 / 1920, 729 / 1080, 1528 / 1920, 800 / 1080))
+                    self.auto.press_key('esc')
                     return True
-                else:
-                    print(f"{name}未达成速战条件或无刷取次数")
-                    return False
-            else:
-                self.next_page()
-        return False
+            if self.auto.click_element("app/resource/images/person/add_power.png", "image",
+                                       crop=(1533 / 1920, 23 / 1080, 1599 / 1920, 81 / 1080)):
+                time.sleep(0.5)
+                continue
+            if timeout.reached():
+                self.logger.error("使用记忆嵌片超时")
+                if confirm_flag:
+                    self.auto.press_key('esc')
+                return False
 
-    def next_page(self, next_type="next"):
+    def scroll_page(self, direction: int = 1, page=1):
         """
-        翻页
-        :param next_type: 可选“next”或者“back”
+        前后翻页
+        :param page: 默认翻一页
+        :param direction: 输入 -1（上一页） 或 1（下一页）
         :return:
         """
-        # 鼠标移动到可以翻页的位置
-        auto.click_element("超元链接", "text", include=False, offset=(0, -200), action="move")
-        if next_type == "next":
-            # 未找到对应名字，则翻页
-            auto.mouse_scroll(1, -7100)
-        else:
-            auto.mouse_scroll(self.pages, 7100)
-
-    def quick_fight(self, click_pos):
-        """
-        :param click_pos: 格式（（x1,y1），（x2,y2））
-        :return:
-        """
-        # print(f"传入的click_pos:{click_pos}")
-        auto.click_element_with_pos(click_pos, action='move_click')
-        if auto.click_element("最大", "text", include=False, max_retries=3,
-                              action="move_click"):
-            auto.click_element("开始作战", "text", include=False, max_retries=3,
-                               action="move_click")
-            auto.click_element("完成", "text", include=False, max_retries=3,
-                               action="move_click")
-
-    def corresponding_quick_fight(self, source_pos):
-        """
-        找到对应角色的速战
-        :param source_pos: 格式（x,y），是相对位置
-        :return:如果pos存在且在对应距离内则返回对应位置((x1,y1),(x2,y2))，否则返回None
-        """
-        pos = auto.find_target_near_source("速战", include=False, source_pos=source_pos, position="bottom_right")
-        top_left, bottom_right = pos
-        if top_left and bottom_right:
-            x, y = auto.calculate_click_position((top_left, bottom_right))
-            # 此时x,y是绝对位置，source_pos是相对游戏窗口左上角的位置，并非屏幕的绝对位置，所以需要转换成绝对位置，将坐标加上窗口左上角坐标做偏移
-            source_pos = (source_pos[0] + self.left, source_pos[1] + self.top)
-            # print(f"{(x, y)},{source_pos}")
-            distance = math.sqrt((x - source_pos[0]) ** 2 + (y - source_pos[1]) ** 2)
-            if distance > 250:
-                print(f"“速战”距离大于350：{distance}")
-                return None
-            else:
-                print(f"找到对应的“速战”：{distance}")
-                return top_left, bottom_right
-        else:
-            print(f"没找到速战position：{pos}")
-            return None
-
-    # def find_text_in_area(self, pos):
-    #     """
-    #     通过位置找对应的文本内容
-    #     :param pos: 查找区域格式：（（x1,y1），（x2,y2））
-    #     :return: 对应区域内的文本列表
-    #     """
-    #     crop = (
-    #         pos[0][0] / 1920, pos[0][1] / 1080, (pos[1][0] - pos[0][0]) / 1920, (pos[1][1] - pos[0][1]) / 1080)
-    #     auto.take_screenshot(crop=crop)
-    #     auto.perform_ocr()
-    #     original_result = auto.ocr_result
-    #     # 提取每个子列表中的字符串部分
-    #     result = [item[1][0] for item in original_result]
-    #
-    #     return result
+        direction = -1 if direction >= 0 else 1
+        self.auto.mouse_scroll(int(904 / self.auto.scale_x), int(538 / self.auto.scale_y), 7100 * direction * page)
 
     def update_power_times(self):
-        pos = ((1421, 27), (1538, 76))
-        text_list = auto.find_text_in_area(pos)
-        text = text_list[0]
-        times = self.detect_times(text)
+        """更新嵌片数量"""
+        # result=[['12/12', 1.0, [[58.0, 16.0], [112.0, 40.0]]]]
+        result = self.auto.find_text_in_area(crop=(1421 / 1920, 27 / 1080, 1538 / 1920, 76 / 1080))
+        # 取出文字送去正则匹配
+        times = self.detect_times(result[0][0])
         if times is not None:
-            print(f"记忆嵌片更新成功：{times}")
-            self.power_times = times
+            self.logger.info(f"记忆嵌片更新成功：{times}")
         else:
-            print(f"记忆嵌片更新失败：{text}")
+            self.logger.info(f"记忆嵌片更新失败：{result}")
+        self.power_times = times
 
-    def detect_times(self, text: str):
+    @staticmethod
+    def detect_times(text: str):
         """
         通过文本检查还有多少次刷取次数
         :param text:格式为“**/**”,str
-        :return:
+        :return: '/'前面的嵌片数量
         """
         # 正则表达式模式，匹配任意以数字开头并有"/"的部分
         pattern = r"(\d+)/"

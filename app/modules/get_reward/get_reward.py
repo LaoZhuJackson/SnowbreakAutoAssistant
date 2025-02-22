@@ -1,71 +1,86 @@
 import time
 
-from app.common.config import config
-from app.modules.automation import auto
+from app.modules.automation.timer import Timer
+from app.modules.base_task.base_task import BaseTask
 
 
-class GetRewardModule:
+class GetRewardModule(BaseTask):
     def __init__(self):
-        pass
+        super().__init__()
 
     def run(self):
-        if config.CheckBox_mail.value:
-            self.receive_mail()
-            time.sleep(0.5)
+        self.back_to_home()
         self.receive_work()
-        time.sleep(0.5)
         self.receive_credential()
-        if config.CheckBox_fish_bait.value:
-            time.sleep(0.5)
-            self.receive_fish_bait()
 
     def receive_work(self):
-        auto.click_element("任务", "text", include=False, max_retries=3,
-                           crop=(1445 / 1920, 321 / 1080, 107 / 1920, 77 / 1080), action="move_click")
-        if not auto.find_element("目标达成", "text", include=True):
-            if auto.click_element("键领取", "text", include=True, max_retries=1, action="move_click"):
-                # 等待是否有等级提升
-                time.sleep(2)
-                auto.click_element("等级提升", "text", include=False, max_retries=2, action="move_click")
-                auto.press_key("esc")
-            if auto.click_element("app/resource/images/reward/execution.png", "image", threshold=0.7,
-                                  action="move_click"):
-                auto.press_key("esc")
-        auto.click_element("定期", "text", include=False, crop=(2 / 1920, 87 / 1080, 277 / 1920, 463 / 1080),
-                           max_retries=3,
-                           action="move_click")
-        if auto.click_element("键领取", "text", include=True, action="move_click"):
-            auto.back_to_home()
-        auto.back_to_home()
+        timeout = Timer(30).start()
+        # interval = Timer(0.3)
+        first_finish_flag = False
+        execution_flag = False
+        while True:
+            # interval.wait()
+            # interval.reset()
+
+            self.auto.take_screenshot()
+
+            if self.auto.find_element(['定期', '周常'], 'text', crop=(
+            988 / 1920, 238 / 1080, 1083 / 1920, 288 / 1080)) and not self.auto.click_element('键领取', 'text', crop=(
+            24 / 1920, 959 / 1080, 231 / 1920, 1032 / 1080)):
+                break
+            if self.auto.click_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                first_finish_flag = True
+                continue
+            if self.auto.click_element('键领取', 'text', crop=(24 / 1920, 959 / 1080, 231 / 1920, 1032 / 1080)):
+                continue
+            if self.auto.click_element('查看详情', 'text', crop=(839 / 1920, 222 / 1080, 1049 / 1920, 290 / 1080)):
+                execution_flag = True
+                self.auto.press_key('esc')
+                time.sleep(0.2)
+                continue
+            if first_finish_flag:
+                self.auto.click_element('定期', 'text', crop=(0, 225 / 1080, 128 / 1920, 282 / 1080))
+                continue
+            if self.auto.click_element('任务', 'text', crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080)):
+                continue
+            else:
+                if not execution_flag:
+                    self.auto.click_element('app/resource/images/reward/execution.png', 'image',
+                                            crop=(812 / 1920, 891 / 1080, 908 / 1920, 985 / 1080))
+                    first_finish_flag = True
+            if self.auto.click_element('等级提升', 'text'):
+                self.auto.press_key('esc')
+                continue
+
+            # if timeout.reached():
+            #     self.logger.error("领取任务奖励超时")
+            #     break
+        self.back_to_home()
 
     def receive_credential(self):
-        if auto.click_element("凭证", "text", include=True, max_retries=3, action="move_click",
-                              crop=(231 / 1920, 545 / 1080, 175 / 1920, 66 / 1080)):
-            auto.click_element("每日任务", "text", include=False, max_retries=3, action="move_click")
-            if auto.click_element("键领取", "text", include=True, crop=(0, 950 / 1080, 295 / 1920, 123 / 1080),
-                                  action="move_click"):
-                auto.press_key("esc")
-            auto.click_element("奖励", "text", include=False, max_retries=3, action="move_click")
-            if auto.click_element("键领取", "text", include=True, action="move_click"):
-                auto.press_key("esc")
-            auto.back_to_home()
+        timeout = Timer(30).start()
+        first_finish_flag = False
+        while True:
+            self.auto.take_screenshot()
 
-    def receive_mail(self):
-        auto.click_element("app/resource/images/reward/mail.png", "image", threshold=0.7, max_retries=3,
-                           action="move_click")
-        auto.click_element("批量领取", "text", crop=(270 / 1920, 973 / 1080, 228 / 1920, 65 / 1080), include=True,
-                           max_retries=3,
-                           action="move_click")
-        auto.back_to_home()
+            if first_finish_flag and self.auto.find_element('解锁', 'text', crop=(
+            1713 / 1920, 788 / 1080, 1869 / 1920, 830 / 1080)) and not self.auto.find_element('键领取', 'text', crop=(
+            0, 950 / 1080, 295 / 1920, 1)):
+                break
+            if self.auto.click_element('键领取', 'text', crop=(0, 950 / 1080, 295 / 1920, 1)):
+                continue
+            if first_finish_flag:
+                if self.auto.click_element('奖励', 'text', crop=(912 / 1920, 994 / 1080, 1067 / 1920, 1)):
+                    continue
+            if self.auto.click_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                first_finish_flag = True
+                continue
+            if self.auto.click_element('每日任务', 'text', crop=(1233 / 1920, 985 / 1080, 1342 / 1920, 1047 / 1080)):
+                continue
+            if self.auto.click_element('凭证', 'text', crop=(280 / 1920, 541 / 1080, 389 / 1920, 607 / 1080)):
+                continue
 
-    def receive_fish_bait(self):
-        auto.click_element("战斗", "text", include=False, max_retries=3,
-                           crop=(1541 / 1920, 468 / 1080, 90 / 1920, 48 / 1080), action="move_click")
-        auto.click_element("特别派遣", "text", include=False, max_retries=3, action="move_click")
-        auto.click_element("新星开拓", "text", include=False, max_retries=3, action="move_click")
-        time.sleep(0.5)
-        auto.click_element("开拓目标", "text", include=False, max_retries=3, action="move_click")
-        if auto.click_element("键领取", "text", include=True, crop=(0, 917 / 1080, 261 / 1920, 158 / 1080),
-                              max_retries=3, action="move_click"):
-            auto.click_element("获得道具", "text", include=False, max_retries=3, action="move_click")
-        auto.back_to_home()
+            if timeout.reached():
+                self.logger.error("领取任务奖励超时")
+                break
+        self.back_to_home()

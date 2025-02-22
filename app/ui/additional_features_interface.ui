@@ -29,7 +29,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+         <number>5</number>
      </property>
      <widget class="QWidget" name="page_fishing">
       <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
@@ -612,10 +612,315 @@
        </item>
       </layout>
      </widget>
+        <widget class="QWidget" name="page_water_bomb">
+            <layout class="QGridLayout" name="gridLayout_13" columnstretch="2,1">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <item row="0" column="0">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_water_bomb">
+                        <layout class="QGridLayout" name="gridLayout_12">
+                            <item row="0" column="1">
+                                <widget class="SpinBox" name="SpinBox_water_win_times">
+                                    <property name="value">
+                                        <number>5</number>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_action_2">
+                                    <property name="text">
+                                        <string/>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="0" column="2">
+                                <widget class="BodyLabel" name="BodyLabel_26">
+                                    <property name="text">
+                                        <string>次后停止</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="0" column="0">
+                                <widget class="BodyLabel" name="BodyLabel_24">
+                                    <property name="text">
+                                        <string>连胜</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="2" column="0">
+                                <spacer name="verticalSpacer_4">
+                                    <property name="orientation">
+                                        <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                        <size>
+                                            <width>20</width>
+                                            <height>40</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </item>
+                            <item row="3" column="0" colspan="3">
+                                <widget class="BodyLabel" name="BodyLabel_tip_water">
+                                    <property name="text">
+                                        <string>Body label</string>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="1" column="0">
+                    <widget class="PushButton" name="PushButton_start_water_bomb">
+                        <property name="text">
+                            <string>开始心动水弹</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="0" column="1" rowspan="2">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_4">
+                        <layout class="QGridLayout" name="gridLayout_11">
+                            <item row="0" column="0">
+                                <widget class="TitleLabel" name="TitleLabel_3">
+                                    <property name="text">
+                                        <string>日志</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0">
+                                <widget class="QTextBrowser" name="textBrowser_log_water_bomb">
+                                    <property name="styleSheet">
+                                        <string notr="true"/>
+                                    </property>
+                                    <property name="verticalScrollBarPolicy">
+                                        <enum>Qt::ScrollBarAlwaysOff</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QWidget" name="page_alien_guardian">
+            <layout class="QGridLayout" name="gridLayout_16" columnstretch="2,1">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <item row="0" column="0">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_alien_guardian">
+                        <layout class="QGridLayout" name="gridLayout_15">
+                            <item row="1" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_action_3">
+                                    <property name="text">
+                                        <string/>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="0" column="0">
+                                <widget class="BodyLabel" name="BodyLabel_25">
+                                    <property name="text">
+                                        <string>运行模式</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="2" column="0">
+                                <spacer name="verticalSpacer_6">
+                                    <property name="orientation">
+                                        <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                        <size>
+                                            <width>20</width>
+                                            <height>40</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </item>
+                            <item row="0" column="1">
+                                <widget class="ComboBox" name="ComboBox_mode"/>
+                            </item>
+                            <item row="3" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_alien">
+                                    <property name="text">
+                                        <string>Body label</string>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="0" column="1" rowspan="2">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_5">
+                        <layout class="QGridLayout" name="gridLayout_14">
+                            <item row="0" column="0">
+                                <widget class="TitleLabel" name="TitleLabel_4">
+                                    <property name="text">
+                                        <string>日志</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0">
+                                <widget class="QTextBrowser" name="textBrowser_log_alien_guardian">
+                                    <property name="styleSheet">
+                                        <string notr="true"/>
+                                    </property>
+                                    <property name="verticalScrollBarPolicy">
+                                        <enum>Qt::ScrollBarAlwaysOff</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="1" column="0">
+                    <widget class="PushButton" name="PushButton_start_alien_guardian">
+                        <property name="text">
+                            <string>开始异星守护</string>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QWidget" name="page_maze">
+            <layout class="QGridLayout" name="gridLayout_19" columnstretch="2,1">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <item row="0" column="0">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_maze">
+                        <layout class="QGridLayout" name="gridLayout_18">
+                            <item row="1" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_action_4">
+                                    <property name="text">
+                                        <string/>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="0" column="0">
+                                <widget class="BodyLabel" name="BodyLabel_27">
+                                    <property name="text">
+                                        <string>运行模式</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="2" column="0">
+                                <spacer name="verticalSpacer_7">
+                                    <property name="orientation">
+                                        <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                        <size>
+                                            <width>20</width>
+                                            <height>40</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </item>
+                            <item row="0" column="1">
+                                <widget class="ComboBox" name="ComboBox_mode_2"/>
+                            </item>
+                            <item row="3" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_maze">
+                                    <property name="text">
+                                        <string>Body label</string>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="0" column="1" rowspan="2">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_6">
+                        <layout class="QGridLayout" name="gridLayout_17">
+                            <item row="0" column="0">
+                                <widget class="TitleLabel" name="TitleLabel_5">
+                                    <property name="text">
+                                        <string>日志</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0">
+                                <widget class="QTextBrowser" name="textBrowser_log_maze">
+                                    <property name="styleSheet">
+                                        <string notr="true"/>
+                                    </property>
+                                    <property name="verticalScrollBarPolicy">
+                                        <enum>Qt::ScrollBarAlwaysOff</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="1" column="0">
+                    <widget class="PushButton" name="PushButton_start_maze">
+                        <property name="text">
+                            <string>开始迷宫</string>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="SegmentedWidget" name="SegmentedWidget" native="true"/>
+      <item row="0" column="0">
+          <widget class="SegmentedWidget" name="SegmentedWidget"/>
    </item>
   </layout>
  </widget>

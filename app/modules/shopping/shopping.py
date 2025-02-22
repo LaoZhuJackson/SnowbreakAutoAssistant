@@ -1,11 +1,13 @@
 import time
 
 from app.common.config import config
-from app.modules.automation import auto
+from app.modules.automation.timer import Timer
+from app.modules.base_task.base_task import BaseTask
 
 
-class ShoppingModule:
+class ShoppingModule(BaseTask):
     def __init__(self):
+        super().__init__()
         self.config_data = config.toDict()
         self.commodity_dic = self.config_data["home_interface_shopping"]
         self.person_dic = self.config_data["home_interface_shopping_person"]
@@ -52,59 +54,125 @@ class ShoppingModule:
         self.open_store()
         self.buy()
 
-    @staticmethod
-    def open_store():
-        # while not auto.find_element("app/resource/images/shopping/in_store.png", "image", threshold=0.7):
-        while not auto.find_element("常规物资", "text", crop=(91 / 1920, 134 / 1080, 130 / 1920, 67 / 1080)):
-            auto.click_element("商店", "text", max_retries=1, action="move_click",
-                               crop=(1750 / 1920, 988 / 1080, 109 / 1920, 83 / 1080))
-        # 等待商店动画
-        time.sleep(0.2)
-        auto.click_element("提取物", "text", include=True, crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080),
-                           action="move")
-        # 滚动至底部
-        auto.mouse_scroll(4, -150)
+    def open_store(self):
+        timeout = Timer(10).start()
+        while True:
+            self.auto.take_screenshot()
+
+            if self.auto.find_element("常规物资", "text", crop=(89 / 1920, 140 / 1080, 220 / 1920, 191 / 1080)):
+                break
+            if self.auto.click_element("商店", "text", crop=(1759 / 1920, 1002 / 1080, 1843 / 1920, 1050 / 1080)):
+                time.sleep(0.2)
+                continue
+
+            if timeout.reached():
+                self.logger.error("打开商店超时")
+                break
 
     def buy(self):
-        if self.person_dic["item_person_0"]:
-            self.buy_from_dic(self.person_dic, "person")
-        if self.weapon_dic["item_weapon_0"]:
-            self.buy_from_dic(self.weapon_dic, "weapon")
-        for key, item in self.commodity_dic.items():
-            if item:
-                text = self.name_dic[key]
-                if auto.click_element(text, "text", include=False, action="move_click"):
-                    time.sleep(0.2)
-                    auto.click_element("最大", "text", include=True,
-                                       crop=(1791 / 1920, 827 / 1080, 88 / 1920, 50 / 1080),
-                                       action="move_click")
-                    if auto.click_element("购买", "text", include=False,
-                                          crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
-                                          action="move_click"):
-                        auto.press_key("esc")
-                    # 滚动至底部
-                    time.sleep(0.2)
-                    auto.click_element("提取物", "text", include=True,
-                                       crop=(328 / 1920, 435 / 1080, 274 / 1920, 74 / 1080), action="move")
-                    auto.mouse_scroll(4, -150)
-        auto.back_to_home()
+        timeout = Timer(30).start()
+        buy_list = self.collect_item()
+        # buy_list = ['通用强化套件', '精致强化套件','光纤轴突', '普通战斗记录']
+        temp_list = buy_list.copy()
+        finish_list = []
+        is_selected = False
+        if len(temp_list) != 0:
+            text = temp_list.pop(0)
+        else:
+            text = ""
 
-    def buy_from_dic(self, dic: dict, name: str):
+        self.scroll_to_bottom()
+        while True:
+            # 所有商品处理完毕
+            if len(buy_list) == len(finish_list):
+                break
+
+            self.auto.take_screenshot()
+
+            if text:
+                if not is_selected:  # 当前没有选择任何商品
+                    # 如果当前还有售罄动画存在
+                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080)):
+                        continue
+                    if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1)):
+                        time.sleep(0.3)
+                        is_selected = True
+                        continue
+                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                    self.auto.press_key('esc')
+                    time.sleep(0.2)
+                    self.scroll_to_bottom()
+                    finish_list.append(text)
+                    # 更新text
+                    if len(temp_list) != 0:
+                        text = temp_list.pop(0)
+                    else:
+                        text = ""
+                    is_selected = False
+                    continue
+                if self.auto.find_element('不足', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080)):
+                    self.logger.warn('买不起了，杂鱼~')
+                    break
+                if self.auto.click_element('最大', 'text', crop=(1713 / 1920, 822 / 1080, 1, 895 / 1080)):
+                    if self.auto.click_element('购买', 'text',
+                                               crop=(1740 / 1920, 993 / 1080, 1828 / 1920, 1038 / 1080)):
+                        # 跳出去重新截图判断购买成功还是没钱
+                        time.sleep(0.5)
+                        continue
+                else:  # 没选择成功或者售罄
+                    is_selected = False
+                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080)):
+                        finish_list.append(text)
+                        # 更新text
+                        if len(temp_list) != 0:
+                            text = temp_list.pop(0)
+                        else:
+                            text = ""
+                    continue
+            else:
+                break
+            # if timeout.reached():
+            #     self.logger.error("购买商品超时")
+            #     break
+        self.back_to_home()
+
+    def collect_item(self):
+        """
+        收集所有要购买的商品
+        :return: list
+        """
+        # 收集勾选的人物碎片
         first_flag = True
-        for key, value in dic.items():
+        result_list = []
+        for key, value in self.person_dic.items():
             if first_flag:
                 first_flag = False
                 continue
+            if value:
+                result_list.append(self.person_dic_re[key])
+        # 收集勾选的武器
+        first_flag = True
+        for key, value in self.weapon_dic.items():
+            if first_flag:
+                first_flag = False
+                continue
+            if value:
+                result_list.append(self.weapon_dic_re[key])
+        # 收集商品
+        for key, value in self.commodity_dic.items():
+            if value:
+                result_list.append(self.name_dic[key])
+        return result_list
+
+    def scroll_to_bottom(self):
+        timeout = Timer(10).start()
+        while True:
+            self.auto.take_screenshot()
+
+            if not self.auto.find_element("光纤轴突", "text", crop=(319 / 1920, 864 / 1080, 1861 / 1920, 1037 / 1080)):
+                self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -550)
             else:
-                if value:
-                    if name == "person":
-                        text = self.person_dic_re[key]
-                    else:
-                        text = self.weapon_dic_re[key]
-                    if auto.click_element(text, "text", include=True, action="move_click",
-                                          crop=(298 / 1920, 192 / 1080, 1582 / 1920, 823 / 1080)):
-                        time.sleep(0.2)
-                        auto.click_element("购买", "text", include=False,
-                                           crop=(1703 / 1920, 965 / 1080, 165 / 1920, 85 / 1080),
-                                           action="move_click")
-                        auto.press_key("esc")
+                break
+            if timeout.reached():
+                self.logger.error("滚动商店超时")
+                break

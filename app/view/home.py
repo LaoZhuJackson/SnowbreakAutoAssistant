@@ -5,37 +5,31 @@ import traceback
 from datetime import datetime
 from functools import partial
 
-import psutil
+import win32con
+import win32gui
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
 from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
     BodyLabel, ProgressBar
 
-from ..common.config import config
-from ..common.logger import logger, stdout_stream, stderr_stream, original_stdout, original_stderr
-from ..common.setting import ACTIVITY
-from ..common.style_sheet import StyleSheet
-from ..modules.automation import auto
-from ..modules.chasm.chasm import ChasmModule
-from ..modules.enter_game.enter_game import EnterGameModule
-from ..modules.get_power.get_power import GetPowerModule
-from ..modules.get_reward.get_reward import GetRewardModule
-from ..modules.person.person import PersonModule
-from ..modules.shopping.shopping import ShoppingModule
-from ..modules.use_stamina.use_stamina import UseStaminaModule
-from ..repackage.tree import TreeFrame_person, TreeFrame_weapon
-from ..ui.home_interface import Ui_home
+from app.common.config import config
+from app.common.logger import stdout_stream, stderr_stream, logger, original_stdout, original_stderr
+from app.common.style_sheet import StyleSheet
+from app.common.utils import get_all_children
+from app.modules.base_task.base_task import BaseTask
+from app.modules.chasm.chasm import ChasmModule
+from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
+from app.modules.enter_game.enter_game import EnterGameModule
+from app.modules.get_reward.get_reward import GetRewardModule
+from app.modules.person.person import PersonModule
+from app.modules.shopping.shopping import ShoppingModule
+from app.modules.use_power.use_power import UsePowerModule
+from app.repackage.tree import TreeFrame_person, TreeFrame_weapon
+from app.ui.home_interface import Ui_home
+from app.view.base_interface import BaseInterface
 
 
-def close_process(p1_pid):
-    process = psutil.Process(p1_pid)
-    # list children & kill them
-    for c in process.children(recursive=True):
-        c.kill()
-    process.kill()
-
-
-class StartThread(QThread):
+class StartThread(QThread, BaseTask):
     is_running_signal = pyqtSignal(bool)
     stop_signal = pyqtSignal()  # 添加停止信号
 
@@ -47,30 +41,23 @@ class StartThread(QThread):
 
     def run(self):
         self.is_running_signal.emit(True)
+        self.auto.reset()
         try:
-            logger.info("请确保游戏窗口分辨率是1920*1080，三秒后将自动激活窗口")
-            time.sleep(3)
-            auto.activate_window(config.LineEdit_game_name.value)
             for key, value in self.checkbox_dic.items():
-                # print(f"value:{value}")
-                # print(f"is_running:{is_running}")
-                # logger.debug(f"是否正在运行：{is_running}")
-                if value and is_running:
+                if value:
                     index = int(re.search(r'\d+', key).group()) - 1
                     logger.info(f"当前任务：{self.name_list_zh[index]}")
-                    # 给每个任务增加时间间隔
-                    time.sleep(3)
                     if index == 0:
                         module = EnterGameModule()
                         module.run()
                     elif index == 1:
-                        module = GetPowerModule()
+                        module = CollectSuppliesModule()
                         module.run()
                     elif index == 2:
                         module = ShoppingModule()
                         module.run()
                     elif index == 3:
-                        module = UseStaminaModule()
+                        module = UsePowerModule()
                         module.run()
                     elif index == 4:
                         module = PersonModule()
@@ -81,16 +68,12 @@ class StartThread(QThread):
                     elif index == 6:
                         module = GetRewardModule()
                         module.run()
-                elif not is_running:
-                    self.is_running_signal.emit(False)
-                    logger.info("已退出")
-                    break
                 else:
                     # 如果value为false则进行下一个任务的判断
                     continue
         except Exception as e:
-            logger.error(e)
-            traceback.print_exc()
+            self.logger.error(e)
+            # traceback.print_exc()
         finally:
             # 运行完成
             self.is_running_signal.emit(False)
@@ -108,24 +91,10 @@ def no_select(widget):
         checkbox.setChecked(False)
 
 
-def get_all_children(widget):
-    """
-    递归地获取指定QWidget及其所有后代控件的列表。
-
-    :param widget: QWidget对象，从该对象开始递归查找子控件。
-    :return: 包含所有子控件（包括后代）的列表。
-    """
-    children = []
-    for child in widget.children():
-        children.append(child)
-        children.extend(get_all_children(child))  # 递归调用以获取后代控件
-    return children
-
-
-class Home(QFrame, Ui_home):
+class Home(QFrame, Ui_home, BaseInterface):
     def __init__(self, text: str, parent=None):
         super().__init__()
-        self.setting_name_list = ['登录', '商店', '体力', '碎片', '奖励']
+        self.setting_name_list = ['登录', '物资', '商店', '体力', '碎片']
         self.person_dic = {
             "人物碎片": "item_person_0",
             "肴": "item_person_1",
@@ -154,16 +123,12 @@ class Home(QFrame, Ui_home):
         self.parent = parent
 
         self.is_running = False
-        # self.start_thread = StartThread([])
-
-        # self.logger = Logger(self.textBrowser_log)
-
         self.select_person = TreeFrame_person(parent=self.ScrollArea, enableCheck=True)
         self.select_weapon = TreeFrame_weapon(parent=self.ScrollArea, enableCheck=True)
 
         self._initWidget()
         self._connect_to_slot()
-        self._redirectOutput()
+        self.redirectOutput(self.textBrowser_log)
 
     def _initWidget(self):
         for tool_button in self.SimpleCardWidget_option.findChildren(ToolButton):
@@ -205,33 +170,18 @@ class Home(QFrame, Ui_home):
         self.ScrollArea.enableTransparentBackground()
 
     def _connect_to_slot(self):
-        self.PushButton_start.clicked.connect(self.click_start)
+        self.PushButton_start.clicked.connect(self.on_start_button_click)
         self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
         self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
         self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
 
         self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
-        self.ToolButton_shop.clicked.connect(lambda: self.set_current_index(1))
-        self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(2))
-        self.ToolButton_person.clicked.connect(lambda: self.set_current_index(3))
-        self.ToolButton_reward.clicked.connect(lambda: self.set_current_index(4))
+        self.ToolButton_collect.clicked.connect(lambda: self.set_current_index(1))
+        self.ToolButton_shop.clicked.connect(lambda: self.set_current_index(2))
+        self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(3))
+        self.ToolButton_person.clicked.connect(lambda: self.set_current_index(4))
 
         self._connect_to_save_changed()
-
-    def _redirectOutput(self):
-        # 普通输出
-        sys.stdout = stdout_stream
-        # 报错输出
-        sys.stderr = stderr_stream
-        # 将新消息信号连接到QTextEdit
-        stdout_stream.message.connect(self.__updateDisplay)
-        stderr_stream.message.connect(self.__updateDisplay)
-
-    def __updateDisplay(self, message):
-        # 将消息添加到 QTextEdit，自动识别 HTML
-        self.textBrowser_log.insertHtml(message)
-        self.textBrowser_log.insertPlainText('\n')  # 为下一行消息留出空间
-        self.textBrowser_log.ensureCursorVisible()  # 滚动到最新消息
 
     def _load_config(self):
         for widget in self.findChildren(QWidget):
@@ -276,7 +226,16 @@ class Home(QFrame, Ui_home):
             elif isinstance(children, LineEdit):
                 children.editingFinished.connect(partial(self.save_changed, children))
 
-    def click_start(self):
+    def on_select_directory_click(self):
+        """ 选择启动器路径 """
+        file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
+                                                   "Executable Files (*.exe);;All Files (*)")
+        if not file_path or config.LineEdit_starter_directory.value == file_path:
+            return
+        self.LineEdit_starter_directory.setText(file_path)
+        self.LineEdit_starter_directory.editingFinished.emit()
+
+    def on_start_button_click(self):
         checkbox_dic = {}
         for checkbox in self.SimpleCardWidget_option.findChildren(CheckBox):
             if checkbox.isChecked():
@@ -284,12 +243,16 @@ class Home(QFrame, Ui_home):
             else:
                 checkbox_dic[checkbox.objectName()] = False
         if any(checkbox_dic.values()):
-            # 对字典进行排序
-            sorted_dict = dict(sorted(checkbox_dic.items(), key=lambda item: int(re.search(r'\d+', item[0]).group())))
-            # logger.debug(sorted_dict)
-            self.start_thread = StartThread(sorted_dict)
-            self.start_thread.is_running_signal.connect(self.toggle_button)
-            self.set_is_running()
+            if not self.is_running:
+                # 对字典进行排序
+                sorted_dict = dict(
+                    sorted(checkbox_dic.items(), key=lambda item: int(re.search(r'\d+', item[0]).group())))
+                # logger.debug(sorted_dict)
+                self.start_thread = StartThread(sorted_dict)
+                self.start_thread.start()
+                self.start_thread.is_running_signal.connect(self.handle_start)
+            else:
+                self.start_thread.stop()
         else:
             InfoBar.error(
                 title='未勾选工作',
@@ -301,50 +264,29 @@ class Home(QFrame, Ui_home):
                 parent=self
             )
 
-    def on_select_directory_click(self):
-        """ 选择启动器路径 """
-        file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
-                                                   "Executable Files (*.exe);;All Files (*)")
-        if not file_path or config.LineEdit_starter_directory.value == file_path:
-            return
-        self.LineEdit_starter_directory.setText(file_path)
-        self.LineEdit_starter_directory.editingFinished.emit()
-
-    def set_is_running(self):
-        """根据主进程中的self.is_running控制全局变量is_running"""
-        # logger.debug(self.is_running)
-        if not self.is_running:
-            global is_running
-            is_running = True
-            self.start_thread.start()
-            # self.is_running = True
-            # self.PushButton_start.setText("停止")
-        else:
-            is_running = False
-            logger.info("已发生停止指令，等待当前任务完成，下一个任务执行前停止")
-            # self.start_thread.stop_signal.emit()
-
-    def toggle_button(self, running):
+    def handle_start(self, is_running):
         """设置按钮"""
-        # 更新self.is_running,当再次点击开始按钮时，会执行set_is_running将全局变量设置为false
-        self.is_running = running
-        if running:
+        if is_running:
+            self.is_running = True
             self.set_checkbox_enable(False)
             self.PushButton_start.setText("停止")
+            self.start_thread.start()
+            self.redirectOutput(self.textBrowser_log)
         else:
+            self.is_running = False
+            self.start_thread.stop()
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
-            if self.ComboBox_after_use.currentIndex() == 1:
-                auto.press_key("esc")
-                time.sleep(1)
-                if auto.click_element("确定", "text", include=True, max_retries=5, action="move_click"):
-                    self.parent.close()
-            elif self.ComboBox_after_use.currentIndex() == 2:
-                self.parent.close()
-            elif self.ComboBox_after_use.currentIndex() == 3:
-                auto.press_key("esc")
-                time.sleep(1)
-                auto.click_element("确定", "text", include=True, max_retries=5, action="move_click")
+
+    def after_finish(self):
+        # 任务结束后的后处理
+        if self.ComboBox_after_use.currentIndex() == 1:
+            win32gui.SendMessage(self.auto.hwnd, win32con.WM_CLOSE, 0, 0)
+            self.parent.close()
+        elif self.ComboBox_after_use.currentIndex() == 2:
+            self.parent.close()
+        elif self.ComboBox_after_use.currentIndex() == 3:
+            win32gui.SendMessage(self.auto.hwnd, win32con.WM_CLOSE, 0, 0)
 
     def set_checkbox_enable(self, enable: bool):
         for checkbox in self.findChildren(CheckBox):
@@ -355,7 +297,7 @@ class Home(QFrame, Ui_home):
             self.TitleLabel_setting.setText("设置-" + self.setting_name_list[index])
             self.PopUpAniStackedWidget.setCurrentIndex(index)
         except Exception as e:
-            logger.error(e)
+            self.logger.error(e)
 
     def save_changed(self, widget):
         # logger.debug(f"触发save_changed:{widget.objectName()}")
@@ -408,16 +350,16 @@ class Home(QFrame, Ui_home):
     def get_tips(self):
         tips_dic = {}
         config.set(config.date_tip, [
-            ["活动", "2025-1-23", "2025-3-6"],
-            ["辰星卡池", "2025-1-23", "2025-3-6"],
-            ["肴卡池", "2025-2-6", "2025-3-6"],
-            ["异星守护", "2025-2-13", "2025-3-5"],
-            ["悖论迷宫", "2025-2-6", "2025-2-27"],
-            ["钓鱼大赛", "2025-1-23", "2025-3-6"],
-            ["噬神斗场", "2025-1-23", "2025-2-20"],
-            ["古宅异变", "2025-2-10", "2025-2-24"],
-            ["绝地防线", "2025-2-17", "2025-3-3"],
-            ["勇者游戏", "2025-1-25", "2025-2-8"],
+            ["活动", "2024-12-19", "2025-1-23"],
+            ["豹豹卡池", "2024-12-19", "2025-1-9"],
+            ["朝翼卡池", "2025-1-2", "2025-1-23"],
+            ["噬神斗场", "2024-12-19", "2025-1-16"],
+            ["心意寄语", "2024-12-31", "2025-1-14"],
+            ["珍宝行囊", "2024-12-19", "2025-1-23"],
+            ["七日派对", "2024-12-26", "2025-1-9"],
+            ["远山沉沉", "2024-12-30", "2025-1-13"],
+            ["永续联机", "2024-12-23", "2025-1-6"],
+            ["禁区协议", "2025-1-6", "2025-1-20"],
         ])
         date_tip = config.date_tip.value
         for activity in date_tip:
@@ -443,7 +385,7 @@ class Home(QFrame, Ui_home):
                 sorted_progress_widgets[index].setValue(value[1])
                 index += 1
         except Exception as e:
-            logger.error(e)
+            self.logger.error(e)
 
     def closeEvent(self, event):
         # 恢复原始标准输出

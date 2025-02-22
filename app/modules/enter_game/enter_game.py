@@ -1,80 +1,81 @@
 import time
 
+import win32gui
+
 from app.common.config import config
-from app.modules.automation import auto
+from app.common.logger import logger
+from app.modules.automation.automation import instantiate_automation
+from app.modules.automation.timer import Timer
+from app.modules.base_task.base_task import BaseTask
 
 
-class EnterGameModule:
+class EnterGameModule(BaseTask):
     def __init__(self):
+        super().__init__()
         self.enter_game_flag = False
+        # 对游戏和启动器的不同自动化类
+        self.auto = None
 
     def run(self):
-        auto.window_title = config.LineEdit_starter_name.value
-        # 激活登录器窗口
-        auto.activate_window(auto.window_title)
-        self.check_update()
-        if not self.enter_game_flag:
-            # 结束启动器的进入游戏操作后将窗口名改回来
-            auto.window_title = config.LineEdit_game_name.value
+        auto_type = self.chose_auto()
+        # 当游戏和启动器都开着的时候，auto_type="game",跳过handle_starter
+        if auto_type == "starter":
+            # todo 其他启动器适配
+            self.handle_starter_new()
+            # 切换成auto_game
             time.sleep(10)
-            self.enter_game()
+            self.chose_auto(only_game=True)
+        self.handle_game()
 
-    def check_update(self):
-        if not self.find_bases():
-            print("开始检查是否需要更新")
-            if auto.click_element("开始游戏", "text", include=True, action="move_click", max_retries=3):
-                print("无需更新")
-                return
-            print("需要更新")
-            auto.click_element("更新", "text", include=True, max_retries=3, crop=(0.5, 0.5, 1, 1))
-            auto.click_element("确定", "text", max_retries=3)
-            while auto.find_element("更新中", "text", include=True) or auto.find_element("正在更新", "text", include=True):
+    def handle_starter_new(self):
+        """
+        处理官方新启动器启动器窗口部分
+        :return:
+        """
+        while self.auto:
+            # 截图
+            self.auto.take_screenshot()
+            # 对截图内容做对应处理
+            if self.auto.click_element('开始游戏', 'text', crop=(0.5, 0.5, 1, 1), action='mouse_click'):
+                logger.info("游戏无需更新或更新完毕")
+                self.auto = None
+                break
+            if self.auto.find_element('游戏运行中', 'text', crop=(0.5, 0.5, 1, 1)):
+                break
+            if self.auto.find_element('正在更新', 'text', crop=(0.5, 0.5, 1, 1)):
+                # 还在更新
                 time.sleep(5)
-            auto.click_element("开始游戏", "text", include=True, action="move_click", max_retries=3)
-            print("更新完成")
-        else:
-            print("已进入游戏")
-            self.enter_game_flag = True
+                continue
+            if self.auto.click_element('继续更新', 'text', crop=(0.5, 0.5, 1, 1), action='mouse_click'):
+                time.sleep(5)
+                continue
+            if self.auto.click_element('更新', 'text', include=False, crop=(0.5, 0.5, 1, 1), action='mouse_click'):
+                time.sleep(2)
+                logger.info("需要更新")
+                continue
 
-    def enter_game(self):
-        while not auto.find_element("app/resource/images/start_game/network.png", "image",
-                                    crop=(1787 / 1920, 10 / 1080, 129 / 1920, 334 / 1080), threshold=0.7):
-            time.sleep(3)
-        auto.click_element("开始游戏", "text", include=True, max_retries=3, action="move_click")
-        # 检查是否真的进入了
-        self.ensure_enter()
+    def handle_game(self):
+        """处理游戏窗口部分"""
+        while self.auto:
+            # 截图
+            self.auto.take_screenshot()
 
-    def ensure_enter(self):
-        time.sleep(5)
-        is_enter = self.find_bases()
-        first_charm_flag = True
-        while not is_enter:
-            # 新手签到
-            if auto.find_element("养生专家", "text", include=True):
-                auto.click_element("app/resource/images/start_game/newbird_cancel.png", "image", threshold=0.8,
-                                   max_retries=3, scale_range=(0.6, 1), action="move_click")
-            else:
-                auto.press_key("esc")
-                time.sleep(0.5)
-                # 如果触发退出游戏
-                if auto.click_element("取消", "text", action="move_click"):
-                    time.sleep(1)
-            is_enter_2 = self.find_bases()
-            if is_enter_2 and first_charm_flag:
-                # 勾引皮肤公告
-                auto.click_element("活动", "text", include=False, max_retries=3, action="move_click")
-                time.sleep(1)
-                auto.press_key("esc")
-                first_charm_flag = False
-                time.sleep(1)
-            is_enter = self.find_bases()
-        print("已进入游戏")
+            # 对不同情况进行处理
+            if self.auto.find_element('基地', 'text',
+                                      (1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element(
+                '任务', 'text', (1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080)):
+                logger.info("已进入游戏")
+                break
+            if self.auto.click_element('开始游戏', 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080)):
+                time.sleep(2)
+                continue
+            if self.auto.click_element(['X', 'x'], 'text', crop=(1271 / 1920, 88 / 1080, 1890 / 1920, 367 / 1080),
+                                       action='move_click'):
+                continue
+            if self.auto.click_element("app/resource/images/start_game/newbird_cancel.png", "image",
+                                       crop=(0.5, 0, 1, 0.5)):
+                continue
 
-    def find_bases(self):
-        is_enter = auto.find_element("基地", "text", include=False,
-                                     crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080))
-        if is_enter:
-            time.sleep(1)
-            if auto.find_element("基地", "text", include=False, crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080)):
-                return True
-        return False
+
+if __name__ == '__main__':
+    EnterGameModule().run()

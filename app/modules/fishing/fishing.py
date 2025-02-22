@@ -7,131 +7,205 @@ import numpy as np
 from fuzzywuzzy import process
 
 from app.common.config import config
-from app.common.logger import logger
+from app.common.image_utils import ImageUtils
 from app.common.signal_bus import signalBus
-from app.modules.automation import auto
-from app.modules.automation.screenshot import Screenshot
+from app.modules.automation.timer import Timer
+from app.modules.base_task.base_task import BaseTask
 
 
-class FishingModule:
+class FishingModule(BaseTask):
     def __init__(self):
+        super().__init__()
+        self.bite_time = None
+        self.start_time = None
+        self.is_use_time_judge = None
         self.previous_yellow_block_count = 0
         self.previous_pixels = 0
         self.save_path = os.path.abspath("./fish")
-        self.is_use_time_judge = config.CheckBox_is_limit_time.value
-        self.upper_yellow = np.array([int(value) for value in config.LineEdit_fish_upper.value.split(',')])
-        self.lower_yellow = np.array([int(value) for value in config.LineEdit_fish_lower.value.split(',')])
-        # self.upper_white = np.array([92, 40, 255])
-        # self.lower_white = np.array([88, 0, 245])
-        self.start_time = time.time()
-        # self.window_title = config.LineEdit_game_name.value
-        self.press_key = config.LineEdit_fish_key.value
-        self.window_title = config.LineEdit_game_name.value
+        self.press_key = None
+        self.upper_yellow = None
+        self.lower_yellow = None
+        self.no_key = False
 
     def run(self):
-        if not self.press_key:
-            if not self.get_press_key():
-                # 未识别且未手动设置钓鱼按键则停止
-                return
+        # 每次钓鱼前更新各种设置参数
+        self.upper_yellow = np.array([int(value) for value in config.LineEdit_fish_upper.value.split(',')])
+        self.lower_yellow = np.array([int(value) for value in config.LineEdit_fish_lower.value.split(',')])
+        self.press_key = config.LineEdit_fish_key.value
+        self.is_use_time_judge = config.CheckBox_is_limit_time.value
+        self.start_time = time.time()
+
         if np.any(self.upper_yellow < self.lower_yellow):
-            logger.error("运行错误，存在上限的值小于下限")
+            self.logger.error("运行错误，存在上限的值小于下限")
             return
-        auto.press_key(self.press_key)
-        if auto.find_fish_bite_element("app/resource/images/fishing/bite.png", "image", threshold=0.5,
-                                       crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
-                                       max_retries=100):
-            time.sleep(0.2)
-            auto.press_key(self.press_key)
-            if self.is_use_time_judge:
-                self.start_time = time.time()
-            while True:
-                rgb_image = self.take_screenshot(crop=(1130 / 1920, 240 / 1080, 370 / 1920, 330 / 1080))
-                # 将Pillow图像转换为NumPy数组
-                img_np = np.array(rgb_image)
-                # 将图像从RGB格式转换为BGR格式（OpenCV使用BGR）
-                bgr_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
-                blocks_num = self.count_yellow_blocks(bgr_image)
+
+        for i in range(config.SpinBox_fish_times.value):
+            self.logger.info(f"开始第 {i + 1} 次钓鱼")
+            try:
+                self.enter_fish()
+                self.start_fish()
+                self.after_fish()
+            except Exception as e:
+                self.logger.error(e)
+                break
+
+    def enter_fish(self):
+        timeout = Timer(15).start()
+        enter_flag = False
+        lure_type_index = config.ComboBox_lure_type.value
+        lure_type_list = ['万能', '普通', '豪华', '至尊', '重量级', '巨型', '重量级', '巨型']
+        while True:
+            self.auto.take_screenshot()
+
+            # ImageUtils.show_ndarray(self.auto.first_screenshot)
+
+            if self.auto.find_element(['饵', '重量级', '巨型', '万能', '普通', '豪华', '至尊'], 'text',
+                                      crop=(1658 / 1920, 770 / 1080, 1892 / 1920, 829 / 1080)):
+                enter_flag = True
+            if enter_flag:
+                if not self.press_key and not self.get_press_key():
+                    raise Exception(f'钓鱼抛竿按键未设置')
+                # 还没甩竿
+                if not self.is_spin_rod():
+                    if self.auto.find_element('鱼饵不足', 'text',
+                                              crop=(1200 / 2560, 686 / 1440, 1374 / 2560, 746 / 1440)):
+                        raise Exception(f'{lure_type_list[lure_type_index]}鱼饵不足')
+                    if lure_type_index != 0:
+                        if self.select_lure():
+                            self.auto.press_key(self.press_key)
+                            time.sleep(2)
+                            continue
+                    else:
+                        self.auto.press_key(self.press_key)
+                        time.sleep(2)
+                        continue
+
+                # 甩杆后
+                if self.auto.find_element('上钩了', 'text', crop=(787 / 1920, 234 / 1080, 1109 / 1920, 420 / 1080)):
+                    self.auto.press_key(self.press_key)
+                    self.bite_time = time.time()
+                    time.sleep(0.2)
+                    break
+            if self.auto.find_element(['目标', '今日'], 'text', crop=(0, 957 / 1080, 460 / 1920, 1)):
+                self.auto.press_key('esc')
+                time.sleep(1)
+                continue
+            if self.auto.find_element('使用', 'text', crop=(1405 / 1920, 654 / 1080, 1503 / 1920, 747 / 1080)):
+                self.auto.press_key('f')
+                time.sleep(1)
+                continue
+
+            if timeout.reached():
+                self.logger.error("进入钓鱼超时")
+                break
+
+    def select_lure(self):
+        open_lure = False
+        lure_type_list = ['万能', '普通', '豪华', '至尊', '重量级', '巨型', '重量级', '巨型']
+        lure_type_index = config.ComboBox_lure_type.value
+        timeout = Timer(20).start()
+        while True:
+            self.auto.take_screenshot()
+
+            if self.auto.find_element(lure_type_list[lure_type_index], 'text',
+                                      crop=(1663 / 1920, 788 / 1080, 1830 / 1920, 825 / 1080)):
+                return True
+            if self.auto.find_element('饵', 'text',
+                                      crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080)):
+                open_lure = True
+            # 选取鱼饵
+            if not open_lure:
+                self.auto.click_element('app/resource/images/fishing/select_lure.png', 'image',
+                                        crop=(1563 / 1920, 787 / 1080, 1598 / 1920, 823 / 1080),
+                                        match_method=cv2.TM_CCOEFF_NORMED)
+                time.sleep(0.5)
+                continue
+            else:
+                self.auto.click_element(lure_type_list[lure_type_index], 'text',
+                                        crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080))
+                time.sleep(0.5)
+
+            if timeout.reached():
+                self.logger.error("选择鱼饵超时超时")
+                return False
+
+    def start_fish(self):
+        timeout = Timer(60).start()
+        while True:
+            self.auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080))
+
+            if config.ComboBox_fishing_mode.value == 0:
+                blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
                 if blocks_num >= 2:
-                    print("到点，收杆!")
-                    auto.press_key(self.press_key, wait_time=0)
+                    self.logger.info("到点，收杆!")
                     if self.is_use_time_judge:
                         self.start_time = time.time()
+                    self.auto.press_key(self.press_key)
+                elif blocks_num == 0:
+                    time.sleep(0.3)
+                    self.auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080))
+                    blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
+                    # 连续两次都是0才返回false,避免误判
+                    if blocks_num == 0:
+                        break
                 else:
                     if self.is_use_time_judge:
                         # 识别出未进入黄色区域，则进行时间判断、
                         if time.time() - self.start_time > 2.2:
-                            logger.warn("咋回事？强制收杆一次")
-                            auto.press_key(self.press_key, wait_time=0)
+                            self.logger.warn("咋回事？强制收杆一次")
                             self.start_time = time.time()
-                if blocks_num == 0:
-                    # 加一次判断
-                    time.sleep(0.3)
-                    rgb_image = self.take_screenshot(crop=(1130 / 1920, 240 / 1080, 370 / 1920, 330 / 1080))
-                    # 将Pillow图像转换为NumPy数组
-                    img_np = np.array(rgb_image)
-                    # 将图像从RGB格式转换为BGR格式（OpenCV使用BGR）
-                    bgr_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
-                    blocks_num = self.count_yellow_blocks(bgr_image)
-                    # 连续两次都是0才break
-                    if blocks_num == 0:
-                        break
-            if auto.find_element("本次获得", "text", max_retries=2):
-                print("钓鱼佬永不空军！")
-                if config.CheckBox_is_save_fish.value:
-                    if auto.find_element("新纪录", "text", include=True, max_retries=2) or auto.find_element(
-                            "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
-                            crop=(1245 / 1920, 500 / 1080, 121 / 1920, 78 / 1080), max_retries=2):
-                        self.save_picture()
-                auto.press_key("esc")
-            elif auto.find_element("鱼跑掉了", "text", max_retries=2):
-                logger.warn("鱼跑了，空军！")
-            return True
-        else:
-            logger.error("未识别到咬钩或鱼饵数量不够")
-            return False
+                            self.auto.press_key(self.press_key)
+            # 低性能模式判断方案
+            else:
+                if time.time() - self.bite_time > 1.8:
+                    self.logger.info("到点，收杆!")
+                    self.bite_time = time.time()
+                    self.auto.press_key(self.press_key)
 
-    def run_low_performance(self):
-        if not self.press_key:
-            if not self.get_press_key():
-                # 未识别且未手动设置钓鱼按键则停止
-                return
-        if np.any(self.upper_yellow < self.lower_yellow):
-            logger.error("运行错误，存在上限的值小于下限")
-            return
-        auto.press_key(self.press_key)
-        if auto.find_fish_bite_element("app/resource/images/fishing/bite.png", "image", threshold=0.5,
-                                       crop=(927 / 1920, 357 / 1080, 71 / 1920, 74 / 1080),
-                                       max_retries=100):
-            time.sleep(0.2)
-            auto.press_key(self.press_key)
-            if self.is_use_time_judge:
-                self.start_time = time.time()
-            # 低性能循环替换成定时按空格
-            start_time = time.time()
-            while True:
-                if time.time() - start_time > 1.8:
-                    print("到点，收杆！")
-                    auto.press_key(self.press_key)
-                    start_time = time.time()
-                if not auto.find_element("app/resource/images/fishing/fishing_rod.png", "image",
-                                         crop=(1720 / 1920, 904 / 1080, 115 / 1920, 111 / 1080), threshold=0.8):
+            if timeout.reached():
+                self.logger.error("钓鱼环节超时")
+                break
+
+    def after_fish(self):
+        timeout = Timer(20).start()
+        save_flag = False
+        while True:
+            self.auto.take_screenshot()
+
+            if save_flag:
+                if self.auto.find_element("新纪录", "text") or self.auto.find_element(
+                        "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
+                        crop=(1245 / 1920, 500 / 1080, 1366 / 1920, 578 / 1080)):
+                    self.save_picture()
+                break
+            if self.auto.find_element('本次获得', 'text', crop=(832 / 1920, 290 / 1080, 1078 / 1920, 374 / 1080)):
+                self.logger.info("钓鱼佬永不空军！")
+                if config.CheckBox_is_save_fish.value:
+                    save_flag = True
                     time.sleep(1)
-                    break
+                    continue
+                self.auto.press_key('esc')
+                time.sleep(1)
+                break
+            if self.auto.find_element('鱼跑掉了', 'text', crop=(858 / 1920, 151 / 1080, 1054 / 1920, 280 / 1080)):
+                self.logger.warn("鱼跑了，空军！")
+                break
+            # 如果回到了未甩杆状态，也退出
+            if not self.is_spin_rod():
+                break
 
-            if auto.find_element("本次获得", "text", max_retries=2):
-                print("钓鱼佬永不空军！")
-                if config.CheckBox_is_save_fish.value:
-                    if auto.find_element("新纪录", "text", include=True, max_retries=2) or auto.find_element(
-                            "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
-                            crop=(1245 / 1920, 500 / 1080, 121 / 1920, 78 / 1080), max_retries=2):
-                        self.save_picture()
-                auto.press_key("esc")
-            elif auto.find_element("鱼跑掉了", "text", max_retries=2):
-                logger.warn("鱼跑了，空军！")
-            return True
-        else:
-            logger.error("未识别到咬钩或鱼饵数量不够")
-            return False
+            if timeout.reached():
+                self.logger.error("钓鱼结束环节超时")
+                break
+
+    def save_picture(self):
+        current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        file_path = os.path.join(self.save_path, f"{current_date}.png")
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
+        self.auto.take_screenshot()
+        self.auto.crrent_screenshot.save(file_path)
+        self.logger.info(f"出了条大的！截图已保存至：{file_path}")
 
     def count_yellow_blocks(self, image):
         # 黄色的确切HSV值
@@ -141,61 +215,43 @@ class FishingModule:
 
         # 创建黄色掩膜
         mask_yellow = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
-        # mask_white = cv2.inRange(hsv, self.lower_white, self.upper_white)
 
         # 查找轮廓
         contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        # self.logger.debug(f"黄色块数为：{len(contours_yellow)}")
         print(f"黄色块数为：{len(contours_yellow)}")
 
         return len(contours_yellow)
 
-    def save_picture(self):
-        current_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        file_path = os.path.join(self.save_path, f"{current_date}.png")
-        if not os.path.exists(self.save_path):
-            os.makedirs(self.save_path)
-        screenshot = self.take_screenshot()
-        screenshot.save(file_path)
-        print(f"出了条大的！截图已保存至：{file_path}")
-
-    def take_screenshot(self, crop=(0, 0, 1, 1)):
+    def is_spin_rod(self):
         """
-        捕获游戏窗口的截图。
-        :param crop: 截图的裁剪区域，格式为(x1, y1, width, height)，默认为全屏。
-        :return: 成功时返回截图及其位置和缩放因子，失败时抛出异常。
+        判断是否已经甩杆，看不到图标后表示已甩杆
+        :return:
         """
-        start_time = time.time()
-        while True:
-            try:
-                result = Screenshot.take_screenshot(self.window_title, crop=crop)
-                if result:
-                    screenshot, screenshot_pos, screenshot_scale_factor = result
-                    return screenshot
-                else:
-                    logger.error("截图失败：没有找到游戏窗口")
-            except Exception as e:
-                logger.error(f"截图失败：{e}")
-            time.sleep(1)
-            if time.time() - start_time > 60:
-                raise RuntimeError("截图超时")
+        # self.auto.take_screenshot()
+        if self.auto.find_element('app/resource/images/fishing/fish.png', 'image',
+                                  crop=(29 / 1920, 212 / 1080, 116 / 1920, 292 / 1080),
+                                  match_method=cv2.TM_CCOEFF_NORMED):
+            return False
+        return True
 
     def get_press_key(self):
         """
         自动获取钓鱼按键
         """
-        pos = ((1706, 1024), (1820, 1066))
-        text_list = auto.find_text_in_area(pos)
+        text_results = self.auto.read_text_from_crop((1706 / 1920, 1024 / 1080, 1820 / 1920, 1066 / 1080),
+                                                     is_screenshot=True, extract=[(222, 230, 236), 128])
+        # 根据文本内容模糊匹配键盘按键
+        key_list = config.fish_key_list.value
         try:
-            text = text_list[0]
-            # 根据文本内容模糊匹配键盘按键
-            key_list = config.fish_key_list.value
+            text = text_results[0][0]
             best_match = process.extractOne(text, key_list)
-            logger.info(f"钓鱼按键识别最佳匹配为：{best_match}")
+            self.logger.info(f"钓鱼按键识别最佳匹配为：{best_match}")
             key = best_match[0]
             self.press_key = key
             signalBus.updateFishKey.emit(key)
             config.set(config.LineEdit_fish_key, key)
-            return True
         except Exception as e:
-            logger.error(f"未识别出按键文字，请手动设置{e}")
+            self.logger.error(f"未识别出按键文字，请手动设置{e}")
             return False
+        return True

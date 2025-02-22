@@ -4,13 +4,10 @@
 /app/modules/mask.png
 /app/modules/result.jpg
 /temp/
-/app/common/ppOCR/PaddleOCR-json_v1.4.1_windows_x64/
 /fish/
 /AppData/config.json
 /app/resource/images/fishing/test.png
 /app/resource/images/fishing/test_yellow.png
-/test.py
-/ok/
 /log/
 /main.exe
-/SAA_v1.1.8.zip
+/release/

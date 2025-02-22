@@ -18,7 +18,7 @@ from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths, QThread
 from PyQt5.QtGui import QDesktopServices, QFont
 from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
 
-from updater import Updater
+# from updater import Updater
 from ..repackage.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
 from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, YEAR, QQ, VERSION
@@ -218,50 +218,51 @@ class SettingInterface(ScrollArea):
             lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
 
     def check_update(self):
-        try:
-            updater = Updater()
-            current_version = VERSION
-            latest_version = updater.latest_version
-            if latest_version != current_version and latest_version:
-                title = '发现新版本'
-                content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
-                massage_box = MessageBox(title, content, self.window())
-                if massage_box.exec():
-                    self.start_download(updater)
-                else:
-                    pass
-            elif latest_version is None:
-                title = '未获取到最新版本信息'
-                if config.update_proxies.value:
-                    content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-                else:
-                    content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-                massage_box = MessageBox(title, content, self.window())
-                if massage_box.exec():
-                    pass
-                else:
-                    pass
-            else:
-                title = '没有发现新版本'
-                content = f'当前版本{current_version}已是最新版本'
-                massage_box = MessageBox(title, content, self.window())
-                if massage_box.exec():
-                    pass
-                else:
-                    pass
-        except Exception as e:
-            title = '网络错误'
-            if config.update_proxies.value:
-                content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-            else:
-                content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-            massage_box = MessageBox(title, content, self.window())
-            if massage_box.exec():
-                pass
-            else:
-                pass
-            print(e)
-            # traceback.print_exc()
+        pass
+        # try:
+        #     updater = Updater()
+        #     current_version = VERSION
+        #     latest_version = updater.latest_version
+        #     if latest_version != current_version and latest_version:
+        #         title = '发现新版本'
+        #         content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
+        #         massage_box = MessageBox(title, content, self.window())
+        #         if massage_box.exec():
+        #             self.start_download(updater)
+        #         else:
+        #             pass
+        #     elif latest_version is None:
+        #         title = '未获取到最新版本信息'
+        #         if config.update_proxies.value:
+        #             content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
+        #         else:
+        #             content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
+        #         massage_box = MessageBox(title, content, self.window())
+        #         if massage_box.exec():
+        #             pass
+        #         else:
+        #             pass
+        #     else:
+        #         title = '没有发现新版本'
+        #         content = f'当前版本{current_version}已是最新版本'
+        #         massage_box = MessageBox(title, content, self.window())
+        #         if massage_box.exec():
+        #             pass
+        #         else:
+        #             pass
+        # except Exception as e:
+        #     title = '网络错误'
+        #     if config.update_proxies.value:
+        #         content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
+        #     else:
+        #         content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
+        #     massage_box = MessageBox(title, content, self.window())
+        #     if massage_box.exec():
+        #         pass
+        #     else:
+        #         pass
+        #     print(e)
+        #     # traceback.print_exc()
 
     def start_download(self, updater):
         self.progressBar.setValue(0)

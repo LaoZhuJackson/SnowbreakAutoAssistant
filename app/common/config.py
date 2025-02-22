@@ -49,8 +49,10 @@ class Config(QConfig):
         ["勇者游戏", "2025-1-25", "2025-2-8"],
     ])
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
-    LineEdit_starter_name = ConfigItem("home_interface_enter", "LineEdit_starter_name", "尘白禁区")
+    LineEdit_starter_name = ConfigItem("home_interface_enter", "LineEdit_starter_name", "西山居启动器-尘白禁区")
+    LineEdit_starter_class = ConfigItem("home_interface_enter", "LineEdit_starter_class", "Chrome_WidgetWin_0")
     LineEdit_game_name = ConfigItem("home_interface_enter", "LineEdit_game_name", "尘白禁区")
+    LineEdit_game_class = ConfigItem("home_interface_enter", "LineEdit_game_class", "UnrealWindow")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
                                             BoolValidator())
 
@@ -117,6 +119,8 @@ class Config(QConfig):
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
     LineEdit_c3 = ConfigItem("home_interface_person", "LineEdit_c3", "")
     LineEdit_c4 = ConfigItem("home_interface_person", "LineEdit_c4", "")
+    # 角色总数，用于翻页
+    all_characters = ConfigItem("home_interface_person", "all_characters", 37)
     CheckBox_is_use_chip = ConfigItem("home_interface_person", "CheckBox_is_use_chip", False, BoolValidator())
 
     CheckBox_mail = ConfigItem("home_interface_reward", "CheckBox_mail", False, BoolValidator())
@@ -149,7 +153,7 @@ class Config(QConfig):
     LineEdit_fish_upper = ConfigItem("add_fish", "LineEdit_fish_upper", "25,255,255")
     ComboBox_fishing_mode = OptionsConfigItem("add_fish", "ComboBox_fishing_mode", 0, OptionsValidator(
         [0, 1]))
-    LineEdit_fish_key = ConfigItem("add_fish", "LineEdit_fish_key", "")
+    LineEdit_fish_key = ConfigItem("add_fish", "LineEdit_fish_key", "space")
     fish_key_list = ConfigItem("add_fish", "fish_key_list", ['shift', 'space', 'ctrl'])
     ComboBox_lure_type = OptionsConfigItem("add_fish", "ComboBox_lure_type", 0,
                                            OptionsValidator([0, 1, 2, 3, 4, 5, 6, 7]))
@@ -170,7 +174,8 @@ class Config(QConfig):
     LineEdit_jigsaw_piece_9 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_9", "0")
     LineEdit_jigsaw_piece_10 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_10", "0")
     LineEdit_jigsaw_piece_11 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_11", "0")
-
+    # 异星守护相关
+    ComboBox_mode = OptionsConfigItem("add_alien", "ComboBox_mode", 0, OptionsValidator([0, 1]))
 
 config = Config()
 config.themeMode.value = Theme.AUTO

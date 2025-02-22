@@ -15,7 +15,6 @@ from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, 
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
     BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
 
-from updater import Updater
 from .additional_features import Additional
 from .help import Help
 from .home import Home
@@ -24,10 +23,9 @@ from .trigger import Trigger
 from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
-from ..common.ppOCR import ocr_installer, ocr
 from ..common.setting import VERSION
 from ..common.signal_bus import signalBus
-from ..modules.automation import auto
+from ..modules.ocr import ocr
 from ..ui.display_interface import DisplayInterface
 from ..common import resource
 
@@ -74,8 +72,8 @@ class MainWindow(MSFluentWindow):
         # start theme listener
         self.themeListener.start()
 
-        # 检查ocr组件是否安装
-        self.check_ocr_install()
+        # 初始化ocr
+        self.init_ocr()
         if config.CheckBox_auto_open_starter.value:
             self.open_starter()
         if config.checkUpdateAtStartUp.value:
@@ -127,6 +125,22 @@ class MainWindow(MSFluentWindow):
 
         self.stackedWidget.setCurrentIndex(config.enter_interface.value)
 
+    def init_ocr(self):
+        def benchmark(ocr_func, img, runs=100):
+            # 预热
+            for _ in range(10):
+                ocr_func(img)
+
+            # 正式测试
+            start = time.time()
+            for _ in range(runs):
+                ocr_func(img)
+            return (time.time() - start) / runs
+
+        ocr.instance_ocr()
+        # logger.info(f"区域截图识别耗时：{benchmark(ocr.run,'app/resource/images/start_game/age.png')}")
+        logger.debug("初始化OCR完成")
+
     def initWindow(self):
         self.resize(960, 780)
         self.setMinimumWidth(760)
@@ -161,28 +175,6 @@ class MainWindow(MSFluentWindow):
         if hasattr(self, 'splashScreen'):
             self.splashScreen.resize(self.size())
 
-    def check_ocr_install(self):
-        self.ocr_installer = ocr_installer
-        if self.ocr_installer.check_ocr():
-            logger.debug('OCR组件已安装')
-            # 初始化ocr
-            ocr.instance_ocr()
-        else:
-            self.messagebox = MessageBoxBase(self)
-            title = SubtitleLabel('检测到未下载OCR组件', self)
-            self.content = BodyLabel(
-                '是否开始下载，若下载，点击下载后的命令窗口不要关，下载进度在主页的日志中查看，若取消则退出程序', self)
-            self.content.setWordWrap(True)
-
-            self.messagebox.viewLayout.addWidget(title, 0, Qt.AlignLeft)
-            self.messagebox.viewLayout.addWidget(self.content, 0, Qt.AlignLeft)
-            self.messagebox.yesButton.setText('下载')
-            self.messagebox.cancelButton.setText('退出')
-            self.messagebox.yesButton.clicked.connect(self.yes_click)
-            self.messagebox.cancelButton.clicked.connect(self.cancel_click)
-
-            self.messagebox.setVisible(True)
-
     # def update_ring(self, value, speed):
     #     self.progressRing.setValue(value)
     #     self.speed.setText(speed)
@@ -205,7 +197,7 @@ class MainWindow(MSFluentWindow):
         view = FlyoutView(
             title="赞助作者",
             content="如果这个助手帮助到你，可以考虑赞助作者一杯奶茶(>ω･* )ﾉ",
-            image="app/resource/images/support.png",
+            image="app/resource/images/support.jpg",
             isClosable=True,
         )
         view.widgetLayout.insertSpacing(1, 5)
@@ -293,7 +285,6 @@ class MainWindow(MSFluentWindow):
         config.set(config.position, position)
 
     def closeEvent(self, a0):
-        print("关闭ocr子进程")
         ocr.exit_ocr()
         self.themeListener.terminate()
         self.themeListener.deleteLater()
@@ -302,8 +293,8 @@ class MainWindow(MSFluentWindow):
             self.save_log()
             self.save_position()
         except Exception as e:
-            print(e)
-            traceback.print_exc()
+            logger.error(e)
+            # traceback.print_exc()
         super().closeEvent(a0)
 
     def _onThemeChangedFinished(self):
@@ -314,20 +305,8 @@ class MainWindow(MSFluentWindow):
             QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
 
     def check_update(self):
-        try:
-            self.updater = Updater()
-            current_version = VERSION
-            latest_version = self.updater.latest_version
-            if latest_version != current_version and latest_version:
-                title = '发现新版本'
-                content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
-                signalBus.showMessageBox.emit(title, content)
-        except Exception as e:
-            logger.error(e)
-            traceback.print_exc()
-            if config.update_proxies.value:
-                logger.error(
-                    f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值')
+        logger.warn('当前测试版还没写更新功能')
+        pass
 
     def showMessageBox(self, title, content):
         massage = MessageBox(title, content, self)

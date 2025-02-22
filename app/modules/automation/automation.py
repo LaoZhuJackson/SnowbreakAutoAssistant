@@ -1,225 +1,253 @@
+import functools
 import math
+import threading
 import time
+import traceback
 
 import cv2
-import numpy as np
-import pyautogui
+import win32gui
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils
-from app.common.ppOCR import ocr
+from app.common.logger import logger
 from app.common.singleton import SingletonMeta
+from app.common.utils import random_rectangle_point
 from app.modules.automation.input import Input
 from app.modules.automation.screenshot import Screenshot
+from app.modules.automation.timer import Timer
+from app.modules.ocr import ocr
 
 
-class Automation(metaclass=SingletonMeta):
+def atoms(func):
+    """
+    用于各种原子操作中实现立即停止的装饰器
+    :param func:
+    :return:
+    """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # 检查self.running是否为false
+        if not args[0].running:
+            raise Exception("已停止")
+        else:
+            # 判断是否暂停
+            if args[0].pause:
+                # 每次执行完原子函数后，等待外部条件重新开始
+                args[0].pause_event.wait()  # 等待外部触发继续执行
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+class Automation:
     """
     自动化管理类，用于管理与游戏窗口相关的自动化操作。
     """
 
-    def __init__(self, window_title, logger: None):
+    # _screenshot_interval = Timer(0.1)
+
+    def __init__(self, window_title, window_class, logger):
         """
         :param window_title: 游戏窗口的标题。
+        :param window_class: 是启动器还是游戏窗口
         :param logger: 用于记录日志的Logger对象，可选参数。
         """
+        # 启动器截图和操作的窗口句柄不同
+        self.screenshot_hwnd = None
         self.window_title = window_title
+        self.window_class = window_class
+        self.is_starter = window_class != config.LineEdit_game_class.value
         self.logger = logger
-        self.screenshot = None
-        self._init_input()
+        self.hwnd = self.get_hwnd()
         self.img_cache = {}
+        self.screenshot = Screenshot(self.logger)
+        # 当前截图
+        self.current_screenshot = None
+        # 保存状态机的第一张截图，为了让current_screenshot可以肆无忌惮的裁切
+        self.first_screenshot = None
+        self.scale_x = 1
+        self.scale_y = 1
+        self.relative_pos = None
+        self.ocr_result = None
+
+        self.running = True
+        self.pause = False
+        self.pause_event = threading.Event()  # 用来控制暂停
+
+        self._init_input()
 
     def _init_input(self):
-        """
-        初始化输入处理器，将输入操作如点击、移动等绑定至实例变量。
-        """
-        self.input_handler = Input(self.logger)
+        self.input_handler = Input(self.hwnd, self.logger)
+        # 鼠标部分
+        self.move_click = self.input_handler.move_click
         self.mouse_click = self.input_handler.mouse_click
         self.mouse_down = self.input_handler.mouse_down
         self.mouse_up = self.input_handler.mouse_up
-        self.mouse_move = self.input_handler.mouse_move
-        self.drag_mouse = self.input_handler.drag_mouse
         self.mouse_scroll = self.input_handler.mouse_scroll
+        self.move_to = self.input_handler.move_to
+        # 按键部分
         self.press_key = self.input_handler.press_key
         self.key_down = self.input_handler.key_down
         self.key_up = self.input_handler.key_up
-        self.press_key = self.input_handler.press_key
-        self.secretly_press_key = self.input_handler.secretly_press_key
-        self.press_mouse = self.input_handler.press_mouse
-        self.move_click = self.input_handler.move_click
 
+    def enumerate_child_windows(self, parent_hwnd):
+        def callback(handle, windows):
+            windows.append(handle)
+            return True
+
+        child_windows = []
+        win32gui.EnumChildWindows(parent_hwnd, callback, child_windows)
+        return child_windows
+
+    def get_hwnd(self):
+        """根据传入的窗口名和类型确定可操作的句柄"""
+        hwnd = win32gui.FindWindow(None, self.window_title)
+        handle_list = []
+        if hwnd:
+            handle_list.append(hwnd)
+            self.screenshot_hwnd = hwnd
+            handle_list.extend(self.enumerate_child_windows(hwnd))
+            for handle in handle_list:
+                class_name = win32gui.GetClassName(handle)
+                if class_name == self.window_class:
+                    # 找到需要的窗口句柄
+                    self.logger.info(f"找到窗口 {self.window_title} 的句柄为：{handle}")
+                    return handle
+        else:
+            raise ValueError(f"未找到{self.window_title}的句柄，请确保对应窗口已打开")
+
+    @atoms
     def take_screenshot(self, crop=(0, 0, 1, 1)):
         """
         捕获游戏窗口的截图。
         :param crop: 截图的裁剪区域，格式为(x1, y1, width, height)，默认为全屏。
         :return: 成功时返回截图及其位置和缩放因子，失败时抛出异常。
         """
-        start_time = time.time()
+        timeout = Timer(0.5, count=3).start()
         while True:
             try:
-                result = Screenshot.take_screenshot(self.window_title, crop=crop)
+                result = self.screenshot.screenshot(self.screenshot_hwnd, (0, 0, 1, 1), self.is_starter)
                 if result:
-                    self.screenshot, self.screenshot_pos, self.screenshot_scale_factor = result
+                    self.first_screenshot, self.scale_x, self.scale_y, self.relative_pos = result
+                    if crop != (0, 0, 1, 1):
+                        self.current_screenshot, self.relative_pos = ImageUtils.crop_image(self.first_screenshot, crop,
+                                                                                           self.hwnd)
+                    else:
+                        self.current_screenshot = self.first_screenshot
+                    # self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
                     return result
                 else:
-                    self.logger.error(f"截图失败：没有找到游戏窗口{self.window_title}")
+                    # 为none的时候已经在screenshot中log了，此处无需再log
+                    self.current_screenshot = None
+                if timeout.reached():
+                    raise RuntimeError("截图超时")
             except Exception as e:
+                # print(traceback.format_exc())
                 self.logger.error(f"截图失败：{e}")
-            time.sleep(1)
-            if time.time() - start_time > 60:
-                raise RuntimeError("截图超时")
+                break  # 退出循环
 
-    def calculate_positions(self, template, max_loc, relative):
+    def calculate_positions(self, template, max_loc):
         """
-        计算匹配位置。
-        :param template: 模板图片。
-        :param max_loc: 最佳匹配位置。
-        :param relative: 是否返回相对位置。
-        :return: 匹配位置的左上角和右下角点的位置
+        找到图片后计算相对位置，input_handler接收的均为相对窗口的相对坐标，所以这里要返回的也是相对坐标
+        :param template:
+        :param max_loc:
+        :return:
         """
         try:
             channels, width, height = template.shape[::-1]
         except:
             width, height = template.shape[::-1]
 
-        # 是否缩放，如果需要相对位置就不缩放
-        scale_factor = self.screenshot_scale_factor if not relative else 1
-        top_left = (int(max_loc[0] / scale_factor) + self.screenshot_pos[0] * (not relative),
-                    int(max_loc[1] / scale_factor) + self.screenshot_pos[1] * (not relative))
-        bottom_right = (top_left[0] + int(width / scale_factor), top_left[1] + int(height / scale_factor))
+        top_left = (
+            int(max_loc[0] + self.relative_pos[0]),
+            int(max_loc[1] + self.relative_pos[1]),
+        )
+        bottom_right = (
+            top_left[0] + width,
+            top_left[1] + height,
+        )
         return top_left, bottom_right
 
-    def find_image_element(self, target, threshold, scale_range, relative=False, cacheable=True):
+    def find_image_element(self, target, threshold, cacheable=True, match_method=cv2.TM_SQDIFF_NORMED):
         """
-        查找图像元素。
-        :param target: 目标图像路径。
-        :param threshold: 相似度阈值。
-        :param scale_range: 缩放范围。
-        :param relative: 是否返回相对位置。
-        :return: 最佳匹配位置和相似度。
+        寻找图像
+        :param match_method: 模版匹配使用的方法
+        :param target: 图片路径
+        :param threshold: 置信度
+        :param cacheable: 是否存入内存
+        :return: 左上，右下相对坐标，寻找到的目标的置信度
         """
         try:
-            if cacheable and target in self.img_cache:
+            if target in self.img_cache:
                 mask = self.img_cache[target]['mask']
                 template = self.img_cache[target]['template']
             else:
-                mask = ImageUtils.read_template_with_mask(target)  # 读取模板图片掩码
+                # 获取透明部分的掩码（允许模版图像有透明处理）
+                mask = ImageUtils.get_template_mask(target)
                 template = cv2.imread(target)  # 读取模板图片
                 if cacheable:
+                    # 存入字典缓存
                     self.img_cache[target] = {'mask': mask, 'template': template}
-            screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_BGR2RGB)  # 将截图转换为RGB
             if mask is not None:
-                matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, threshold, scale_range,
-                                                                         mask)  # 执行缩放并匹配模板
+                matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template, mask,
+                                                               (self.scale_x, self.scale_y),
+                                                               match_method=match_method)
             else:
-                matchVal, matchLoc = ImageUtils.scale_and_match_template(screenshot, template, threshold,
-                                                                         scale_range)  # 执行缩放并匹配模板
-
-            self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
-
-            # # 获取模板图像的宽度和高度
-            # template_width = template.shape[1]
-            # template_height = template.shape[0]
-
-            # # 在输入图像上绘制矩形框
-            # top_left = matchLoc
-            # bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
-            # cv2.rectangle(screenshot, top_left, bottom_right, (0, 255, 0), 2)
-
-            # # 显示标记了匹配位置的图像
-            # cv2.imshow('Matched Image', screenshot)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            if mask is not None:
-                if not math.isinf(matchVal) and (threshold is None or matchVal <= threshold):
-                    top_left, bottom_right = self.calculate_positions(template, matchLoc, relative)
-                    return top_left, bottom_right, matchVal
-            else:
-                if not math.isinf(matchVal) and (threshold is None or matchVal >= threshold):
-                    top_left, bottom_right = self.calculate_positions(template, matchLoc, relative)
-                    return top_left, bottom_right, matchVal
+                matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template,
+                                                               scale=(self.scale_x, self.scale_y),
+                                                               match_method=match_method)
+            self.logger.info(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
+            if not math.isinf(matchVal) and (threshold is None or matchVal >= threshold):
+                top_left, bottom_right = self.calculate_positions(template, matchLoc)
+                return top_left, bottom_right, matchVal
+            self.logger.debug(f"没有找到相似度大于 {threshold} 的结果")
         except Exception as e:
+            # print(traceback.format_exc())
             self.logger.error(f"寻找图片出错：{e}")
         return None, None, None
 
-    def generate_black_white_map(self, pixel_bgr):
-        """生成黑白图，标记与目标像素相似的区域。
-
-        参数:
-        - pixel_bgr: 目标像素的BGR值。
-
-        返回:
-        - 黑白图数组。
-        """
-        screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_BGR2RGB)
-        bw_map = np.zeros(screenshot.shape[:2], dtype=np.uint8)
-        bw_map[np.sum((screenshot - pixel_bgr) ** 2, axis=-1) <= 800] = 255
-        return bw_map
-
-    def find_image_and_count(self, target, threshold, pixel_bgr):
-        """在屏幕截图中查找与目标图片相似的图片，并计算匹配数量。
-
-        参数:
-        - target: 目标图片路径。
-        - threshold: 匹配阈值。
-        - pixel_bgr: 目标像素的BGR值，用于生成黑白图。
-
-        返回:
-        - 匹配的数量，或在出错时返回 None。
-        """
+    @atoms
+    def perform_ocr(self, extract: list = None, image=None):
+        """执行OCR识别，并更新OCR结果列表。如果未识别到文字，保留ocr_result为一个空列表。"""
         try:
-            template = cv2.imread(target, cv2.IMREAD_GRAYSCALE)
-            if template is None:
-                raise ValueError("读取图片失败")
-            bw_map = self.generate_black_white_map(pixel_bgr)
-            return ImageUtils.count_template_matches(bw_map, template, threshold)
+            # image=None时
+            if image is None:
+                # ImageUtils.show_ndarray(self.current_screenshot)
+                self.ocr_result = ocr.run(self.current_screenshot, extract)
+            # 传入特定的图片进行ocr识别
+            else:
+                # ImageUtils.show_ndarray(image)
+                self.ocr_result = ocr.run(image, extract)
+            if not self.ocr_result:
+                self.logger.info(f"未识别出任何文字")
+                self.ocr_result = []
         except Exception as e:
-            self.logger.error(f"寻找图片并计数出错：{e}")
-            return None
+            # print(traceback.format_exc())
+            self.logger.error(f"OCR识别失败：{e}")
+            self.ocr_result = []  # 确保在异常情况下，ocr_result为列表类型
 
-    def find_image_with_multiple_targets(self, target, threshold, scale_range, relative=False):
-        try:
-            template = cv2.imread(target, cv2.IMREAD_GRAYSCALE)
-            if template is None:
-                raise ValueError("读取图片失败")
-            screenshot = cv2.cvtColor(np.array(self.screenshot), cv2.COLOR_BGR2GRAY)
-            matches = ImageUtils.scale_and_match_template_with_multiple_targets(screenshot, template, threshold,
-                                                                                scale_range)
-            if len(matches) == 0:
-                return []
-            new_matches = []
-            for match in matches:
-                top_left, bottom_right = self.calculate_positions(template, match, relative)
-                new_matches.append((top_left, bottom_right))
-            return new_matches
-        except Exception as e:
-            self.logger.error(f"寻找图片出错：{e}")
-            return []
-
-    def calculate_text_position(self, box, relative):
+    def calculate_text_position(self, result):
         """
-        计算文本的位置坐标。
-        :param box: 文本的边界框。
-        :param relative: 是否返回相对位置。
-        :return: 文本的顶点和底点坐标。
+        计算文本所在的相对位置
+        :param result: 格式=['适龄提示', 1.0, [[10.0, 92.0], [71.0, 106.0]]],单条结果
+        :return: 左上，右下相对坐标
         """
-        # 先计算相对坐标
-        top_left_relative = (
-            int(box[0][0] / self.screenshot_scale_factor), int(box[0][1] / self.screenshot_scale_factor))
-        bottom_right_relative = (
-            int(box[2][0] / self.screenshot_scale_factor), int(box[2][1] / self.screenshot_scale_factor))
+        result_pos = result[2]
+        result_width = result_pos[1][0] - result_pos[0][0]
+        result_height = result_pos[1][1] - result_pos[0][1]
 
-        if not relative:
-            # 如果需要返回绝对位置，就加上偏移量,这个偏移量受crop的影响
-            top_left = (top_left_relative[0] + self.screenshot_pos[0], top_left_relative[1] + self.screenshot_pos[1])
-            bottom_right = (
-                bottom_right_relative[0] + self.screenshot_pos[0], bottom_right_relative[1] + self.screenshot_pos[1])
-        else:
-            # 否则直接返回相对坐标
-            top_left = top_left_relative
-            bottom_right = bottom_right_relative
-
+        # self.relative_pos格式：(800, 480, 1600, 960),转回用户尺度后再加相对窗口坐标
+        top_left = (
+            self.relative_pos[0] + result_pos[0][0],
+            self.relative_pos[1] + result_pos[0][1]
+        )
+        bottom_right = (
+            top_left[0] + result_width,
+            top_left[1] + result_height,
+        )
+        # print(f"{top_left=}")
+        # print(f"{bottom_right=}")
         return top_left, bottom_right
 
     def is_text_match(self, text, targets, include):
@@ -238,387 +266,287 @@ class Automation(metaclass=SingletonMeta):
         else:
             return text in targets, text if text in targets else None
 
-    def search_text_in_ocr_results(self, targets, include, relative):
-        """
-        在OCR结果中搜索目标文本。
-        :param targets: 目标文本列表。
-        :param include: 是否包含目标字符串。
-        :param relative: 是否返回相对位置。
-        :return: 如果找到，返回文本的位置坐标。
-        """
-        for box, (text, confidence) in self.ocr_result:
-            match, matched_text = self.is_text_match(text, targets, include)
+    def search_text_in_ocr_results(self, targets, include):
+        for result in self.ocr_result:
+            match, matched_text = self.is_text_match(result[0], targets, include)
             if match:
-                self.matched_text = matched_text  # 更新匹配的文本变量
-                self.logger.debug(f"目标文字：{matched_text} 相似度：{confidence:.2f}")
-                return self.calculate_text_position(box, relative)
-        self.logger.debug(f"目标文字：{', '.join(targets)} 未找到匹配文字")
+                # self.matched_text = matched_text  # 更新匹配的文本变量
+                self.logger.info(f"目标文字：{matched_text} 相似度：{result[1]:.2f}")
+                return self.calculate_text_position(result)
+        self.logger.info(f"目标文字：{', '.join(targets)} 未找到匹配文字")
         return None, None
 
-    def perform_ocr(self):
-        """执行OCR识别，并更新OCR结果列表。如果未识别到文字，保留ocr_result为一个空列表。"""
-        try:
-            self.ocr_result = ocr.recognize_multi_lines(np.array(self.screenshot))
-            if not self.ocr_result:
-                self.logger.debug(f"未识别出任何文字")
-                self.ocr_result = []
-        except Exception as e:
-            self.logger.error(f"OCR识别失败：{e}")
-            self.ocr_result = []  # 确保在异常情况下，ocr_result为列表类型
-
-    def find_text_element(self, target, include, need_ocr=True, relative=False):
+    def find_text_element(self, target, include, need_ocr=True, extract=None):
         """
-        查找文本元素。
-        :param target: 目标文本或包含目标文本的元组。
-        :param include: 如果为True，寻找包含目标字符串的文本；如果为False，寻找与目标字符串精确匹配的文本。
-        :param need_ocr: 是否需要执行OCR识别来识别屏幕上的文本。
-        :param relative: 如果为True，返回相对于截图的位置；如果为False，返回绝对位置。
-        :return: 文本的位置坐标，如果找到的话。
+
+        :param target:
+        :param include:
+        :param need_ocr:
+        :param extract: 是否提取文字，[(文字rgb颜色),threshold数值]
+        :return:
         """
         target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
         if need_ocr:
-            self.perform_ocr()  # 执行OCR识别
+            self.perform_ocr(extract)
+        return self.search_text_in_ocr_results(target_texts, include)
 
-        return self.search_text_in_ocr_results(target_texts, include, relative)
-
-    def calculate_text_position2(self, pos):
-        """计算文本的位置坐标。加入偏移量，直接计算绝对位置"""
-        top_left = (int(pos[0][0] / self.screenshot_scale_factor) + self.screenshot_pos[0],
-                    int(pos[0][1] / self.screenshot_scale_factor) + self.screenshot_pos[1])
-        bottom_right = (int(pos[2][0] / self.screenshot_scale_factor) + self.screenshot_pos[0],
-                        int(pos[2][1] / self.screenshot_scale_factor) + self.screenshot_pos[1])
-        return top_left, bottom_right
-
-    def is_position_matched(self, target_pos, source_pos, position):
+    @atoms
+    def find_element(self, target, find_type: str, threshold: float = 0.7, crop: tuple = (0, 0, 1, 1),
+                     take_screenshot=False, include: bool = True, need_ocr: bool = True, extract: list = None,
+                     match_method=cv2.TM_SQDIFF_NORMED):
         """
-        根据方位判断目标位置是否符合条件。
-        :param target_pos: 速战的坐标，格式[[1670, 887], [1732, 887], [1732, 917], [1670, 917]]
-        :param source_pos: 名字的坐标，格式(2234, 1064)
-        :param position: 取值：'bottom_right'，'top_left'，'bottom_left'，'top_right'
-        :return: 是否在条件方向上
+        寻找元素
+        :param match_method: 模版匹配方法
+        :param target:
+        :param find_type:
+        :param threshold:
+        :param crop:
+        :param take_screenshot:
+        :param include:
+        :param need_ocr:
+        :param extract:
+        :return: 查找成功返回（top_left,bottom_right），失败返回None
         """
-        dx = target_pos[0][0] - source_pos[0]
-        dy = target_pos[0][1] - source_pos[1]
-        if position == 'bottom_right':
-            return dx > 0 and dy > 0
-        elif position == 'top_left':
-            return dx < 0 and dy < 0
-        elif position == 'bottom_left':
-            return dx < 0 and dy > 0
-        elif position == 'top_right':
-            return dx > 0 and dy < 0
+        top_left = bottom_right = image_threshold = None
+        if take_screenshot:
+            # 调用take_screenshot更新self.current_screenshot,self.scale_x,self.scale_y,self.relative_pos
+            screenshot_result = self.take_screenshot(crop)
+            if not screenshot_result:
+                return None
+        else:
+            # 不截图的时候做相应的裁切，使外部可以不写参数
+            if self.current_screenshot is not None:
+                # 更新当前裁切后的截图和相对位置坐标
+                # ImageUtils.show_ndarray(self.current_screenshot, 'before_current')
+                self.current_screenshot, self.relative_pos = ImageUtils.crop_image(self.first_screenshot, crop,
+                                                                                   self.hwnd)
+                # ImageUtils.show_ndarray(self.current_screenshot, 'after_current')
+            else:
+                self.logger.error(f"当前没有current_screenshot,裁切失败")
+        if find_type in ['image', 'text', 'image_threshold']:
+            if find_type == 'image':
+                top_left, bottom_right, image_threshold = self.find_image_element(target, threshold,
+                                                                                  match_method=match_method)
+            elif find_type == 'text':
+                top_left, bottom_right = self.find_text_element(target, include, need_ocr, extract)
+            if top_left and bottom_right:
+                if find_type == 'image_threshold':
+                    return image_threshold
+                return top_left, bottom_right
+        else:
+            raise ValueError(f"错误的类型{find_type}")
+        return None
+
+    def click_element_with_pos(self, pos, action="move_click", offset=(0, 0), n=3, is_calculate=True):
+        """
+        根据左上和右下坐标确定点击位置并执行点击
+        :param is_calculate: 是否计算点击坐标，当传入的是（top_left,bottom_right）时需要计算，传入的是（x,y）时不需要
+        :param pos: （top_left,bottom_right）|(x,y)
+        :param action: 执行的动作类型
+        :param offset: x,y的偏移量
+        :param n: 聚拢值，越大越聚拢
+        :return: None
+        """
+        # 范围内正态分布取点
+        if is_calculate:
+            x, y = random_rectangle_point(pos, n)
+        else:
+            x, y = pos
+        # print(f"{x=},{y=}")
+        # 加上手动设置的偏移量
+        click_x = x + offset[0]
+        click_y = y + offset[1]
+        # 动作到方法的映射
+        action_map = {
+            "mouse_click": self.mouse_click,
+            "down": self.mouse_down,
+            "move": self.move_to,
+            "move_click": self.move_click,
+        }
+        if action in action_map:
+            action_map[action](click_x, click_y)
+            # print(f"点击{click_x},{click_y}")
+        else:
+            raise ValueError(f"未知的动作类型: {action}")
+        return True
+
+    def click_element(self, target, find_type: str, threshold: float = 0.7, crop: tuple = (0, 0, 1, 1),
+                      take_screenshot=False, include: bool = True, need_ocr: bool = True, extract: list = None,
+                      action: str = 'move_click', offset: tuple = (0, 0), n: int = 3,
+                      match_method=cv2.TM_SQDIFF_NORMED):
+        """
+        寻找目标位置，并在位置做出对应action
+        :param match_method: 模版匹配方法
+        :param n: 正态分布随机获取点的居中程度，越大越居中
+        :param target: 寻找目标
+        :param find_type: 寻找类型
+        :param threshold: 置信度
+        :param crop: 截图区域，take_screenshot为任何值crop都生效，为true时直接得到裁剪后的截图，为false时将根据crop对current_screenshot进行二次裁剪
+        :param take_screenshot: 是否截图
+        :param include: 是否允许target含于ocr结果
+        :param need_ocr: 是否ocr
+        :param extract: 是否使截图转换成白底黑字，只有find_type=="text"且需要ocr的时候才生效，[(文字rgb颜色),threshold数值]
+        :param action: 默认假后台点击，可选'mouse_click','mouse_down','move','move_click'
+        :param offset: 点击位置偏移量，默认不偏移
+        :return:
+        """
+        coordinates = self.find_element(target, find_type, threshold, crop, take_screenshot, include, need_ocr, extract,
+                                        match_method)
+        # print(f"{coordinates=}")
+        if coordinates:
+            return self.click_element_with_pos(coordinates, action, offset, n)
         return False
 
-    def find_target_near_source(self, target, include, source_pos, position):
+    @atoms
+    def find_text_in_area(self, crop, extract: list = None):
         """
-        在指定方位查找距离源最近的目标文本。
+        通过crop找对应的文本内容
+        :param crop: 查找区域
+        :param extract: 指定提取背景
+        :return: ocr识别内容（格式化后的）
+        """
+        # 调用take_screenshot更新self.current_screenshot,self.scale_x,self.scale_y,self.relative_pos
+        screenshot_result = self.take_screenshot(crop)
+        if screenshot_result:
+            self.perform_ocr(extract)
+            return self.ocr_result
+
+    @atoms
+    def find_target_near_source(self, target, source_pos, need_update_ocr: bool = True, crop=(0, 0, 1, 1), include=True,
+                                n=30):
+        """
+        查找距离源最近的目标文本的中心坐标。
+        :param n: 聚拢度
+        :param include: 是否包含
         :param target:目标文本
-        :param include:是否要进行包含式匹配
+        :param need_update_ocr: 是否需要重新截图更新self.ocr_result
+        :param crop: 截图区域,只有need_update_ocr为true时才生效
         :param source_pos:源的位置坐标，用于计算与目标的距离,格式：（x,y）
-        :param position:取值：'bottom_right'，'top_left'，'bottom_left'，'top_right'
-        :return:最近目标文本的坐标，格式((x1,y1),(x2,y2))
+        :return:相对窗口的最近目标文本的中心坐标，格式(x,y)
         """
         target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
         min_distance = float('inf')
         target_pos = None
-        # print(f"ocr_result:{self.ocr_result}")
-        for box in self.ocr_result:
-            text, _ = box[1]
+        if need_update_ocr:
+            # 更新self.current_screenshot
+            self.take_screenshot(crop)
+            # 更新self.ocr_result
+            self.perform_ocr()
+        for result in self.ocr_result:
+            text = result[0]
             match, matched_text = self.is_text_match(text, target_texts, include)
             if match:
-                pos = box[0]
-                if self.is_position_matched(pos, source_pos, position):
-                    distance = math.sqrt((pos[0][0] - source_pos[0]) ** 2 + (pos[0][1] - source_pos[1]) ** 2)
-                    self.logger.debug(f"目标文字：{matched_text} 距离：{distance}")
-                    if distance < min_distance:
-                        self.matched_text = matched_text  # 更新匹配的文本变量
-                        min_distance = distance
-                        target_pos = pos
+                # 计算出相对屏幕的坐标后再计算中心坐标，用于后续与传入的source_pos计算距离
+                result_x, result_y = random_rectangle_point(self.calculate_text_position(result), n)
+                # 计算距离
+                distance = math.sqrt((source_pos[0] - result_x) ** 2 + (source_pos[1] - result_y) ** 2)
+                if distance < min_distance:
+                    min_distance = distance
+                    target_pos = (result_x, result_y)
         if target_pos is None:
-            self.logger.debug(f"目标文字：{target_texts} 未找到匹配文字")
-            return None, None
-        return self.calculate_text_position2(target_pos)
+            self.logger.error(f"目标文字：{target_texts} 未找到匹配文字")
+            return None, min_distance
+        return target_pos, min_distance
 
-    def find_source_position(self, source, source_type, include):
-        """根据源类型查找源位置。"""
-        if source_type == 'text':
-            for box in self.ocr_result:
-                text, confidence = box[1]
-                match, matched_text = self.is_text_match(text, [source], include)
-                if match:
-                    self.logger.debug(f"目标文字：{source} 相似度：{confidence:.2f}")
-                    return box[0][0]  # 返回文本的起始位置
-        elif source_type == 'image':
-            top_left, _, _ = self.find_image_element(source, 0.7, None, True)
-            return top_left
-        return None
+    def stop(self):
+        self.running = False
 
-    def find_min_distance_text_element(self, target, source, source_type, include, need_ocr=True,
-                                       position='bottom_right'):
-        """
-        查找距离特定源最近的文本元素。
-        :param target: 目标文本或包含目标文本的元组。
-        :param source: 源文本或图片路径。
-        :param source_type: 源类型，'text'或'image'。
-        :param include: 是否包含目标字符串。
-        :param need_ocr: 是否需要执行OCR识别。
-        :param position: 查找方位，'top_left', 'top_right', 'bottom_left', 或 'bottom_right'。
-        :return: 最近的文本位置。
-        """
-        if need_ocr:
-            self.perform_ocr()  # 执行OCR识别
+    def reset(self):
+        self.running = True
 
-        source_pos = self.find_source_position(source, source_type, include)
+    def pause(self):
+        self.pause = True
+        # 清除事件，线程会暂停
+        self.pause_event.clear()
 
-        if source_pos is None:
-            self.logger.debug(f"目标内容：{source.replace('app/resource/images/', '')} 未找到")
-            return None, None
+    def resume(self):
+        self.pause = False
+        # 设置事件，线程会继续
+        self.pause_event.set()
 
-        return self.find_target_near_source(target, include, source_pos, position)
+    def get_crop_form_first_screenshot(self, crop=(0, 0, 1, 1), is_resize=True):
+        crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
+        if is_resize:
+            crop_image = ImageUtils.resize_image(crop_image, (self.scale_x, self.scale_y))
+        return crop_image
 
-    def calculate_click_position(self, coordinates, offset=(0, 0)):
-        """
-        计算实际中心点击位置的坐标。
+    @atoms
+    def read_text_from_crop(self, crop=(0, 0, 1, 1), extract=None, is_screenshot=False):
+        """更新截图，并识别指定区域的文字"""
+        if is_screenshot:
+            self.take_screenshot()
+        crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
+        # ImageUtils.show_ndarray(crop_image)
+        self.perform_ocr(image=crop_image, extract=extract)
+        return self.ocr_result
+
+    @atoms
+    def find_image_and_count(self, target, template, threshold=0.6, extract=None):
+        """在屏幕截图中查找与目标图片相似的图片，并计算匹配数量。
 
         参数:
-        - coordinates: 元组，表示元素的坐标，格式为((left, top), (right, bottom))。
-        - offset: 元组，表示相对于元素中心的偏移量，格式为(x_offset, y_offset)。
+        - target: 需要找模板图片的图片。
+        - template: 模板图片。
+        - threshold: 匹配阈值。
+        - extract: 是否提取目标颜色，[(对应的rgb颜色),threshold数值]
 
         返回:
-        - (x, y): 元组，表示计算后的点击位置坐标。
+        - 匹配的数量，或在出错时返回 None。
         """
-        (left, top), (right, bottom) = coordinates
-        x = (left + right) // 2 + offset[0]
-        y = (top + bottom) // 2 + offset[1]
-        return x, y
+        try:
+            if isinstance(target, str):
+                target = cv2.imread(target)
+            if isinstance(template, str):
+                template = cv2.imread(template)
+            # 将图片从BGR格式转换为RGB格式
+            target_rgb = cv2.cvtColor(target, cv2.COLOR_BGR2RGB)
+            template_rgb = cv2.cvtColor(template, cv2.COLOR_BGR2RGB)
+            if extract is not None:
+                rbg = extract[0]
+                thr = extract[1]
+                target_rgb = ImageUtils.extract_letters(target_rgb, rbg, thr)
+                template_rgb = ImageUtils.extract_letters(template, rbg, thr)
 
-    def find_element(self, target, find_type, threshold=None, max_retries=1, crop=(0, 0, 1, 1), take_screenshot=True,
-                     relative=False, scale_range=None, include=None, need_ocr=True, source=None, source_type=None,
-                     pixel_bgr=None, position="bottom_right"):
-        """
-        查找元素，并根据指定的查找类型执行不同的查找策略。
-        :param target: 查找目标，可以是图像路径或文字。
-        :param find_type: 查找类型，例如'image', 'text'等。
-        :param threshold: 查找阈值，用于图像查找时的相似度匹配。
-        :param max_retries: 最大重试次数。
-        :param crop: 截图的裁剪区域。
-        :param take_screenshot: 是否需要先截图。
-        :param relative: 返回相对位置还是绝对位置。
-        :param scale_range: 图像查找时的缩放范围。
-        :param include: 文字查找时是否包含目标字符串。
-        :param need_ocr: 是否需要执行OCR识别。
-        :param source: 查找参照物，用于距离最小化查找。
-        :param source_type: 查找参照物的类型。
-        :param pixel_bgr: 颜色查找时的BGR值。
-        :param position: 查找方位，'top_left', 'top_right', 'bottom_left', 或 'bottom_right'。
-        :return: 查找到的元素位置，或者在图像计数查找时返回计数。
-        """
-        take_screenshot = take_screenshot and need_ocr
-        max_retries = 1 if not take_screenshot else max_retries
-        for i in range(max_retries):
-            if take_screenshot:
-                screenshot_result = self.take_screenshot(crop)
-                if not screenshot_result:
-                    continue  # 如果截图失败，则跳过本次循环
-            if find_type in ['image', 'image_threshold', 'text', "min_distance_text"]:
-                if find_type in ['image', 'image_threshold']:
-                    top_left, bottom_right, image_threshold = self.find_image_element(target, threshold, scale_range,
-                                                                                      relative)
-                elif find_type == 'text':
-                    top_left, bottom_right = self.find_text_element(target, include, need_ocr, relative)
-                elif find_type == 'min_distance_text':
-                    top_left, bottom_right = self.find_min_distance_text_element(target, source, source_type, include,
-                                                                                 need_ocr, position)
-                if top_left and bottom_right:
-                    if find_type == 'image_threshold':
-                        return image_threshold
-                    return top_left, bottom_right
-            elif find_type in ['image_count']:
-                return self.find_image_and_count(target, threshold, pixel_bgr)
-            elif find_type in ['image_with_multiple_targets']:
-                return self.find_image_with_multiple_targets(target, threshold, scale_range, relative)
-            else:
-                raise ValueError("错误的类型")
+            return ImageUtils.count_template_matches(target_rgb, template_rgb, threshold)
+        except Exception as e:
+            # print(traceback.format_exc())
+            self.logger.error(f"寻找图片并计数出错：{e}")
+            return None
 
-            if i < max_retries - 1:
-                time.sleep(1)  # 在重试前等待一定时间
-        return None
 
-    def click_element_with_pos(self, coordinates, offset=(0, 0), action="click", is_calculate=True):
-        """
-        在指定坐标上执行点击操作。
+# 用于保存是否已实例化
+auto_starter = None
+auto_game = None
 
-        参数:
-        - coordinates: 元素的坐标。格式（（x1,y1），（x2,y2））
-        - offset: 坐标的偏移量。
-        - action: 执行的动作，包括'click', 'down', 'move', 'move_click'。
 
-        返回:
-        - 如果操作成功，则返回True；否则返回False。
-        """
-        if is_calculate:
-            x, y = self.calculate_click_position(coordinates, offset)
-        else:
-            x = coordinates[0] + offset[0]
-            y = coordinates[1] + offset[1]
-        # 动作到方法的映射
-        action_map = {
-            "click": self.mouse_click,
-            "down": self.mouse_down,
-            "move": self.mouse_move,
-            "move_click": self.move_click,
-        }
+def instantiate_automation(auto_type: str):
+    global auto_starter, auto_game
 
-        if action in action_map:
-            action_map[action](x, y)
-        else:
-            raise ValueError(f"未知的动作类型: {action}")
+    # 尝试实例化 starter
+    if auto_type == 'starter':
+        try:
+            auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
+        except Exception as e:
+            logger.warn(f"未能成功实例化starter：{e}")
 
-        return True
+    elif auto_type == 'game':
+        try:
+            auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
+        except Exception as e:
+            logger.warn(f"未能成功实例化game：{e}")
+    else:
+        try:
+            auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
+        except Exception as e:
+            logger.warn(f"未能成功实例化starter：{e}")
+        try:
+            auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
+        except Exception as e:
+            logger.warn(f"未能成功实例化game：{e}")
 
-    def click_element(self, target, find_type, threshold=None, max_retries=1, crop=(0, 0, 1, 1), take_screenshot=True,
-                      relative=False, scale_range=None, include=None, need_ocr=True, source=None, source_type=None,
-                      pixel_bgr=None, position="bottom_right", offset=(0, 0), action="click"):
-        """
-        查找并点击屏幕上的元素。
 
-        参数:
-        同 find_element 方法的参数，以及：
-        offset: 点击坐标的偏移量。
-        action: 执行的动作。
+# 调用实例化方法
+instantiate_automation('all')
 
-        返回:
-        如果找到元素并点击成功，则返回True；否则返回False。
-        """
-        coordinates = self.find_element(target, find_type, threshold, max_retries, crop, take_screenshot, relative,
-                                        scale_range, include, need_ocr, source, source_type, pixel_bgr, position)
-        if coordinates:
-            return self.click_element_with_pos(coordinates, offset, action)
-        return False
-
-    def get_single_line_text(self, crop=(0, 0, 1, 1), blacklist=None, max_retries=3):
-        """
-        尝试多次获取屏幕截图中的单行文本。
-
-        参数:
-        crop: 裁剪区域，格式为(x1, y1, x2, y2)。
-        blacklist: 需要过滤掉的字符列表。
-        max_retries: 尝试识别的最大次数。
-
-        返回:
-        识别到的文本，如果多次尝试后仍未识别到，则返回None。
-        """
-        for i in range(max_retries):
-            self.take_screenshot(crop)
-            ocr_result = ocr.recognize_single_line(np.array(self.screenshot), blacklist)
-            if ocr_result:
-                return ocr_result[0]
-        return None
-
-    def get_single_line_text_2(self, crop=(0, 0, 1, 1), blacklist=None, max_retries=3):
-        """
-        尝试多次获取屏幕截图中的单行文本。并返回所有识别结果
-
-        参数:
-        crop: 裁剪区域，格式为(x1, y1, x2, y2)。
-        blacklist: 需要过滤掉的字符列表。
-        max_retries: 尝试识别的最大次数。
-
-        返回:
-        识别到的文本，如果多次尝试后仍未识别到，则返回None。
-        """
-        for i in range(max_retries):
-            self.take_screenshot(crop)
-            ocr_result = ocr.recognize_single_line(np.array(self.screenshot), blacklist)
-            if ocr_result:
-                return ocr_result
-        return None
-
-    def back_to_home(self):
-        """返回看板娘页面"""
-        while not self.find_element("基地", "text", include=True,
-                                    crop=(1598 / 1920, 688 / 1080, 64 / 1920, 46 / 1080), threshold=0.9):
-            if self.click_element("app/resource/images/reward/home.png", "image", threshold=0.7):
-                time.sleep(1)
-            elif self.click_element("取消", "text", action="move_click"):
-                break
-            else:
-                self.press_key("esc")
-                time.sleep(1)
-
-    def activate_window(self, window_title='尘白禁区'):
-        window = Screenshot.get_window(window_title)
-        if window:
-            window.activate()
-            return True
-        else:
-            print(f"未找到窗口:{window_title}")
-            return False
-
-    def find_text_in_area(self, pos):
-        """
-        通过位置找对应的文本内容
-        :param pos: 查找区域格式：（（x1,y1），（x2,y2））
-        :return: 对应区域内的文本列表
-        """
-        crop = (
-            pos[0][0] / 1920, pos[0][1] / 1080, (pos[1][0] - pos[0][0]) / 1920, (pos[1][1] - pos[0][1]) / 1080)
-        self.take_screenshot(crop=crop)
-        self.perform_ocr()
-        original_result = self.ocr_result
-        # 提取每个子列表中的字符串部分
-        result = [item[1][0] for item in original_result]
-
-        return result
-
-    def find_fish_bite_element(self, target, find_type, threshold=None, max_retries=1, crop=(0, 0, 1, 1), take_screenshot=True,
-                     relative=False, scale_range=None, include=None, need_ocr=True, source=None, source_type=None,
-                     pixel_bgr=None, position="bottom_right"):
-        """
-        查找元素，并根据指定的查找类型执行不同的查找策略。
-        :param target: 查找目标，可以是图像路径或文字。
-        :param find_type: 查找类型，例如'image', 'text'等。
-        :param threshold: 查找阈值，用于图像查找时的相似度匹配。
-        :param max_retries: 最大重试次数。
-        :param crop: 截图的裁剪区域。
-        :param take_screenshot: 是否需要先截图。
-        :param relative: 返回相对位置还是绝对位置。
-        :param scale_range: 图像查找时的缩放范围。
-        :param include: 文字查找时是否包含目标字符串。
-        :param need_ocr: 是否需要执行OCR识别。
-        :param source: 查找参照物，用于距离最小化查找。
-        :param source_type: 查找参照物的类型。
-        :param pixel_bgr: 颜色查找时的BGR值。
-        :param position: 查找方位，'top_left', 'top_right', 'bottom_left', 或 'bottom_right'。
-        :return: 查找到的元素位置，或者在图像计数查找时返回计数。
-        """
-        take_screenshot = take_screenshot and need_ocr
-        max_retries = 1 if not take_screenshot else max_retries
-        for i in range(max_retries):
-            if take_screenshot:
-                screenshot_result = self.take_screenshot(crop)
-                if not screenshot_result:
-                    continue  # 如果截图失败，则跳过本次循环
-            if find_type in ['image', 'image_threshold', 'text', "min_distance_text"]:
-                if find_type in ['image', 'image_threshold']:
-                    top_left, bottom_right, image_threshold = self.find_image_element(target, threshold, scale_range,
-                                                                                      relative)
-                elif find_type == 'text':
-                    top_left, bottom_right = self.find_text_element(target, include, need_ocr, relative)
-                elif find_type == 'min_distance_text':
-                    top_left, bottom_right = self.find_min_distance_text_element(target, source, source_type, include,
-                                                                                 need_ocr, position)
-                if top_left and bottom_right:
-                    if find_type == 'image_threshold':
-                        return image_threshold
-                    return top_left, bottom_right
-            elif find_type in ['image_count']:
-                return self.find_image_and_count(target, threshold, pixel_bgr)
-            elif find_type in ['image_with_multiple_targets']:
-                return self.find_image_with_multiple_targets(target, threshold, scale_range, relative)
-            else:
-                raise ValueError("错误的类型")
-
-            if i < max_retries - 1:
-                time.sleep(0.1)  # 在重试前等待一定时间
-        return None
+if __name__ == '__main__':
+    pass
