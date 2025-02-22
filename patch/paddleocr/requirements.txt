@@ -1,0 +1,17 @@
+shapely
+scikit-image
+imgaug
+pyclipper
+lmdb
+tqdm
+numpy<2.0
+rapidfuzz
+opencv-python
+opencv-contrib-python
+cython
+Pillow
+pyyaml
+requests
+albumentations==1.4.10
+# to be compatible with albumentations
+albucore==0.0.13

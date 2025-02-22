@@ -92,15 +92,12 @@ class WaterBombModule(BaseTask):
                 # 新一轮，重置计时器
                 timeout.reset()
                 self.round_fight = Round()
+                time.sleep(1)
                 continue
 
             if self.auto.click_element('点击屏幕继续', 'text', crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080)):
                 # self.update_items_list(is_player=True)
                 continue
-            # crop_image = self.auto.get_crop_form_first_screenshot(crop=(1743 / 1920, 54 / 1080, 1772 / 1920, 94 / 1080))
-            # ssim = ImageUtils.calculate_ssim('app/resource/images/water_bomb/speed.png', crop_image)
-            # if ssim>0.5:
-            #     is_speed_up = True
             if not is_speed_up:
                 crop_image = self.auto.get_crop_form_first_screenshot(
                     crop=(1743 / 1920, 54 / 1080, 1772 / 1920, 94 / 1080))

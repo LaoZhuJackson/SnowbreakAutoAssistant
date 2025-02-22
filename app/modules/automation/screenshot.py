@@ -66,7 +66,7 @@ def auto_crop_image(img):
 
 
 class Screenshot:
-    _screenshot_interval = Timer(0.3)
+    _screenshot_interval = Timer(0.1)
 
     def __init__(self, logger=None):
         self.base_width = 1920
@@ -94,8 +94,8 @@ class Screenshot:
         """
 
         try:
-            # self._screenshot_interval.wait()
-            # self._screenshot_interval.reset()
+            self._screenshot_interval.wait()
+            self._screenshot_interval.reset()
             # 获取带标题的窗口尺寸
             left, top, right, bottom = win32gui.GetWindowRect(hwnd)
             # print(left, top, right, bottom)

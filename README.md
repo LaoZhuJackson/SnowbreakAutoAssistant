@@ -50,4 +50,6 @@
 - 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 ## 赞助
 
+<img src="./asset/support.jpg" width="200"/>
+
 <img src="./asset/support.png" width="200"/>
