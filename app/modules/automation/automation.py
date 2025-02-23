@@ -12,7 +12,7 @@ from app.common.config import config
 from app.common.image_utils import ImageUtils
 from app.common.logger import logger
 from app.common.singleton import SingletonMeta
-from app.common.utils import random_rectangle_point
+from app.common.utils import random_rectangle_point, add_noise
 from app.modules.automation.input import Input
 from app.modules.automation.screenshot import Screenshot
 from app.modules.automation.timer import Timer
@@ -124,31 +124,23 @@ class Automation:
         :param crop: 截图的裁剪区域，格式为(x1, y1, width, height)，默认为全屏。
         :return: 成功时返回截图及其位置和缩放因子，失败时抛出异常。
         """
-        timeout = Timer(0.5, count=3).start()
-        while True:
-            try:
-                result = self.screenshot.screenshot(self.screenshot_hwnd, (0, 0, 1, 1), self.is_starter)
-                if result:
-                    self.first_screenshot, self.scale_x, self.scale_y, self.relative_pos = result
-                    if crop != (0, 0, 1, 1):
-                        self.current_screenshot, self.relative_pos = ImageUtils.crop_image(self.first_screenshot, crop,
-                                                                                           self.hwnd)
-                    else:
-                        self.current_screenshot = self.first_screenshot
-                    # 添加一像素杂色，防止cv2.TM_CCOEFF_NORMED报错
-                    if np.all(self.current_screenshot == 0):
-                        self.current_screenshot[0, 0, 0] = 1  # 将左上角像素的B通道值改为1
-                    # self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
-                    return result
+        try:
+            result = self.screenshot.screenshot(self.screenshot_hwnd, (0, 0, 1, 1), self.is_starter)
+            if result:
+                self.first_screenshot, self.scale_x, self.scale_y, self.relative_pos = result
+                if crop != (0, 0, 1, 1):
+                    self.current_screenshot, self.relative_pos = ImageUtils.crop_image(self.first_screenshot, crop,
+                                                                                       self.hwnd)
                 else:
-                    # 为none的时候已经在screenshot中log了，此处无需再log
-                    self.current_screenshot = None
-                if timeout.reached():
-                    raise RuntimeError("截图超时")
-            except Exception as e:
-                # print(traceback.format_exc())
-                self.logger.error(f"截图失败：{e}")
-                break  # 退出循环
+                    self.current_screenshot = self.first_screenshot
+                # self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
+                return result
+            else:
+                # 为none的时候已经在screenshot中log了，此处无需再log
+                self.current_screenshot = None
+        except Exception as e:
+            # print(traceback.format_exc())
+            self.logger.error(f"截图失败：{e}")
 
     def calculate_positions(self, template, max_loc):
         """
@@ -216,7 +208,7 @@ class Automation:
                 # ImageUtils.show_ndarray(image)
                 self.ocr_result = ocr.run(image, extract)
             if not self.ocr_result:
-                self.logger.info(f"未识别出任何文字")
+                # self.logger.info(f"未识别出任何文字")
                 self.ocr_result = []
         except Exception as e:
             # print(traceback.format_exc())
@@ -268,9 +260,9 @@ class Automation:
             match, matched_text = self.is_text_match(result[0], targets, include)
             if match:
                 # self.matched_text = matched_text  # 更新匹配的文本变量
-                self.logger.info(f"目标文字：{matched_text} 相似度：{result[1]:.2f}")
+                # self.logger.info(f"目标文字：{matched_text} 相似度：{result[1]:.2f}")
                 return self.calculate_text_position(result)
-        self.logger.info(f"目标文字：{', '.join(targets)} 未找到匹配文字")
+        # self.logger.info(f"目标文字：{', '.join(targets)} 未找到匹配文字")
         return None, None
 
     def find_text_element(self, target, include, need_ocr=True, extract=None):
@@ -441,7 +433,7 @@ class Automation:
                     min_distance = distance
                     target_pos = (result_x, result_y)
         if target_pos is None:
-            self.logger.error(f"目标文字：{target_texts} 未找到匹配文字")
+            # self.logger.error(f"目标文字：{target_texts} 未找到匹配文字")
             return None, min_distance
         return target_pos, min_distance
 

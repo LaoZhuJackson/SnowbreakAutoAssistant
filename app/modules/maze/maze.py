@@ -24,13 +24,10 @@ class MazeModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.find_element(['击败', '目标'], 'text', crop=(43 / 1920, 114 / 1080, 330 / 1920, 180 / 1080)):
-                self.auto.press_key('e', 1.5)
+                self.auto.press_key('e')
                 if need_move_forward:
-                    self.auto.press_key('w', 1.2)
+                    self.auto.press_key('w', 1.5)
                     need_move_forward = False
-                # 30%概率尝试放个大招
-                if random.random() < 0.3:
-                    self.auto.press_key('q')
                 continue
 
             if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440)):
@@ -47,7 +44,7 @@ class MazeModule(BaseTask):
                 if not select_flag:
                     # 没出现推荐的则选中间的
                     self.auto.move_click(int(960 / self.auto.scale_x), int(540 / self.auto.scale_y))
-                if self.auto.click_element('确认', 'text', crop=(910 / 1920, 980 / 1080, 1012 / 1920, 1027 / 1080)):
+                if self.auto.click_element('确认', 'text', crop=(910 / 1920, 980 / 1080, 1050 / 1920, 1050 / 1080)):
                     select_flag = False
                 continue
             if self.auto.click_element('退出', 'text', crop=(896 / 1920, 946 / 1080, 985 / 1920, 1011 / 1080)):

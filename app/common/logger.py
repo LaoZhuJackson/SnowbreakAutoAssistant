@@ -71,6 +71,8 @@ original_stderr = sys.stderr
 stdout_stream = Stream(original_stdout)
 stderr_stream = Stream(original_stderr)
 handler = LogMessageHandler(stdout_stream)
+# # 禁用 Tesseract 的日志输出
+# logging.getLogger('Tesseract').setLevel(logging.CRITICAL)
 logger = logging.getLogger()
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)

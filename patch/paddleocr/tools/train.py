@@ -255,11 +255,11 @@ def test_reader(config, device, logger):
                 batch_time = time.time() - starttime
                 starttime = time.time()
                 logger.info(
-                    "reader: {}, {}, {}".format(count, len(data[0]), batch_time)
+                    "ocr: {}, {}, {}".format(count, len(data[0]), batch_time)
                 )
     except Exception as e:
         logger.info(e)
-    logger.info("finish reader: {}, Success!".format(count))
+    logger.info("finish ocr: {}, Success!".format(count))
 
 
 if __name__ == "__main__":

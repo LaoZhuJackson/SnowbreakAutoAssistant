@@ -303,7 +303,7 @@ class ImageUtils:
     def extract_letters(image, letter=(255, 255, 255), threshold=128):
         """
         将目标颜色的文字转成黑色，将背景转成白色
-        :param image:
+        :param image: np.array类型(height, width, channels)
         :param letter: 文字颜色
         :param threshold:
         :return: np.ndarray: Shape (height, width, 3)

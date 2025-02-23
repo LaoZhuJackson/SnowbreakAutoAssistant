@@ -4,7 +4,7 @@ from app.common.config import config
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
-from paddleocr import PaddleOCR
+# from paddleocr import PaddleOCR
 from app.modules.ocr import ocr
 
 

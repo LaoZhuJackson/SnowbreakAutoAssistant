@@ -72,3 +72,10 @@ def get_all_children(widget):
         children.append(child)
         children.extend(get_all_children(child))  # 递归调用以获取后代控件
     return children
+
+
+# 添加随机噪声的函数
+def add_noise(image, noise_factor=0.01):
+    noise = np.random.normal(0, 1, image.shape) * noise_factor
+    noisy_image = np.clip(image + noise, 0, 255).astype(np.uint8)
+    return noisy_image

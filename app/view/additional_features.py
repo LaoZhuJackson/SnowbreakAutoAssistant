@@ -286,7 +286,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             # 根据total_height计算每个小方块的高和宽
             tile_height = tile_width = (total_height - spacing * (rows - 1)) / rows
             total_width = tile_width * cols + spacing * (cols - 1)
-            pixmap = QPixmap(total_width, total_height)
+            pixmap = QPixmap(int(total_width), int(total_height))
             pixmap.fill(QColor(228, 237, 245))  # 设置背景色为白色
 
             # 在 QPixmap 上绘制
@@ -301,7 +301,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                 x_pos = y * (tile_width + spacing)
                 y_pos = x * (tile_height + spacing)
 
-                rect = QRect(x_pos, y_pos, tile_width, tile_height)
+                rect = QRect(int(x_pos), int(y_pos), int(tile_width), int(tile_height))
                 painter.fillRect(rect, color)
             painter.end()
 

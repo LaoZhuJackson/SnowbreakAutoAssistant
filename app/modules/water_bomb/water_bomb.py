@@ -441,7 +441,8 @@ class WaterBombModule(BaseTask):
         # print(ssim)
         # if ssim > 0.5 and self.have_extra_shoot:
         if self.auto.find_element('app/resource/images/water_bomb/is_handcuffs.png', 'image',
-                                  crop=(980 / 1920, 30 / 1080, 1250 / 1920, 150 / 1080)):
+                                  crop=(980 / 1920, 30 / 1080, 1250 / 1920, 150 / 1080),
+                                  match_method=cv2.TM_CCOEFF_NORMED):
             self.sustain = True
             self.have_extra_shoot = False
         else:

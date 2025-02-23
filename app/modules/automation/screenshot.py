@@ -16,6 +16,9 @@ from app.modules.automation.timer import Timer
 
 def auto_crop_image(img):
     """裁切四周的黑边"""
+    # 如果是全图都是黑的
+    if np.mean(img) < 50:
+        return img
     # 转换为灰度图
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     h, w = gray.shape
@@ -66,7 +69,7 @@ def auto_crop_image(img):
 
 
 class Screenshot:
-    _screenshot_interval = Timer(0.5)
+    _screenshot_interval = Timer(0.1)
 
     def __init__(self, logger=None):
         self.base_width = 1920
@@ -122,26 +125,26 @@ class Screenshot:
             bmpstr = bitmap.GetBitmapBits(True)
             # img_size = np.frombuffer(bmpstr, dtype=np.uint8).size
             img = np.frombuffer(bmpstr, dtype=np.uint8).reshape((bmpinfo['bmHeight'], bmpinfo['bmWidth'], 4))
-            # 取平均颜色
-            color = cv2.mean(img)
-            # 如果是启动器且全黑
-            if is_starter and color == (17.0, 16.0, 15.0, 255.0):
-                # 最小化窗口
-                win32gui.ShowWindow(hwnd, win32con.SW_MINIMIZE)
-                time.sleep(0.01)  # 等待一下
-                # 恢复窗口
-                win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
-                time.sleep(0.3)
-                # 置低窗口
-                win32gui.SetWindowPos(hwnd, win32con.HWND_BOTTOM, 0, 0, 0, 0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
-                user32 = ctypes.windll.user32
-                # 启动器0,1,2均可以，但是游戏窗口必须要是2,0和1都是黑屏，2: 捕捉包括窗口的边框、标题栏以及整个窗口的内容
-                user32.PrintWindow(hwnd, save_dc.GetSafeHdc(), 2)  # PW_RENDERFULLCONTENT=2
-
-                # 转换为 numpy 数组
-                bmpinfo = bitmap.GetInfo()
-                bmpstr = bitmap.GetBitmapBits(True)
-                img = np.frombuffer(bmpstr, dtype=np.uint8).reshape((bmpinfo['bmHeight'], bmpinfo['bmWidth'], 4))
+            # # 取平均颜色
+            # color = cv2.mean(img)
+            # # 如果是启动器且全黑
+            # if is_starter and color == (17.0, 16.0, 15.0, 255.0):
+            #     # 最小化窗口
+            #     win32gui.ShowWindow(hwnd, win32con.SW_MINIMIZE)
+            #     time.sleep(0.01)  # 等待一下
+            #     # 恢复窗口
+            #     win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+            #     time.sleep(0.3)
+            #     # 置低窗口
+            #     win32gui.SetWindowPos(hwnd, win32con.HWND_BOTTOM, 0, 0, 0, 0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+            #     user32 = ctypes.windll.user32
+            #     # 启动器0,1,2均可以，但是游戏窗口必须要是2,0和1都是黑屏，2: 捕捉包括窗口的边框、标题栏以及整个窗口的内容
+            #     user32.PrintWindow(hwnd, save_dc.GetSafeHdc(), 2)  # PW_RENDERFULLCONTENT=2
+            #
+            #     # 转换为 numpy 数组
+            #     bmpinfo = bitmap.GetInfo()
+            #     bmpstr = bitmap.GetBitmapBits(True)
+            #     img = np.frombuffer(bmpstr, dtype=np.uint8).reshape((bmpinfo['bmHeight'], bmpinfo['bmWidth'], 4))
 
             # 释放资源
             win32gui.DeleteObject(bitmap.GetHandle())

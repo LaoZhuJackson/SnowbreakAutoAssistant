@@ -73,7 +73,9 @@ class MainWindow(MSFluentWindow):
         self.themeListener.start()
 
         # 初始化ocr
-        self.init_ocr()
+        ocr_thread = threading.Thread(target=self.init_ocr)
+        ocr_thread.daemon = True
+        ocr_thread.start()
         if config.CheckBox_auto_open_starter.value:
             self.open_starter()
         if config.checkUpdateAtStartUp.value:
@@ -129,16 +131,16 @@ class MainWindow(MSFluentWindow):
         def benchmark(ocr_func, img, runs=100):
             # 预热
             for _ in range(10):
-                ocr_func(img)
+                ocr_func(img, is_log=False)
 
             # 正式测试
             start = time.time()
             for _ in range(runs):
-                ocr_func(img)
+                ocr_func(img, is_log=False)
             return (time.time() - start) / runs
 
         ocr.instance_ocr()
-        # logger.info(f"区域截图识别耗时：{benchmark(ocr.run,'app/resource/images/start_game/age.png')}")
+        logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
         logger.debug("初始化OCR完成")
 
     def initWindow(self):
