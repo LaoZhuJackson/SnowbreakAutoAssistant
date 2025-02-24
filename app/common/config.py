@@ -106,15 +106,9 @@ class Config(QConfig):
     ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", -1,
                                              OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     CheckBox_is_use_power = ConfigItem("home_interface_power", "CheckBox_is_use_power", False, BoolValidator())
-
-    # ComboBox_c1 = OptionsConfigItem("home_interface_person", "ComboBox_c1", -1, OptionsValidator(
-    #     [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
-    # ComboBox_c2 = OptionsConfigItem("home_interface_person", "ComboBox_c2", -1, OptionsValidator(
-    #     [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
-    # ComboBox_c3 = OptionsConfigItem("home_interface_person", "ComboBox_c3", -1, OptionsValidator(
-    #     [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
-    # ComboBox_c4 = OptionsConfigItem("home_interface_person", "ComboBox_c4", -1, OptionsValidator(
-    #     [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    maneuver_stuff_pos = ConfigItem("home_interface_power", "maneuver_stuff_pos",
+                                    (163 / 2560, 716 / 1440, 253 / 2560, 765 / 1440))
+    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (2000 / 2560, 543 / 1440, 2110 / 2560, 650 / 1440))
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
     LineEdit_c3 = ConfigItem("home_interface_person", "LineEdit_c3", "")
@@ -174,8 +168,11 @@ class Config(QConfig):
     LineEdit_jigsaw_piece_9 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_9", "0")
     LineEdit_jigsaw_piece_10 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_10", "0")
     LineEdit_jigsaw_piece_11 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_11", "0")
+    # 心动水弹相关
+    SpinBox_water_win_times = ConfigItem("add_water", "SpinBox_water_win_times", 5)
     # 异星守护相关
     ComboBox_mode = OptionsConfigItem("add_alien", "ComboBox_mode", 0, OptionsValidator([0, 1]))
+
 
 config = Config()
 config.themeMode.value = Theme.AUTO

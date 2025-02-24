@@ -8,10 +8,11 @@ from app.modules.base_task.base_task import BaseTask
 class ChasmModule(BaseTask):
     def __init__(self):
         super().__init__()
+        self.is_log = False
 
     def run(self):
         if not self.is_in_time_range():
-            self.logger.info('当前未开放拟境')
+            self.logger.warn('当前未开放拟境')
         else:
             self.back_to_home()
             self.chasm()

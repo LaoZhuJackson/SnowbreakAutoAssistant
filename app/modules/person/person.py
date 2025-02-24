@@ -81,7 +81,7 @@ class PersonModule(BaseTask):
                 self.auto.click_element('最大', 'text', crop=(1225 / 1920, 683 / 1080, 1341 / 1920, 750 / 1080))
                 self.auto.click_element('开始作战', 'text', crop=(873 / 1920, 807 / 1080, 1047 / 1920, 864 / 1080))
                 fight_flag = True
-                time.sleep(2.5)
+                time.sleep(1.5)
                 continue
             pos = self.auto.find_element(person_name, "text", crop=(0, 738 / 1080, 1, 838 / 1080))
             # 找到对应角色
@@ -116,7 +116,8 @@ class PersonModule(BaseTask):
         :param name_pos: (x,y)
         :return: (x,y)|none
         """
-        pos, min_distance = self.auto.find_target_near_source('速战', name_pos, crop=(0, 868 / 1080, 1, 940 / 1080))
+        pos, min_distance = self.auto.find_target_near_source('速战', name_pos, crop=(0, 868 / 1080, 1, 940 / 1080),
+                                                              is_log=False)
         if pos:
             # 适配屏幕缩放
             if min_distance < 250 / self.auto.scale_x:
@@ -178,7 +179,7 @@ class PersonModule(BaseTask):
     def update_power_times(self):
         """更新嵌片数量"""
         # result=[['12/12', 1.0, [[58.0, 16.0], [112.0, 40.0]]]]
-        result = self.auto.find_text_in_area(crop=(1421 / 1920, 27 / 1080, 1538 / 1920, 76 / 1080))
+        result = self.auto.read_text_from_crop(crop=(1421 / 1920, 27 / 1080, 1538 / 1920, 76 / 1080))
         # 取出文字送去正则匹配
         times = self.detect_times(result[0][0])
         if times is not None:

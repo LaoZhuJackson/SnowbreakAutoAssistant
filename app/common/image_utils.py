@@ -86,9 +86,10 @@ class ImageUtils:
         return similarity_index
 
     @staticmethod
-    def match_template(screenshot, template, mask=None, scale=(1, 1), match_method=cv2.TM_SQDIFF_NORMED):
+    def match_template(screenshot, template, mask=None, scale=(1, 1), match_method=cv2.TM_SQDIFF_NORMED, extract=None):
         """
         对模版与截图进行匹配，找出匹配位置
+        :param extract: 对传过来的图像进行提取
         :param match_method: 模版匹配的方法
         :param scale: 缩放比例：base_width/w
         :param screenshot:待匹配的截图图像
@@ -96,14 +97,20 @@ class ImageUtils:
         :param mask:掩码，用于图像匹配中的区域选择。
         :return:
         """
-        resize_screenshot = ImageUtils.resize_image(screenshot, scale)
+        if scale != (1, 1):
+            screenshot = ImageUtils.resize_image(screenshot, scale)
+
+        if extract:
+            letter = extract[0]
+            threshold = extract[1]
+            screenshot = ImageUtils.extract_letters(screenshot, letter, threshold)
 
         # ImageUtils.show_ndarray(screenshot)
         if mask is not None:
             # cv2.TM_CCOEFF_NORMED 是针对缩放情况下最推荐的模板匹配方法，因为它对亮度和对比度的变化更具有鲁棒性。
-            result = cv2.matchTemplate(resize_screenshot, template, match_method, mask=mask)
+            result = cv2.matchTemplate(screenshot, template, match_method, mask=mask)
         else:
-            result = cv2.matchTemplate(resize_screenshot, template, match_method)
+            result = cv2.matchTemplate(screenshot, template, match_method)
 
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
         if match_method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:

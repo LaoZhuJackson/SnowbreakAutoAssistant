@@ -188,10 +188,10 @@ class Input:
                     self.mouse_up(x, y, mouse_key)
                     time.sleep(0.05)
                     win32api.SetCursorPos(current_pos)
-                    self.logger.info(f"鼠标移动后点击({x}, {y})")
+                    self.logger.debug(f"鼠标移动后点击({x}, {y})")
                     break
                 else:
-                    # self.logger.info("鼠标正在使用，等待...")
+                    # self.logger.debug("鼠标正在使用，等待...")
                     last_position = win32api.GetCursorPos()
             if time.time() - start_time > time_out:
                 raise RuntimeError("等待点击超时")
@@ -207,7 +207,7 @@ class Input:
             self.mouse_down(x, y, mouse_key)
             time.sleep(press_time)
             self.mouse_up(x, y, mouse_key)
-            self.logger.info(f"鼠标移动后点击({x}, {y})")
+            self.logger.debug(f"鼠标移动后点击({x}, {y})")
         except Exception as e:
             # print(traceback.format_exc())
             self.logger.error(f"鼠标移动点击({x}, {y})出错：{repr(e)}")
@@ -256,10 +256,10 @@ class Input:
                     # 滚一次
                     win32gui.PostMessage(self.hwnd, message, wparam, lparam)
                     win32api.SetCursorPos(current_pos)
-                    self.logger.info(f"鼠标移动至({x},{y})滚动滚轮 {delta}")
+                    self.logger.debug(f"鼠标移动至({x},{y})滚动滚轮 {delta}")
                     break
                 else:
-                    # self.logger.info("鼠标正在使用，等待...")
+                    # self.logger.debug("鼠标正在使用，等待...")
                     last_position = win32api.GetCursorPos()
             if time.time() - start_time > time_out:
                 raise RuntimeError("等待滚动滚轮超时")
@@ -278,7 +278,7 @@ class Input:
             self.key_down(key)
             time.sleep(press_time)
             self.key_up(key)
-            self.logger.info(f"键盘按下{key}")
+            self.logger.debug(f"键盘按下{key}")
         except Exception as e:
             # print(traceback.format_exc())
             self.logger.error(f"键盘按下{key}出错：{repr(e)}")

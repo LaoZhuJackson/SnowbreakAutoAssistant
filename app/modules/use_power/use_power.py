@@ -9,6 +9,7 @@ class UsePowerModule(BaseTask):
     def __init__(self):
         super().__init__()
         self.day_num = 0
+        self.is_log = False
 
     def run(self):
         self.back_to_home()
@@ -30,13 +31,15 @@ class UsePowerModule(BaseTask):
             if current_check > self.day_num:
                 break
 
-            if self.auto.find_element("恢复感知", "text", crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080)):
+            if self.auto.find_element("恢复感知", "text", crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
+                                      is_log=self.is_log):
                 enter_power_select = True
             else:
                 enter_power_select = False
 
             if confirm_flag:
-                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                                          is_log=self.is_log):
                     self.auto.press_key('esc')
                     confirm_flag = False
                     enter_power_select = False
@@ -49,23 +52,26 @@ class UsePowerModule(BaseTask):
                         continue
                 # 执行ocr更新self.auto.ocr_result
                 crop_image = self.auto.get_crop_form_first_screenshot(
-                    crop=(460 / 2560, 419 / 1440, 1391 / 2560, 493 / 1440))
-                self.auto.perform_ocr(image=crop_image)
+                    crop=(387 / 2560, 409 / 1440, 1023 / 2560, 495 / 1440))
+                self.auto.perform_ocr(image=crop_image, is_log=self.is_log)
                 # 更新colon
                 has_colon = any(':' in item[0] for item in self.auto.ocr_result)
                 # print(f"{has_colon=}")
-
+                has_day = any('天' in item[0] for item in self.auto.ocr_result)
+                # 没有能使用的体力
+                if not has_day and not has_colon:
+                    break
                 # 存在低于一天的体力药,并且进入了选择体力界面
                 if has_colon:
                     if self.auto.click_element([':', '：'], 'text',
-                                               crop=(460 / 2560, 419 / 1440, 1391 / 2560, 493 / 1440)):
+                                               crop=(387 / 2560, 409 / 1440, 1023 / 2560, 495 / 1440)):
                         confirm_flag = True
                         continue
                     confirm_flag = False
                 # 存在大于一天但是小于day_num的体力药,并且进入了选择体力界面
                 if current_check <= self.day_num:
                     if self.auto.click_element(f"{current_check}天", "text",
-                                               crop=(460 / 2560, 419 / 1440, 1391 / 2560, 493 / 1440)):
+                                               crop=(387 / 2560, 409 / 1440, 1023 / 2560, 495 / 1440)):
                         confirm_flag = True
                         continue
                     # 低于day_num，没colon，没点击选择x_day.png->加一进行下一天的判断
@@ -91,61 +97,72 @@ class UsePowerModule(BaseTask):
         finish_flag = False  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
+        stuff_pos = config.maneuver_stuff_pos.value
+        chasm_pos = config.chasm_pos.value
         while True:
             self.auto.take_screenshot()
 
             if not enter_maneuver_flag:
-                if self.auto.click_element('材料', 'text', crop=(0, 0, 0.5, 1), n=200):
-                    # time.sleep(1)
+                if self.auto.click_element('材料', 'text', crop=stuff_pos, n=50, is_log=self.is_log):
+                    time.sleep(0.3)
                     continue
-                if self.auto.find_element('简单', 'text', crop=(0, 0, 0.5, 1), ):
+                if self.auto.find_element('深渊', 'text', crop=chasm_pos, is_log=self.is_log):
                     enter_maneuver_flag = True
                     continue
                 if self.auto.click_element("app/resource/images/use_power/entrance.png", "image",
-                                           crop=(1361 / 1920, 411 / 1080, 1562 / 1920, 554 / 1080)):
-                    time.sleep(2)
+                                           crop=(1361 / 1920, 411 / 1080, 1562 / 1920, 554 / 1080), is_log=self.is_log):
+                    time.sleep(1.5)
                     continue
             else:
                 if finish_flag:
-                    if self.auto.find_element('剩余', 'text', crop=(0, 0, 0.5, 0.5)) or self.auto.find_element('领取',
-                                                                                                               'text',
-                                                                                                               crop=(0,
-                                                                                                                     937 / 1080,
-                                                                                                                     266 / 1920,
-                                                                                                                     1)):
+                    if self.auto.find_element(['剩余', '刷新', '天'], 'text',
+                                              crop=(682 / 2560, 272 / 1440, 956 / 2560, 550 / 1440),
+                                              is_log=self.is_log) or self.auto.find_element('领取', 'text', crop=(
+                    0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
                         enter_task = True
                     if enter_task:
-                        if self.auto.click_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1)):
+                        if self.auto.click_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
+                                                   is_log=self.is_log):
                             break
-                        if not self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1)):
+                        if not self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
+                                                      is_log=self.is_log):
                             break
-                    if self.auto.click_element('任务', 'text', crop=(0, 937 / 1080, 636 / 1920, 1)):
+                    if self.auto.click_element('任务', 'text', crop=(0, 937 / 1080, 636 / 1920, 1), is_log=self.is_log):
                         time.sleep(0.2)
                         continue
                 else:
                     # 关卡未解锁
-                    if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080)):
+                    if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080),
+                                              is_log=self.is_log):
                         finish_flag = True
                         continue
                     if self.auto.find_element("恢复感知", "text",
-                                              crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080)):
+                                              crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
+                                              is_log=self.is_log):
                         self.auto.press_key('esc')
                         finish_flag = True
+                        time.sleep(0.3)
                         continue
-                    if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1)):
+                    if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
+                                               is_log=self.is_log):
                         time.sleep(0.7)
                         continue
-                    if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080)):
+                    if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                               is_log=self.is_log):
                         continue
-                    if self.auto.click_element('等级提升', 'text', crop=(0.25, 0.25, 0.75, 0.75)):
+                    if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                                               is_log=self.is_log):
                         continue
-                    if self.auto.click_element('最大', 'text', crop=(1221 / 1920, 679 / 1080, 1354 / 1920, 756 / 1080)):
+                    if self.auto.click_element('最大', 'text', crop=(1221 / 1920, 679 / 1080, 1354 / 1920, 756 / 1080),
+                                               is_log=self.is_log):
                         pass
                     if self.auto.click_element('开始作战', 'text',
-                                               crop=(868 / 1920, 808 / 1080, 1046 / 1920, 865 / 1080)):
+                                               crop=(868 / 1920, 808 / 1080, 1046 / 1920, 865 / 1080),
+                                               is_log=self.is_log):
                         time.sleep(0.5)
                         continue
-                    if not confirm_flag and self.auto.click_element('深渊', 'text', n=200):
+                    if not confirm_flag and self.auto.click_element('深渊', 'text', crop=chasm_pos, n=50,
+                                                                    is_log=self.is_log):
                         confirm_flag = True
                         time.sleep(0.7)
                         continue

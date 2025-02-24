@@ -128,7 +128,7 @@ class MainWindow(MSFluentWindow):
         self.stackedWidget.setCurrentIndex(config.enter_interface.value)
 
     def init_ocr(self):
-        def benchmark(ocr_func, img, runs=100):
+        def benchmark(ocr_func, img, runs=30):
             # 预热
             for _ in range(10):
                 ocr_func(img, is_log=False)

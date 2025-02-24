@@ -23,6 +23,10 @@ class MazeModule(BaseTask):
         while True:
             self.auto.take_screenshot()
 
+            # 达到99次上限
+            if self.auto.find_element('已达上限', 'text', crop=(697 / 1920, 507 / 1080, 1250 / 1920, 575 / 1080)):
+                self.logger.warn('今日的迷宫次数已经一滴都不剩了')
+                break
             if self.auto.find_element(['击败', '目标'], 'text', crop=(43 / 1920, 114 / 1080, 330 / 1920, 180 / 1080)):
                 self.auto.press_key('e')
                 if need_move_forward:

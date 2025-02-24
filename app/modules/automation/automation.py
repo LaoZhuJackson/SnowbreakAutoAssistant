@@ -164,13 +164,14 @@ class Automation:
         )
         return top_left, bottom_right
 
-    def find_image_element(self, target, threshold, cacheable=True, match_method=cv2.TM_SQDIFF_NORMED):
+    def find_image_element(self, target, threshold, match_method=cv2.TM_SQDIFF_NORMED, extract=None, is_log=False):
         """
         寻找图像
+        :param is_log:
+        :param extract:
         :param match_method: 模版匹配使用的方法
         :param target: 图片路径
         :param threshold: 置信度
-        :param cacheable: 是否存入内存
         :return: 左上，右下相对坐标，寻找到的目标的置信度
         """
         try:
@@ -180,33 +181,35 @@ class Automation:
             if mask is not None:
                 matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template, mask,
                                                                (self.scale_x, self.scale_y),
-                                                               match_method=match_method)
+                                                               match_method=match_method, extract=extract)
             else:
                 matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template,
                                                                scale=(self.scale_x, self.scale_y),
-                                                               match_method=match_method)
-            self.logger.info(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
+                                                               match_method=match_method, extract=extract)
+            if is_log:
+                self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
             if not math.isinf(matchVal) and (threshold is None or matchVal >= threshold):
                 top_left, bottom_right = self.calculate_positions(template, matchLoc)
                 return top_left, bottom_right, matchVal
-            self.logger.debug(f"没有找到相似度大于 {threshold} 的结果")
+            if is_log:
+                self.logger.debug(f"没有找到相似度大于 {threshold} 的结果")
         except Exception as e:
             # print(traceback.format_exc())
             self.logger.error(f"寻找图片出错：{e}")
         return None, None, None
 
     @atoms
-    def perform_ocr(self, extract: list = None, image=None):
+    def perform_ocr(self, extract: list = None, image=None, allowlist=None, is_log=False):
         """执行OCR识别，并更新OCR结果列表。如果未识别到文字，保留ocr_result为一个空列表。"""
         try:
             # image=None时
             if image is None:
                 # ImageUtils.show_ndarray(self.current_screenshot)
-                self.ocr_result = ocr.run(self.current_screenshot, extract)
+                self.ocr_result = ocr.run(self.current_screenshot, extract, allowlist=allowlist, is_log=is_log)
             # 传入特定的图片进行ocr识别
             else:
                 # ImageUtils.show_ndarray(image)
-                self.ocr_result = ocr.run(image, extract)
+                self.ocr_result = ocr.run(image, extract, allowlist=allowlist, is_log=is_log)
             if not self.ocr_result:
                 # self.logger.info(f"未识别出任何文字")
                 self.ocr_result = []
@@ -265,9 +268,10 @@ class Automation:
         # self.logger.info(f"目标文字：{', '.join(targets)} 未找到匹配文字")
         return None, None
 
-    def find_text_element(self, target, include, need_ocr=True, extract=None):
+    def find_text_element(self, target, include, need_ocr=True, extract=None, is_log=False):
         """
 
+        :param is_log:
         :param target:
         :param include:
         :param need_ocr:
@@ -276,15 +280,16 @@ class Automation:
         """
         target_texts = [target] if isinstance(target, str) else list(target)  # 确保目标文本是列表格式
         if need_ocr:
-            self.perform_ocr(extract)
+            self.perform_ocr(extract, is_log=is_log)
         return self.search_text_in_ocr_results(target_texts, include)
 
     @atoms
     def find_element(self, target, find_type: str, threshold: float = 0.7, crop: tuple = (0, 0, 1, 1),
                      take_screenshot=False, include: bool = True, need_ocr: bool = True, extract: list = None,
-                     match_method=cv2.TM_SQDIFF_NORMED):
+                     match_method=cv2.TM_SQDIFF_NORMED, is_log=False):
         """
         寻找元素
+        :param is_log:
         :param match_method: 模版匹配方法
         :param target:
         :param find_type:
@@ -315,9 +320,10 @@ class Automation:
         if find_type in ['image', 'text', 'image_threshold']:
             if find_type == 'image':
                 top_left, bottom_right, image_threshold = self.find_image_element(target, threshold,
-                                                                                  match_method=match_method)
+                                                                                  match_method=match_method,
+                                                                                  extract=extract, is_log=is_log)
             elif find_type == 'text':
-                top_left, bottom_right = self.find_text_element(target, include, need_ocr, extract)
+                top_left, bottom_right = self.find_text_element(target, include, need_ocr, extract, is_log)
             if top_left and bottom_right:
                 if find_type == 'image_threshold':
                     return image_threshold
@@ -362,9 +368,10 @@ class Automation:
     def click_element(self, target, find_type: str, threshold: float = 0.7, crop: tuple = (0, 0, 1, 1),
                       take_screenshot=False, include: bool = True, need_ocr: bool = True, extract: list = None,
                       action: str = 'move_click', offset: tuple = (0, 0), n: int = 3,
-                      match_method=cv2.TM_SQDIFF_NORMED):
+                      match_method=cv2.TM_SQDIFF_NORMED, is_log=False):
         """
         寻找目标位置，并在位置做出对应action
+        :param is_log:
         :param match_method: 模版匹配方法
         :param n: 正态分布随机获取点的居中程度，越大越居中
         :param target: 寻找目标
@@ -380,31 +387,18 @@ class Automation:
         :return:
         """
         coordinates = self.find_element(target, find_type, threshold, crop, take_screenshot, include, need_ocr, extract,
-                                        match_method)
+                                        match_method, is_log)
         # print(f"{coordinates=}")
         if coordinates:
             return self.click_element_with_pos(coordinates, action, offset, n)
         return False
 
     @atoms
-    def find_text_in_area(self, crop, extract: list = None):
-        """
-        通过crop找对应的文本内容
-        :param crop: 查找区域
-        :param extract: 指定提取背景
-        :return: ocr识别内容（格式化后的）
-        """
-        # 调用take_screenshot更新self.current_screenshot,self.scale_x,self.scale_y,self.relative_pos
-        screenshot_result = self.take_screenshot(crop)
-        if screenshot_result:
-            self.perform_ocr(extract)
-            return self.ocr_result
-
-    @atoms
     def find_target_near_source(self, target, source_pos, need_update_ocr: bool = True, crop=(0, 0, 1, 1), include=True,
-                                n=30):
+                                n=30, is_log=False):
         """
         查找距离源最近的目标文本的中心坐标。
+        :param is_log:
         :param n: 聚拢度
         :param include: 是否包含
         :param target:目标文本
@@ -420,7 +414,7 @@ class Automation:
             # 更新self.current_screenshot
             self.take_screenshot(crop)
             # 更新self.ocr_result
-            self.perform_ocr()
+            self.perform_ocr(is_log=is_log)
         for result in self.ocr_result:
             text = result[0]
             match, matched_text = self.is_text_match(text, target_texts, include)
@@ -460,13 +454,21 @@ class Automation:
         return crop_image
 
     @atoms
-    def read_text_from_crop(self, crop=(0, 0, 1, 1), extract=None, is_screenshot=False):
-        """更新截图，并识别指定区域的文字"""
+    def read_text_from_crop(self, crop=(0, 0, 1, 1), extract=None, is_screenshot=False, allowlist=None, is_log=False):
+        """
+        通过crop找对应的文本内容
+        :param is_log:
+        :param allowlist: 限制 OCR 模型识别的字符集
+        :param crop: 查找区域
+        :param extract: 指定提取背景
+        :param is_screenshot: 是否截图
+        :return: ocr识别内容（格式化后的）
+        """
         if is_screenshot:
             self.take_screenshot()
         crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
         # ImageUtils.show_ndarray(crop_image)
-        self.perform_ocr(image=crop_image, extract=extract)
+        self.perform_ocr(image=crop_image, extract=extract, allowlist=allowlist, is_log=is_log)
         return self.ocr_result
 
     @atoms

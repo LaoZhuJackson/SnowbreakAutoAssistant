@@ -102,12 +102,11 @@ class PerfectBuild:
             # 添加文件
             "--include-data-file=patch/scipy.libs/.load-order-scipy-1.10.1=scipy.libs/.load-order-scipy-1.10.1",
             "--include-data-file=patch/shapely.libs/.load-order-shapely-2.0.7=shapely.libs/.load-order-shapely-2.0.7",
-            "--include-data-dir=patch/paddleocr=paddleocr",
             "--include-data-file=AppData/ocr_replacements.json=AppData/ocr_replacements.json",
             "--include-data-file=AppData/version.txt=AppData/version.txt",
             "--include-data-dir=app/resource/images=app/resource/images",
             "--include-data-file=app/resource/help.md=app/resource/help.md",
-            "--include-data-dir=app/resource/paddleocr=app/resource/paddleocr",
+            "--include-data-dir=app/resource/easyocr=app/resource/easyocr",
         ]
         if platform.system() == "Windows":
             cmd_args.extend((f"--windows-icon-from-ico={self.app_icon}",))
