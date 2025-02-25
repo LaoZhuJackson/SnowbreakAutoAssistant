@@ -59,7 +59,7 @@ class GetRewardModule(BaseTask):
                     self.auto.click_element('app/resource/images/reward/execution.png', 'image',
                                             crop=(812 / 1920, 891 / 1080, 908 / 1920, 985 / 1080), is_log=self.is_log)
                     first_finish_flag = True
-            if self.auto.click_element('等级提升', 'text'):
+            if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
                 self.auto.press_key('esc')
                 continue
 

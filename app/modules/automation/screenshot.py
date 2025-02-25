@@ -87,9 +87,10 @@ class Screenshot:
             self.logger.error(f"未找到窗口: {title}")
             return None
 
-    def screenshot(self, hwnd, crop=(0, 0, 1, 1), is_starter=True):
+    def screenshot(self, hwnd, crop=(0, 0, 1, 1), is_starter=True, is_interval=True):
         """
         截取特定区域
+        :param is_interval: 是否间隔
         :param is_starter: 是否是启动器
         :param hwnd: 需要截图的窗口句柄
         :param crop: 截取区域, 格式为 (crop_left, crop_top, crop_right, crop_bottom)，范围是0到1之间，表示相对于窗口的比例
@@ -97,7 +98,8 @@ class Screenshot:
         """
 
         try:
-            self._screenshot_interval.wait()
+            if is_interval:
+                self._screenshot_interval.wait()
             self._screenshot_interval.reset()
             # 获取带标题的窗口尺寸
             left, top, right, bottom = win32gui.GetWindowRect(hwnd)

@@ -118,14 +118,16 @@ class Automation:
             raise ValueError(f"未找到{self.window_title}的句柄，请确保对应窗口已打开")
 
     @atoms
-    def take_screenshot(self, crop=(0, 0, 1, 1)):
+    def take_screenshot(self, crop=(0, 0, 1, 1), is_interval=True):
         """
         捕获游戏窗口的截图。
+        :param is_interval:
         :param crop: 截图的裁剪区域，格式为(x1, y1, width, height)，默认为全屏。
         :return: 成功时返回截图及其位置和缩放因子，失败时抛出异常。
         """
         try:
-            result = self.screenshot.screenshot(self.screenshot_hwnd, (0, 0, 1, 1), self.is_starter)
+            result = self.screenshot.screenshot(self.screenshot_hwnd, (0, 0, 1, 1), self.is_starter,
+                                                is_interval=is_interval)
             if result:
                 self.first_screenshot, self.scale_x, self.scale_y, self.relative_pos = result
                 if crop != (0, 0, 1, 1):

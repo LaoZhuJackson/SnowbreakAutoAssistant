@@ -27,6 +27,8 @@ class FishingModule(BaseTask):
         self.lower_yellow = None
         self.no_key = False
 
+        self.is_log = False
+
     def run(self):
         # 每次钓鱼前更新各种设置参数
         self.upper_yellow = np.array([int(value) for value in config.LineEdit_fish_upper.value.split(',')])
@@ -46,7 +48,7 @@ class FishingModule(BaseTask):
                 self.start_fish()
                 self.after_fish()
             except Exception as e:
-                self.logger.error(e)
+                self.logger.warn(e)
                 break
 
     def enter_fish(self):
@@ -60,7 +62,7 @@ class FishingModule(BaseTask):
             # ImageUtils.show_ndarray(self.auto.first_screenshot)
 
             if self.auto.find_element(['饵', '重量级', '巨型', '万能', '普通', '豪华', '至尊'], 'text',
-                                      crop=(1658 / 1920, 770 / 1080, 1892 / 1920, 829 / 1080)):
+                                      crop=(1658 / 1920, 770 / 1080, 1892 / 1920, 829 / 1080), is_log=self.is_log):
                 enter_flag = True
             if enter_flag:
                 if not self.press_key and not self.get_press_key():
@@ -68,7 +70,8 @@ class FishingModule(BaseTask):
                 # 还没甩竿
                 if not self.is_spin_rod():
                     if self.auto.find_element('鱼饵不足', 'text',
-                                              crop=(1200 / 2560, 686 / 1440, 1374 / 2560, 746 / 1440)):
+                                              crop=(1200 / 2560, 686 / 1440, 1374 / 2560, 746 / 1440),
+                                              is_log=self.is_log):
                         raise Exception(f'{lure_type_list[lure_type_index]}鱼饵不足')
                     if lure_type_index != 0:
                         if self.select_lure():
@@ -81,16 +84,19 @@ class FishingModule(BaseTask):
                         continue
 
                 # 甩杆后
-                if self.auto.find_element('上钩了', 'text', crop=(787 / 1920, 234 / 1080, 1109 / 1920, 420 / 1080)):
+                if self.auto.find_element('钩', 'text', crop=(787 / 1920, 234 / 1080, 1109 / 1920, 420 / 1080),
+                                          threshold=0, is_log=self.is_log):
                     self.auto.press_key(self.press_key)
                     self.bite_time = time.time()
                     time.sleep(0.2)
                     break
-            if self.auto.find_element(['目标', '今日'], 'text', crop=(0, 957 / 1080, 460 / 1920, 1)):
+            if self.auto.find_element(['目标', '今日'], 'text', crop=(0, 957 / 1080, 460 / 1920, 1),
+                                      is_log=self.is_log):
                 self.auto.press_key('esc')
                 time.sleep(1)
                 continue
-            if self.auto.find_element('使用', 'text', crop=(1405 / 1920, 654 / 1080, 1503 / 1920, 747 / 1080)):
+            if self.auto.find_element('使用', 'text', crop=(1405 / 1920, 654 / 1080, 1503 / 1920, 747 / 1080),
+                                      is_log=self.is_log):
                 self.auto.press_key('f')
                 time.sleep(1)
                 continue
@@ -108,21 +114,21 @@ class FishingModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.find_element(lure_type_list[lure_type_index], 'text',
-                                      crop=(1663 / 1920, 788 / 1080, 1830 / 1920, 825 / 1080)):
+                                      crop=(1663 / 1920, 788 / 1080, 1830 / 1920, 825 / 1080), is_log=self.is_log):
                 return True
             if self.auto.find_element('饵', 'text',
-                                      crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080)):
+                                      crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080), is_log=self.is_log):
                 open_lure = True
             # 选取鱼饵
             if not open_lure:
                 self.auto.click_element('app/resource/images/fishing/select_lure.png', 'image',
-                                        crop=(1563 / 1920, 787 / 1080, 1598 / 1920, 823 / 1080),
+                                        crop=(1563 / 1920, 787 / 1080, 1598 / 1920, 823 / 1080), is_log=self.is_log,
                                         match_method=cv2.TM_CCOEFF_NORMED)
                 time.sleep(0.5)
                 continue
             else:
                 self.auto.click_element(lure_type_list[lure_type_index], 'text',
-                                        crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080))
+                                        crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080), is_log=self.is_log)
                 time.sleep(0.5)
 
             if timeout.reached():
@@ -132,7 +138,7 @@ class FishingModule(BaseTask):
     def start_fish(self):
         timeout = Timer(60).start()
         while True:
-            self.auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080))
+            self.auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080), is_interval=False)
 
             if config.ComboBox_fishing_mode.value == 0:
                 blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
@@ -175,10 +181,11 @@ class FishingModule(BaseTask):
             if save_flag:
                 if self.auto.find_element("新纪录", "text") or self.auto.find_element(
                         "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
-                        crop=(1245 / 1920, 500 / 1080, 1366 / 1920, 578 / 1080)):
+                        crop=(1245 / 1920, 500 / 1080, 1366 / 1920, 578 / 1080), is_log=self.is_log):
                     self.save_picture()
                 break
-            if self.auto.find_element('本次获得', 'text', crop=(832 / 1920, 290 / 1080, 1078 / 1920, 374 / 1080)):
+            if self.auto.find_element('本次获得', 'text', crop=(832 / 1920, 290 / 1080, 1078 / 1920, 374 / 1080),
+                                      is_log=self.is_log):
                 self.logger.info("钓鱼佬永不空军！")
                 if config.CheckBox_is_save_fish.value:
                     save_flag = True
@@ -187,7 +194,8 @@ class FishingModule(BaseTask):
                 self.auto.press_key('esc')
                 time.sleep(1)
                 break
-            if self.auto.find_element('鱼跑掉了', 'text', crop=(858 / 1920, 151 / 1080, 1054 / 1920, 280 / 1080)):
+            if self.auto.find_element('鱼跑掉了', 'text', crop=(858 / 1920, 151 / 1080, 1054 / 1920, 280 / 1080),
+                                      is_log=self.is_log):
                 self.logger.warn("鱼跑了，空军！")
                 break
             # 如果回到了未甩杆状态，也退出
@@ -219,8 +227,8 @@ class FishingModule(BaseTask):
         # 查找轮廓
         contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         # self.logger.debug(f"黄色块数为：{len(contours_yellow)}")
-        print(f"黄色块数为：{len(contours_yellow)}")
-
+        # print(f"黄色块数为：{len(contours_yellow)}")
+        #
         return len(contours_yellow)
 
     def is_spin_rod(self):
@@ -230,7 +238,7 @@ class FishingModule(BaseTask):
         """
         # self.auto.take_screenshot()
         if self.auto.find_element('app/resource/images/fishing/fish.png', 'image',
-                                  crop=(29 / 1920, 212 / 1080, 116 / 1920, 292 / 1080),
+                                  crop=(29 / 1920, 212 / 1080, 116 / 1920, 292 / 1080), is_log=self.is_log,
                                   match_method=cv2.TM_CCOEFF_NORMED):
             return False
         return True
@@ -240,6 +248,7 @@ class FishingModule(BaseTask):
         自动获取钓鱼按键
         """
         text_results = self.auto.read_text_from_crop((1706 / 1920, 1024 / 1080, 1820 / 1920, 1066 / 1080),
+                                                     is_log=self.is_log,
                                                      is_screenshot=True, extract=[(222, 230, 236), 128])
         # 根据文本内容模糊匹配键盘按键
         key_list = config.fish_key_list.value

@@ -13,7 +13,7 @@ from app.modules.water_bomb.decision import Round, Status
 class WaterBombModule(BaseTask):
     def __init__(self):
         super().__init__()
-        self.is_log = True
+        self.is_log = False
 
         self.end_win = 1
         self.current_win = 0
@@ -31,6 +31,7 @@ class WaterBombModule(BaseTask):
         self.sustain = False
         self.is_now_computer = False
         self.have_extra_shoot = False
+        self.is_speed_up = False
 
         self.items_dict = {
             '活力宝石': 'gem_of_life',
@@ -91,7 +92,7 @@ class WaterBombModule(BaseTask):
     def fight(self):
         """对战阶段"""
         timeout = Timer(600).start()
-        is_speed_up = False
+        self.is_speed_up = False
         is_open_items = False
         is_player_round = False
         current_strategy = ''
@@ -106,7 +107,7 @@ class WaterBombModule(BaseTask):
             if self.auto.click_element('重新开始', 'text', crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080),
                                        is_log=self.is_log):
                 self.logger.warn(f"对战失败，连胜中断")
-                is_speed_up = False
+                self.is_speed_up = False
                 self.current_win = 0
                 # 新一轮，重置计时器
                 timeout.reset()
@@ -121,7 +122,7 @@ class WaterBombModule(BaseTask):
                     self.logger.info(f'已达成{self.end_win}连胜')
                     self.auto.press_key('esc')
                     break
-                is_speed_up = False
+                self.is_speed_up = False
                 # 新一轮，重置计时器
                 timeout.reset()
                 self.round_fight = Round()
@@ -132,7 +133,7 @@ class WaterBombModule(BaseTask):
                                        is_log=self.is_log):
                 # self.update_items_list(is_player=True)
                 continue
-            if not is_speed_up:
+            if not self.is_speed_up:
                 if not self.auto.find_element('app/resource/images/water_bomb/speed.png', 'image',
                                               crop=(1700 / 1920, 30 / 1080, 1800 / 1920, 130 / 1080),
                                               is_log=self.is_log,
@@ -141,7 +142,7 @@ class WaterBombModule(BaseTask):
                     time.sleep(0.5)
                     continue
                 else:
-                    is_speed_up = True
+                    self.is_speed_up = True
             # 确认加速后进入主循环
             else:
                 # 检查是否进入自己的回合
@@ -197,7 +198,7 @@ class WaterBombModule(BaseTask):
                                 elif current_strategy == 'advanced_barrel':
                                     self.current_power = 2
                                 elif current_strategy == 'reverse_magic':
-                                    self.is_reversal = True
+                                    self.is_reversal = False if self.is_reversal else True
                                 elif current_strategy == 'unload_puppet':
                                     time.sleep(0.2)
                             else:
@@ -262,6 +263,8 @@ class WaterBombModule(BaseTask):
             if timeout.reached():
                 self.logger.error('重开超时')
                 break
+        self.is_speed_up = False
+        self.logger.warn('胜率为0，选择重开')
 
     def handle_shooting(self, person):
         """处理开枪策略下的逻辑"""
@@ -392,6 +395,8 @@ class WaterBombModule(BaseTask):
         items_list.remove('reset_hammer')
         index = 0
         top_left, bottom_right = None, None
+
+        self.scroll_to_bottom()
         while True:
             self.auto.take_screenshot()
 
@@ -441,11 +446,16 @@ class WaterBombModule(BaseTask):
                 self.logger.error('使用重置之锤超时')
                 return False
 
+    def scroll_to_bottom(self):
+        self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -550)
+
     def select_and_steal(self, steal_item):
         """选择物品然后偷"""
         timeout = Timer(20).start()
         path = f'app/resource/images/water_bomb/{steal_item}_steal.png'
         select_flag = False
+
+        self.scroll_to_bottom()
         while True:
             self.auto.take_screenshot()
 
@@ -460,6 +470,7 @@ class WaterBombModule(BaseTask):
                                                           crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
                                                           is_log=self.is_log):
                 return True
+            # 未选择物品时
             if not select_flag:
                 self.auto.click_element(path, 'image', crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080),
                                         is_log=self.is_log,
@@ -469,6 +480,7 @@ class WaterBombModule(BaseTask):
             else:
                 self.auto.click_element('确定', 'text', crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
                                         is_log=self.is_log)
+                time.sleep(0.3)
 
             if timeout.reached():
                 self.logger.error('偷道具超时')
@@ -511,7 +523,8 @@ class WaterBombModule(BaseTask):
                                   crop=(980 / 1920, 30 / 1080, 1250 / 1920, 150 / 1080), is_log=self.is_log,
                                   match_method=cv2.TM_CCOEFF_NORMED):
             self.sustain = True
-            self.have_extra_shoot = False
+            if not self.have_extra_shoot:
+                self.sustain = False
         else:
             self.sustain = False
 
@@ -537,16 +550,11 @@ class WaterBombModule(BaseTask):
                                   crop=(2057 / 2560, 1318 / 1440, 2137 / 2560, 1397 / 1440), is_log=self.is_log,
                                   extract=[(255, 255, 255), 128],
                                   match_method=cv2.TM_CCOEFF_NORMED):
-            if not self.is_reversal:
-                self.is_reversal = True
             # 在用了逆转后点了开始水弹
             if self.remaining_live_bullet == 0 and self.remaining_blank_bullet == 0:
                 self.remaining_blank_bullet = self.remaining_live_bullet = 1
             is_num = False
         if is_num:
-            # 能识别到数字说明不处于反转状态
-            if self.is_reversal:
-                self.is_reversal = False
             for i in range(0, 5):
                 if self.auto.find_element(f'app/resource/images/water_bomb/{i}.png', 'image',
                                           crop=(2057 / 2560, 1318 / 1440, 2137 / 2560, 1397 / 1440),

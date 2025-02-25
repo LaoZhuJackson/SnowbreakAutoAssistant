@@ -145,18 +145,6 @@ class Status:
         status._sitems.remove('insight_sunglasses')
         return status
 
-    def reverse_magic(self):  # 反转魔法
-        status = self.copy()
-        status._reversal = (self.reversal == False)
-        status._sitems.remove('reverse_magic')
-        return status
-
-    def advanced_barrel(self):  # 进阶枪管
-        status = self.copy()
-        status._power = 2
-        status._sitems.remove('advanced_barrel')
-        return status
-
     def unload_puppet(self, live: bool):  # 退弹布偶
         status = self.copy()
         if live:
@@ -170,6 +158,18 @@ class Status:
         elif status.blank == 0 and status.live != 0:
             status._bullet = 1
         status._reversal = False  # 退弹后反转重置
+        return status
+
+    def reverse_magic(self):  # 反转魔法
+        status = self.copy()
+        status._reversal = (self.reversal == False)
+        status._sitems.remove('reverse_magic')
+        return status
+
+    def advanced_barrel(self):  # 进阶枪管
+        status = self.copy()
+        status._power = 2
+        status._sitems.remove('advanced_barrel')
         return status
 
     def reset_hammer(self, old_items: List[str], new_items: List[str]):  # 重置之锤
@@ -256,7 +256,7 @@ class Round:
             return 1.0, 'end'
         elif status.live + status.blank == 0:
             if status.shp == status.ehp:  # 血量相同 (当前谁操作，当前谁胜率就高)
-                return 0.6, 'feed'
+                return 0.5, 'feed'
             else:  # 血量不同 先验胜率为血量之比
                 return (status.shp / (status.shp + status.ehp)), 'feed'
 
@@ -292,6 +292,8 @@ class Round:
         # 怪盗之手 (对面有怪盗之手优先使用)
         if 'hand_of_kaito' in status.sitems:
             for item in status.eitems:
+                if item == 'unload_puppet':
+                    continue
                 hand_of_kaito = self.optimal_strategy(status.hand_of_kaito(item))[0]
                 if item == 'hand_of_kaito':
                     return hand_of_kaito, 'hand_of_kaito.hand_of_kaito'
@@ -300,7 +302,7 @@ class Round:
                     strategy = f'hand_of_kaito.{item}'
 
         # 看破墨镜
-        if 'insight_sunglasses' in status.sitems and (status.bullet == -1 or 'hand_of_kaito' in status.eitems):
+        if 'insight_sunglasses' in status.sitems and status.bullet == -1:
             bullet_blank = blank_prob * self.optimal_strategy(status.insight_sunglasses(0))[0]
             bullet_live = live_prob * self.optimal_strategy(status.insight_sunglasses(1))[0]
             insight = bullet_blank + bullet_live
@@ -308,8 +310,18 @@ class Round:
                 win_prob = insight
                 strategy = 'insight_sunglasses'
 
+        # 退弹布偶
+        if 'unload_puppet' in status.sitems and ((status.live + status.blank) > 1) and status.power == 1:
+            if status.bullet != 0 or not (status.bullet == 1 and status.reversal):  # 已知虚弹一定不退弹或者反转实弹不退弹
+                unload_live = live_prob * self.optimal_strategy(status.unload_puppet(True))[0]
+                unload_blank = blank_prob * self.optimal_strategy(status.unload_puppet(False))[0]
+                unload = unload_live + unload_blank
+                if unload > win_prob:
+                    win_prob = unload
+                    strategy = 'unload_puppet'
+
         # 反转魔术
-        if 'reverse_magic' in status.sitems and (not status.reversal or 'hand_of_kaito' in status.eitems):
+        if 'reverse_magic' in status.sitems and not status.reversal:
             reverse_magic = self.optimal_strategy(status.reverse_magic())[0]
             if reverse_magic > win_prob:
                 win_prob = reverse_magic
@@ -321,16 +333,6 @@ class Round:
             if advanced_barrel > win_prob:
                 win_prob = advanced_barrel
                 strategy = 'advanced_barrel'
-
-        # 退弹布偶
-        if 'unload_puppet' in status.sitems and ((status.live + status.blank) > 1):
-            if status.bullet != 0 or not (status.bullet == 1 and status.reversal):  # 已知虚弹一定不退弹或者反转实弹不退弹
-                unload_live = live_prob * self.optimal_strategy(status.unload_puppet(True))[0]
-                unload_blank = blank_prob * self.optimal_strategy(status.unload_puppet(False))[0]
-                unload = unload_live + unload_blank
-                if unload > win_prob:
-                    win_prob = unload
-                    strategy = 'unload_puppet'
 
         # 重置之锤
         if 'reset_hammer' in status.sitems:
@@ -367,11 +369,16 @@ class Round:
                 shoot_self += blank_prob * self.optimal_strategy(status.shoot(False, False))[0]
 
         # 取最优策略并记忆化
-        if shoot_enemy < shoot_self or (blank_prob > live_prob and not status.reversal and status.power == 1) or (
+        if (live_prob == 1.0 and status.reversal) or (blank_prob == 1.0 and not status.reversal):
+            shoot = 'shoot_self'
+        elif (blank_prob == 1.0 and status.reversal) or (live_prob == 1.0 and not status.reversal):
+            shoot = 'shoot_enemy'
+        elif shoot_enemy < shoot_self or (blank_prob > live_prob and not status.reversal and status.power == 1) or (
                 live_prob > blank_prob and status.reversal and status.power == 1):
             shoot = 'shoot_self'
         else:
             shoot = 'shoot_enemy'
+
         if max(shoot_enemy, shoot_self) > win_prob or max(shoot_enemy, shoot_self) == 1:
             win_prob = max(shoot_enemy, shoot_self)
             strategy = shoot

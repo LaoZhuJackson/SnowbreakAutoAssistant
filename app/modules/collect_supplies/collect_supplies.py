@@ -83,6 +83,8 @@ class CollectSuppliesModule(BaseTask):
         while True:
             self.auto.take_screenshot()
 
+            if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                break
             if self.auto.find_element('app/resource/images/reward/home.png', 'image', threshold=0.9,
                                       crop=(1635 / 1920, 18 / 1080, 1701 / 1920, 74 / 1080)):
                 if not self.auto.find_element('领取', 'text', crop=(1236 / 1920, 931 / 1080, 1, 1)):
@@ -103,6 +105,8 @@ class CollectSuppliesModule(BaseTask):
         while True:
             self.auto.take_screenshot()
 
+            if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                break
             if self.auto.find_element('开拓任务', 'text', crop=(36 / 1920, 103 / 1080, 163 / 1920, 155 / 1080)):
                 if not self.auto.click_element('键领取', 'text', crop=(22 / 1920, 965 / 1080, 227 / 1920, 1030 / 1080),
                                                extract=[(241, 240, 241), 128]):
@@ -110,7 +114,7 @@ class CollectSuppliesModule(BaseTask):
                 else:
                     break
             if self.auto.click_element("开拓目标", "text", crop=(1611 / 1920, 879 / 1080, 1716 / 1920, 919 / 1080)):
-                time.sleep(0.3)
+                time.sleep(0.5)
                 continue
             if self.auto.click_element("新星开拓", "text", crop=(0, 758 / 1080, 1, 828 / 1080)):
                 continue

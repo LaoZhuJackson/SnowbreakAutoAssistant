@@ -19,14 +19,14 @@ class ChasmModule(BaseTask):
             self.receive_reward()
 
     def chasm(self):
-        timeout = Timer(30).start()
+        timeout = Timer(50).start()
         first_finish_flag = False
         second_finish_flag = False
         enter_second = False
         while True:
             self.auto.take_screenshot()
 
-            if self.auto.find_element('测评次数不足', 'text', crop=(0.25, 0.25, 0.75, 0.75)):
+            if self.auto.find_element('测评次数不足', 'text', crop=(1141 / 2560, 684 / 1440, 1420 / 2560, 747 / 1440)):
                 break
             if first_finish_flag and second_finish_flag:
                 break
