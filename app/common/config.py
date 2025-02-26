@@ -170,6 +170,8 @@ class Config(QConfig):
     LineEdit_jigsaw_piece_11 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_11", "0")
     # 心动水弹相关
     SpinBox_water_win_times = ConfigItem("add_water", "SpinBox_water_win_times", 5)
+    Slider_count_threshold = ConfigItem("add_water", "Slider_count_threshold", 70)
+    Slider_template_threshold = ConfigItem("add_water", "Slider_template_threshold", 70)
     # 异星守护相关
     ComboBox_mode = OptionsConfigItem("add_alien", "ComboBox_mode", 0, OptionsValidator([0, 1]))
 

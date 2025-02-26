@@ -6,9 +6,9 @@ import cv2
 import numpy as np
 from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QPainter, QColor, QPixmap
-from PyQt5.QtWidgets import QFrame, QWidget
+from PyQt5.QtWidgets import QFrame, QWidget, QLabel
 from fuzzywuzzy import process
-from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit, InfoBar
+from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit, InfoBar, Slider, BodyLabel
 
 from app.common.config import config
 from app.common.logger import original_stdout, original_stderr
@@ -74,7 +74,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_jigsaw.setText(
             "### 提示\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量\n* 使用自动获取碎片数量需要保证所有碎片没有被旋转过（如果旋转过就重新进一次信源解析界面）")
         self.BodyLabel_tip_water.setText(
-            "### 提示\n* 进入站在水弹位置后再点开始")
+            "### 提示\n* 进入站在水弹位置后再点开始\n* 当无法识别道具或者生命时，适当调低上面两个置信度参数")
         self.BodyLabel_tip_alien.setText(
             "### 提示\n* 开始战斗后再点击开始\n* 常驻伙伴推荐带钢珠和炽热投手\n* 闯关模式为半自动一关一关打。需要手动开枪，手动选择下一关")
         self.BodyLabel_tip_maze.setText(
@@ -143,6 +143,12 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                     widget.setText(config_item.value)
                 elif isinstance(widget, SpinBox):
                     widget.setValue(config_item.value)
+                elif isinstance(widget, Slider):
+                    widget.setValue(config_item.value)
+                    text_name = 'BodyLabel_' + widget.objectName().split('_')[1] + '_' + widget.objectName().split('_')[
+                        2]
+                    text_widget = self.findChild(QLabel, name=text_name)
+                    text_widget.setText(str(widget.value()))
 
     def _connect_to_save_changed(self):
         children_list = get_all_children(self)
@@ -156,6 +162,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                 children.valueChanged.connect(partial(self.save_changed, children))
             elif isinstance(children, LineEdit):
                 children.editingFinished.connect(partial(self.save_changed, children))
+            elif isinstance(children, Slider):
+                children.valueChanged.connect(partial(self.save_changed, children))
 
     def save_changed(self, widget):
         if isinstance(widget, SpinBox):
@@ -178,6 +186,11 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                 config.set(getattr(config, widget.objectName(), None), text)
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
+        elif isinstance(widget, Slider):
+            config.set(getattr(config, widget.objectName(), 70), widget.value())
+            text_name = 'BodyLabel_' + widget.objectName().split('_')[1] + '_' + widget.objectName().split('_')[2]
+            text_widget = self.findChild(QLabel, name=text_name)
+            text_widget.setText(str(widget.value()))
 
     def onCurrentIndexChanged(self, index):
         widget = self.stackedWidget.widget(index)

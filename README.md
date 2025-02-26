@@ -48,12 +48,17 @@
 - 如果选择了自动登录，需要打开到游戏登录器页面
 - 点击助手对应任务的开始按钮
 ## 相关项目
-- OCR文字识别 https://github.com/hiroi-sora/PaddleOCR-json
+
+- OCR文字识别 https://github.com/JaidedAI/EasyOCR
 - 三月七星穹铁道助手 https://github.com/moesnow/March7thAssistant
 - maa明日方舟助手 https://github.com/MaaAssistantArknights/MaaAssistantArknights
 - 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 ## 赞助
 
+- 微信
+
 <img src="./asset/support.jpg" width="200"/>
+
+- 爱发电
 
 <img src="./asset/support.png" width="200"/>

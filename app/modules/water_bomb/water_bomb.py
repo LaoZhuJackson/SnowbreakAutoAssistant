@@ -48,10 +48,14 @@ class WaterBombModule(BaseTask):
         self.special_items = ['reset_hammer', 'hand_of_kaito']
         self.shoot_action = ['shoot_enemy', 'shoot_self']
 
+        self.count_threshold = 0.7
+        self.template_threshold = 0.7
 
         self.round_fight = Round()
 
     def run(self):
+        self.count_threshold = config.Slider_count_threshold.value / 100
+        self.template_threshold = config.Slider_template_threshold.value / 100
         self.end_win = config.SpinBox_water_win_times.value
         self.enter_and_start()
         self.fight()
@@ -63,26 +67,28 @@ class WaterBombModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.find_element(['重新开始', '翻倍连战'], 'text',
-                                      crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080), is_log=self.is_log):
+                                      crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080), is_log=self.is_log,
+                                      threshold=self.template_threshold):
                 self.current_win = 0
                 break
             if self.auto.find_element('本局对战少女', 'text', crop=(796 / 1920, 187 / 1080, 1103 / 1920, 261 / 1080),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log, threshold=self.template_threshold):
                 self.current_win = 0
                 break
             if self.auto.find_element('查看道具', 'text', crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log, threshold=self.template_threshold):
                 self.current_win = 0
                 break
             if self.auto.click_element('点击屏幕继续', 'text', crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 self.current_win = 0
                 break
             if self.auto.click_element('最佳记录', 'text', crop=(1279 / 1920, 619 / 1080, 1382 / 1920, 658 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 continue
             if self.auto.find_element(['心动水弹', 'F'], 'text',
-                                      crop=(1025 / 1920, 663 / 1080, 1267 / 1920, 717 / 1080), is_log=self.is_log):
+                                      crop=(1025 / 1920, 663 / 1080, 1267 / 1920, 717 / 1080), is_log=self.is_log,
+                                      threshold=self.template_threshold):
                 self.auto.press_key('f')
                 continue
             if timeout.reached():
@@ -102,10 +108,10 @@ class WaterBombModule(BaseTask):
 
             # todo 重开逻辑根据用户设置选择
             if self.auto.click_element('确定', 'text', crop=(1418 / 1920, 740 / 1080, 1509 / 1920, 791 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 continue
             if self.auto.click_element('重新开始', 'text', crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 self.logger.warn(f"对战失败，连胜中断")
                 self.is_speed_up = False
                 self.current_win = 0
@@ -115,7 +121,7 @@ class WaterBombModule(BaseTask):
                 time.sleep(1)
                 continue
             if self.auto.click_element('翻倍连战', 'text', crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 self.current_win += 1
                 self.logger.warn(f"对战胜利，当前连胜为：{self.current_win}")
                 if self.current_win >= self.end_win:
@@ -130,13 +136,13 @@ class WaterBombModule(BaseTask):
                 continue
 
             if self.auto.click_element('继续', 'text', crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 # self.update_items_list(is_player=True)
                 continue
             if not self.is_speed_up:
                 if not self.auto.find_element('app/resource/images/water_bomb/speed.png', 'image',
                                               crop=(1700 / 1920, 30 / 1080, 1800 / 1920, 130 / 1080),
-                                              is_log=self.is_log,
+                                              is_log=self.is_log, threshold=self.template_threshold,
                                               match_method=cv2.TM_CCOEFF_NORMED):
                     self.auto.move_click(1742 / self.auto.scale_x, 80 / self.auto.scale_y, press_time=0.1)
                     time.sleep(0.5)
@@ -147,7 +153,7 @@ class WaterBombModule(BaseTask):
             else:
                 # 检查是否进入自己的回合
                 if self.auto.find_element('查看道具', 'text', crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080),
-                                          is_log=self.is_log):
+                                          is_log=self.is_log, threshold=self.template_threshold):
                     is_player_round = True
                 else:
                     is_player_round = False
@@ -155,14 +161,14 @@ class WaterBombModule(BaseTask):
                     if current_strategy == '':
                         if self.auto.find_element('app/resource/images/water_bomb/head.png', 'image',
                                                   crop=(18 / 1920, 758 / 1080, 127 / 1920, 857 / 1080),
-                                                  is_log=self.is_log):
+                                                  is_log=self.is_log, threshold=self.template_threshold):
                             is_open_items = True
                         else:
                             is_open_items = False
                         if not is_open_items:
                             self.auto.click_element('查看道具', 'text',
                                                     crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080),
-                                                    is_log=self.is_log)
+                                                    is_log=self.is_log, threshold=self.template_threshold)
                             time.sleep(0.5)
                             continue
                         # 更新状态
@@ -239,7 +245,7 @@ class WaterBombModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.click_element('确定', 'text', crop=(1418 / 1920, 740 / 1080, 1509 / 1920, 791 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 end_flag = True
                 time.sleep(2)
                 continue
@@ -248,16 +254,17 @@ class WaterBombModule(BaseTask):
                 time.sleep(1)
             else:
                 if self.auto.find_element('本局对战少女', 'text',
-                                          crop=(796 / 1920, 187 / 1080, 1103 / 1920, 261 / 1080), is_log=self.is_log):
+                                          crop=(796 / 1920, 187 / 1080, 1103 / 1920, 261 / 1080), is_log=self.is_log,
+                                          threshold=self.template_threshold):
                     break
                 if self.auto.find_element('查看道具', 'text', crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080),
-                                          is_log=self.is_log):
+                                          is_log=self.is_log, threshold=self.template_threshold):
                     break
                 if self.auto.click_element('继续', 'text',
                                            crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080)):
                     break
                 if self.auto.click_element('最佳记录', 'text', crop=(1279 / 1920, 619 / 1080, 1382 / 1920, 658 / 1080),
-                                           is_log=self.is_log):
+                                           is_log=self.is_log, threshold=self.template_threshold):
                     continue
 
             if timeout.reached():
@@ -276,7 +283,7 @@ class WaterBombModule(BaseTask):
 
             # 开完枪后回合转换
             if self.auto.find_element('更换', 'text', crop=(872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log, threshold=self.template_threshold):
                 self.is_reversal = False
                 self.current_power = 1
                 # 开完枪不管下一发是什么，都把子弹类型重置为-1
@@ -284,14 +291,15 @@ class WaterBombModule(BaseTask):
                 return True
             # 开完枪之后进入新一轮道具画面
             if self.auto.click_element('继续', 'text', crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, threshold=self.template_threshold):
                 self.current_power = 1
                 self.bullet_type = -1
                 self.is_reversal = False
                 return True
             # 开完枪后对局结束
             if self.auto.find_element(['重新开始', '翻倍连战'], 'text',
-                                      crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080), is_log=self.is_log):
+                                      crop=(1670 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080), is_log=self.is_log,
+                                      threshold=self.template_threshold):
                 self.have_extra_shoot = False
                 self.sustain = False
                 self.is_reversal = False
@@ -300,19 +308,20 @@ class WaterBombModule(BaseTask):
                 return True
             if 'self' in person:
                 if self.auto.find_element('追加', 'text', crop=(872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080),
-                                          is_log=self.is_log):
+                                          is_log=self.is_log, threshold=self.template_threshold):
                     self.is_reversal = False
                     self.current_power = 1
                     self.bullet_type = -1
                     return True
                 if self.auto.click_element(path, 'image', crop=(1487 / 1920, 815 / 1080, 1723 / 1920, 900 / 1080),
-                                           is_log=self.is_log,
+                                           is_log=self.is_log, threshold=self.template_threshold,
                                            match_method=cv2.TM_CCOEFF_NORMED):
                     continue
             # 射击敌人
             else:
                 if self.have_extra_shoot and self.auto.find_element('追加', 'text', crop=(
-                        872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080), is_log=self.is_log):
+                        872 / 1920, 477 / 1080, 1120 / 1920, 550 / 1080), is_log=self.is_log,
+                                                                    threshold=self.template_threshold):
                     self.have_extra_shoot = False
                     self.sustain = False
                     self.is_reversal = False
@@ -321,11 +330,12 @@ class WaterBombModule(BaseTask):
                     return True
                 if self.auto.find_element('app/resource/images/water_bomb/gun.png', 'image',
                                           crop=(1494 / 1920, 352 / 1080, 1714 / 1920, 581 / 1080), is_log=self.is_log,
+                                          threshold=self.template_threshold,
                                           match_method=cv2.TM_CCOEFF_NORMED):
                     self.auto.move_click(int(960 / self.auto.scale_x), int(540 / self.auto.scale_y))
                     continue
                 if self.auto.click_element(path, 'image', crop=(1640 / 1920, 900 / 1080, 1880 / 1920, 994 / 1080),
-                                           is_log=self.is_log,
+                                           is_log=self.is_log, threshold=self.template_threshold,
                                            match_method=cv2.TM_CCOEFF_NORMED):
                     continue
 
@@ -348,13 +358,15 @@ class WaterBombModule(BaseTask):
                     if '空' in ocr_result[0] or self.auto.find_element('app/resource/images/water_bomb/blank.png',
                                                                        'image', crop=(
                             1470 / 2560, 1290 / 1440, 1640 / 2560, 1364 / 1440), match_method=cv2.TM_CCOEFF_NORMED,
-                                                                       is_log=self.is_log):
+                                                                       is_log=self.is_log,
+                                                                       threshold=self.template_threshold):
                         self.bullet_type = 0
                         return
                     elif '水' in ocr_result[0] or self.auto.find_element('app/resource/images/water_bomb/live.png',
                                                                          'image', crop=(
                             1470 / 2560, 1290 / 1440, 1640 / 2560, 1364 / 1440), match_method=cv2.TM_CCOEFF_NORMED,
-                                                                         is_log=self.is_log):
+                                                                         is_log=self.is_log,
+                                                                         threshold=self.template_threshold):
                         self.bullet_type = 1
                         return
             else:
@@ -401,36 +413,37 @@ class WaterBombModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.find_element('查看道具', 'text', crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log, threshold=self.template_threshold):
                 return True
             if self.auto.find_image_and_count(
                     self.auto.get_crop_form_first_screenshot(crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080)),
-                    'app/resource/images/water_bomb/steal_select.png') == len(items_list):
+                    'app/resource/images/water_bomb/steal_select.png', threshold=self.count_threshold) == len(
+                items_list):
                 select_flag = True
             else:
                 select_flag = False
             if select_flag and not self.auto.find_element('确定', 'text',
                                                           crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
-                                                          is_log=self.is_log):
+                                                          is_log=self.is_log, threshold=self.template_threshold):
                 finish_flag = True
             if finish_flag and not self.auto.find_element('查看道具', 'text',
                                                           crop=(113 / 1920, 984 / 1080, 220 / 1920, 1020 / 1080),
-                                                          is_log=self.is_log):
+                                                          is_log=self.is_log, threshold=self.template_threshold):
                 self.auto.click_element('关闭', 'text', crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
-                                        is_log=self.is_log)
+                                        is_log=self.is_log, threshold=self.template_threshold)
                 continue
             if not select_flag:
                 if top_left and bottom_right:
                     if self.auto.find_element('app/resource/images/water_bomb/steal_select.png', 'image', crop=(
                             top_left[0] / 1920, top_left[1] / 1080, bottom_right[0] / 1920, bottom_right[1] / 1080),
-                                              is_log=self.is_log,
+                                              is_log=self.is_log, threshold=self.template_threshold,
                                               match_method=cv2.TM_CCOEFF_NORMED):
                         index += 1
                         if index >= len(items_list):
                             return True
                 path = f'app/resource/images/water_bomb/{items_list[index]}_steal.png'
                 result = self.auto.find_element(path, 'image', crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080),
-                                                is_log=self.is_log,
+                                                is_log=self.is_log, threshold=self.template_threshold,
                                                 match_method=cv2.TM_CCOEFF_NORMED)
                 if result is not None:
                     top_left, bottom_right = result
@@ -439,7 +452,7 @@ class WaterBombModule(BaseTask):
                     continue
             else:
                 self.auto.click_element('确定', 'text', crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
-                                        is_log=self.is_log)
+                                        is_log=self.is_log, threshold=self.template_threshold)
                 time.sleep(1)
 
             if timeout.reached():
@@ -460,26 +473,27 @@ class WaterBombModule(BaseTask):
             self.auto.take_screenshot()
 
             if self.auto.find_element('请选择', 'text', crop=(804 / 1920, 516 / 1080, 1125 / 1920, 560 / 1080),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log, threshold=self.template_threshold):
                 select_flag = False
             if self.auto.find_element('app/resource/images/water_bomb/steal_select.png', 'image',
                                       crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080), is_log=self.is_log,
+                                      threshold=self.template_threshold,
                                       match_method=cv2.TM_CCOEFF_NORMED):
                 select_flag = True
             if select_flag and not self.auto.find_element('确定', 'text',
                                                           crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
-                                                          is_log=self.is_log):
+                                                          is_log=self.is_log, threshold=self.template_threshold):
                 return True
             # 未选择物品时
             if not select_flag:
                 self.auto.click_element(path, 'image', crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080),
-                                        is_log=self.is_log,
+                                        is_log=self.is_log, threshold=self.template_threshold,
                                         match_method=cv2.TM_CCOEFF_NORMED)
                 time.sleep(0.5)
                 continue
             else:
                 self.auto.click_element('确定', 'text', crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
-                                        is_log=self.is_log)
+                                        is_log=self.is_log, threshold=self.template_threshold)
                 time.sleep(0.3)
 
             if timeout.reached():
@@ -496,21 +510,21 @@ class WaterBombModule(BaseTask):
 
             if appear_use_button and not self.auto.find_element('使用', 'text',
                                                                 crop=(500 / 1920, 700 / 1080, 562 / 1920, 735 / 1080),
-                                                                is_log=self.is_log):
+                                                                is_log=self.is_log, threshold=self.template_threshold):
                 time.sleep(1)
                 return True
             if self.auto.find_element('使用', 'text', crop=(500 / 1920, 700 / 1080, 562 / 1920, 735 / 1080),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log, threshold=self.template_threshold):
                 appear_use_button = True
             if not appear_use_button:
                 self.auto.click_element(path, 'image', crop=(145 / 1920, 758 / 1080, 665 / 1920, 852 / 1080),
-                                        is_log=self.is_log,
+                                        is_log=self.is_log, threshold=self.template_threshold,
                                         match_method=cv2.TM_CCOEFF_NORMED)
                 time.sleep(0.5)
                 continue
             else:
                 self.auto.click_element('使用', 'text', crop=(500 / 1920, 700 / 1080, 562 / 1920, 735 / 1080),
-                                        is_log=self.is_log)
+                                        is_log=self.is_log, threshold=self.template_threshold)
                 time.sleep(0.5)
 
             if timeout.reached():
@@ -519,7 +533,8 @@ class WaterBombModule(BaseTask):
 
     def update_extra_status(self):
         """检查当前对面是否被铐上手铐"""
-        if self.auto.find_element('app/resource/images/water_bomb/is_handcuffs.png', 'image', threshold=0.6,
+        if self.auto.find_element('app/resource/images/water_bomb/is_handcuffs.png', 'image',
+                                  threshold=self.template_threshold,
                                   crop=(980 / 1920, 30 / 1080, 1250 / 1920, 150 / 1080), is_log=self.is_log,
                                   match_method=cv2.TM_CCOEFF_NORMED):
             self.sustain = True
@@ -538,16 +553,20 @@ class WaterBombModule(BaseTask):
             (943 / 1920, 131 / 1080, 1237 / 1920, 186 / 1080))
         # enemy_hp_screenshot = self.auto.resize_image(enemy_hp_screenshot, (self.auto.scale_x, self.auto.scale_y))
         self.current_player_hp = self.auto.find_image_and_count(player_hp_screenshot,
-                                                                'app/resource/images/water_bomb/hp.png')
-        no_hp = self.auto.find_image_and_count(player_hp_screenshot, 'app/resource/images/water_bomb/no_hp.png')
+                                                                'app/resource/images/water_bomb/hp.png',
+                                                                threshold=self.count_threshold)
+        no_hp = self.auto.find_image_and_count(player_hp_screenshot, 'app/resource/images/water_bomb/no_hp.png',
+                                               threshold=self.count_threshold)
         self.max_hp = self.current_player_hp + no_hp
         self.current_enemy_hp = self.auto.find_image_and_count(enemy_hp_screenshot,
-                                                               'app/resource/images/water_bomb/hp.png')
+                                                               'app/resource/images/water_bomb/hp.png',
+                                                               threshold=self.count_threshold)
 
         # 更新两种子弹状态
         is_num = True
         if self.auto.find_element(f'app/resource/images/water_bomb/q.png', 'image',
                                   crop=(2057 / 2560, 1318 / 1440, 2137 / 2560, 1397 / 1440), is_log=self.is_log,
+                                  threshold=self.template_threshold,
                                   extract=[(255, 255, 255), 128],
                                   match_method=cv2.TM_CCOEFF_NORMED):
             # 在用了逆转后点了开始水弹
@@ -558,7 +577,7 @@ class WaterBombModule(BaseTask):
             for i in range(0, 5):
                 if self.auto.find_element(f'app/resource/images/water_bomb/{i}.png', 'image',
                                           crop=(2057 / 2560, 1318 / 1440, 2137 / 2560, 1397 / 1440),
-                                          threshold=0.6,
+                                          threshold=self.template_threshold,
                                           is_log=self.is_log,
                                           extract=[(255, 255, 255), 128],
                                           match_method=cv2.TM_CCOEFF_NORMED):
@@ -567,7 +586,7 @@ class WaterBombModule(BaseTask):
             for i in range(0, 5):
                 if self.auto.find_element(f'app/resource/images/water_bomb/{i}.png', 'image',
                                           crop=(2182 / 2560, 1318 / 1440, 2260 / 2560, 1397 / 1440),
-                                          threshold=0.6,
+                                          threshold=self.template_threshold,
                                           is_log=self.is_log,
                                           extract=[(255, 255, 255), 128],
                                           match_method=cv2.TM_CCOEFF_NORMED):
@@ -615,7 +634,7 @@ class WaterBombModule(BaseTask):
         crop_screenshot = self.auto.get_crop_form_first_screenshot(crop)
         for path in path_list:
             # if self.auto.find_element(path,'image',crop=crop):
-            for i in range(self.auto.find_image_and_count(crop_screenshot, path)):
+            for i in range(self.auto.find_image_and_count(crop_screenshot, path, threshold=self.count_threshold)):
                 key = path.split('/')[-1].split('.')[0]
                 current_items.append(key)
         return current_items

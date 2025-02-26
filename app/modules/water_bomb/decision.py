@@ -327,13 +327,6 @@ class Round:
                 win_prob = reverse_magic
                 strategy = 'reverse_magic'
 
-        # 进阶枪管
-        if 'advanced_barrel' in status.sitems and status.power == 1:
-            advanced_barrel = self.optimal_strategy(status.advanced_barrel())[0]
-            if advanced_barrel > win_prob:
-                win_prob = advanced_barrel
-                strategy = 'advanced_barrel'
-
         # 重置之锤
         if 'reset_hammer' in status.sitems:
             pass
@@ -382,6 +375,13 @@ class Round:
         if max(shoot_enemy, shoot_self) > win_prob or max(shoot_enemy, shoot_self) == 1:
             win_prob = max(shoot_enemy, shoot_self)
             strategy = shoot
+
+        # 进阶枪管
+        if 'advanced_barrel' in status.sitems and status.power == 1:
+            advanced_barrel = self.optimal_strategy(status.advanced_barrel())[0]
+            if advanced_barrel > win_prob:
+                win_prob = advanced_barrel
+                strategy = 'advanced_barrel'
 
         self.memo[str(status)] = win_prob, strategy
         return win_prob, strategy
