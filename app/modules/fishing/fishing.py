@@ -54,6 +54,7 @@ class FishingModule(BaseTask):
     def enter_fish(self):
         timeout = Timer(15).start()
         enter_flag = False
+        is_select_fish = False
         lure_type_index = config.ComboBox_lure_type.value
         lure_type_list = ['万能', '普通', '豪华', '至尊', '重量级', '巨型', '重量级', '巨型']
         while True:
@@ -73,8 +74,9 @@ class FishingModule(BaseTask):
                                               crop=(1200 / 2560, 686 / 1440, 1374 / 2560, 746 / 1440),
                                               is_log=self.is_log):
                         raise Exception(f'{lure_type_list[lure_type_index]}鱼饵不足')
-                    if lure_type_index != 0:
+                    if lure_type_index != 0 and not is_select_fish:
                         if self.select_lure():
+                            is_select_fish = True
                             self.auto.press_key(self.press_key)
                             time.sleep(2)
                             continue
