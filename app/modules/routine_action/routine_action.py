@@ -4,8 +4,10 @@ from app.common.config import config
 from app.modules.base_task.base_task import BaseTask
 
 
-class ActionModule(BaseTask):
-    def __init__(self):
+class ActionModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         pass
 
     def run(self):

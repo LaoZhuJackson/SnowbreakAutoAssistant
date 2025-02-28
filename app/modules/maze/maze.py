@@ -5,9 +5,10 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class MazeModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class MazeModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
 
     def run(self):
         self.fight()

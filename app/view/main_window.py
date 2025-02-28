@@ -140,7 +140,7 @@ class MainWindow(MSFluentWindow):
             return (time.time() - start) / runs
 
         ocr.instance_ocr()
-        logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
+        # logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
         logger.debug("初始化OCR完成")
 
     def initWindow(self):

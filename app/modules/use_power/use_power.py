@@ -2,17 +2,17 @@ import time
 
 from app.common.config import config
 from app.modules.automation.timer import Timer
-from app.modules.base_task.base_task import BaseTask
 
 
-class UsePowerModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class UsePowerModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.day_num = 0
         self.is_log = False
 
     def run(self):
-        self.back_to_home()
+        self.auto.back_to_home()
         if config.CheckBox_is_use_power.value:
             self.day_num = config.ComboBox_power_day.value + 1
             self.check_power()
@@ -88,7 +88,7 @@ class UsePowerModule(BaseTask):
             if timeout.reached():
                 self.logger.error("检查体力超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()
 
     def by_maneuver(self):
         """通过活动使用体力"""
@@ -170,4 +170,4 @@ class UsePowerModule(BaseTask):
             if timeout.reached():
                 self.logger.error("使用体力超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()

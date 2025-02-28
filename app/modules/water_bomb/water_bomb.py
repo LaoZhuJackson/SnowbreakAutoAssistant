@@ -10,11 +10,11 @@ from app.modules.base_task.base_task import BaseTask
 from app.modules.water_bomb.decision import Round, Status
 
 
-class WaterBombModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class WaterBombModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.is_log = False
-
         self.end_win = 1
         self.current_win = 0
         self.max_hp = 2  # 最大生命上限

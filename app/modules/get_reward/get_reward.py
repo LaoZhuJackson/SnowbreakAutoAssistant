@@ -4,18 +4,19 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class GetRewardModule(BaseTask):
-    def __init__(self):
-        super().__init__()
-        self.is_log = True
+class GetRewardModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
+        self.is_log = False
 
     def run(self):
-        self.back_to_home()
+        self.auto.back_to_home()
         self.receive_work()
         self.receive_credential()
 
     def receive_work(self):
-        timeout = Timer(300).start()
+        timeout = Timer(30).start()
         first_finish_flag = False
         execution_flag = False
         while True:
@@ -63,7 +64,7 @@ class GetRewardModule(BaseTask):
             if timeout.reached():
                 self.logger.error("领取任务奖励超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()
 
     def receive_credential(self):
         timeout = Timer(30).start()
@@ -106,7 +107,7 @@ class GetRewardModule(BaseTask):
                                                is_log=self.is_log):
                         continue
 
-            # if timeout.reached():
-            #     self.logger.error("领取凭证奖励超时")
-            #     break
-        self.back_to_home()
+            if timeout.reached():
+                self.logger.error("领取凭证奖励超时")
+                break
+        self.auto.back_to_home()

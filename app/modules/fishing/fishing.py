@@ -13,9 +13,10 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class FishingModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class FishingModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.bite_time = None
         self.start_time = None
         self.is_use_time_judge = None

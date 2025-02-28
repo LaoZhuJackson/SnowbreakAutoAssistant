@@ -7,9 +7,10 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class PersonModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class PersonModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.power_times = None
         self.config_data = config.toDict()
         self.select_person_dic = self.config_data["home_interface_person"]
@@ -20,7 +21,7 @@ class PersonModule(BaseTask):
         self.no_chip = False
 
     def run(self):
-        self.back_to_home()
+        self.auto.back_to_home()
         self.enter_person()
         for character in self.character_list:
             if character == '':
@@ -29,7 +30,7 @@ class PersonModule(BaseTask):
             if self.no_chip:
                 break
             self.scroll_page(-1, self.pages)
-        self.back_to_home()
+        self.auto.back_to_home()
 
     def enter_person(self):
         timeout = Timer(30).start()

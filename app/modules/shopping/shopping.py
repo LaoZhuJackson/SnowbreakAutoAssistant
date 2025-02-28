@@ -5,9 +5,10 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class ShoppingModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class ShoppingModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.config_data = config.toDict()
         self.commodity_dic = self.config_data["home_interface_shopping"]
         self.person_dic = self.config_data["home_interface_shopping_person"]
@@ -98,6 +99,14 @@ class ShoppingModule(BaseTask):
                         time.sleep(0.3)
                         is_selected = True
                         continue
+                    else:
+                        self.logger.warn(f'商店没有{text}')
+                        finish_list.append(text)
+                        # 更新text
+                        if len(temp_list) != 0:
+                            text = temp_list.pop(0)
+                        else:
+                            text = ""
                 if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
                     self.auto.press_key('esc')
                     time.sleep(0.2)
@@ -131,10 +140,10 @@ class ShoppingModule(BaseTask):
                     continue
             else:
                 break
-            # if timeout.reached():
-            #     self.logger.error("购买商品超时")
-            #     break
-        self.back_to_home()
+            if timeout.reached():
+                self.logger.error("购买商品超时")
+                break
+        self.auto.back_to_home()
 
     def collect_item(self):
         """

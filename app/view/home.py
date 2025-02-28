@@ -15,7 +15,7 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
 from app.common.config import config
 from app.common.logger import stdout_stream, stderr_stream, logger, original_stdout, original_stderr
 from app.common.style_sheet import StyleSheet
-from app.common.utils import get_all_children
+from app.common.utils import get_all_children, get_hwnd
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
@@ -38,36 +38,38 @@ class StartThread(QThread, BaseTask):
         super().__init__()
         self.checkbox_dic = checkbox_dic
         self._is_running = True
-        self.name_list_zh = ['自动登录', '领取体力', '商店购买', '刷体力', '人物碎片', '精神拟境', '领取奖励']
+        self.name_list_zh = ['自动登录', '领取物资', '商店购买', '刷体力', '人物碎片', '精神拟境', '领取奖励']
 
     def run(self):
         self.is_running_signal.emit(True)
-        self.auto.reset()
         try:
             for key, value in self.checkbox_dic.items():
                 if value:
                     index = int(re.search(r'\d+', key).group()) - 1
-                    logger.info(f"当前任务：{self.name_list_zh[index]}")
+                    self.logger.info(f"当前任务：{self.name_list_zh[index]}")
+                    if not self.init_auto('game'):
+                        return
+                    self.auto.reset()
                     if index == 0:
-                        module = EnterGameModule()
+                        module = EnterGameModule(self.auto, self.logger)
                         module.run()
                     elif index == 1:
-                        module = CollectSuppliesModule()
+                        module = CollectSuppliesModule(self.auto, self.logger)
                         module.run()
                     elif index == 2:
-                        module = ShoppingModule()
+                        module = ShoppingModule(self.auto, self.logger)
                         module.run()
                     elif index == 3:
-                        module = UsePowerModule()
+                        module = UsePowerModule(self.auto, self.logger)
                         module.run()
                     elif index == 4:
-                        module = PersonModule()
+                        module = PersonModule(self.auto, self.logger)
                         module.run()
                     elif index == 5:
-                        module = ChasmModule()
+                        module = ChasmModule(self.auto, self.logger)
                         module.run()
                     elif index == 6:
-                        module = GetRewardModule()
+                        module = GetRewardModule(self.auto, self.logger)
                         module.run()
                 else:
                     # 如果value为false则进行下一个任务的判断
@@ -250,6 +252,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                 sorted_dict = dict(
                     sorted(checkbox_dic.items(), key=lambda item: int(re.search(r'\d+', item[0]).group())))
                 # logger.debug(sorted_dict)
+                self.redirectOutput(self.textBrowser_log)
                 self.start_thread = StartThread(sorted_dict)
                 self.start_thread.start()
                 self.start_thread.is_running_signal.connect(self.handle_start)
@@ -272,11 +275,10 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.is_running = True
             self.set_checkbox_enable(False)
             self.PushButton_start.setText("停止")
+
             self.start_thread.start()
-            self.redirectOutput(self.textBrowser_log)
         else:
             self.is_running = False
-            self.start_thread.stop()
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
             # 后处理
@@ -285,14 +287,15 @@ class Home(QFrame, Ui_home, BaseInterface):
     def after_finish(self):
         if self.ComboBox_after_use.currentIndex() == 0:
             return
+        hwnd = get_hwnd(config.LineEdit_game_name.value, config.LineEdit_game_class.value)
         # 任务结束后的后处理
         if self.ComboBox_after_use.currentIndex() == 1:
-            win32gui.SendMessage(self.auto.hwnd, win32con.WM_CLOSE, 0, 0)
+            win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
             self.parent.close()
         elif self.ComboBox_after_use.currentIndex() == 2:
             self.parent.close()
         elif self.ComboBox_after_use.currentIndex() == 3:
-            win32gui.SendMessage(self.auto.hwnd, win32con.WM_CLOSE, 0, 0)
+            win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
 
     def set_checkbox_enable(self, enable: bool):
         for checkbox in self.findChildren(CheckBox):

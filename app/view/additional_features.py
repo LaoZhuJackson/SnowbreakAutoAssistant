@@ -346,6 +346,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
     def on_fishing_button_click(self):
         """钓鱼开始按键的信号处理"""
         if not self.is_running_fish:
+            self.redirectOutput(self.textBrowser_log_fishing)
             self.fishing_task = SubTask(FishingModule)
             self.fishing_task.is_running.connect(self.handle_fishing)
             self.fishing_task.start()
@@ -358,7 +359,6 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_fish, False)
             self.PushButton_start_fishing.setText('停止钓鱼')
             self.is_running_fish = True
-            self.redirectOutput(self.textBrowser_log_fishing)
         else:
             children = get_all_children(self.SimpleCardWidget_fish)
             for child in children:
@@ -373,6 +373,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
     def on_action_button_click(self):
         """周常行动开始按键的信号处理"""
         if not self.is_running_action:
+            self.redirectOutput(self.textBrowser_log_action)
             self.action_task = SubTask(ActionModule)
             self.action_task.is_running.connect(self.handle_action)
             self.action_task.start()
@@ -385,7 +386,6 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_action, False)
             self.PushButton_start_action.setText("停止行动")
             self.is_running_action = True
-            self.redirectOutput(self.textBrowser_log_action)
         else:
             children = get_all_children(self.SimpleCardWidget_action)
             for child in children:
@@ -398,6 +398,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def on_jigsaw_button_click(self):
         if not self.is_running_jigsaw:
+            self.redirectOutput(self.textBrowser_log_jigsaw)
             self.jigsaw_task = SubTask(JigsawModule)
             self.jigsaw_task.is_running.connect(self.handle_jigsaw)
             self.jigsaw_task.start()
@@ -409,7 +410,6 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_jigsaw, False)
             self.PushButton_start_jigsaw.setText("停止拼图")
             self.is_running_jigsaw = True
-            self.redirectOutput(self.textBrowser_log_jigsaw)
         else:
             self.set_simple_card_enable(self.SimpleCardWidget_jigsaw, True)
             self.PushButton_start_jigsaw.setText("开始拼图")
@@ -417,6 +417,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def on_water_bomb_button_click(self):
         if not self.is_running_water_bomb:
+            self.redirectOutput(self.textBrowser_log_water_bomb)
             self.water_bomb_task = SubTask(WaterBombModule)
             self.water_bomb_task.is_running.connect(self.handle_water_bomb)
             self.water_bomb_task.start()
@@ -428,7 +429,6 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_water_bomb, False)
             self.PushButton_start_water_bomb.setText('停止心动水弹')
             self.is_running_water_bomb = True
-            self.redirectOutput(self.textBrowser_log_water_bomb)
         else:
             self.set_simple_card_enable(self.SimpleCardWidget_water_bomb, True)
             self.PushButton_start_water_bomb.setText('开始心动水弹')
@@ -436,6 +436,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def on_alien_guardian_button_click(self):
         if not self.is_running_alien_guardian:
+            self.redirectOutput(self.textBrowser_log_alien_guardian)
             self.alien_guardian_task = SubTask(AlienGuardianModule)
             self.alien_guardian_task.is_running.connect(self.handle_alien_guardian)
             self.alien_guardian_task.start()
@@ -447,7 +448,6 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_alien_guardian, False)
             self.PushButton_start_alien_guardian.setText('停止异星守护')
             self.is_running_alien_guardian = True
-            self.redirectOutput(self.textBrowser_log_alien_guardian)
         else:
             self.set_simple_card_enable(self.SimpleCardWidget_alien_guardian, True)
             self.PushButton_start_alien_guardian.setText('开始异星守护')
@@ -455,6 +455,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def on_maze_button_click(self):
         if not self.is_running_maze:
+            self.redirectOutput(self.textBrowser_log_maze)
             self.maze_task = SubTask(MazeModule)
             self.maze_task.is_running.connect(self.handle_maze)
             self.maze_task.start()
@@ -466,7 +467,6 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_maze, False)
             self.PushButton_start_maze.setText('停止迷宫')
             self.is_running_maze = True
-            self.redirectOutput(self.textBrowser_log_maze)
         else:
             self.set_simple_card_enable(self.SimpleCardWidget_maze, True)
             self.PushButton_start_maze.setText('开始迷宫')

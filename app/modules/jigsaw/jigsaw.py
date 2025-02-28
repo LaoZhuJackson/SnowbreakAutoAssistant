@@ -229,9 +229,10 @@ pieces = [
 ]
 
 
-class JigsawModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class JigsawModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.board_cols = None
         self.board_rows = None
         self.eight_piece_placed = None

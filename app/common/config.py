@@ -50,7 +50,8 @@ class Config(QConfig):
     ])
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
     LineEdit_starter_name = ConfigItem("home_interface_enter", "LineEdit_starter_name", "西山居启动器-尘白禁区")
-    LineEdit_starter_class = ConfigItem("home_interface_enter", "LineEdit_starter_class", "Chrome_WidgetWin_0")
+    # LineEdit_starter_class = ConfigItem("home_interface_enter", "LineEdit_starter_class", "Chrome_WidgetWin_0")
+    LineEdit_starter_class = ConfigItem("home_interface_enter", "LineEdit_starter_class", "Intermediate D3D Window")
     LineEdit_game_name = ConfigItem("home_interface_enter", "LineEdit_game_name", "尘白禁区")
     LineEdit_game_class = ConfigItem("home_interface_enter", "LineEdit_game_class", "UnrealWindow")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,

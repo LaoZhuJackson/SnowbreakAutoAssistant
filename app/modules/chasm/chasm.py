@@ -5,16 +5,17 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class ChasmModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class ChasmModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.is_log = False
 
     def run(self):
         if not self.is_in_time_range():
             self.logger.warn('当前未开放拟境')
         else:
-            self.back_to_home()
+            self.auto.back_to_home()
             self.chasm()
             self.receive_reward()
 
@@ -102,7 +103,7 @@ class ChasmModule(BaseTask):
             if timeout.reached():
                 self.logger.error("领取拟境奖励超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()
 
     @staticmethod
     def is_after_wednesday_4am():

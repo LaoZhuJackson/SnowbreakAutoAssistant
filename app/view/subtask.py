@@ -7,8 +7,7 @@ import win32gui
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from app.common.config import config
-from app.common.logger import logger, original_stdout, original_stderr
-from app.modules.automation.automation import instantiate_automation
+from app.common.logger import logger
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 from app.modules.ocr import ocr
@@ -16,12 +15,12 @@ from app.modules.ocr import ocr
 
 class SubTask(QThread, BaseTask):
     is_running = pyqtSignal(bool)
-
     def __init__(self, module):
         super().__init__()
-        self.module = module()
+        if not self.init_auto('game'):
+            return
+        self.module = module(self.auto, self.logger)
         self.logger = logger
-        self.chose_auto()
 
     def run(self):
         self.auto.reset()
@@ -36,15 +35,12 @@ class SubTask(QThread, BaseTask):
         self.is_running.emit(False)
 
 
-class AdjustColor(QThread):
+class AdjustColor(QThread, BaseTask):
     color_changed = pyqtSignal()
-
     def __init__(self):
         super().__init__()
         self.hsv_value = None
         self.logger = logger
-        self.auto = None
-        self.chose_auto()
 
     def run(self):
         self.auto.take_screenshot()
@@ -56,31 +52,6 @@ class AdjustColor(QThread):
         cv2.setMouseCallback("Select yellow area", self.pick_color, img_np)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
-    def chose_auto(self, only_game=False):
-        """
-        自动选择auto，有游戏窗口时选游戏，没有游戏窗口时选启动器，都没有的时候循环，寻找频率1次/s
-        :return:
-        """
-        timeout = Timer(20).start()
-        while True:
-            # 每次循环重新导入
-            from app.modules.automation.automation import auto_starter, auto_game
-            if win32gui.FindWindow(None, config.LineEdit_game_name.value) or only_game:
-                if not auto_game:
-                    instantiate_automation(auto_type='game')  # 尝试实例化 auto_game
-                self.auto = auto_game
-                flag = 'game'
-            else:
-                if not auto_starter:
-                    instantiate_automation(auto_type='starter')  # 尝试实例化 auto_starter
-                self.auto = auto_starter
-                flag = 'starter'
-            if self.auto:
-                return flag
-            if timeout.reached():
-                logger.error("获取auto超时")
-                break
 
     def pick_color(self, event, x, y, flags, image):
         """鼠标回调函数，用于从用户点击的位置提取颜色"""

@@ -5,13 +5,15 @@ from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
 
-class CollectSuppliesModule(BaseTask):
-    def __init__(self):
+class CollectSuppliesModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         super().__init__()
 
     def run(self):
         # 确保在主页面
-        self.back_to_home()
+        self.auto.back_to_home()
 
         if config.CheckBox_mail.value:
             self.receive_mail()
@@ -44,7 +46,7 @@ class CollectSuppliesModule(BaseTask):
             if timeout.reached():
                 self.logger.error("领取好友体力超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()
 
     def station_power(self):
         confirm_flag = False
@@ -76,7 +78,7 @@ class CollectSuppliesModule(BaseTask):
             if timeout.reached():
                 self.logger.error("购买每日物资配给箱超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()
 
     def receive_mail(self):
         timeout = Timer(30).start()
@@ -98,7 +100,7 @@ class CollectSuppliesModule(BaseTask):
             if timeout.reached():
                 self.logger.error("领取邮箱资源超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()
 
     def receive_fish_bait(self):
         timeout = Timer(30).start()
@@ -128,4 +130,4 @@ class CollectSuppliesModule(BaseTask):
             if timeout.reached():
                 self.logger.error("领取鱼饵超时")
                 break
-        self.back_to_home()
+        self.auto.back_to_home()

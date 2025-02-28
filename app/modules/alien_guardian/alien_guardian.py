@@ -4,13 +4,11 @@ from app.common.config import config
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
-# from paddleocr import PaddleOCR
-from app.modules.ocr import ocr
 
-
-class AlienGuardianModule(BaseTask):
-    def __init__(self):
-        super().__init__()
+class AlienGuardianModule:
+    def __init__(self, auto, logger):
+        self.auto = auto
+        self.logger = logger
         self.priority = [
             # 优先的伙伴
             "零度射线",

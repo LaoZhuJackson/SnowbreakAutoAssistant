@@ -3,11 +3,6 @@ import win32api
 import win32con
 import win32gui
 
-from app.common.config import config
-from app.common.logger import logger
-# from app.modules.automation.automation import instantiate_automation
-from app.modules.automation.timer import Timer
-
 
 def random_normal_distribution_int(a, b, n=15):
     """
@@ -79,3 +74,28 @@ def add_noise(image, noise_factor=0.01):
     noise = np.random.normal(0, 1, image.shape) * noise_factor
     noisy_image = np.clip(image + noise, 0, 255).astype(np.uint8)
     return noisy_image
+
+
+def enumerate_child_windows(parent_hwnd):
+    def callback(handle, windows):
+        windows.append(handle)
+        return True
+
+    child_windows = []
+    win32gui.EnumChildWindows(parent_hwnd, callback, child_windows)
+    return child_windows
+
+
+def get_hwnd(window_title, window_class):
+    """根据传入的窗口名和类型确定可操作的句柄"""
+    hwnd = win32gui.FindWindow(None, window_title)
+    handle_list = []
+    if hwnd:
+        handle_list.append(hwnd)
+        handle_list.extend(enumerate_child_windows(hwnd))
+        for handle in handle_list:
+            class_name = win32gui.GetClassName(handle)
+            if class_name == window_class:
+                # 找到需要的窗口句柄
+                return handle
+    return None

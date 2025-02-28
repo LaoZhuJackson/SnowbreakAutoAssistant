@@ -8,6 +8,8 @@ class AutoFModule(BaseTask):
         super().__init__()
 
     def run(self):
+        if not self.init_auto('game'):
+            return
         while True:
             self.auto.take_screenshot()
             if self.auto.find_element("app/resource/images/fishing/collect.png", "image",

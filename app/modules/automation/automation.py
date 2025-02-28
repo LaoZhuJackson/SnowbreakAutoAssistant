@@ -2,17 +2,13 @@ import functools
 import math
 import threading
 import time
-import traceback
 
 import cv2
-import numpy as np
 import win32gui
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils
-from app.common.logger import logger
-from app.common.singleton import SingletonMeta
-from app.common.utils import random_rectangle_point, add_noise
+from app.common.utils import random_rectangle_point, get_hwnd
 from app.modules.automation.input import Input
 from app.modules.automation.screenshot import Screenshot
 from app.modules.automation.timer import Timer
@@ -45,9 +41,6 @@ class Automation:
     """
     自动化管理类，用于管理与游戏窗口相关的自动化操作。
     """
-
-    # _screenshot_interval = Timer(0.1)
-
     def __init__(self, window_title, window_class, logger):
         """
         :param window_title: 游戏窗口的标题。
@@ -55,7 +48,7 @@ class Automation:
         :param logger: 用于记录日志的Logger对象，可选参数。
         """
         # 启动器截图和操作的窗口句柄不同
-        self.screenshot_hwnd = None
+        self.screenshot_hwnd = win32gui.FindWindow(None, window_title)
         self.window_title = window_title
         self.window_class = window_class
         self.is_starter = window_class != config.LineEdit_game_class.value
@@ -91,31 +84,36 @@ class Automation:
         self.key_down = self.input_handler.key_down
         self.key_up = self.input_handler.key_up
 
-    def enumerate_child_windows(self, parent_hwnd):
-        def callback(handle, windows):
-            windows.append(handle)
-            return True
-
-        child_windows = []
-        win32gui.EnumChildWindows(parent_hwnd, callback, child_windows)
-        return child_windows
-
     def get_hwnd(self):
         """根据传入的窗口名和类型确定可操作的句柄"""
-        hwnd = win32gui.FindWindow(None, self.window_title)
-        handle_list = []
+        hwnd = get_hwnd(self.window_title, self.window_class)
         if hwnd:
-            handle_list.append(hwnd)
-            self.screenshot_hwnd = hwnd
-            handle_list.extend(self.enumerate_child_windows(hwnd))
-            for handle in handle_list:
-                class_name = win32gui.GetClassName(handle)
-                if class_name == self.window_class:
-                    # 找到需要的窗口句柄
-                    self.logger.info(f"找到窗口 {self.window_title} 的句柄为：{handle}")
-                    return handle
+            self.logger.info(f"找到窗口 {self.window_title} 的句柄为：{hwnd}")
+            return hwnd
         else:
             raise ValueError(f"未找到{self.window_title}的句柄，请确保对应窗口已打开")
+
+    def back_to_home(self):
+        timeout = Timer(10).start()
+        while True:
+            self.take_screenshot()
+            if self.find_element('基地', 'text', crop=(
+                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.find_element('任务', 'text', crop=(
+                    1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080)):
+                break
+            elif self.click_element('app/resource/images/reward/home.png', 'image',
+                                    crop=(1635 / 1920, 18 / 1080, 1701 / 1920, 74 / 1080)):
+                time.sleep(0.5)
+                continue
+            elif self.click_element("取消", "text", crop=(463 / 1920, 728 / 1080, 560 / 1920, 790 / 1080)):
+                break
+            else:
+                self.press_key('esc')
+                time.sleep(0.5)
+
+            if timeout.reached():
+                self.logger.error("返回主页面超时")
+                break
 
     @atoms
     def take_screenshot(self, crop=(0, 0, 1, 1), is_interval=True):
@@ -507,39 +505,39 @@ class Automation:
             return None
 
 
-# 用于保存是否已实例化
-auto_starter = None
-auto_game = None
-
-
-def instantiate_automation(auto_type: str):
-    global auto_starter, auto_game
-
-    # 尝试实例化 starter
-    if auto_type == 'starter':
-        try:
-            auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
-        except Exception as e:
-            logger.warn(f"未能成功实例化starter：{e}")
-
-    elif auto_type == 'game':
-        try:
-            auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
-        except Exception as e:
-            logger.warn(f"未能成功实例化game：{e}")
-    else:
-        try:
-            auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
-        except Exception as e:
-            logger.warn(f"未能成功实例化starter：{e}")
-        try:
-            auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
-        except Exception as e:
-            logger.warn(f"未能成功实例化game：{e}")
-
-
-# 调用实例化方法
-instantiate_automation('all')
+# # 用于保存是否已实例化
+# auto_starter = None
+# auto_game = None
+#
+#
+# def instantiate_automation(auto_type: str):
+#     global auto_starter, auto_game
+#
+#     # 尝试实例化 starter
+#     if auto_type == 'starter':
+#         try:
+#             auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
+#         except Exception as e:
+#             logger.warn(f"未能成功实例化starter：{e}")
+#
+#     elif auto_type == 'game':
+#         try:
+#             auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
+#         except Exception as e:
+#             logger.warn(f"未能成功实例化game：{e}")
+#     else:
+#         try:
+#             auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
+#         except Exception as e:
+#             logger.warn(f"未能成功实例化starter：{e}")
+#         try:
+#             auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
+#         except Exception as e:
+#             logger.warn(f"未能成功实例化game：{e}")
+#
+#
+# # 调用实例化方法
+# instantiate_automation('all')
 
 if __name__ == '__main__':
     pass
