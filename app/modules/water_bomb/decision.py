@@ -2,7 +2,7 @@
 """
 模块名称: 心动水弹决策推荐
 模块作者: polynya-code@outlook.com
-最后修改日期: 2025-02-20
+最后修改日期: 2025-02-28
 """
 from copy import deepcopy
 from typing import List, Dict, Tuple
@@ -256,9 +256,9 @@ class Round:
             return 1.0, 'end'
         elif status.live + status.blank == 0:
             if status.shp == status.ehp:  # 血量相同 (当前谁操作，当前谁胜率就高)
-                return 0.5, 'feed'
+                return 0.5, 'reload'
             else:  # 血量不同 先验胜率为血量之比
-                return (status.shp / (status.shp + status.ehp)), 'feed'
+                return (status.shp / (status.shp + status.ehp)), 'reload'
 
         # 记忆化检查
         if str(status) in self.memo:
@@ -360,6 +360,9 @@ class Round:
                 shoot_self += blank_prob * (1 - self.optimal_strategy(status.shoot(False, False))[0])
             else:
                 shoot_self += blank_prob * self.optimal_strategy(status.shoot(False, False))[0]
+
+        shoot_self = round(shoot_self, 2)
+        shoot_enemy = round(shoot_enemy, 2)
 
         # 取最优策略并记忆化
         if (live_prob == 1.0 and status.reversal) or (blank_prob == 1.0 and not status.reversal):

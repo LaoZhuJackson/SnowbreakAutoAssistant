@@ -43,6 +43,7 @@ class ChasmModule(BaseTask):
                                            is_log=self.is_log,
                                            extract=[(176, 175, 179), 128]):
                     enter_second = True
+                    time.sleep(0.5)
                     continue
 
             if enter_second and first_finish_flag and not self.auto.find_element("快速测评", "text",
@@ -99,7 +100,7 @@ class ChasmModule(BaseTask):
                     continue
 
             if timeout.reached():
-                self.logger.error("精神拟境超时")
+                self.logger.error("领取拟境奖励超时")
                 break
         self.back_to_home()
 

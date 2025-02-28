@@ -1,3 +1,5 @@
+import ctypes
+
 import cv2
 import numpy as np
 import win32api
@@ -26,6 +28,7 @@ def is_fullscreen(hwnd):
         return True
     else:
         return False
+
 
 class ImageUtils:
     @staticmethod
@@ -179,48 +182,20 @@ class ImageUtils:
         return resized_image
 
     @staticmethod
-    def resize_screenshot(hwnd, screenshot, crop, is_starter):
-        """裁剪后缩放"""
-        # 获取带标题的窗口尺寸
-        left, top, right, bottom = win32gui.GetWindowRect(hwnd)
-        # print(left, top, right, bottom)
-        w = right - left
-        h = bottom - top
-
-        # 计算裁剪区域裁剪图像
-        img_cropped = ImageUtils.crop_image(screenshot, crop, hwnd)
-
-        # 缩放图像以自适应分辨率图像识别
-        if is_starter:
-            scale_x = 1
-            scale_y = 1
-        else:
-            scale_x = 1920 / w
-            scale_y = 1080 / h
-        # if img_cropped is None or img_cropped.size == 0:
-        #     print(f"{img_cropped.size=}")
-        try:
-            img_resized = cv2.resize(img_cropped,
-                                     (int(img_cropped.shape[1] * scale_x), int(img_cropped.shape[0] * scale_y)),
-                                     interpolation=cv2.INTER_CUBIC)
-        except Exception as e:
-            print(e)
-            return None
-
-        relative_pos = (
-            int(w * crop[0]),
-            int(h * crop[1]),
-            int(w * crop[2]),
-            int(h * crop[3])
-        )
-
-        return img_resized, relative_pos
-
-    @staticmethod
     def show_ndarray(image, title="show_ndarray"):
+        ctypes.windll.user32.SetProcessDPIAware()
         cv2.imshow(title, image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    @staticmethod
+    def show_extract(path: str, extract: list):
+        image = cv2.imread(path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        letter = extract[0]
+        threshold = extract[1]
+        image = ImageUtils.extract_letters(image, letter, threshold)
+        ImageUtils.show_ndarray(image)
 
     @staticmethod
     def intersected(top_left1, botton_right1, top_left2, botton_right2):

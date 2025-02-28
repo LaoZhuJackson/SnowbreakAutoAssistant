@@ -97,7 +97,7 @@ class WaterBombModule(BaseTask):
 
     def fight(self):
         """对战阶段"""
-        timeout = Timer(600).start()
+        timeout = Timer(1200).start()
         self.is_speed_up = False
         is_open_items = False
         is_player_round = False
@@ -198,7 +198,8 @@ class WaterBombModule(BaseTask):
                                 elif current_strategy == 'handcuffs':
                                     time.sleep(0.5)
                                     if self.auto.find_element('不可继续', 'text',
-                                                              crop=(1292 / 2560, 690 / 1440, 1550 / 2560, 750 / 1440)):
+                                                              crop=(1200 / 2560, 650 / 1440, 1600 / 2560, 800 / 1440),
+                                                              take_screenshot=True):
                                         self.sustain = True
                                     self.have_extra_shoot = True
                                 elif current_strategy == 'advanced_barrel':
@@ -357,14 +358,16 @@ class WaterBombModule(BaseTask):
                 for ocr_result in self.auto.ocr_result:
                     if '空' in ocr_result[0] or self.auto.find_element('app/resource/images/water_bomb/blank.png',
                                                                        'image', crop=(
-                            1470 / 2560, 1290 / 1440, 1640 / 2560, 1364 / 1440), match_method=cv2.TM_CCOEFF_NORMED,
+                                    1470 / 2560, 1290 / 1440, 1640 / 2560, 1364 / 1440),
+                                                                       match_method=cv2.TM_CCOEFF_NORMED,
                                                                        is_log=self.is_log,
                                                                        threshold=self.template_threshold):
                         self.bullet_type = 0
                         return
                     elif '水' in ocr_result[0] or self.auto.find_element('app/resource/images/water_bomb/live.png',
                                                                          'image', crop=(
-                            1470 / 2560, 1290 / 1440, 1640 / 2560, 1364 / 1440), match_method=cv2.TM_CCOEFF_NORMED,
+                                    1470 / 2560, 1290 / 1440, 1640 / 2560, 1364 / 1440),
+                                                                         match_method=cv2.TM_CCOEFF_NORMED,
                                                                          is_log=self.is_log,
                                                                          threshold=self.template_threshold):
                         self.bullet_type = 1
@@ -460,7 +463,7 @@ class WaterBombModule(BaseTask):
                 return False
 
     def scroll_to_bottom(self):
-        self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -550)
+        self.auto.mouse_scroll(int(960 / self.auto.scale_x), int(540 / self.auto.scale_y), -550)
 
     def select_and_steal(self, steal_item):
         """选择物品然后偷"""
@@ -472,29 +475,15 @@ class WaterBombModule(BaseTask):
         while True:
             self.auto.take_screenshot()
 
-            if self.auto.find_element('请选择', 'text', crop=(804 / 1920, 516 / 1080, 1125 / 1920, 560 / 1080),
+            if self.auto.find_element('确定', 'text', crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
                                       is_log=self.is_log, threshold=self.template_threshold):
-                select_flag = False
-            if self.auto.find_element('app/resource/images/water_bomb/steal_select.png', 'image',
-                                      crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080), is_log=self.is_log,
-                                      threshold=self.template_threshold,
-                                      match_method=cv2.TM_CCOEFF_NORMED):
-                select_flag = True
-            if select_flag and not self.auto.find_element('确定', 'text',
-                                                          crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
-                                                          is_log=self.is_log, threshold=self.template_threshold):
-                return True
-            # 未选择物品时
-            if not select_flag:
                 self.auto.click_element(path, 'image', crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080),
                                         is_log=self.is_log, threshold=self.template_threshold,
                                         match_method=cv2.TM_CCOEFF_NORMED)
-                time.sleep(0.5)
-                continue
-            else:
                 self.auto.click_element('确定', 'text', crop=(887 / 1920, 821 / 1080, 967 / 1920, 863 / 1080),
                                         is_log=self.is_log, threshold=self.template_threshold)
-                time.sleep(0.3)
+            else:
+                return True
 
             if timeout.reached():
                 self.logger.error('偷道具超时')
@@ -538,8 +527,8 @@ class WaterBombModule(BaseTask):
                                   crop=(980 / 1920, 30 / 1080, 1250 / 1920, 150 / 1080), is_log=self.is_log,
                                   match_method=cv2.TM_CCOEFF_NORMED):
             self.sustain = True
-            if not self.have_extra_shoot:
-                self.sustain = False
+            # if not self.have_extra_shoot:
+            #     self.sustain = False
         else:
             self.sustain = False
 

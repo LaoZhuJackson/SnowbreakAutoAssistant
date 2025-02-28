@@ -131,6 +131,7 @@ class Config(QConfig):
 
     # 设置相关
     enter_interface = OptionsConfigItem("setting_personal", "enter_interface", 0, OptionsValidator([0, 1, 2]))
+    server_interface = OptionsConfigItem("setting_personal", "server_interface", 0, OptionsValidator([0, 1, 2, 3]))
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
     update_proxies = ConfigItem("Update", "update_proxies", '')
     cpu_support_avx2 = ConfigItem("about", "cpu_support_avx2", None)
@@ -170,8 +171,8 @@ class Config(QConfig):
     LineEdit_jigsaw_piece_11 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_11", "0")
     # 心动水弹相关
     SpinBox_water_win_times = ConfigItem("add_water", "SpinBox_water_win_times", 5)
-    Slider_count_threshold = ConfigItem("add_water", "Slider_count_threshold", 70)
-    Slider_template_threshold = ConfigItem("add_water", "Slider_template_threshold", 70)
+    Slider_count_threshold = ConfigItem("add_water", "Slider_count_threshold", 60)
+    Slider_template_threshold = ConfigItem("add_water", "Slider_template_threshold", 60)
     # 异星守护相关
     ComboBox_mode = OptionsConfigItem("add_alien", "ComboBox_mode", 0, OptionsValidator([0, 1]))
 

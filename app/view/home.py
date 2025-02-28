@@ -279,8 +279,12 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.start_thread.stop()
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
+            # 后处理
+            self.after_finish()
 
     def after_finish(self):
+        if self.ComboBox_after_use.currentIndex() == 0:
+            return
         # 任务结束后的后处理
         if self.ComboBox_after_use.currentIndex() == 1:
             win32gui.SendMessage(self.auto.hwnd, win32con.WM_CLOSE, 0, 0)

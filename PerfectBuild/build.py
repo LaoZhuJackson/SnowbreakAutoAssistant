@@ -98,7 +98,7 @@ class PerfectBuild:
             "--plugin-enable=pyqt5",
             f"--output-dir={output_dir}",
             "--windows-uac-admin",
-            # "--windows-console-mode=disable",
+            "--windows-console-mode=disable",
             # 添加文件
             "--include-data-file=patch/scipy.libs/.load-order-scipy-1.10.1=scipy.libs/.load-order-scipy-1.10.1",
             "--include-data-file=patch/shapely.libs/.load-order-shapely-2.0.7=shapely.libs/.load-order-shapely-2.0.7",

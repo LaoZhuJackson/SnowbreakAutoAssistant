@@ -111,14 +111,25 @@ class SettingInterface(ScrollArea):
         # )
 
         # update software
-        self.updateSoftwareGroup = SettingCardGroup(
-            self.tr("Software update"), self.scrollWidget)
+        self.aboutSoftwareGroup = SettingCardGroup(
+            self.tr("软件相关"), self.scrollWidget)
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
             self.tr('Check for updates when the application starts'),
             '版本更稳定且拥有更多新功能',
             configItem=config.checkUpdateAtStartUp,
-            parent=self.updateSoftwareGroup
+            parent=self.aboutSoftwareGroup
+        )
+        self.serverCard = ComboBoxSettingCard(
+            config.server_interface,
+            FIF.GAME,
+            '游戏渠道选择',
+            self.tr("请选择你所在的区服，不确定启动器是哪个的看任务管理器进程名字"),
+            texts=[
+                self.tr('官服-西山居启动器'), self.tr('官服-尘白禁区启动器'),
+                self.tr('b服'), self.tr('国际服')
+            ],
+            parent=self.personalGroup
         )
 
         # application
@@ -180,7 +191,8 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.zoomCard)
         # self.personalGroup.addSettingCard(self.languageCard)
 
-        self.updateSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
+        self.aboutSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
+        self.aboutSoftwareGroup.addSettingCard(self.serverCard)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)
@@ -190,7 +202,7 @@ class SettingInterface(ScrollArea):
         self.expandLayout.setSpacing(28)
         self.expandLayout.setContentsMargins(36, 10, 36, 0)
         self.expandLayout.addWidget(self.personalGroup)
-        self.expandLayout.addWidget(self.updateSoftwareGroup)
+        self.expandLayout.addWidget(self.aboutSoftwareGroup)
         self.expandLayout.addWidget(self.aboutGroup)
 
     def _showRestartTooltip(self):
