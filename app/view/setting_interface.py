@@ -125,10 +125,7 @@ class SettingInterface(ScrollArea):
             FIF.GAME,
             '游戏渠道选择',
             self.tr("请选择你所在的区服，不确定启动器是哪个的看任务管理器进程名字"),
-            texts=[
-                self.tr('官服-西山居启动器'), self.tr('官服-尘白禁区启动器'),
-                self.tr('b服'), self.tr('国际服')
-            ],
+            texts=[self.tr('官服'), self.tr('b服'), self.tr('国际服')],
             parent=self.personalGroup
         )
 

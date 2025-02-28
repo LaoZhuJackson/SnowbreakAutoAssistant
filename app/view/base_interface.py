@@ -38,27 +38,6 @@ class BaseInterface:
     def toggle_button(self, running):
         pass
 
-    def init_auto(self, name, switch=False):
-        auto_dict = {
-            'game': [config.LineEdit_game_name.value, config.LineEdit_game_class.value],
-            'starter': [config.LineEdit_starter_name.value, config.LineEdit_starter_class.value]
-        }
-        if self.auto is None:
-            try:
-                self.auto = Automation(auto_dict[name][0], auto_dict[name][1], self.logger)
-                return True
-            except Exception as e:
-                self.logger.error(f'初始化auto失败：{e}')
-                return False
-        else:
-            if switch:
-                try:
-                    self.auto = Automation(auto_dict[name][0], auto_dict[name][1], self.logger)
-                    return True
-                except Exception as e:
-                    self.logger.error(f'切换auto失败：{e}')
-                    return False
-
     # def chose_auto(self, only_game=False):
     #     """
     #     自动选择auto，有游戏窗口时选游戏，没有游戏窗口时选启动器，都没有的时候循环，寻找频率1次/s

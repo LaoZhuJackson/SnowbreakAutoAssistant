@@ -51,7 +51,8 @@ class Automation:
         self.screenshot_hwnd = win32gui.FindWindow(None, window_title)
         self.window_title = window_title
         self.window_class = window_class
-        self.is_starter = window_class != config.LineEdit_game_class.value
+        # self.is_starter = window_class != config.LineEdit_game_class.value
+        self.is_starter = False
         self.logger = logger
         self.hwnd = self.get_hwnd()
         self.screenshot = Screenshot(self.logger)

@@ -17,10 +17,16 @@ class BaseTask:
     def stop(self):
         self.auto.stop()
 
-    def init_auto(self, name, switch=False):
+    def init_auto(self, name):
+        if config.server_interface.value != 2:
+            game_name = '尘白禁区'
+            game_class = 'UnrealWindow'
+        else:
+            game_name = 'Snowbreak: Containment Zone'  # 国际服
+            game_class = 'UnrealWindow'
         auto_dict = {
-            'game': [config.LineEdit_game_name.value, config.LineEdit_game_class.value],
-            'starter': [config.LineEdit_starter_name.value, config.LineEdit_starter_class.value]
+            'game': [game_name, game_class],
+            # 'starter': [config.LineEdit_starter_name.value, config.LineEdit_starter_class.value]
         }
         if self.auto is None:
             try:

@@ -5,9 +5,7 @@ import re
 import subprocess
 import threading
 import time
-import traceback
 
-import pyautogui
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication, QFrame
@@ -23,7 +21,6 @@ from .trigger import Trigger
 from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
-from ..common.setting import VERSION
 from ..common.signal_bus import signalBus
 from ..modules.ocr import ocr
 from ..ui.display_interface import DisplayInterface
@@ -85,10 +82,6 @@ class MainWindow(MSFluentWindow):
             update_thread.start()
 
     def open_starter(self):
-        windows = pyautogui.getWindowsWithTitle(config.LineEdit_starter_name.value)
-        if windows:
-            logger.debug("已打开游戏")
-            return
         starter_path = config.LineEdit_starter_directory.value
         try:
             subprocess.Popen(starter_path)
