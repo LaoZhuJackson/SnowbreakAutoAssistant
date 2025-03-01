@@ -49,11 +49,6 @@ class Config(QConfig):
         ["勇者游戏", "2025-1-25", "2025-2-8"],
     ])
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
-    # LineEdit_starter_name = ConfigItem("home_interface_enter", "LineEdit_starter_name", "西山居启动器-尘白禁区")
-    # LineEdit_starter_class = ConfigItem("home_interface_enter", "LineEdit_starter_class", "Chrome_WidgetWin_0")
-    # LineEdit_starter_class = ConfigItem("home_interface_enter", "LineEdit_starter_class", "Intermediate D3D Window")
-    # LineEdit_game_name = ConfigItem("home_interface_enter", "LineEdit_game_name", "尘白禁区")
-    # LineEdit_game_class = ConfigItem("home_interface_enter", "LineEdit_game_class", "UnrealWindow")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
                                             BoolValidator())
 
@@ -134,6 +129,8 @@ class Config(QConfig):
     enter_interface = OptionsConfigItem("setting_personal", "enter_interface", 0, OptionsValidator([0, 1, 2]))
     server_interface = OptionsConfigItem("setting_personal", "server_interface", 0, OptionsValidator([0, 1, 2, 3]))
     checkUpdateAtStartUp = ConfigItem("Update", "CheckUpdateAtStartUp", True, BoolValidator())
+    isLog = ConfigItem("setting_personal", "isLog", False, BoolValidator())
+    showScreenshot = ConfigItem("setting_personal", "showScreenshot", False, BoolValidator())
     update_proxies = ConfigItem("Update", "update_proxies", '')
     cpu_support_avx2 = ConfigItem("about", "cpu_support_avx2", None)
 

@@ -6,8 +6,10 @@ import subprocess
 import threading
 import time
 
+import cv2
+import numpy as np
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
-from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtGui import QIcon, QColor, QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QFrame
 from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox, Dialog
 from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
@@ -23,6 +25,7 @@ from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.signal_bus import signalBus
 from ..modules.ocr import ocr
+from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
 from ..common import resource
 
@@ -65,6 +68,7 @@ class MainWindow(MSFluentWindow):
         self.splashScreen.finish()
 
         self.updater = None
+        self.message_window = None
 
         # start theme listener
         self.themeListener.start()
@@ -95,6 +99,7 @@ class MainWindow(MSFluentWindow):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
         signalBus.switchToSampleCard.connect(self.switchToSample)
         signalBus.showMessageBox.connect(self.showMessageBox)
+        signalBus.showScreenshot.connect(self.showScreenshot)
         # signalBus.check_ocr_progress.connect(self.update_ring)
 
     def initNavigation(self):
@@ -133,7 +138,7 @@ class MainWindow(MSFluentWindow):
             return (time.time() - start) / runs
 
         ocr.instance_ocr()
-        # logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
+        logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
         logger.debug("初始化OCR完成")
 
     def initWindow(self):
@@ -311,5 +316,45 @@ class MainWindow(MSFluentWindow):
             w.scrollToAboutCard()
             if self.updater:
                 self.settingInterface.start_download(self.updater)
+        else:
+            pass
+
+    def showScreenshot(self, screenshot):
+        def ndarray_to_qpixmap(ndarray):
+            # 确保ndarray是3维的 (height, width, channels)
+            if ndarray.ndim == 2:
+                ndarray = np.expand_dims(ndarray, axis=-1)
+                ndarray = np.repeat(ndarray, 3, axis=-1)
+
+            height, width, channel = ndarray.shape
+            bytes_per_line = 3 * width
+            # 显示需要rgb格式
+            ndarray = cv2.cvtColor(ndarray, cv2.COLOR_BGR2RGB)
+
+            # 将ndarray转换为QImage
+            qimage = QImage(ndarray.data, width, height, bytes_per_line, QImage.Format_RGB888)
+
+            # 将QImage转换为QPixmap
+            return QPixmap.fromImage(qimage)
+
+        def save_screenshot(ndarray):
+            # 检查 temp 目录是否存在，如果不存在则创建
+            if not os.path.exists('temp'):
+                os.makedirs('temp')
+            # cv2保存是bgr格式
+            cv2.imwrite(f'temp/{time.time()}.png', ndarray)
+
+        save_screenshot(screenshot)
+
+        if not isinstance(self.message_window, CustomMessageBox):
+            self.message_window = CustomMessageBox(self, '当前截图', 'image')
+        screenshot_pixmap = ndarray_to_qpixmap(screenshot)
+        # 按比例缩放图像
+        scaled_pixmap = screenshot_pixmap.scaled(
+            200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
+        self.message_window.content.setPixmap(scaled_pixmap)
+        if self.message_window.exec():
+            pass
         else:
             pass

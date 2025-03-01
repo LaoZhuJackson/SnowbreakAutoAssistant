@@ -12,6 +12,8 @@ class UsePowerModule:
         self.is_log = False
 
     def run(self):
+        self.is_log = config.isLog.value
+
         self.auto.back_to_home()
         if config.CheckBox_is_use_power.value:
             self.day_num = config.ComboBox_power_day.value + 1

@@ -8,6 +8,8 @@ import win32gui
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils
+from app.common.matcher import Matcher
+from app.common.signal_bus import signalBus
 from app.common.utils import random_rectangle_point, get_hwnd
 from app.modules.automation.input import Input
 from app.modules.automation.screenshot import Screenshot
@@ -41,6 +43,7 @@ class Automation:
     """
     自动化管理类，用于管理与游戏窗口相关的自动化操作。
     """
+
     def __init__(self, window_title, window_class, logger):
         """
         :param window_title: 游戏窗口的标题。
@@ -102,8 +105,8 @@ class Automation:
                     1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.find_element('任务', 'text', crop=(
                     1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080)):
                 break
-            elif self.click_element('app/resource/images/reward/home.png', 'image',
-                                    crop=(1635 / 1920, 18 / 1080, 1701 / 1920, 74 / 1080)):
+            elif self.click_element('app/resource/images/reward/home.png', 'image', threshold=0.5,
+                                    crop=(1580 / 1920, 18 / 1080, 1701 / 1920, 120 / 1080)):
                 time.sleep(0.5)
                 continue
             elif self.click_element("取消", "text", crop=(463 / 1920, 728 / 1080, 560 / 1920, 790 / 1080)):
@@ -143,31 +146,62 @@ class Automation:
             # print(traceback.format_exc())
             self.logger.error(f"截图失败：{e}")
 
-    def calculate_positions(self, template, max_loc):
+    def calculate_positions(self, max_loc):
         """
         找到图片后计算相对位置，input_handler接收的均为相对窗口的相对坐标，所以这里要返回的也是相对坐标
         :param template:
-        :param max_loc:
+        :param max_loc:匹配点左上角坐标(x,y,w,h)
         :return:
         """
-        try:
-            channels, width, height = template.shape[::-1]
-        except:
-            width, height = template.shape[::-1]
-
         top_left = (
             int(max_loc[0] + self.relative_pos[0]),
             int(max_loc[1] + self.relative_pos[1]),
         )
         bottom_right = (
-            top_left[0] + width,
-            top_left[1] + height,
+            top_left[0] + int(max_loc[2]),
+            top_left[1] + int(max_loc[3]),
         )
         return top_left, bottom_right
 
-    def find_image_element(self, target, threshold, match_method=cv2.TM_SQDIFF_NORMED, extract=None, is_log=False):
+    # def find_image_element(self, target, threshold, match_method=cv2.TM_SQDIFF_NORMED, extract=None, is_log=False):
+    #     """
+    #     寻找图像
+    #     :param is_log:
+    #     :param extract:
+    #     :param match_method: 模版匹配使用的方法
+    #     :param target: 图片路径
+    #     :param threshold: 置信度
+    #     :return: 左上，右下相对坐标，寻找到的目标的置信度
+    #     """
+    #     try:
+    #         # 获取透明部分的掩码（允许模版图像有透明处理）
+    #         mask = ImageUtils.get_template_mask(target)
+    #         template = cv2.imread(target)  # 读取模板图片
+    #         if mask is not None:
+    #             matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template, mask,
+    #                                                            (self.scale_x, self.scale_y),
+    #                                                            match_method=match_method, extract=extract)
+    #         else:
+    #             matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template,
+    #                                                            scale=(self.scale_x, self.scale_y),
+    #                                                            match_method=match_method, extract=extract)
+    #         if is_log:
+    #             self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
+    #         if not math.isinf(matchVal) and (threshold is None or matchVal >= threshold):
+    #             top_left, bottom_right = self.calculate_positions(template, matchLoc)
+    #             return top_left, bottom_right, matchVal
+    #         if is_log:
+    #             self.logger.debug(f"没有找到相似度大于 {threshold} 的结果")
+    #     except Exception as e:
+    #         # print(traceback.format_exc())
+    #         self.logger.error(f"寻找图片出错：{e}")
+    #     return None, None, None
+
+    def find_image_element(self, target, threshold, match_method=cv2.TM_SQDIFF_NORMED, extract=None, is_log=False,
+                           is_show=False):
         """
         寻找图像
+        :param is_show:
         :param is_log:
         :param extract:
         :param match_method: 模版匹配使用的方法
@@ -175,25 +209,38 @@ class Automation:
         :param threshold: 置信度
         :return: 左上，右下相对坐标，寻找到的目标的置信度
         """
+        temp = self.current_screenshot
+        if extract:
+            letter = extract[0]
+            thr = extract[1]
+            temp = ImageUtils.extract_letters(temp, letter, thr)
         try:
-            # 获取透明部分的掩码（允许模版图像有透明处理）
-            mask = ImageUtils.get_template_mask(target)
-            template = cv2.imread(target)  # 读取模板图片
-            if mask is not None:
-                matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template, mask,
-                                                               (self.scale_x, self.scale_y),
-                                                               match_method=match_method, extract=extract)
-            else:
-                matchVal, matchLoc = ImageUtils.match_template(self.current_screenshot, template,
-                                                               scale=(self.scale_x, self.scale_y),
-                                                               match_method=match_method, extract=extract)
-            if is_log:
-                self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{matchVal:.2f}")
-            if not math.isinf(matchVal) and (threshold is None or matchVal >= threshold):
-                top_left, bottom_right = self.calculate_positions(template, matchLoc)
-                return top_left, bottom_right, matchVal
-            if is_log:
-                self.logger.debug(f"没有找到相似度大于 {threshold} 的结果")
+            matcher = Matcher()
+            matches = matcher.match(target, temp)
+            if len(matches) >= 1:
+                x, y, w, h, conf = matches[0]
+                if conf >= threshold or threshold is None:
+                    top_left, bottom_right = self.calculate_positions((x, y, w, h))
+                    if is_log:
+                        self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{conf:.2f}")
+                    return top_left, bottom_right, conf
+                else:
+                    if is_log:
+                        self.logger.debug(
+                            f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{conf:.2f}，低于{threshold}")
+            if is_show:
+                for idx, (x, y, w, h, conf) in enumerate(matches):
+                    cv2.rectangle(temp,
+                                  (x, y),
+                                  (x + w, y + h),
+                                  (0, 255, 0), 2)
+                    text = f"{conf:.2f}"
+                    cv2.putText(temp, text,
+                                (x, y - 5),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5, (0, 255, 0), 2)
+                # 显示最终结果
+                ImageUtils.show_ndarray(temp)
         except Exception as e:
             # print(traceback.format_exc())
             self.logger.error(f"寻找图片出错：{e}")
@@ -318,6 +365,8 @@ class Automation:
                 # ImageUtils.show_ndarray(self.current_screenshot, 'after_current')
             else:
                 self.logger.error(f"当前没有current_screenshot,裁切失败")
+        if config.showScreenshot.value:
+            signalBus.showScreenshot.emit(self.current_screenshot)
         if find_type in ['image', 'text', 'image_threshold']:
             if find_type == 'image':
                 top_left, bottom_right, image_threshold = self.find_image_element(target, threshold,

@@ -1,5 +1,6 @@
 import time
 
+from app.common.config import config
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
@@ -11,6 +12,7 @@ class GetRewardModule:
         self.is_log = False
 
     def run(self):
+        self.is_log = config.isLog.value
         self.auto.back_to_home()
         self.receive_work()
         self.receive_credential()

@@ -233,6 +233,7 @@ class JigsawModule:
     def __init__(self, auto, logger):
         self.auto = auto
         self.logger = logger
+        self.is_log = False
         self.board_cols = None
         self.board_rows = None
         self.eight_piece_placed = None
@@ -259,6 +260,7 @@ class JigsawModule:
         self.board_bottom_right = []  # 拼图板右下角坐标
 
     def run(self):
+        self.is_log = config.isLog.value
         pass
 
     def identify_board(self):

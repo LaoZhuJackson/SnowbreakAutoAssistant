@@ -27,6 +27,7 @@ class FishingModule:
         self.upper_yellow = None
         self.lower_yellow = None
         self.no_key = False
+        self.is_select_fish = False
 
         self.is_log = False
 
@@ -35,6 +36,7 @@ class FishingModule:
         self.upper_yellow = np.array([int(value) for value in config.LineEdit_fish_upper.value.split(',')])
         self.lower_yellow = np.array([int(value) for value in config.LineEdit_fish_lower.value.split(',')])
         self.press_key = config.LineEdit_fish_key.value
+        self.is_log = config.isLog.value
         self.is_use_time_judge = config.CheckBox_is_limit_time.value
         self.start_time = time.time()
 
@@ -42,6 +44,7 @@ class FishingModule:
             self.logger.error("运行错误，存在上限的值小于下限")
             return
 
+        self.is_select_fish = False
         for i in range(config.SpinBox_fish_times.value):
             self.logger.info(f"开始第 {i + 1} 次钓鱼")
             try:
@@ -55,7 +58,6 @@ class FishingModule:
     def enter_fish(self):
         timeout = Timer(15).start()
         enter_flag = False
-        is_select_fish = False
         lure_type_index = config.ComboBox_lure_type.value
         lure_type_list = ['万能', '普通', '豪华', '至尊', '重量级', '巨型', '重量级', '巨型']
         while True:
@@ -75,9 +77,9 @@ class FishingModule:
                                               crop=(1200 / 2560, 686 / 1440, 1374 / 2560, 746 / 1440),
                                               is_log=self.is_log):
                         raise Exception(f'{lure_type_list[lure_type_index]}鱼饵不足')
-                    if lure_type_index != 0 and not is_select_fish:
+                    if lure_type_index != 0 and not self.is_select_fish:
                         if self.select_lure():
-                            is_select_fish = True
+                            self.is_select_fish = True
                             self.auto.press_key(self.press_key)
                             time.sleep(2)
                             continue
@@ -240,7 +242,7 @@ class FishingModule:
         :return:
         """
         # self.auto.take_screenshot()
-        if self.auto.find_element('app/resource/images/fishing/fish.png', 'image',
+        if self.auto.find_element('app/resource/images/fishing/fish.png', 'image', threshold=0.6,
                                   crop=(29 / 1920, 212 / 1080, 116 / 1920, 292 / 1080), is_log=self.is_log,
                                   match_method=cv2.TM_CCOEFF_NORMED):
             return False

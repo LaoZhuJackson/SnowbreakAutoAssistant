@@ -1,4 +1,6 @@
 import time
+
+from app.common.config import config
 from app.common.logger import logger
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
@@ -20,6 +22,7 @@ class EnterGameModule:
         #     time.sleep(10)
         #     self.init_auto('game', switch=True)
         # else:
+        self.is_log = config.isLog.value
         self.handle_game()
 
     def handle_starter_new(self):

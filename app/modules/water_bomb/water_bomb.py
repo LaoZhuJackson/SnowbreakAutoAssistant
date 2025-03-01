@@ -57,6 +57,8 @@ class WaterBombModule:
         self.count_threshold = config.Slider_count_threshold.value / 100
         self.template_threshold = config.Slider_template_threshold.value / 100
         self.end_win = config.SpinBox_water_win_times.value
+        self.is_log = config.isLog.value
+
         self.enter_and_start()
         self.fight()
 
@@ -554,7 +556,7 @@ class WaterBombModule:
         # 更新两种子弹状态
         is_num = True
         if self.auto.find_element(f'app/resource/images/water_bomb/q.png', 'image',
-                                  crop=(2057 / 2560, 1318 / 1440, 2137 / 2560, 1397 / 1440), is_log=self.is_log,
+                                  crop=(2000 / 2560, 1280 / 1440, 2137 / 2560, 1397 / 1440), is_log=self.is_log,
                                   threshold=self.template_threshold,
                                   extract=[(255, 255, 255), 128],
                                   match_method=cv2.TM_CCOEFF_NORMED):
@@ -565,7 +567,7 @@ class WaterBombModule:
         if is_num:
             for i in range(0, 5):
                 if self.auto.find_element(f'app/resource/images/water_bomb/{i}.png', 'image',
-                                          crop=(2057 / 2560, 1318 / 1440, 2137 / 2560, 1397 / 1440),
+                                          crop=(2000 / 2560, 1280 / 1440, 2137 / 2560, 1397 / 1440),
                                           threshold=self.template_threshold,
                                           is_log=self.is_log,
                                           extract=[(255, 255, 255), 128],
@@ -574,7 +576,7 @@ class WaterBombModule:
                     break
             for i in range(0, 5):
                 if self.auto.find_element(f'app/resource/images/water_bomb/{i}.png', 'image',
-                                          crop=(2182 / 2560, 1318 / 1440, 2260 / 2560, 1397 / 1440),
+                                          crop=(2182 / 2560, 1280 / 1440, 2300 / 2560, 1397 / 1440),
                                           threshold=self.template_threshold,
                                           is_log=self.is_log,
                                           extract=[(255, 255, 255), 128],

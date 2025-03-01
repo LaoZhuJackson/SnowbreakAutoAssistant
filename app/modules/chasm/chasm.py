@@ -1,6 +1,7 @@
 import time
 from datetime import datetime, timedelta
 
+from app.common.config import config
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
@@ -15,6 +16,7 @@ class ChasmModule:
         if not self.is_in_time_range():
             self.logger.warn('当前未开放拟境')
         else:
+            self.is_log = config.isLog.value
             self.auto.back_to_home()
             self.chasm()
             self.receive_reward()

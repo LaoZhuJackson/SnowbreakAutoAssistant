@@ -124,9 +124,23 @@ class SettingInterface(ScrollArea):
             config.server_interface,
             FIF.GAME,
             '游戏渠道选择',
-            self.tr("请选择你所在的区服，不确定启动器是哪个的看任务管理器进程名字"),
+            self.tr("请选择你所在的区服"),
             texts=[self.tr('官服'), self.tr('b服'), self.tr('国际服')],
-            parent=self.personalGroup
+            parent=self.aboutSoftwareGroup
+        )
+        self.isLogCard = SwitchSettingCard(
+            FIF.DEVELOPER_TOOLS,
+            self.tr('展示ocr识别结果'),
+            '打开将在日志中显示ocr识别结果，获得更详细的日志信息',
+            configItem=config.isLog,
+            parent=self.aboutSoftwareGroup
+        )
+        self.showScreenshotCard = SwitchSettingCard(
+            FIF.PHOTO,
+            self.tr('展示当前截图'),
+            '打开一个消息窗口展示当前电脑截图，用于查错',
+            configItem=config.showScreenshot,
+            parent=self.aboutSoftwareGroup
         )
 
         # application
@@ -190,6 +204,8 @@ class SettingInterface(ScrollArea):
 
         self.aboutSoftwareGroup.addSettingCard(self.updateOnStartUpCard)
         self.aboutSoftwareGroup.addSettingCard(self.serverCard)
+        self.aboutSoftwareGroup.addSettingCard(self.isLogCard)
+        self.aboutSoftwareGroup.addSettingCard(self.showScreenshotCard)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)

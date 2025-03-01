@@ -12,6 +12,7 @@ class SignalBus(QObject):
     jigsawDisplaySignal = pyqtSignal(list)
     showMessageBox = pyqtSignal(str, str)
     updateFishKey = pyqtSignal(str)
+    showScreenshot = pyqtSignal(object)
 
     # check_ocr_progress = pyqtSignal(int, str)
 

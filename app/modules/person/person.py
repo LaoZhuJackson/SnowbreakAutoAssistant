@@ -19,8 +19,10 @@ class PersonModule:
         all_characters = config.all_characters.value
         self.pages = math.ceil(all_characters / 4) + 1
         self.no_chip = False
+        self.is_log = False
 
     def run(self):
+        self.is_log = config.isLog.value
         self.auto.back_to_home()
         self.enter_person()
         for character in self.character_list:
@@ -37,12 +39,14 @@ class PersonModule:
         while True:
             self.auto.take_screenshot()
             # 已进入
-            if self.auto.find_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080)):
+            if self.auto.find_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080), is_log=self.is_log):
                 break
-            if self.auto.click_element("个人故事", "text", crop=(673 / 1920, 806 / 1080, 953 / 1920, 889 / 1080)):
+            if self.auto.click_element("个人故事", "text", crop=(673 / 1920, 806 / 1080, 953 / 1920, 889 / 1080),
+                                       is_log=self.is_log):
                 time.sleep(0.3)
                 continue
-            if self.auto.click_element("战斗", "text", crop=(1536 / 1920, 470 / 1080, 1632 / 1920, 516 / 1080)):
+            if self.auto.click_element("战斗", "text", crop=(1536 / 1920, 470 / 1080, 1632 / 1920, 516 / 1080),
+                                       is_log=self.is_log):
                 time.sleep(0.3)
                 continue
 
@@ -63,13 +67,16 @@ class PersonModule:
                 break
 
             if fight_flag and self.auto.find_element('完成', 'text',
-                                                     crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080)):
+                                                     crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                                     is_log=self.is_log):
                 finish_flag = True
             if finish_flag:
-                if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080)):
+                if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                           is_log=self.is_log):
                     time.sleep(0.5)
                     if not self.auto.find_element('完成', 'text',
                                                   crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                                  is_log=self.is_log,
                                                   take_screenshot=True):
                         break
                 else:
@@ -78,13 +85,16 @@ class PersonModule:
                             self.power_times == 0 or self.power_times == 6):
                         break
                 continue
-            if self.auto.find_element("快速作战", "text", crop=(856 / 1920, 229 / 1080, 1056 / 1920, 295 / 1080)):
-                self.auto.click_element('最大', 'text', crop=(1225 / 1920, 683 / 1080, 1341 / 1920, 750 / 1080))
-                self.auto.click_element('开始作战', 'text', crop=(873 / 1920, 807 / 1080, 1047 / 1920, 864 / 1080))
+            if self.auto.find_element("快速作战", "text", crop=(856 / 1920, 229 / 1080, 1056 / 1920, 295 / 1080),
+                                      is_log=self.is_log):
+                self.auto.click_element('最大', 'text', crop=(1225 / 1920, 683 / 1080, 1341 / 1920, 750 / 1080),
+                                        is_log=self.is_log)
+                self.auto.click_element('开始作战', 'text', crop=(873 / 1920, 807 / 1080, 1047 / 1920, 864 / 1080),
+                                        is_log=self.is_log)
                 fight_flag = True
                 time.sleep(1.5)
                 continue
-            pos = self.auto.find_element(person_name, "text", crop=(0, 738 / 1080, 1, 838 / 1080))
+            pos = self.auto.find_element(person_name, "text", crop=(0, 738 / 1080, 1, 838 / 1080), is_log=self.is_log)
             # 找到对应角色
             if pos:
                 # 找到角色之后更新嵌片数量
@@ -136,10 +146,12 @@ class PersonModule:
             self.auto.take_screenshot()
 
             # 道具不足，返回false
-            if self.auto.find_element('没有该类道具', 'text', crop=(821 / 1920, 511 / 1080, 1092 / 1920, 568 / 1080)):
+            if self.auto.find_element('没有该类道具', 'text', crop=(821 / 1920, 511 / 1080, 1092 / 1920, 568 / 1080),
+                                      is_log=self.is_log):
                 self.no_chip = True
                 return False
-            if self.auto.find_element("是否", "text", crop=(588 / 1920, 309 / 1080, 1324 / 1920, 384 / 1080)):
+            if self.auto.find_element("是否", "text", crop=(588 / 1920, 309 / 1080, 1324 / 1920, 384 / 1080),
+                                      is_log=self.is_log):
                 confirm_flag = True
             if confirm_flag:
                 self.auto.take_screenshot(crop=(907 / 1920, 590 / 1080, 1010 / 1920, 654 / 1080))
@@ -149,16 +161,17 @@ class PersonModule:
                 self.auto.take_screenshot()
                 if current_num < 2:
                     self.auto.click_element("app/resource/images/person/add_num.png", "image",
-                                            crop=(1163 / 1920, 591 / 1080, 1275 / 1920, 664 / 1080))
+                                            crop=(1163 / 1920, 591 / 1080, 1275 / 1920, 664 / 1080), is_log=self.is_log)
                 if current_num > 2 and current_num != 1:
                     self.auto.click_element("app/resource/images/person/del_num.png", "image",
-                                            crop=(634 / 1920, 593 / 1080, 766 / 1920, 663 / 1080))
+                                            crop=(634 / 1920, 593 / 1080, 766 / 1920, 663 / 1080), is_log=self.is_log)
                 if current_num == 2 or current_num == 1:
-                    self.auto.click_element('确定', 'text', crop=(1353 / 1920, 729 / 1080, 1528 / 1920, 800 / 1080))
+                    self.auto.click_element('确定', 'text', crop=(1353 / 1920, 729 / 1080, 1528 / 1920, 800 / 1080),
+                                            is_log=self.is_log)
                     self.auto.press_key('esc')
                     return True
             if self.auto.click_element("app/resource/images/person/add_power.png", "image",
-                                       crop=(1533 / 1920, 23 / 1080, 1599 / 1920, 81 / 1080)):
+                                       crop=(1533 / 1920, 23 / 1080, 1599 / 1920, 81 / 1080), is_log=self.is_log):
                 time.sleep(0.5)
                 continue
             if timeout.reached():

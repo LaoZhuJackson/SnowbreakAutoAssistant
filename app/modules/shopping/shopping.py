@@ -9,6 +9,7 @@ class ShoppingModule:
     def __init__(self, auto, logger):
         self.auto = auto
         self.logger = logger
+        self.is_log = False
         self.config_data = config.toDict()
         self.commodity_dic = self.config_data["home_interface_shopping"]
         self.person_dic = self.config_data["home_interface_shopping_person"]
@@ -52,6 +53,8 @@ class ShoppingModule:
         }
 
     def run(self):
+        self.is_log = config.isLog.value
+
         self.open_store()
         self.buy()
 
@@ -60,9 +63,11 @@ class ShoppingModule:
         while True:
             self.auto.take_screenshot()
 
-            if self.auto.find_element("常规物资", "text", crop=(89 / 1920, 140 / 1080, 220 / 1920, 191 / 1080)):
+            if self.auto.find_element("常规物资", "text", crop=(89 / 1920, 140 / 1080, 220 / 1920, 191 / 1080),
+                                      is_log=self.is_log):
                 break
-            if self.auto.click_element("商店", "text", crop=(1759 / 1920, 1002 / 1080, 1843 / 1920, 1050 / 1080)):
+            if self.auto.click_element("商店", "text", crop=(1759 / 1920, 1002 / 1080, 1843 / 1920, 1050 / 1080),
+                                       is_log=self.is_log):
                 time.sleep(0.2)
                 continue
 
@@ -93,9 +98,10 @@ class ShoppingModule:
             if text:
                 if not is_selected:  # 当前没有选择任何商品
                     # 如果当前还有售罄动画存在
-                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080)):
+                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080),
+                                              is_log=self.is_log):
                         continue
-                    if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1)):
+                    if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1), is_log=self.is_log):
                         time.sleep(0.3)
                         is_selected = True
                         continue
@@ -107,7 +113,8 @@ class ShoppingModule:
                             text = temp_list.pop(0)
                         else:
                             text = ""
-                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080)):
+                if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                                          is_log=self.is_log):
                     self.auto.press_key('esc')
                     time.sleep(0.2)
                     self.scroll_to_bottom()
@@ -119,18 +126,22 @@ class ShoppingModule:
                         text = ""
                     is_selected = False
                     continue
-                if self.auto.find_element('不足', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080)):
+                if self.auto.find_element('不足', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080),
+                                          is_log=self.is_log):
                     self.logger.warn('买不起了，杂鱼~')
                     break
-                if self.auto.click_element('最大', 'text', crop=(1713 / 1920, 822 / 1080, 1, 895 / 1080)):
+                if self.auto.click_element('最大', 'text', crop=(1713 / 1920, 822 / 1080, 1, 895 / 1080),
+                                           is_log=self.is_log):
                     if self.auto.click_element('购买', 'text',
-                                               crop=(1740 / 1920, 993 / 1080, 1828 / 1920, 1038 / 1080)):
+                                               crop=(1740 / 1920, 993 / 1080, 1828 / 1920, 1038 / 1080),
+                                               is_log=self.is_log):
                         # 跳出去重新截图判断购买成功还是没钱
                         time.sleep(0.5)
                         continue
                 else:  # 没选择成功或者售罄
                     is_selected = False
-                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080)):
+                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080),
+                                              is_log=self.is_log):
                         finish_list.append(text)
                         # 更新text
                         if len(temp_list) != 0:
@@ -178,7 +189,8 @@ class ShoppingModule:
         while True:
             self.auto.take_screenshot()
 
-            if not self.auto.find_element("光纤轴突", "text", crop=(319 / 1920, 864 / 1080, 1861 / 1920, 1037 / 1080)):
+            if not self.auto.find_element("光纤轴突", "text", crop=(319 / 1920, 864 / 1080, 1861 / 1920, 1037 / 1080),
+                                          is_log=self.is_log):
                 self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -550)
             else:
                 break

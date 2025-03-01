@@ -8,6 +8,7 @@ class ActionModule:
     def __init__(self, auto, logger):
         self.auto = auto
         self.logger = logger
+        self.is_log = False
         pass
 
     def run(self):
