@@ -127,13 +127,22 @@ class WaterBombModule:
                 if self.current_win >= self.end_win:
                     self.logger.info(f'已达成{self.end_win}连胜')
                     self.auto.press_key('esc')
-                    break
+                    time.sleep(2)
+                    self.auto.click_element('保本中止', 'text',
+                                            crop=(1400 / 1920, 954 / 1080, 1800 / 1920, 1000 / 1080),
+                                            is_log=self.is_log, threshold=self.template_threshold)
+                    time.sleep(1)
+                    self.auto.move_click(1742 / self.auto.scale_x, 80 / self.auto.scale_y, press_time=0.1)
+                    time.sleep(0.5)
+                    self.auto.move_click(1742 / self.auto.scale_x, 80 / self.auto.scale_y, press_time=0.1)
+                    time.sleep(0.5)
                 self.is_speed_up = False
                 # 新一轮，重置计时器
                 timeout.reset()
                 self.round_fight = Round()
                 time.sleep(1)
-                continue
+                self.enter_and_start()
+                self.fight()
 
             if self.auto.click_element('继续', 'text', crop=(839 / 1920, 835 / 1080, 1075 / 1920, 900 / 1080),
                                        is_log=self.is_log, threshold=self.template_threshold):
