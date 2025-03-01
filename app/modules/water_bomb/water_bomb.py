@@ -144,7 +144,7 @@ class WaterBombModule:
             if not self.is_speed_up:
                 if not self.auto.find_element('app/resource/images/water_bomb/speed.png', 'image',
                                               crop=(1700 / 1920, 30 / 1080, 1800 / 1920, 130 / 1080),
-                                              is_log=self.is_log, threshold=self.template_threshold,
+                                              is_log=self.is_log, threshold=0.6,
                                               match_method=cv2.TM_CCOEFF_NORMED):
                     self.auto.move_click(1742 / self.auto.scale_x, 80 / self.auto.scale_y, press_time=0.1)
                     time.sleep(0.5)
@@ -422,7 +422,8 @@ class WaterBombModule:
                 return True
             if self.auto.find_image_and_count(
                     self.auto.get_crop_form_first_screenshot(crop=(440 / 1920, 332 / 1080, 1510 / 1920, 878 / 1080)),
-                    'app/resource/images/water_bomb/steal_select.png', threshold=self.count_threshold) == len(
+                    'app/resource/images/water_bomb/steal_select.png', threshold=self.count_threshold,
+                    is_log=self.is_log) == len(
                 items_list):
                 select_flag = True
             else:
@@ -545,13 +546,13 @@ class WaterBombModule:
         # enemy_hp_screenshot = self.auto.resize_image(enemy_hp_screenshot, (self.auto.scale_x, self.auto.scale_y))
         self.current_player_hp = self.auto.find_image_and_count(player_hp_screenshot,
                                                                 'app/resource/images/water_bomb/hp.png',
-                                                                threshold=self.count_threshold)
+                                                                threshold=self.count_threshold, is_log=self.is_log)
         no_hp = self.auto.find_image_and_count(player_hp_screenshot, 'app/resource/images/water_bomb/no_hp.png',
-                                               threshold=self.count_threshold)
+                                               threshold=self.count_threshold, is_log=self.is_log)
         self.max_hp = self.current_player_hp + no_hp
         self.current_enemy_hp = self.auto.find_image_and_count(enemy_hp_screenshot,
                                                                'app/resource/images/water_bomb/hp.png',
-                                                               threshold=self.count_threshold)
+                                                               threshold=self.count_threshold, is_log=self.is_log)
 
         # 更新两种子弹状态
         is_num = True
@@ -576,7 +577,7 @@ class WaterBombModule:
                     break
             for i in range(0, 5):
                 if self.auto.find_element(f'app/resource/images/water_bomb/{i}.png', 'image',
-                                          crop=(2182 / 2560, 1280 / 1440, 2300 / 2560, 1397 / 1440),
+                                          crop=(2132 / 2560, 1300 / 1440, 2300 / 2560, 1397 / 1440),
                                           threshold=self.template_threshold,
                                           is_log=self.is_log,
                                           extract=[(255, 255, 255), 128],
@@ -625,7 +626,8 @@ class WaterBombModule:
         crop_screenshot = self.auto.get_crop_form_first_screenshot(crop)
         for path in path_list:
             # if self.auto.find_element(path,'image',crop=crop):
-            for i in range(self.auto.find_image_and_count(crop_screenshot, path, threshold=self.count_threshold)):
+            for i in range(self.auto.find_image_and_count(crop_screenshot, path, threshold=self.count_threshold,
+                                                          is_log=self.is_log)):
                 key = path.split('/')[-1].split('.')[0]
                 current_items.append(key)
         return current_items

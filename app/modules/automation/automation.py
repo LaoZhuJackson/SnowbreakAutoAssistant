@@ -8,7 +8,7 @@ import win32gui
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils
-from app.common.matcher import Matcher
+from app.common.matcher import matcher
 from app.common.signal_bus import signalBus
 from app.common.utils import random_rectangle_point, get_hwnd
 from app.modules.automation.input import Input
@@ -197,7 +197,7 @@ class Automation:
     #         self.logger.error(f"寻找图片出错：{e}")
     #     return None, None, None
 
-    def find_image_element(self, target, threshold, match_method=cv2.TM_SQDIFF_NORMED, extract=None, is_log=False,
+    def find_image_element(self, template, threshold, match_method=cv2.TM_SQDIFF_NORMED, extract=None, is_log=False,
                            is_show=False):
         """
         寻找图像
@@ -205,7 +205,7 @@ class Automation:
         :param is_log:
         :param extract:
         :param match_method: 模版匹配使用的方法
-        :param target: 图片路径
+        :param template: 模版图片路径
         :param threshold: 置信度
         :return: 左上，右下相对坐标，寻找到的目标的置信度
         """
@@ -215,19 +215,23 @@ class Automation:
             thr = extract[1]
             temp = ImageUtils.extract_letters(temp, letter, thr)
         try:
-            matcher = Matcher()
-            matches = matcher.match(target, temp)
+            # ImageUtils.show_ndarray(temp, title="find_image_element")
+            matches = matcher.match(template, temp)
             if len(matches) >= 1:
                 x, y, w, h, conf = matches[0]
                 if conf >= threshold or threshold is None:
                     top_left, bottom_right = self.calculate_positions((x, y, w, h))
                     if is_log:
-                        self.logger.debug(f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{conf:.2f}")
+                        self.logger.debug(f"目标图片：{template.replace('app/resource/images/', '')} 相似度：{conf:.2f}")
                     return top_left, bottom_right, conf
                 else:
                     if is_log:
                         self.logger.debug(
-                            f"目标图片：{target.replace('app/resource/images/', '')} 相似度：{conf:.2f}，低于{threshold}")
+                            f"目标图片：{template.replace('app/resource/images/', '')} 相似度：{conf:.2f}，低于{threshold}")
+            else:
+                if is_log:
+                    self.logger.debug(
+                        f"目标图片：{template.replace('app/resource/images/', '')} 未找到匹配项")
             if is_show:
                 for idx, (x, y, w, h, conf) in enumerate(matches):
                     cv2.rectangle(temp,
@@ -332,7 +336,7 @@ class Automation:
         return self.search_text_in_ocr_results(target_texts, include)
 
     @atoms
-    def find_element(self, target, find_type: str, threshold: float = 0.7, crop: tuple = (0, 0, 1, 1),
+    def find_element(self, target, find_type: str, threshold: float = 0.5, crop: tuple = (0, 0, 1, 1),
                      take_screenshot=False, include: bool = True, need_ocr: bool = True, extract: list = None,
                      match_method=cv2.TM_SQDIFF_NORMED, is_log=False):
         """
@@ -415,7 +419,7 @@ class Automation:
             raise ValueError(f"未知的动作类型: {action}")
         return True
 
-    def click_element(self, target, find_type: str, threshold: float = 0.7, crop: tuple = (0, 0, 1, 1),
+    def click_element(self, target, find_type: str, threshold: float = 0.5, crop: tuple = (0, 0, 1, 1),
                       take_screenshot=False, include: bool = True, need_ocr: bool = True, extract: list = None,
                       action: str = 'move_click', offset: tuple = (0, 0), n: int = 3,
                       match_method=cv2.TM_SQDIFF_NORMED, is_log=False):
@@ -497,7 +501,7 @@ class Automation:
         # 设置事件，线程会继续
         self.pause_event.set()
 
-    def get_crop_form_first_screenshot(self, crop=(0, 0, 1, 1), is_resize=True):
+    def get_crop_form_first_screenshot(self, crop=(0, 0, 1, 1), is_resize=False):
         crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
         if is_resize:
             crop_image = ImageUtils.resize_image(crop_image, (self.scale_x, self.scale_y))
@@ -521,13 +525,45 @@ class Automation:
         self.perform_ocr(image=crop_image, extract=extract, allowlist=allowlist, is_log=is_log)
         return self.ocr_result
 
+    # @atoms
+    # def find_image_and_count(self, target, template, threshold=0.6, extract=None):
+    #     """在屏幕截图中查找与目标图片相似的图片，并计算匹配数量。
+    #
+    #     参数:
+    #     - target: 背景图片。
+    #     - template: 模板图片。
+    #     - threshold: 匹配阈值。
+    #     - extract: 是否提取目标颜色，[(对应的rgb颜色),threshold数值]
+    #
+    #     返回:
+    #     - 匹配的数量，或在出错时返回 None。
+    #     """
+    #     try:
+    #         if isinstance(target, str):
+    #             target = cv2.imread(target)
+    #         if isinstance(template, str):
+    #             template = cv2.imread(template)
+    #         # 将图片从BGR格式转换为RGB格式
+    #         target_rgb = cv2.cvtColor(target, cv2.COLOR_BGR2RGB)
+    #         template_rgb = cv2.cvtColor(template, cv2.COLOR_BGR2RGB)
+    #         if extract is not None:
+    #             rbg = extract[0]
+    #             thr = extract[1]
+    #             target_rgb = ImageUtils.extract_letters(target_rgb, rbg, thr)
+    #             template_rgb = ImageUtils.extract_letters(template, rbg, thr)
+    #
+    #         return ImageUtils.count_template_matches(target_rgb, template_rgb, threshold)
+    #     except Exception as e:
+    #         # print(traceback.format_exc())
+    #         self.logger.error(f"寻找图片并计数出错：{e}")
+    #         return None
     @atoms
-    def find_image_and_count(self, target, template, threshold=0.6, extract=None):
+    def find_image_and_count(self, target, template: str, threshold=0.6, extract=None, is_show=False, is_log=False):
         """在屏幕截图中查找与目标图片相似的图片，并计算匹配数量。
 
         参数:
-        - target: 需要找模板图片的图片。
-        - template: 模板图片。
+        - target: 背景图片。
+        - template: 模板图片路径(str)。
         - threshold: 匹配阈值。
         - extract: 是否提取目标颜色，[(对应的rgb颜色),threshold数值]
 
@@ -537,57 +573,38 @@ class Automation:
         try:
             if isinstance(target, str):
                 target = cv2.imread(target)
-            if isinstance(template, str):
-                template = cv2.imread(template)
-            # 将图片从BGR格式转换为RGB格式
-            target_rgb = cv2.cvtColor(target, cv2.COLOR_BGR2RGB)
-            template_rgb = cv2.cvtColor(template, cv2.COLOR_BGR2RGB)
-            if extract is not None:
-                rbg = extract[0]
+            temp = target
+            if extract:
+                letter = extract[0]
                 thr = extract[1]
-                target_rgb = ImageUtils.extract_letters(target_rgb, rbg, thr)
-                template_rgb = ImageUtils.extract_letters(template, rbg, thr)
-
-            return ImageUtils.count_template_matches(target_rgb, template_rgb, threshold)
+                temp = ImageUtils.extract_letters(temp, letter, thr)
+            # ImageUtils.show_ndarray(temp, title="find_image_and_count")
+            matches = matcher.match(template, temp)
+            if is_log:
+                if len(matches) > 0:
+                    for i in range(len(matches)):
+                        x, y, w, h, conf = matches[i]
+                        self.logger.debug(f"目标图片：{template.replace('app/resource/images/', '')} 相似度：{conf:.2f}")
+                self.logger.debug(f"图片{template.replace('app/resource/images/', '')} 个数为 {len(matches)}")
+            if is_show:
+                for idx, (x, y, w, h, conf) in enumerate(matches):
+                    cv2.rectangle(temp,
+                                  (x, y),
+                                  (x + w, y + h),
+                                  (0, 255, 0), 2)
+                    text = f"{conf:.2f}"
+                    cv2.putText(temp, text,
+                                (x, y - 5),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5, (0, 255, 0), 2)
+                # 显示最终结果
+                ImageUtils.show_ndarray(temp)
+            return len(matches)
         except Exception as e:
             # print(traceback.format_exc())
             self.logger.error(f"寻找图片并计数出错：{e}")
             return None
 
-
-# # 用于保存是否已实例化
-# auto_starter = None
-# auto_game = None
-#
-#
-# def instantiate_automation(auto_type: str):
-#     global auto_starter, auto_game
-#
-#     # 尝试实例化 starter
-#     if auto_type == 'starter':
-#         try:
-#             auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
-#         except Exception as e:
-#             logger.warn(f"未能成功实例化starter：{e}")
-#
-#     elif auto_type == 'game':
-#         try:
-#             auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
-#         except Exception as e:
-#             logger.warn(f"未能成功实例化game：{e}")
-#     else:
-#         try:
-#             auto_starter = Automation(config.LineEdit_starter_name.value, config.LineEdit_starter_class.value, logger)
-#         except Exception as e:
-#             logger.warn(f"未能成功实例化starter：{e}")
-#         try:
-#             auto_game = Automation(config.LineEdit_game_name.value, config.LineEdit_game_class.value, logger)
-#         except Exception as e:
-#             logger.warn(f"未能成功实例化game：{e}")
-#
-#
-# # 调用实例化方法
-# instantiate_automation('all')
 
 if __name__ == '__main__':
     pass

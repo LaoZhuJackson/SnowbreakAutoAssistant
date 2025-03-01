@@ -137,9 +137,16 @@ class SettingInterface(ScrollArea):
         )
         self.showScreenshotCard = SwitchSettingCard(
             FIF.PHOTO,
-            self.tr('展示当前截图'),
-            '打开一个消息窗口展示当前电脑截图，用于查错',
+            self.tr('展示运行时的窗口截图'),
+            '用于在查错时查看是否正确截取了游戏对应位置的画面',
             configItem=config.showScreenshot,
+            parent=self.aboutSoftwareGroup
+        )
+        self.saveScaleCacheCard = SwitchSettingCard(
+            FIF.SAVE,
+            self.tr('保存缩放比例数据'),
+            '如果你的游戏窗口固定使用，可以选择保存，这样运行会匹配得更快，如果窗口大小经常变化则取消勾选',
+            configItem=config.saveScaleCache,
             parent=self.aboutSoftwareGroup
         )
 
@@ -206,6 +213,7 @@ class SettingInterface(ScrollArea):
         self.aboutSoftwareGroup.addSettingCard(self.serverCard)
         self.aboutSoftwareGroup.addSettingCard(self.isLogCard)
         self.aboutSoftwareGroup.addSettingCard(self.showScreenshotCard)
+        self.aboutSoftwareGroup.addSettingCard(self.saveScaleCacheCard)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)
@@ -223,7 +231,7 @@ class SettingInterface(ScrollArea):
         InfoBar.success(
             self.tr('Updated successfully'),
             self.tr('Configuration takes effect after restart'),
-            duration=1500,
+            duration=2000,
             parent=self
         )
 

@@ -23,6 +23,7 @@ from .trigger import Trigger
 from ..common.config import config
 from ..common.icon import Icon
 from ..common.logger import logger
+from ..common.matcher import matcher
 from ..common.signal_bus import signalBus
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
@@ -292,6 +293,9 @@ class MainWindow(MSFluentWindow):
             # 保存日志到文件
             self.save_log()
             self.save_position()
+            # 保存缩放数据
+            if config.saveScaleCache.value:
+                matcher.save_scale_cache()
         except Exception as e:
             logger.error(e)
             # traceback.print_exc()
