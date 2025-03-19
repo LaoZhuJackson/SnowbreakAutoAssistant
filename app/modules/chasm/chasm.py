@@ -49,16 +49,17 @@ class ChasmModule:
                     time.sleep(0.5)
                     continue
 
+            if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440),
+                                       is_log=self.is_log):
+                time.sleep(0.5)
+                continue
             if enter_second and first_finish_flag and not self.auto.find_element("快速测评", "text",
                                                                                  crop=(
                                                                                  1236 / 1920, 943 / 1080, 1552 / 1920,
                                                                                  1), is_log=self.is_log):
                 second_finish_flag = True
                 continue
-            if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440),
-                                       is_log=self.is_log):
-                time.sleep(0.5)
-                continue
+
             if self.auto.click_element("快速测评", "text", crop=(1236 / 1920, 943 / 1080, 1552 / 1920, 1),
                                        is_log=self.is_log):
                 time.sleep(0.3)

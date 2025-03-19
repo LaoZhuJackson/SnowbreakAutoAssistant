@@ -26,12 +26,12 @@ class PersonModule:
         self.auto.back_to_home()
         self.enter_person()
         for character in self.character_list:
+            self.scroll_page(-1, self.pages)
             if character == '':
                 continue
             self.find_person_and_quick_fight(character)
             if self.no_chip:
                 break
-            self.scroll_page(-1, self.pages)
         self.auto.back_to_home()
 
     def enter_person(self):
@@ -108,7 +108,7 @@ class PersonModule:
                         continue
                 top_left, bottom_right = pos
                 # 传入bottom_right更准确一点
-                quick_fight_pos = self.find_quick_fight(bottom_right)
+                quick_fight_pos = self.find_quick_fight(bottom_right, person_name)
                 if quick_fight_pos:
                     self.auto.click_element_with_pos(quick_fight_pos, is_calculate=False)
                     time.sleep(0.5)
@@ -121,9 +121,10 @@ class PersonModule:
                 time.sleep(0.5)
                 continue
 
-    def find_quick_fight(self, name_pos):
+    def find_quick_fight(self, name_pos, person_name):
         """
-        根据角色名寻找最佳的速战
+        根据角色名位置寻找最佳的速战
+        :param person_name: 角色名
         :param name_pos: (x,y)
         :return: (x,y)|none
         """
@@ -135,11 +136,16 @@ class PersonModule:
                 self.logger.info(f"找到对应的“速战”：({pos},{min_distance})")
                 return pos
             else:
-                self.logger.error(f"“速战”距离大于{250 / self.auto.scale_x}：({pos},{min_distance})")
+                self.logger.warn(
+                    f"“速战”距离大于{250 / self.auto.scale_x}：({pos},{min_distance})，不是{person_name}的速战")
                 return None
         return pos
 
     def use_chip(self):
+        """
+        使用记忆嵌片
+        :return:
+        """
         timeout = Timer(20).start()
         confirm_flag = False
         while True:
@@ -154,18 +160,8 @@ class PersonModule:
                                       is_log=self.is_log):
                 confirm_flag = True
             if confirm_flag:
-                self.auto.take_screenshot(crop=(907 / 1920, 590 / 1080, 1010 / 1920, 654 / 1080))
-                self.auto.perform_ocr()
-                current_num = int(self.auto.ocr_result[0][0])
-                # 还原self.current_screenshot
-                self.auto.take_screenshot()
-                if current_num < 2:
-                    self.auto.click_element("app/resource/images/person/add_num.png", "image",
-                                            crop=(1163 / 1920, 591 / 1080, 1275 / 1920, 664 / 1080), is_log=self.is_log)
-                if current_num > 2 and current_num != 1:
-                    self.auto.click_element("app/resource/images/person/del_num.png", "image",
-                                            crop=(634 / 1920, 593 / 1080, 766 / 1920, 663 / 1080), is_log=self.is_log)
-                if current_num == 2 or current_num == 1:
+                if self.auto.click_element('最大', 'text', crop=(1722 / 2560, 797 / 1440, 1848 / 2560, 867 / 1440),
+                                           is_log=self.is_log):
                     self.auto.click_element('确定', 'text', crop=(1353 / 1920, 729 / 1080, 1528 / 1920, 800 / 1080),
                                             is_log=self.is_log)
                     self.auto.press_key('esc')

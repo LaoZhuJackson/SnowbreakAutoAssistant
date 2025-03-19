@@ -257,11 +257,11 @@ class Automation:
             # image=None时
             if image is None:
                 # ImageUtils.show_ndarray(self.current_screenshot)
-                self.ocr_result = ocr.run(self.current_screenshot, extract, allowlist=allowlist, is_log=is_log)
+                self.ocr_result = ocr.run(self.current_screenshot, extract, is_log=is_log, allowlist=allowlist)
             # 传入特定的图片进行ocr识别
             else:
                 # ImageUtils.show_ndarray(image)
-                self.ocr_result = ocr.run(image, extract, allowlist=allowlist, is_log=is_log)
+                self.ocr_result = ocr.run(image, extract, is_log=is_log, allowlist=allowlist)
             if not self.ocr_result:
                 # self.logger.info(f"未识别出任何文字")
                 self.ocr_result = []
@@ -503,7 +503,8 @@ class Automation:
 
     def get_crop_form_first_screenshot(self, crop=(0, 0, 1, 1), is_resize=False):
         crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
-        signalBus.showScreenshot.emit(crop_image)
+        if config.showScreenshot.value:
+            signalBus.showScreenshot.emit(crop_image)
         if is_resize:
             crop_image = ImageUtils.resize_image(crop_image, (self.scale_x, self.scale_y))
         return crop_image

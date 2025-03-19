@@ -99,16 +99,19 @@ class UsePowerModule:
         finish_flag = False  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
-        stuff_pos = config.maneuver_stuff_pos.value
-        chasm_pos = config.chasm_pos.value
+        stuff_pos = (327 / 2560, 400 / 1440, 478 / 2560, 470 / 1440)
+        chasm_pos = (1500 / 2560, 303 / 1440, 1976 / 2560, 573 / 1440)
         while True:
             self.auto.take_screenshot()
 
             if not enter_maneuver_flag:
-                if self.auto.click_element('材料', 'text', crop=stuff_pos, n=50, is_log=self.is_log):
+                if self.auto.click_element('材料', 'text', crop=stuff_pos, n=50,
+                                           is_log=self.is_log) or self.auto.click_element(
+                        'app/resource/images/use_power/stuff.png', 'image', crop=stuff_pos, is_log=self.is_log):
                     time.sleep(0.3)
                     continue
-                if self.auto.find_element('深渊', 'text', crop=chasm_pos, is_log=self.is_log):
+                if self.auto.find_element('深渊', 'text', crop=chasm_pos, is_log=self.is_log) or self.auto.find_element(
+                        'app/resource/images/use_power/chasm.png', 'image', crop=chasm_pos, is_log=self.is_log):
                     enter_maneuver_flag = True
                     continue
                 if self.auto.click_element("app/resource/images/use_power/entrance.png", "image",
@@ -129,7 +132,8 @@ class UsePowerModule:
                         if not self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
                                                       is_log=self.is_log):
                             break
-                    if self.auto.click_element('任务', 'text', crop=(0, 937 / 1080, 636 / 1920, 1), is_log=self.is_log):
+                    if self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 801 / 2560, 1),
+                                               is_log=self.is_log):
                         time.sleep(0.2)
                         continue
                 else:
@@ -137,6 +141,8 @@ class UsePowerModule:
                     if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080),
                                               is_log=self.is_log):
                         finish_flag = True
+                        self.auto.press_key('esc')
+                        time.sleep(0.5)
                         continue
                     if self.auto.find_element("恢复感知", "text",
                                               crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
@@ -144,6 +150,8 @@ class UsePowerModule:
                         self.auto.press_key('esc')
                         finish_flag = True
                         time.sleep(0.3)
+                        self.auto.press_key('esc')
+                        time.sleep(0.5)
                         continue
                     if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
                                                is_log=self.is_log):

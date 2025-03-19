@@ -324,6 +324,11 @@ class MainWindow(MSFluentWindow):
             pass
 
     def showScreenshot(self, screenshot):
+        """
+        展示当前截图
+        :param screenshot:
+        :return:
+        """
         def ndarray_to_qpixmap(ndarray):
             # 确保ndarray是3维的 (height, width, channels)
             if ndarray.ndim == 2:

@@ -102,9 +102,6 @@ class Config(QConfig):
     ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", -1,
                                              OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     CheckBox_is_use_power = ConfigItem("home_interface_power", "CheckBox_is_use_power", False, BoolValidator())
-    maneuver_stuff_pos = ConfigItem("home_interface_power", "maneuver_stuff_pos",
-                                    (163 / 2560, 716 / 1440, 253 / 2560, 765 / 1440))
-    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (2000 / 2560, 543 / 1440, 2110 / 2560, 650 / 1440))
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
     LineEdit_c3 = ConfigItem("home_interface_person", "LineEdit_c3", "")

@@ -11,7 +11,7 @@ class OCR:
         self.logger = logger
         self.replacements = replacements
 
-    def run(self, image, extract: list = None, is_log=True, allowlist=None):
+    def run(self, image, extract: list = None, is_log=False, allowlist=None):
         self.instance_ocr()
         try:
             if isinstance(image, str):
@@ -29,12 +29,14 @@ class OCR:
             if original_result:  # 检查是否识别到文字
                 return self.format_and_replace(original_result, is_log)
             else:
+                if is_log:
+                    self.logger.debug(f"OCR未识别出任何文字")
                 return None
         except Exception as e:
             self.logger.error(e)
             return None
 
-    def format_and_replace(self, result, is_log=True):
+    def format_and_replace(self, result, is_log=False):
         """
         转换OCR结果格式，返回统一的数据格式并替换OCR结果中的错误字符串
         :param result: 原始OCR识别结果
