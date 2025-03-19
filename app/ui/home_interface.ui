@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-       <width>911</width>
-       <height>673</height>
+    <width>911</width>
+    <height>764</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="2,0" columnstretch="0,0,0">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="2,1" columnstretch="0,0,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -29,62 +29,62 @@
    <property name="spacing">
     <number>0</number>
    </property>
-      <item row="0" column="2" rowspan="2">
-          <widget class="SimpleCardWidget" name="SimpleCardWidget">
-              <property name="minimumSize">
-                  <size>
-                      <width>246</width>
-                      <height>485</height>
-                  </size>
-              </property>
-              <property name="maximumSize">
-                  <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                  </size>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_4">
-                  <property name="horizontalSpacing">
-                      <number>0</number>
-                  </property>
-                  <property name="verticalSpacing">
-                      <number>4</number>
-                  </property>
-                  <item row="0" column="0">
-                      <widget class="TitleLabel" name="TitleLabel">
-                          <property name="text">
-                              <string>日志</string>
-                          </property>
-                      </widget>
-                  </item>
-                  <item row="1" column="0">
-                      <widget class="QTextBrowser" name="textBrowser_log">
-                          <property name="focusPolicy">
-                              <enum>Qt::StrongFocus</enum>
-                          </property>
-                          <property name="toolTip">
-                              <string/>
-                          </property>
-                          <property name="toolTipDuration">
-                              <number>-1</number>
-                          </property>
-                          <property name="statusTip">
-                              <string/>
-                          </property>
-                          <property name="whatsThis">
-                              <string/>
-                          </property>
-                          <property name="styleSheet">
-                              <string notr="true"/>
-                          </property>
-                          <property name="verticalScrollBarPolicy">
-                              <enum>Qt::ScrollBarAlwaysOff</enum>
-                          </property>
-                      </widget>
-                  </item>
-              </layout>
-          </widget>
+   <item row="0" column="2" rowspan="2">
+    <widget class="SimpleCardWidget" name="SimpleCardWidget">
+     <property name="minimumSize">
+      <size>
+       <width>246</width>
+       <height>485</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <property name="horizontalSpacing">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>4</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="TitleLabel" name="TitleLabel">
+        <property name="text">
+         <string>日志</string>
+        </property>
+       </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QTextBrowser" name="textBrowser_log">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
+        <property name="statusTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="SimpleCardWidget" name="SimpleCardWidget_option">
      <property name="minimumSize">
@@ -134,14 +134,14 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-            <string>领取物资</string>
+         <string>领取物资</string>
         </property>
        </widget>
       </item>
       <item row="3" column="4">
-          <widget class="ToolButton" name="ToolButton_collect">
+       <widget class="ToolButton" name="ToolButton_collect">
         <property name="enabled">
-            <bool>true</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -229,11 +229,11 @@
        </widget>
       </item>
       <item row="8" column="4">
-          <widget class="ToolButton" name="ToolButton_reward">
-              <property name="enabled">
-                  <bool>false</bool>
-              </property>
-          </widget>
+       <widget class="ToolButton" name="ToolButton_reward">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0" colspan="4">
        <widget class="CheckBox" name="CheckBox_use_power_4">
@@ -268,7 +268,7 @@
       <item row="2" column="4">
        <widget class="ToolButton" name="ToolButton_entry">
         <property name="enabled">
-            <bool>true</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -344,23 +344,23 @@
           <height>60</height>
          </size>
         </property>
-           <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-           </property>
-           <property name="toolTip">
-               <string/>
-           </property>
-           <property name="statusTip">
-               <string/>
-           </property>
-           <property name="whatsThis">
-               <string/>
-           </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="statusTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
         <property name="text">
          <string>开始</string>
         </property>
         <property name="shortcut">
-            <string>F1</string>
+         <string>F1</string>
         </property>
        </widget>
       </item>
@@ -405,98 +405,98 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-            <number>0</number>
+         <number>2</number>
         </property>
-           <widget class="QWidget" name="page_5">
-               <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,0,0">
-                   <item row="0" column="0" colspan="3">
-                       <widget class="StrongBodyLabel" name="StrongBodyLabel_4">
-                           <property name="text">
-                               <string>启动器路径</string>
-                           </property>
-                       </widget>
-                   </item>
-                   <item row="4" column="0">
-                       <spacer name="verticalSpacer_9">
-                           <property name="orientation">
-                               <enum>Qt::Vertical</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                               <size>
-                                   <width>20</width>
-                                   <height>40</height>
-                               </size>
-                           </property>
-                       </spacer>
-                   </item>
-                   <item row="5" column="0" colspan="3">
-                       <widget class="BodyLabel" name="BodyLabel_enter_tip">
-                           <property name="text">
-                               <string/>
-                           </property>
-                           <property name="textFormat">
-                               <enum>Qt::MarkdownText</enum>
-                           </property>
-                           <property name="wordWrap">
-                               <bool>true</bool>
-                           </property>
-                       </widget>
-                   </item>
-                   <item row="2" column="0" colspan="2">
-                       <widget class="CheckBox" name="CheckBox_auto_open_starter">
-                           <property name="text">
-                               <string>自动打开启动器</string>
-                           </property>
-                       </widget>
-                   </item>
-                   <item row="1" column="0" colspan="3">
-                       <widget class="LineEdit" name="LineEdit_starter_directory">
-                           <property name="enabled">
-                               <bool>false</bool>
-                           </property>
-                       </widget>
-                   </item>
-                   <item row="2" column="2">
-                       <widget class="PushButton" name="PushButton_select_directory">
-                           <property name="text">
-                               <string>选择</string>
-                           </property>
-                       </widget>
-                   </item>
-               </layout>
+        <widget class="QWidget" name="page_5">
+         <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,0,0">
+          <item row="0" column="0" colspan="3">
+           <widget class="StrongBodyLabel" name="StrongBodyLabel_4">
+            <property name="text">
+             <string>启动器路径</string>
+            </property>
            </widget>
-           <widget class="QWidget" name="page_3">
-               <layout class="QGridLayout" name="gridLayout_10">
-                   <item row="2" column="0">
-                       <spacer name="verticalSpacer_7">
-                           <property name="orientation">
-                               <enum>Qt::Vertical</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                               <size>
-                                   <width>20</width>
-                                   <height>40</height>
-                               </size>
-                           </property>
-                       </spacer>
-                   </item>
-                   <item row="0" column="0">
-                       <widget class="CheckBox" name="CheckBox_mail">
-                           <property name="text">
-                               <string>领取邮件</string>
-                           </property>
-                       </widget>
-                   </item>
-                   <item row="1" column="0">
-                       <widget class="CheckBox" name="CheckBox_fish_bait">
-                           <property name="text">
-                               <string>领取鱼饵</string>
-                           </property>
-                       </widget>
-                   </item>
-               </layout>
+          </item>
+          <item row="4" column="0">
+           <spacer name="verticalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0" colspan="3">
+           <widget class="BodyLabel" name="BodyLabel_enter_tip">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::MarkdownText</enum>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
-           <widget class="QWidget" name="page_shop">
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="CheckBox" name="CheckBox_auto_open_starter">
+            <property name="text">
+             <string>自动打开启动器</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="LineEdit" name="LineEdit_starter_directory">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="PushButton" name="PushButton_select_directory">
+            <property name="text">
+             <string>选择</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_3">
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="2" column="0">
+           <spacer name="verticalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0">
+           <widget class="CheckBox" name="CheckBox_mail">
+            <property name="text">
+             <string>领取邮件</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="CheckBox" name="CheckBox_fish_bait">
+            <property name="text">
+             <string>领取鱼饵</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="page_shop">
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="leftMargin">
            <number>0</number>
@@ -516,7 +516,7 @@
           <item row="0" column="0">
            <widget class="ScrollArea" name="ScrollArea">
             <property name="styleSheet">
-                <string notr="true"/>
+             <string notr="true"/>
             </property>
             <property name="widgetResizable">
              <bool>true</bool>
@@ -526,8 +526,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-                  <width>285</width>
-                  <height>503</height>
+               <width>285</width>
+               <height>503</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1113,101 +1113,101 @@
         </widget>
         <widget class="QWidget" name="page_4">
          <layout class="QGridLayout" name="gridLayout_11">
-             <item row="4" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,2">
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,2">
             <item>
-                <widget class="BodyLabel" name="BodyLabel_8">
+             <widget class="BodyLabel" name="BodyLabel_8">
               <property name="text">
-                  <string>角色4：</string>
+               <string>角色4：</string>
               </property>
              </widget>
             </item>
             <item>
-                <widget class="LineEdit" name="LineEdit_c4"/>
+             <widget class="LineEdit" name="LineEdit_c4"/>
             </item>
            </layout>
           </item>
-             <item row="7" column="0">
-                 <widget class="BodyLabel" name="BodyLabel_person_tip">
+          <item row="7" column="0">
+           <widget class="BodyLabel" name="BodyLabel_person_tip">
             <property name="text">
-                <string>Body label</string>
+             <string>Body label</string>
             </property>
-                     <property name="textFormat">
-                         <enum>Qt::MarkdownText</enum>
-                     </property>
-                     <property name="wordWrap">
-                         <bool>true</bool>
-                     </property>
-                 </widget>
-             </item>
-             <item row="3" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2">
+            <property name="textFormat">
+             <enum>Qt::MarkdownText</enum>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2">
             <item>
-                <widget class="BodyLabel" name="BodyLabel_5">
+             <widget class="BodyLabel" name="BodyLabel_5">
               <property name="text">
-                  <string>角色3：</string>
+               <string>角色3：</string>
               </property>
              </widget>
             </item>
             <item>
-                <widget class="LineEdit" name="LineEdit_c3"/>
+             <widget class="LineEdit" name="LineEdit_c3"/>
             </item>
            </layout>
           </item>
-             <item row="5" column="0">
-                 <widget class="CheckBox" name="CheckBox_is_use_chip">
-                     <property name="text">
-                         <string>是否使用记忆嵌片</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="1" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
-            <item>
-                <widget class="BodyLabel" name="BodyLabel_3">
-                    <property name="text">
-                        <string>角色1：</string>
-              </property>
-             </widget>
-            </item>
-                     <item>
-                         <widget class="LineEdit" name="LineEdit_c1"/>
-            </item>
-           </layout>
-          </item>
-             <item row="0" column="0">
-                 <widget class="StrongBodyLabel" name="StrongBodyLabel_3">
-                     <property name="text">
-                         <string>选择需要刷碎片的角色</string>
-                     </property>
-                 </widget>
-             </item>
-             <item row="2" column="0">
-                 <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
-            <item>
-                <widget class="BodyLabel" name="BodyLabel_4">
-                    <property name="text">
-                        <string>角色2：</string>
-              </property>
-             </widget>
-            </item>
-                     <item>
-                         <widget class="LineEdit" name="LineEdit_c2"/>
-                     </item>
-           </layout>
-          </item>
-             <item row="8" column="0">
-                 <spacer name="verticalSpacer_8">
-                     <property name="orientation">
-                         <enum>Qt::Vertical</enum>
+          <item row="5" column="0">
+           <widget class="CheckBox" name="CheckBox_is_use_chip">
+            <property name="text">
+             <string>是否使用记忆嵌片</string>
             </property>
-                     <property name="sizeHint" stdset="0">
-                         <size>
-                             <width>20</width>
-                             <height>40</height>
-                         </size>
-                     </property>
-                 </spacer>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
+            <item>
+             <widget class="BodyLabel" name="BodyLabel_3">
+              <property name="text">
+               <string>角色1：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="LineEdit" name="LineEdit_c1"/>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="StrongBodyLabel" name="StrongBodyLabel_3">
+            <property name="text">
+             <string>选择需要刷碎片的角色</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,2">
+            <item>
+             <widget class="BodyLabel" name="BodyLabel_4">
+              <property name="text">
+               <string>角色2：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="LineEdit" name="LineEdit_c2"/>
+            </item>
+           </layout>
+          </item>
+          <item row="8" column="0">
+           <spacer name="verticalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -1217,123 +1217,41 @@
     </widget>
    </item>
    <item row="1" column="1">
-       <widget class="SimpleCardWidget" name="SimpleCardWidget_tips">
+    <widget class="SimpleCardWidget" name="SimpleCardWidget_tips">
      <property name="minimumSize">
       <size>
        <width>237</width>
        <height>165</height>
       </size>
      </property>
-           <layout class="QGridLayout" name="gridLayout_9" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="1,3">
+     <layout class="QGridLayout" name="gridLayout_9" rowstretch="0,0" columnstretch="1">
       <property name="verticalSpacing">
        <number>3</number>
       </property>
-               <item row="2" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_1"/>
-               </item>
-               <item row="7" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_5">
-                       <property name="text">
-                           <string>Body label</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="8" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_6">
+      <item row="0" column="0">
+       <widget class="TitleLabel" name="TitleLabel_3">
         <property name="text">
-            <string>Body label</string>
+         <string>提醒</string>
         </property>
        </widget>
       </item>
-               <item row="5" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_3">
-        <property name="text">
-         <string>Body label</string>
+      <item row="1" column="0">
+       <widget class="ScrollArea" name="ScrollArea_tips">
+        <property name="widgetResizable">
+         <bool>true</bool>
         </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents_tips">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>285</width>
+           <height>190</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_tips"/>
+        </widget>
        </widget>
-      </item>
-               <item row="3" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_2">
-                       <property name="text">
-                           <string>Body label</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="2" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_1">
-                       <property name="text">
-                           <string>Body label</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="9" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_7"/>
-               </item>
-               <item row="10" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_8">
-                       <property name="text">
-                           <string>Body label</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="12" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_10">
-                       <property name="text">
-                           <string>Body label</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="5" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_3"/>
-               </item>
-               <item row="6" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_4"/>
-               </item>
-               <item row="8" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_6"/>
-               </item>
-               <item row="12" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_10"/>
-               </item>
-               <item row="11" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_9">
-                       <property name="text">
-                           <string>Body label</string>
-                       </property>
-                   </widget>
-               </item>
-               <item row="6" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_4">
-        <property name="text">
-            <string>Body label</string>
-        </property>
-       </widget>
-      </item>
-               <item row="7" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_5"/>
-               </item>
-               <item row="3" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_2"/>
-               </item>
-               <item row="9" column="0">
-                   <widget class="BodyLabel" name="BodyLabel_tip_7">
-                       <property name="text">
-                           <string>Body label</string>
-        </property>
-                   </widget>
-               </item>
-               <item row="0" column="0">
-                   <widget class="TitleLabel" name="TitleLabel_3">
-                       <property name="text">
-                           <string>提醒</string>
-        </property>
-       </widget>
-               </item>
-               <item row="11" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_9"/>
-               </item>
-               <item row="10" column="1">
-                   <widget class="ProgressBar" name="ProgressBar_tip_8"/>
       </item>
      </layout>
     </widget>
@@ -1398,16 +1316,11 @@
   <customwidget>
    <class>TitleLabel</class>
    <extends>QLabel</extends>
-      <header>qfluentwidgets</header>
+   <header>qfluentwidgets</header>
   </customwidget>
-     <customwidget>
-         <class>ProgressBar</class>
-         <extends>QProgressBar</extends>
-         <header>qfluentwidgets</header>
-  </customwidget>
-     <customwidget>
-         <class>LineEdit</class>
-         <extends>QLineEdit</extends>
+  <customwidget>
+   <class>LineEdit</class>
+   <extends>QLineEdit</extends>
    <header>qfluentwidgets</header>
   </customwidget>
  </customwidgets>

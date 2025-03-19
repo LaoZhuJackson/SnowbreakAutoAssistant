@@ -503,6 +503,7 @@ class Automation:
 
     def get_crop_form_first_screenshot(self, crop=(0, 0, 1, 1), is_resize=False):
         crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
+        signalBus.showScreenshot.emit(crop_image)
         if is_resize:
             crop_image = ImageUtils.resize_image(crop_image, (self.scale_x, self.scale_y))
         return crop_image

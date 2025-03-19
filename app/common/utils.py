@@ -2,6 +2,10 @@ import numpy as np
 import win32api
 import win32con
 import win32gui
+import requests
+from bs4 import BeautifulSoup
+import re
+import json
 
 
 def random_normal_distribution_int(a, b, n=15):
@@ -99,3 +103,79 @@ def get_hwnd(window_title, window_class):
                 # 找到需要的窗口句柄
                 return handle
     return None
+
+
+def get_date():
+    # url = 'https://www.cbjq.com/p/zt/2023/04/13/index/news.html?catid=7131&infoid=247'
+    API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=247"
+    headers = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+    }
+    response = requests.get(API_URL, headers=headers)
+    if response.status_code != 200:
+        return {"error": f"请求失败，状态码: {response.status_code}"}
+
+    try:
+        data = response.json()
+        content_html = data["data"][0]["content"]  # 获取活动内容HTML
+    except Exception as e:
+        return {"error": f"数据解析失败: {str(e)}"}
+
+    soup = BeautifulSoup(content_html, 'html.parser')
+    paragraphs = soup.find_all('p')
+    result_dict = {}
+    current_index = 0
+    while current_index < len(paragraphs):
+        p = paragraphs[current_index]
+        text = p.get_text(strip=True)
+
+        # 提取角色共鸣
+        if "角色共鸣" in text and "✧" in text:
+            role_name = re.search(r"「(.*?)」", text).group(1)
+            current_index += 1
+            time_text = paragraphs[current_index].get_text(strip=True)
+            if "活动时间：" in time_text:
+                dates = re.findall(r"\d+月\d+日", time_text)
+                start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
+                end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
+                result_dict[role_name] = f"{start}-{end}"
+
+        # 提取活动任务时间
+        elif "【调查清单】活动任务" in text:
+            current_index += 1
+            time_text = paragraphs[current_index].get_text(strip=True)
+            dates = re.findall(r"\d+月\d+日", time_text)
+            start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
+            end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
+            result_dict["调查清单"] = f"{start}-{end}"
+
+        # 提取挑战玩法
+        elif "挑战玩法" in text and "✧" in text:
+            challenge_name = re.search(r"【(.*?)】", text).group(1)
+            current_index += 1
+            time_text = paragraphs[current_index].get_text(strip=True)
+            dates = re.findall(r"\d+月\d+日", time_text)
+            start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
+            end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
+            result_dict[challenge_name] = f"{start}-{end}"
+
+        elif "趣味玩法" in text and "✧" in text:
+            play_name = re.search(r"【(.*?)】", text).group(1)
+            current_index += 1
+            time_text = paragraphs[current_index].get_text(strip=True)
+            if "常驻" not in time_text:
+                dates = re.findall(r"\d+月\d+日", time_text)
+                start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
+                end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
+                result_dict[play_name] = f"{start}-{end}"
+
+        current_index += 1
+
+    if len(result_dict) != 0:
+        with open('Appdata/activity_date.json', 'w') as f:
+            json.dump(result_dict, f, indent=4)
+    return result_dict
+
+
+if __name__ == "__main__":
+    print(get_date())

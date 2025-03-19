@@ -3,7 +3,7 @@ QTextBrowser {
     border: none;
 }
 
-#ScrollArea {
-    background-color: transparent;
-    border: none;
-}
+/*ScrollArea {*/
+/*    background-color: transparent;*/
+/*    border: none;*/
+/*}*/

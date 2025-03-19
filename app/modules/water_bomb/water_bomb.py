@@ -198,7 +198,6 @@ class WaterBombModule:
                                 elif current_strategy == 'insight_sunglasses':
                                     self.handle_insight_sunglasses()
                                 elif current_strategy == 'handcuffs':
-                                    time.sleep(0.5)
                                     if self.auto.find_element('不可继续', 'text',
                                                               crop=(1200 / 2560, 650 / 1440, 1600 / 2560, 800 / 1440),
                                                               take_screenshot=True):
@@ -278,7 +277,6 @@ class WaterBombModule:
 
     def handle_shooting(self, person):
         """处理开枪策略下的逻辑"""
-        # todo 更新已经射击的子弹类型
         timeout = Timer(20).start()
         path = f'app/resource/images/water_bomb/{person}.png'
         while True:
@@ -500,6 +498,11 @@ class WaterBombModule:
         while True:
             self.auto.take_screenshot()
 
+            if self.auto.find_element('不可继续', 'text',
+                                      crop=(1200 / 2560, 650 / 1440, 1600 / 2560, 800 / 1440),
+                                      take_screenshot=True):
+                self.sustain = True
+                return False
             if appear_use_button and not self.auto.find_element('使用', 'text',
                                                                 crop=(500 / 1920, 700 / 1080, 562 / 1920, 735 / 1080),
                                                                 is_log=self.is_log, threshold=self.template_threshold):
@@ -555,6 +558,9 @@ class WaterBombModule:
                                                                threshold=self.count_threshold, is_log=self.is_log)
 
         # 更新两种子弹状态
+        live_bullet_list = []
+        blank_bullet_list = []
+
         is_num = True
         if self.auto.find_element(f'app/resource/images/water_bomb/q.png', 'image',
                                   crop=(2000 / 2560, 1280 / 1440, 2137 / 2560, 1397 / 1440), is_log=self.is_log,

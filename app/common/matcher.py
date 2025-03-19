@@ -131,8 +131,10 @@ class Matcher:
         orig_h, orig_w = target.shape[:2]
         # print(f"{template_path=},{template.shape=},{target.shape=}")
 
-        scale = self.scales.get(template_path, None)
-        # scale = None
+        if config.saveScaleCache.value:
+            scale = self.scales.get(template_path, None)
+        else:
+            scale = None
         if scale is None:
             boxes = []
             confidences = [0]

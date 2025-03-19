@@ -15,7 +15,7 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
 from app.common.config import config
 from app.common.logger import stdout_stream, stderr_stream, logger, original_stdout, original_stderr
 from app.common.style_sheet import StyleSheet
-from app.common.utils import get_all_children, get_hwnd
+from app.common.utils import get_all_children, get_hwnd, get_date
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
@@ -160,7 +160,6 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.PushButton_start.setShortcut("F1")
         self.PushButton_start.setToolTip("快捷键：F1")
 
-        # 查找 button1 在布局中的索引
         self.gridLayout.addWidget(self.select_person, 1, 0)
         self.gridLayout.addWidget(self.select_weapon, 2, 0)
 
@@ -172,6 +171,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         StyleSheet.HOME_INTERFACE.apply(self)
         # 使背景透明，适应主题
         self.ScrollArea.enableTransparentBackground()
+        self.ScrollArea_tips.enableTransparentBackground()
 
     def _connect_to_slot(self):
         self.PushButton_start.clicked.connect(self.on_start_button_click)
@@ -330,18 +330,20 @@ class Home(QFrame, Ui_home, BaseInterface):
         # print(index, check_state)
         config.set(getattr(config, f"item_weapon_{index}", None), False if check_state == 0 else True)
 
-    def get_time_difference(self, start_time_str: str, end_time_str: str):
+    def get_time_difference(self, date_due: str):
         """
         通过给入终止时间获取剩余时间差和时间百分比
-        :param start_time_str: 开始时间，格式'2024-12-31'
-        :param end_time_str: 结束时间，格式'2024-12-31'
+        :param date_due: 持续时间，格式'03.06-04.17'
         :return:如果活动过期，则返回None,否则返回时间差，剩余百分比
         """
-        # 终止时间，可以根据需要修改。例如，假设你要设置为 2024 年 12 月 31 日。
-        end_time = datetime.strptime(end_time_str, '%Y-%m-%d')
+        current_year = datetime.now().year
+        start_time = datetime.strptime(f"{current_year}.{date_due.split('-')[0]}", "%Y.%m.%d")
+        end_time = datetime.strptime(f"{current_year}.{date_due.split('-')[1]}", "%Y.%m.%d")
+        if end_time.month < start_time.month:
+            end_time = datetime.strptime(f"{current_year + 1}.{date_due.split('-')[1]}", "%Y.%m.%d")
         # 获取当前日期和时间
         now = datetime.now()
-        start_time = datetime.strptime(start_time_str, '%Y-%m-%d')
+
         total_difference = end_time - start_time
         total_day = total_difference.days + 1
         if now < start_time:
@@ -357,44 +359,43 @@ class Home(QFrame, Ui_home, BaseInterface):
         return days_remaining, (days_remaining / total_day) * 100, days_remaining == total_day
 
     def get_tips(self):
-        tips_dic = {}
-        config.set(config.date_tip, [
-            ["活动", "2024-12-19", "2025-1-23"],
-            ["豹豹卡池", "2024-12-19", "2025-1-9"],
-            ["朝翼卡池", "2025-1-2", "2025-1-23"],
-            ["噬神斗场", "2024-12-19", "2025-1-16"],
-            ["心意寄语", "2024-12-31", "2025-1-14"],
-            ["珍宝行囊", "2024-12-19", "2025-1-23"],
-            ["七日派对", "2024-12-26", "2025-1-9"],
-            ["远山沉沉", "2024-12-30", "2025-1-13"],
-            ["永续联机", "2024-12-23", "2025-1-6"],
-            ["禁区协议", "2025-1-6", "2025-1-20"],
-        ])
-        date_tip = config.date_tip.value
-        for activity in date_tip:
-            tips_dic[activity[0]] = self.get_time_difference(activity[1], activity[2])
-        label_children = self.SimpleCardWidget_tips.findChildren(BodyLabel)
-        progress_children = self.SimpleCardWidget_tips.findChildren(ProgressBar)
-        sorted_label_widgets = sorted(label_children, key=lambda widget: int(widget.objectName().split('_')[-1]))
-        sorted_progress_widgets = sorted(progress_children, key=lambda widget: int(widget.objectName().split('_')[-1]))
+        tips_dic = get_date()
+        if "error" in tips_dic.values():
+            logger.error("获取活动时间失败：" + tips_dic["error"])
+            return
+
+        for key, value in tips_dic.items():
+            tips_dic[key] = self.get_time_difference(value)
 
         index = 0
-        # print(tips_dic['活动'])
+        items_list = []
         try:
             for key, value in tips_dic.items():
-                # print(value)
-                # print(type(value))
+                # 创建label
+                BodyLabel_tip = BodyLabel(self.scrollAreaWidgetContents_tips)
+                BodyLabel_tip.setObjectName(f"BodyLabel_tip_{index + 1}")
+                # 创建进度条
+                ProgressBar_tip = ProgressBar(self.scrollAreaWidgetContents_tips)
+                ProgressBar_tip.setObjectName(f"ProgressBar_tip{index + 1}")
                 if value[0] == 0:
-                    sorted_label_widgets[index].setText(f"{key}已结束")
+                    BodyLabel_tip.setText(f"{key}已结束")
                 else:
                     if value[2]:
-                        sorted_label_widgets[index].setText(f"{key}未开始")
+                        BodyLabel_tip.setText(f"{key}未开始")
                     else:
-                        sorted_label_widgets[index].setText(f"{key}剩余：{value[0]}天")
-                sorted_progress_widgets[index].setValue(value[1])
+                        BodyLabel_tip.setText(f"{key}剩余：{value[0]}天")
+                ProgressBar_tip.setValue(int(value[1]))
+                items_list.append([BodyLabel_tip, ProgressBar_tip, value[1]])
+
                 index += 1
+            items_list.sort(key=lambda x: x[2])
+            for i in range(len(items_list) + 1):
+                self.gridLayout_tips.addWidget(items_list[i][0], i + 1, 0, 1, 1)
+                self.gridLayout_tips.addWidget(items_list[i][1], i + 1, 1, 1, 1)
+
         except Exception as e:
-            self.logger.error(e)
+            print(e)
+            # self.logger.error(e)
 
     def closeEvent(self, event):
         # 恢复原始标准输出
