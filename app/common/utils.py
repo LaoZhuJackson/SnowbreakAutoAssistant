@@ -174,7 +174,9 @@ def get_date():
     if len(result_dict) != 0:
         with open('Appdata/activity_date.json', 'w') as f:
             json.dump(result_dict, f, indent=4)
-    return result_dict
+        return result_dict
+    else:
+        return {"error": f"数据解析失败：未匹配到任何活动"}
 
 
 if __name__ == "__main__":

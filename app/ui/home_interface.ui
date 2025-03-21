@@ -405,7 +405,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-         <number>2</number>
+            <number>3</number>
         </property>
         <widget class="QWidget" name="page_5">
          <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,0,0">
@@ -1052,15 +1052,22 @@
         </widget>
         <widget class="QWidget" name="page_2">
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="2" column="0">
-           <widget class="ComboBox" name="ComboBox_power_usage">
-            <property name="items_" stdset="0">
-             <string notr="true"/>
+             <item row="3" column="0">
+                 <widget class="StrongBodyLabel" name="StrongBodyLabel_5">
+                     <property name="text">
+                         <string>适配新版本</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="4" column="1">
+                 <widget class="PushButton" name="PushButton_update_chasm">
+                     <property name="text">
+                         <string>更新“深渊”</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <spacer name="verticalSpacer_5">
+             <item row="5" column="0">
+                 <spacer name="verticalSpacer_10">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -1072,7 +1079,14 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="0">
+             <item row="2" column="0" colspan="2">
+                 <widget class="ComboBox" name="ComboBox_power_usage">
+                     <property name="items_" stdset="0">
+                         <string notr="true"/>
+                     </property>
+                 </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="CheckBox" name="CheckBox_is_use_power">
@@ -1102,7 +1116,14 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
+             <item row="4" column="0">
+                 <widget class="PushButton" name="PushButton_update_stuff">
+                     <property name="text">
+                         <string>更新“材料”</string>
+                     </property>
+                 </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
            <widget class="StrongBodyLabel" name="StrongBodyLabel_2">
             <property name="text">
              <string>选择体力使用方式</string>

@@ -94,18 +94,18 @@ class PersonModule:
                 fight_flag = True
                 time.sleep(1.5)
                 continue
+            # 先尝试使用记忆嵌片
+            self.update_power_times()
+            # 如果没有嵌片，则尝试使用
+            if self.power_times == 0 and config.CheckBox_is_use_chip.value:
+                if not self.use_chip():
+                    # 没有记忆嵌片
+                    if self.no_chip:
+                        break
+                    continue
             pos = self.auto.find_element(person_name, "text", crop=(0, 738 / 1080, 1, 838 / 1080), is_log=self.is_log)
             # 找到对应角色
             if pos:
-                # 找到角色之后更新嵌片数量
-                self.update_power_times()
-                # 如果没有嵌片，则尝试使用
-                if self.power_times == 0 and config.CheckBox_is_use_chip.value:
-                    if not self.use_chip():
-                        # 没有记忆嵌片
-                        if self.no_chip:
-                            break
-                        continue
                 top_left, bottom_right = pos
                 # 传入bottom_right更准确一点
                 quick_fight_pos = self.find_quick_fight(bottom_right, person_name)

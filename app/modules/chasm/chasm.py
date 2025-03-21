@@ -46,7 +46,7 @@ class ChasmModule:
                                            is_log=self.is_log,
                                            extract=[(176, 175, 179), 128]):
                     enter_second = True
-                    time.sleep(0.5)
+                    time.sleep(1)
                     continue
 
             if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440),

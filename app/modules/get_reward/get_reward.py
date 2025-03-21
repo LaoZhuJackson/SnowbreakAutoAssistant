@@ -84,7 +84,7 @@ class GetRewardModule:
 
                 self.auto.click_element('凭证', 'text', crop=(280 / 1920, 541 / 1080, 389 / 1920, 607 / 1080),
                                         is_log=self.is_log)
-                time.sleep(0.3)
+                time.sleep(0.5)
                 if not self.auto.find_element('凭证', 'text', crop=(280 / 1920, 541 / 1080, 389 / 1920, 607 / 1080),
                                               is_log=self.is_log, take_screenshot=True):
                     enter_flag = True
@@ -97,7 +97,7 @@ class GetRewardModule:
                     first_finish_flag = True
                     continue
                 if not first_finish_flag:
-                    self.auto.click_element('每日任务', 'text',
+                    self.auto.click_element('每日任务', 'text', threshold=0.3,
                                             crop=(1233 / 1920, 985 / 1080, 1342 / 1920, 1047 / 1080),
                                             is_log=self.is_log)
                     time.sleep(0.3)

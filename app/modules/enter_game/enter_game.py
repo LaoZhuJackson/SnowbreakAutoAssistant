@@ -1,9 +1,7 @@
 import time
 
 from app.common.config import config
-from app.common.logger import logger
 from app.modules.automation.timer import Timer
-from app.modules.base_task.base_task import BaseTask
 
 
 class EnterGameModule:
@@ -70,19 +68,20 @@ class EnterGameModule:
             self.auto.take_screenshot()
 
             # 对不同情况进行处理
-            if self.auto.find_element('基地', 'text',
-                                      (1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element(
-                '任务', 'text', (1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080)):
+            if self.auto.find_element('基地', 'text', crop=(
+            1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element(
+                    '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
                 self.logger.info("已进入游戏")
                 break
-            if self.auto.click_element('开始游戏', 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080)):
+            if self.auto.click_element('开始游戏', 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080),
+                                       is_log=self.is_log):
                 time.sleep(2)
                 continue
             if self.auto.click_element(['X', 'x'], 'text', crop=(1271 / 1920, 88 / 1080, 1890 / 1920, 367 / 1080),
-                                       action='move_click'):
+                                       is_log=self.is_log):
                 continue
             if self.auto.click_element("app/resource/images/start_game/newbird_cancel.png", "image",
-                                       crop=(0.5, 0, 1, 0.5)):
+                                       crop=(0.5, 0, 1, 0.5), is_log=self.is_log):
                 continue
 
             if timeout.reached():

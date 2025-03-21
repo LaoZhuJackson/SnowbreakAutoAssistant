@@ -151,7 +151,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
-            "### 提示\n* 打开游戏而非启动器后在点助手的开始\n* 如果不是官服，先去设置那选好是什么服")
+            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服")
         self.BodyLabel_person_tip.setText(
             "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
@@ -178,6 +178,9 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
         self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
         self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
+        # 版本适配更新
+        self.PushButton_update_stuff.clicked.connect(lambda: self.on_update_click('stuff'))
+        self.PushButton_update_chasm.clicked.connect(lambda: self.on_update_click('chasm'))
 
         self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
         self.ToolButton_collect.clicked.connect(lambda: self.set_current_index(1))
@@ -239,6 +242,17 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_starter_directory.setText(file_path)
         self.LineEdit_starter_directory.editingFinished.emit()
 
+    def on_update_click(self, button_type):
+        """
+        版本更新适配
+        :param button_type: 'stuff', 'chasm'
+        :return:
+        """
+        if button_type == "stuff":
+            pass
+        elif button_type == "chasm":
+            pass
+
     def on_start_button_click(self):
         checkbox_dic = {}
         for checkbox in self.SimpleCardWidget_option.findChildren(CheckBox):
@@ -287,7 +301,7 @@ class Home(QFrame, Ui_home, BaseInterface):
     def after_finish(self):
         if self.ComboBox_after_use.currentIndex() == 0:
             return
-        hwnd = get_hwnd(config.LineEdit_game_name.value, config.LineEdit_game_class.value)
+        hwnd = self.auto.hwnd
         # 任务结束后的后处理
         if self.ComboBox_after_use.currentIndex() == 1:
             win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)

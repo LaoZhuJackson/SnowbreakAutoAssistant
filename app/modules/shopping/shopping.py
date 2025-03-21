@@ -136,7 +136,7 @@ class ShoppingModule:
                                                crop=(1740 / 1920, 993 / 1080, 1828 / 1920, 1038 / 1080),
                                                is_log=self.is_log):
                         # 跳出去重新截图判断购买成功还是没钱
-                        time.sleep(0.5)
+                        time.sleep(1)
                         continue
                 else:  # 没选择成功或者售罄
                     is_selected = False
