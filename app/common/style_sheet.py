@@ -16,6 +16,7 @@ class StyleSheet(StyleSheetBase, Enum):
     HOME_INTERFACE = "home_interface"
     ADDITIONAL_FEATURES_INTERFACE = "additional_features_interface"
     HELP_INTERFACE = "help_interface"
+    OCR_TABLE = "ocr_table"
 
     def path(self, theme=Theme.AUTO):
         theme = qconfig.theme if theme == Theme.AUTO else theme

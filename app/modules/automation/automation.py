@@ -95,7 +95,7 @@ class Automation:
             self.logger.info(f"找到窗口 {self.window_title} 的句柄为：{hwnd}")
             return hwnd
         else:
-            raise ValueError(f"未找到{self.window_title}的句柄，请确保对应窗口已打开")
+            raise ValueError(f"未找到{self.window_title}的句柄")
 
     def back_to_home(self):
         timeout = Timer(10).start()

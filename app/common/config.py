@@ -131,6 +131,7 @@ class Config(QConfig):
     saveScaleCache = ConfigItem("setting_personal", "saveScaleCache", False, BoolValidator(), restart=True)
     update_proxies = ConfigItem("Update", "update_proxies", '')
     cpu_support_avx2 = ConfigItem("about", "cpu_support_avx2", None)
+    ocr_use_gpu = ConfigItem("setting_personal", "ocr_use_gpu", False)
 
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")

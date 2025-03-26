@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>ocrtable</class>
+    <widget class="QFrame" name="ocrtable">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>686</width>
+                <height>605</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Frame</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout" columnstretch="4,5">
+            <property name="leftMargin">
+                <number>5</number>
+            </property>
+            <property name="topMargin">
+                <number>5</number>
+            </property>
+            <property name="rightMargin">
+                <number>5</number>
+            </property>
+            <property name="bottomMargin">
+                <number>5</number>
+            </property>
+            <item row="2" column="1">
+                <widget class="PrimaryPushButton" name="PrimaryPushButton">
+                    <property name="text">
+                        <string>保存</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="0" column="1">
+                <widget class="PushButton" name="PushButton">
+                    <property name="text">
+                        <string>新增</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="4" column="1">
+                <widget class="BodyLabel" name="BodyLabel_tips">
+                    <property name="text">
+                        <string>Body label</string>
+                    </property>
+                    <property name="textFormat">
+                        <enum>Qt::MarkdownText</enum>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </item>
+            <item row="1" column="1">
+                <widget class="PushButton" name="PushButton_2">
+                    <property name="text">
+                        <string>删除</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="5" column="1">
+                <spacer name="verticalSpacer">
+                    <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                        <size>
+                            <width>20</width>
+                            <height>40</height>
+                        </size>
+                    </property>
+                </spacer>
+            </item>
+            <item row="0" column="0" rowspan="6">
+                <widget class="TableWidget" name="TableWidget_ocr_table">
+                    <property name="showGrid">
+                        <bool>false</bool>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>false</bool>
+                    </property>
+                    <property name="columnCount">
+                        <number>3</number>
+                    </property>
+                    <column/>
+                    <column/>
+                    <column/>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+    <customwidgets>
+        <customwidget>
+            <class>PushButton</class>
+            <extends>QPushButton</extends>
+            <header>qfluentwidgets</header>
+        </customwidget>
+        <customwidget>
+            <class>PrimaryPushButton</class>
+            <extends>PushButton</extends>
+            <header>qfluentwidgets</header>
+        </customwidget>
+        <customwidget>
+            <class>BodyLabel</class>
+            <extends>QLabel</extends>
+            <header>qfluentwidgets</header>
+        </customwidget>
+        <customwidget>
+            <class>TableWidget</class>
+            <extends>QTableWidget</extends>
+            <header>qfluentwidgets</header>
+        </customwidget>
+    </customwidgets>
+    <resources/>
+    <connections/>
+</ui>

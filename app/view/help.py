@@ -14,16 +14,12 @@ class Help(QFrame, Ui_help):
 
         self._initWidget()
         self._connect_to_slot()
-        self._redirectOutput()
 
     def _initWidget(self):
         self.load_markdown()
         StyleSheet.HELP_INTERFACE.apply(self)
 
     def _connect_to_slot(self):
-        pass
-
-    def _redirectOutput(self):
         pass
 
     def load_markdown(self):

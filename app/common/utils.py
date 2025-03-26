@@ -1,3 +1,4 @@
+import cpufeature
 import numpy as np
 import win32api
 import win32con
@@ -6,6 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import json
+
+from app.common.config import config
 
 
 def random_normal_distribution_int(a, b, n=15):
@@ -177,6 +180,14 @@ def get_date():
         return result_dict
     else:
         return {"error": f"数据解析失败：未匹配到任何活动"}
+
+
+def cpu_support_avx2():
+    """
+    判断 CPU 是否支持 AVX2 指令集。
+    """
+    config.set(config.cpu_support_avx2, cpufeature.CPUFeature["AVX2"])
+    return cpufeature.CPUFeature["AVX2"]
 
 
 if __name__ == "__main__":

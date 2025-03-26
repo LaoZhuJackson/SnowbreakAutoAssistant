@@ -1,7 +1,9 @@
 import cv2
 import easyocr
 
+from app.common.config import config
 from app.common.image_utils import ImageUtils
+from app.common.utils import cpu_support_avx2
 
 
 class OCR:
@@ -82,13 +84,20 @@ class OCR:
     def instance_ocr(self):
         """实例化OCR，若ocr实例未创建，则创建之"""
         if self.ocr is None:
+            if config.cpu_support_avx2.value is None:
+                cpu_support_avx2()
             try:
                 self.logger.debug("开始初始化OCR...")
-                self.ocr = easyocr.Reader(
-                    ['ch_sim', 'en'],
-                    model_storage_directory='app/resource/easyocr/model',
-                    user_network_directory='app/resource/easyocr/user_network'
-                )
+                if config.cpu_support_avx2.value:
+                    self.ocr = easyocr.Reader(
+                        ['ch_sim', 'en'],
+                        gpu=config.ocr_use_gpu.value,
+                        model_storage_directory='app/resource/easyocr/model',
+                        user_network_directory='app/resource/easyocr/user_network'
+                    )
+                    self.logger.info(f"初始化OCR完成")
+                else:
+                    self.logger.error(f"初始化OCR失败：此cpu不支持AVX2指令集")
             except Exception as e:
                 self.logger.error(f"初始化OCR失败：{e}")
                 raise Exception("初始化OCR失败")

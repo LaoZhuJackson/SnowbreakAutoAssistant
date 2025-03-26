@@ -1,7 +1,5 @@
 import re
 import sys
-import time
-import traceback
 from datetime import datetime
 from functools import partial
 
@@ -13,7 +11,8 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
     BodyLabel, ProgressBar
 
 from app.common.config import config
-from app.common.logger import stdout_stream, stderr_stream, logger, original_stdout, original_stderr
+from app.common.logger import original_stdout, original_stderr
+from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.utils import get_all_children, get_hwnd, get_date
 from app.modules.base_task.base_task import BaseTask
@@ -31,7 +30,7 @@ from app.view.base_interface import BaseInterface
 
 
 class StartThread(QThread, BaseTask):
-    is_running_signal = pyqtSignal(bool)
+    is_running_signal = pyqtSignal(str)
     stop_signal = pyqtSignal()  # 添加停止信号
 
     def __init__(self, checkbox_dic):
@@ -41,14 +40,16 @@ class StartThread(QThread, BaseTask):
         self.name_list_zh = ['自动登录', '领取物资', '商店购买', '刷体力', '人物碎片', '精神拟境', '领取奖励']
 
     def run(self):
-        self.is_running_signal.emit(True)
+        self.is_running_signal.emit('start')
+        early_stop_flag = True
         try:
             for key, value in self.checkbox_dic.items():
                 if value:
                     index = int(re.search(r'\d+', key).group()) - 1
                     self.logger.info(f"当前任务：{self.name_list_zh[index]}")
                     if not self.init_auto('game'):
-                        return
+                        early_stop_flag = False
+                        break
                     self.auto.reset()
                     if index == 0:
                         module = EnterGameModule(self.auto, self.logger)
@@ -74,13 +75,16 @@ class StartThread(QThread, BaseTask):
                 else:
                     # 如果value为false则进行下一个任务的判断
                     continue
+            # 运行完成
+            if early_stop_flag:
+                self.is_running_signal.emit('end')
+            else:
+                # 未创建auto，没开游戏，提前结束
+                self.is_running_signal.emit('no_auto')
         except Exception as e:
             ocr.stop_ocr()
             self.logger.warn(e)
             # traceback.print_exc()
-        finally:
-            # 运行完成
-            self.is_running_signal.emit(False)
 
 
 def select_all(widget):
@@ -129,6 +133,8 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.is_running = False
         self.select_person = TreeFrame_person(parent=self.ScrollArea, enableCheck=True)
         self.select_weapon = TreeFrame_weapon(parent=self.ScrollArea, enableCheck=True)
+
+        self.game_hwnd = None
 
         self._initWidget()
         self._connect_to_slot()
@@ -188,6 +194,8 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(3))
         self.ToolButton_person.clicked.connect(lambda: self.set_current_index(4))
 
+        signalBus.sendHwnd.connect(self.set_hwnd)
+
         self._connect_to_save_changed()
 
     def _load_config(self):
@@ -232,6 +240,9 @@ class Home(QFrame, Ui_home, BaseInterface):
                 children.currentIndexChanged.connect(partial(self.save_changed, children))
             elif isinstance(children, LineEdit):
                 children.editingFinished.connect(partial(self.save_changed, children))
+
+    def set_hwnd(self, hwnd):
+        self.game_hwnd = hwnd
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """
@@ -278,38 +289,54 @@ class Home(QFrame, Ui_home, BaseInterface):
                 content="需要至少勾选一项工作才能开始",
                 orient=Qt.Horizontal,
                 isClosable=False,  # disable close button
-                position=InfoBarPosition.TOP,
+                position=InfoBarPosition.TOP_RIGHT,
                 duration=2000,
                 parent=self
             )
 
-    def handle_start(self, is_running):
+    def handle_start(self, str_flag):
         """设置按钮"""
-        if is_running:
+        if str_flag == 'start':
             self.is_running = True
             self.set_checkbox_enable(False)
             self.PushButton_start.setText("停止")
-
-            self.start_thread.start()
-        else:
+        elif str_flag == 'end':
             self.is_running = False
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
             # 后处理
             self.after_finish()
+        elif str_flag == 'no_auto':
+            self.is_running = False
+            self.set_checkbox_enable(True)
+            self.PushButton_start.setText("开始")
+            InfoBar.error(
+                title='未打开游戏',
+                content="先打开游戏（不是启动器），再点击开始",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=-1,
+                parent=self
+            )
 
     def after_finish(self):
+        # 任务结束后的后处理
         if self.ComboBox_after_use.currentIndex() == 0:
             return
-        hwnd = self.auto.hwnd
-        # 任务结束后的后处理
-        if self.ComboBox_after_use.currentIndex() == 1:
-            win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+        elif self.ComboBox_after_use.currentIndex() == 1:
+            if self.game_hwnd:
+                win32gui.SendMessage(self.game_hwnd, win32con.WM_CLOSE, 0, 0)
+            else:
+                self.logger.warn('home未获取窗口句柄，无法关闭游戏')
             self.parent.close()
         elif self.ComboBox_after_use.currentIndex() == 2:
             self.parent.close()
         elif self.ComboBox_after_use.currentIndex() == 3:
-            win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+            if self.game_hwnd:
+                win32gui.SendMessage(self.game_hwnd, win32con.WM_CLOSE, 0, 0)
+            else:
+                self.logger.warn('home未获取窗口句柄，无法关闭游戏')
 
     def set_checkbox_enable(self, enable: bool):
         for checkbox in self.findChildren(CheckBox):
@@ -375,7 +402,7 @@ class Home(QFrame, Ui_home, BaseInterface):
     def get_tips(self):
         tips_dic = get_date()
         if "error" in tips_dic.values():
-            logger.error("获取活动时间失败：" + tips_dic["error"])
+            self.logger.error("获取活动时间失败：" + tips_dic["error"])
             return
 
         for key, value in tips_dic.items():

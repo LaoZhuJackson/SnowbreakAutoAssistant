@@ -2,6 +2,7 @@ import time
 
 from app.common.config import config
 from app.common.logger import logger
+from app.common.signal_bus import signalBus
 from app.modules.automation.automation import Automation
 from app.modules.automation.timer import Timer
 
@@ -31,6 +32,7 @@ class BaseTask:
         if self.auto is None:
             try:
                 self.auto = Automation(auto_dict[name][0], auto_dict[name][1], self.logger)
+                signalBus.sendHwnd.emit(self.auto.hwnd)
                 return True
             except Exception as e:
                 self.logger.error(f'初始化auto失败：{e}')

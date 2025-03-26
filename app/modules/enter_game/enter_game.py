@@ -22,6 +22,7 @@ class EnterGameModule:
         # else:
         self.is_log = config.isLog.value
         self.handle_game()
+        self.auto.back_to_home()
 
     def handle_starter_new(self):
         """
@@ -67,6 +68,9 @@ class EnterGameModule:
             # 截图
             self.auto.take_screenshot()
 
+            if self.auto.click_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                                       is_log=self.is_log):
+                break
             # 对不同情况进行处理
             if self.auto.find_element('基地', 'text', crop=(
             1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element(

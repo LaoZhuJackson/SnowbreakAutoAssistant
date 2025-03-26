@@ -18,6 +18,7 @@ from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen,
 from .additional_features import Additional
 from .help import Help
 from .home import Home
+from .ocr_replacement_table import OcrReplacementTable
 from .setting_interface import SettingInterface
 from .trigger import Trigger
 from ..common.config import config
@@ -58,6 +59,7 @@ class MainWindow(MSFluentWindow):
         self.triggerInterface = Trigger('Trigger Interface', self)
 
         self.helpInterface = Help('Help Interface', self)
+        self.tableInterface = OcrReplacementTable('Table Interface', self)
         self.settingInterface = SettingInterface(self)
 
         self.support_button = NavigationBarPushButton(FIF.HEART, '赞赏', isSelectable=False)
@@ -111,6 +113,7 @@ class MainWindow(MSFluentWindow):
         self.addSubInterface(self.homeInterface, FIF.HOME, '主页', FIF.HOME_FILL)
         self.addSubInterface(self.additionalInterface, FIF.APPLICATION, '小工具')
         self.addSubInterface(self.triggerInterface, FIF.COMPLETED, '触发器')
+        self.addSubInterface(self.tableInterface, FIF.SYNC, '替换表')
 
         # add custom widget to bottom
         self.navigationInterface.addWidget(
@@ -139,8 +142,7 @@ class MainWindow(MSFluentWindow):
             return (time.time() - start) / runs
 
         ocr.instance_ocr()
-        logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
-        logger.debug("初始化OCR完成")
+        # logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
 
     def initWindow(self):
         self.resize(960, 780)
