@@ -13,7 +13,7 @@
         <property name="windowTitle">
             <string>Frame</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout" columnstretch="4,5">
+        <layout class="QGridLayout" name="gridLayout" columnstretch="7,1,1,1,2,1,2">
             <property name="leftMargin">
                 <number>5</number>
             </property>
@@ -26,54 +26,28 @@
             <property name="bottomMargin">
                 <number>5</number>
             </property>
-            <item row="2" column="1">
-                <widget class="PrimaryPushButton" name="PrimaryPushButton">
+            <item row="0" column="5">
+                <widget class="BodyLabel" name="BodyLabel_3">
                     <property name="text">
-                        <string>保存</string>
+                        <string>替换后</string>
                     </property>
                 </widget>
             </item>
             <item row="0" column="1">
-                <widget class="PushButton" name="PushButton">
+                <widget class="BodyLabel" name="BodyLabel">
                     <property name="text">
-                        <string>新增</string>
+                        <string>替换类型</string>
                     </property>
                 </widget>
             </item>
-            <item row="4" column="1">
-                <widget class="BodyLabel" name="BodyLabel_tips">
+            <item row="0" column="3">
+                <widget class="BodyLabel" name="BodyLabel_2">
                     <property name="text">
-                        <string>Body label</string>
-                    </property>
-                    <property name="textFormat">
-                        <enum>Qt::MarkdownText</enum>
-                    </property>
-                    <property name="wordWrap">
-                        <bool>true</bool>
+                        <string>替换前</string>
                     </property>
                 </widget>
             </item>
-            <item row="1" column="1">
-                <widget class="PushButton" name="PushButton_2">
-                    <property name="text">
-                        <string>删除</string>
-                    </property>
-                </widget>
-            </item>
-            <item row="5" column="1">
-                <spacer name="verticalSpacer">
-                    <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                        <size>
-                            <width>20</width>
-                            <height>40</height>
-                        </size>
-                    </property>
-                </spacer>
-            </item>
-            <item row="0" column="0" rowspan="6">
+            <item row="0" column="0" rowspan="5">
                 <widget class="TableWidget" name="TableWidget_ocr_table">
                     <property name="showGrid">
                         <bool>false</bool>
@@ -89,9 +63,63 @@
                     <column/>
                 </widget>
             </item>
+            <item row="0" column="2">
+                <widget class="ComboBox" name="ComboBox_type"/>
+            </item>
+            <item row="0" column="4">
+                <widget class="LineEdit" name="LineEdit_before"/>
+            </item>
+            <item row="0" column="6">
+                <widget class="LineEdit" name="LineEdit_after"/>
+            </item>
+            <item row="4" column="1">
+                <spacer name="verticalSpacer">
+                    <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                        <size>
+                            <width>20</width>
+                            <height>40</height>
+                        </size>
+                    </property>
+                </spacer>
+            </item>
+            <item row="3" column="1" colspan="6">
+                <widget class="BodyLabel" name="BodyLabel_tips">
+                    <property name="text">
+                        <string>Body label</string>
+                    </property>
+                    <property name="textFormat">
+                        <enum>Qt::MarkdownText</enum>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </item>
+            <item row="1" column="1" colspan="3">
+                <widget class="PushButton" name="PushButton_delete">
+                    <property name="text">
+                        <string>删除选中行</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="1" column="4" colspan="3">
+                <widget class="PrimaryPushButton" name="PrimaryPushButton_add">
+                    <property name="text">
+                        <string>新增</string>
+                    </property>
+                </widget>
+            </item>
         </layout>
     </widget>
     <customwidgets>
+        <customwidget>
+            <class>ComboBox</class>
+            <extends>QPushButton</extends>
+            <header>qfluentwidgets</header>
+        </customwidget>
         <customwidget>
             <class>PushButton</class>
             <extends>QPushButton</extends>
@@ -105,6 +133,11 @@
         <customwidget>
             <class>BodyLabel</class>
             <extends>QLabel</extends>
+            <header>qfluentwidgets</header>
+        </customwidget>
+        <customwidget>
+            <class>LineEdit</class>
+            <extends>QLineEdit</extends>
             <header>qfluentwidgets</header>
         </customwidget>
         <customwidget>

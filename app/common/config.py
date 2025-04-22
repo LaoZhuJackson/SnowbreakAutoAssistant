@@ -49,6 +49,8 @@ class Config(QConfig):
         ["勇者游戏", "2025-1-25", "2025-2-8"],
     ])
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
+    LineEdit_link = ConfigItem("home_interface_enter", "LineEdit_link",
+                               "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
                                             BoolValidator())
 
@@ -96,12 +98,22 @@ class Config(QConfig):
 
     ComboBox_after_use = OptionsConfigItem("home_interface_after_use", "ComboBox_after_use", -1,
                                            OptionsValidator([-1, 0, 1, 2, 3]))
-
     ComboBox_power_day = OptionsConfigItem("home_interface_power", "ComboBox_power_day", -1,
                                            OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", -1,
                                              OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     CheckBox_is_use_power = ConfigItem("home_interface_power", "CheckBox_is_use_power", False, BoolValidator())
+    LineEdit_stuff_x1 = ConfigItem("home_interface_power", "LineEdit_stuff_x1", 156)
+    LineEdit_stuff_y1 = ConfigItem("home_interface_power", "LineEdit_stuff_y1", 744)
+    LineEdit_stuff_x2 = ConfigItem("home_interface_power", "LineEdit_stuff_x2", 223)
+    LineEdit_stuff_y2 = ConfigItem("home_interface_power", "LineEdit_stuff_y2", 787)
+    LineEdit_chasm_x1 = ConfigItem("home_interface_power", "LineEdit_chasm_x1", 1940)
+    LineEdit_chasm_y1 = ConfigItem("home_interface_power", "LineEdit_chasm_y1", 540)
+    LineEdit_chasm_x2 = ConfigItem("home_interface_power", "LineEdit_chasm_x2", 2053)
+    LineEdit_chasm_y2 = ConfigItem("home_interface_power", "LineEdit_chasm_y2", 595)
+    stuff_pos = ConfigItem("home_interface_power", "stuff_pos", (0, 0, 1, 1))
+    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (0, 0, 1, 1))
+
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
     LineEdit_c3 = ConfigItem("home_interface_person", "LineEdit_c3", "")
@@ -112,6 +124,7 @@ class Config(QConfig):
 
     CheckBox_mail = ConfigItem("home_interface_reward", "CheckBox_mail", False, BoolValidator())
     CheckBox_fish_bait = ConfigItem("home_interface_reward", "CheckBox_fish_bait", False, BoolValidator())
+    CheckBox_dormitory = ConfigItem("home_interface_reward", "CheckBox_dormitory", False, BoolValidator())
 
     # main window
     micaEnabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())

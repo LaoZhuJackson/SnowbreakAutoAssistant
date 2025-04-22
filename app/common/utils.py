@@ -108,9 +108,10 @@ def get_hwnd(window_title, window_class):
     return None
 
 
-def get_date():
+def get_date(url=None):
     # url = 'https://www.cbjq.com/p/zt/2023/04/13/index/news.html?catid=7131&infoid=247'
-    API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=247"
+    API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258"
+    API_URL = url
     headers = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
     }
@@ -155,8 +156,10 @@ def get_date():
         # 提取挑战玩法
         elif "挑战玩法" in text and "✧" in text:
             challenge_name = re.search(r"【(.*?)】", text).group(1)
-            current_index += 1
-            time_text = paragraphs[current_index].get_text(strip=True)
+            time_text = ''
+            while "活动时间" not in time_text:
+                current_index += 1
+                time_text = paragraphs[current_index].get_text(strip=True)
             dates = re.findall(r"\d+月\d+日", time_text)
             start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
             end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
@@ -179,7 +182,7 @@ def get_date():
             json.dump(result_dict, f, indent=4)
         return result_dict
     else:
-        return {"error": f"数据解析失败：未匹配到任何活动"}
+        return {"error": f"未匹配到任何活动。检查 {url} 是否正确"}
 
 
 def cpu_support_avx2():

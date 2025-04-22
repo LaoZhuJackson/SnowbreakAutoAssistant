@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 from functools import partial
 
+import pyautogui
 import win32con
 import win32gui
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
@@ -11,7 +12,7 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
     BodyLabel, ProgressBar
 
 from app.common.config import config
-from app.common.logger import original_stdout, original_stderr
+from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.utils import get_all_children, get_hwnd, get_date
@@ -41,14 +42,14 @@ class StartThread(QThread, BaseTask):
 
     def run(self):
         self.is_running_signal.emit('start')
-        early_stop_flag = True
+        normal_stop_flag = True
         try:
             for key, value in self.checkbox_dic.items():
                 if value:
                     index = int(re.search(r'\d+', key).group()) - 1
                     self.logger.info(f"当前任务：{self.name_list_zh[index]}")
                     if not self.init_auto('game'):
-                        early_stop_flag = False
+                        normal_stop_flag = False
                         break
                     self.auto.reset()
                     if index == 0:
@@ -75,16 +76,17 @@ class StartThread(QThread, BaseTask):
                 else:
                     # 如果value为false则进行下一个任务的判断
                     continue
-            # 运行完成
-            if early_stop_flag:
-                self.is_running_signal.emit('end')
-            else:
-                # 未创建auto，没开游戏，提前结束
-                self.is_running_signal.emit('no_auto')
         except Exception as e:
             ocr.stop_ocr()
             self.logger.warn(e)
             # traceback.print_exc()
+        finally:
+            # 运行完成
+            if normal_stop_flag:
+                self.is_running_signal.emit('end')
+            else:
+                # 未创建auto，没开游戏，提前结束
+                self.is_running_signal.emit('no_auto')
 
 
 def select_all(widget):
@@ -140,6 +142,8 @@ class Home(QFrame, Ui_home, BaseInterface):
         self._connect_to_slot()
         self.redirectOutput(self.textBrowser_log)
 
+        self.get_tips()
+
     def _initWidget(self):
         for tool_button in self.SimpleCardWidget_option.findChildren(ToolButton):
             tool_button.setIcon(FIF.SETTING)
@@ -157,12 +161,11 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
-            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服")
+            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服\n* 遇到版本更新，收到更新活动公告链接，然后再去“刷体力”设置那更新“材料”和“深渊”位置后再运行")
         self.BodyLabel_person_tip.setText(
             "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
-        self.get_tips()
         self.PushButton_start.setShortcut("F1")
         self.PushButton_start.setToolTip("快捷键：F1")
 
@@ -209,7 +212,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                     # widget.setPlaceholderText("未选择")
                     widget.setCurrentIndex(config_item.value)
                 elif isinstance(widget, LineEdit):
-                    widget.setText(config_item.value)
+                    widget.setText(str(config_item.value))
         self._load_item_config()
 
     def _load_item_config(self):
@@ -260,9 +263,65 @@ class Home(QFrame, Ui_home, BaseInterface):
         :return:
         """
         if button_type == "stuff":
-            pass
-        elif button_type == "chasm":
-            pass
+            x1 = config.LineEdit_stuff_x1.value
+            y1 = config.LineEdit_stuff_y1.value
+            x2 = config.LineEdit_stuff_x2.value
+            y2 = config.LineEdit_stuff_y2.value
+        else:
+            x1 = config.LineEdit_chasm_x1.value
+            y1 = config.LineEdit_chasm_y1.value
+            x2 = config.LineEdit_chasm_x2.value
+            y2 = config.LineEdit_chasm_y2.value
+        if x2 < 0 or y2 < 0 or x1 < 0 or y1 < 0:
+            InfoBar.error(
+                title='更新位置出错',
+                content="坐标位置需要大于等于0",
+                orient=Qt.Horizontal,
+                isClosable=True,  # disable close button
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
+            return
+        if x2 <= x1 or y2 <= y1:
+            InfoBar.error(
+                title='更新位置出错',
+                content="右下角坐标数值需要大于左上角坐标数值",
+                orient=Qt.Horizontal,
+                isClosable=True,  # disable close button
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
+            return
+        # 获取屏幕分辨率
+        screen_width, screen_height = pyautogui.size()
+        if x1 > screen_width or x2 > screen_width or y1 > screen_height or y2 > screen_width:
+            InfoBar.error(
+                title='更新位置出错',
+                content="坐标位置不能大于屏幕分辨率",
+                orient=Qt.Horizontal,
+                isClosable=True,  # disable close button
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
+            return
+        if button_type == "stuff":
+            config.set(config.stuff_pos, (x1 / screen_width, y1 / screen_height, x2 / screen_width, y2 / screen_height))
+        else:
+            config.set(config.chasm_pos, (x1 / screen_width, y1 / screen_height, x2 / screen_width, y2 / screen_height))
+        text = "材料" if button_type == "stuff" else "深渊"
+        pos = config.stuff_pos.value if button_type == "stuff" else config.chasm_pos.value
+        InfoBar.info(
+            title=f'更新{text}位置成功',
+            content=f"坐标更新为{pos}",
+            orient=Qt.Horizontal,
+            isClosable=True,  # disable close button
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=2000,
+            parent=self
+        )
 
     def on_start_button_click(self):
         checkbox_dic = {}
@@ -361,7 +420,11 @@ class Home(QFrame, Ui_home, BaseInterface):
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
         elif isinstance(widget, LineEdit):
+            if 'x1' in widget.objectName() or 'x2' in widget.objectName() or 'y1' in widget.objectName() or 'y2' in widget.objectName():
+                return
             config.set(getattr(config, widget.objectName(), None), widget.text())
+            if widget.objectName() == 'LineEdit_link':
+                self.get_tips()
 
     def save_item_changed(self, index, check_state):
         # print(index, check_state)
@@ -400,11 +463,10 @@ class Home(QFrame, Ui_home, BaseInterface):
         return days_remaining, (days_remaining / total_day) * 100, days_remaining == total_day
 
     def get_tips(self):
-        tips_dic = get_date()
-        if "error" in tips_dic.values():
-            self.logger.error("获取活动时间失败：" + tips_dic["error"])
+        tips_dic = get_date(config.LineEdit_link.value)
+        if "error" in tips_dic.keys():
+            logger.error("获取活动时间失败：" + tips_dic["error"])
             return
-
         for key, value in tips_dic.items():
             tips_dic[key] = self.get_time_difference(value)
 
@@ -430,12 +492,12 @@ class Home(QFrame, Ui_home, BaseInterface):
 
                 index += 1
             items_list.sort(key=lambda x: x[2])
-            for i in range(len(items_list) + 1):
+            for i in range(len(items_list)):
                 self.gridLayout_tips.addWidget(items_list[i][0], i + 1, 0, 1, 1)
                 self.gridLayout_tips.addWidget(items_list[i][1], i + 1, 1, 1, 1)
 
         except Exception as e:
-            print(e)
+            logger.error(f"更新控件出错：{e}")
             # self.logger.error(e)
 
     def closeEvent(self, event):

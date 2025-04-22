@@ -77,7 +77,7 @@ class EnterGameModule:
                     '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
                 self.logger.info("已进入游戏")
                 break
-            if self.auto.click_element('开始游戏', 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080),
+            if self.auto.click_element('游戏', 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080),
                                        is_log=self.is_log):
                 time.sleep(2)
                 continue

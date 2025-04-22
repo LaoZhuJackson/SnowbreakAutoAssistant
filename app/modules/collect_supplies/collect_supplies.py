@@ -21,6 +21,8 @@ class CollectSuppliesModule:
             self.receive_mail()
         if config.CheckBox_fish_bait.value:
             self.receive_fish_bait()
+        if config.CheckBox_dormitory.value:
+            self.receive_dormitory()
 
         self.friends_power()
         self.station_power()
@@ -150,3 +152,46 @@ class CollectSuppliesModule:
                 self.logger.error("领取鱼饵超时")
                 break
         self.auto.back_to_home()
+
+    def receive_dormitory(self):
+        timeout = Timer(30).start()
+        finish_flag = False
+        while True:
+            self.auto.take_screenshot()
+
+            if finish_flag and self.auto.click_element('退出', 'text',
+                                                       crop=(2161 / 2560, 32 / 1440, 2250 / 2560, 94 / 1440),
+                                                       is_log=self.is_log):
+                time.sleep(3)
+                break
+            if self.auto.click_element('谢谢', 'text', crop=(1138 / 2560, 1075 / 1440, 1418 / 2560, 1153 / 1440),
+                                       is_log=self.is_log):
+                time.sleep(0.3)
+                finish_flag = True
+                self.auto.press_key('esc')
+                continue
+            if self.auto.click_element('键收取', 'text', crop=(1845 / 2560, 983 / 1440, 2073 / 2560, 1061 / 1440),
+                                       is_log=self.is_log):
+                time.sleep(1.5)
+                self.auto.take_screenshot()
+                if self.auto.click_element('已经', 'text', crop=(1077 / 2560, 686 / 1440, 1170 / 2560, 750 / 1440),
+                                           is_log=self.is_log):
+                    finish_flag = True
+                    continue
+                time.sleep(3)
+                continue
+            if self.auto.click_element('基地', 'text', crop=(2130 / 2560, 913 / 1440, 2217 / 2560, 977 / 1440),
+                                       is_log=self.is_log):
+                time.sleep(3)
+                continue
+            if self.auto.find_element('Esc', 'text', crop=(57 / 2560, 117 / 1440, 127 / 2560, 157 / 1440),
+                                      is_log=self.is_log):
+                self.auto.press_key('esc')
+                continue
+            if self.auto.click_element('剩余', 'text', crop=(2072 / 2560, 1372 / 1440, 2150 / 2560, 1418 / 1440),
+                                       is_log=self.is_log):
+                time.sleep(1)
+                continue
+            if timeout.reached():
+                self.logger.error("领取宿舍拼图超时")
+                break

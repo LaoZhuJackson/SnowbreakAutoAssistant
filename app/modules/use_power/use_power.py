@@ -99,8 +99,8 @@ class UsePowerModule:
         finish_flag = False  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
-        stuff_pos = (327 / 2560, 400 / 1440, 478 / 2560, 470 / 1440)
-        chasm_pos = (1500 / 2560, 303 / 1440, 1976 / 2560, 573 / 1440)
+        stuff_pos = config.stuff_pos.value
+        chasm_pos = config.chasm_pos.value
         while True:
             self.auto.take_screenshot()
 
@@ -132,7 +132,7 @@ class UsePowerModule:
                         if not self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
                                                       is_log=self.is_log):
                             break
-                    if self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 801 / 2560, 1),
+                    if self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1),
                                                is_log=self.is_log):
                         time.sleep(0.2)
                         continue
