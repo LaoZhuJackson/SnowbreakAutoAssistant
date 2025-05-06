@@ -1,4 +1,6 @@
 import json
+import os
+import sys
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFrame, QTableWidgetItem
@@ -32,6 +34,9 @@ class OcrReplacementTable(QFrame, Ui_ocrtable):
         self.LineEdit_before.setPlaceholderText("错误文本")
         self.LineEdit_after.setPlaceholderText("正确文本")
 
+        # 新增路径属性
+        self.json_path = self.get_json_path()
+
         self.TableWidget_ocr_table.setBorderVisible(True)
         self.TableWidget_ocr_table.setBorderRadius(8)
         self.TableWidget_ocr_table.verticalHeader().hide()
@@ -46,6 +51,18 @@ class OcrReplacementTable(QFrame, Ui_ocrtable):
         self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
         self.TableWidget_ocr_table.cellDoubleClicked.connect(self.enter_cell)
 
+    def get_json_path(self):
+        """获取JSON文件的绝对路径"""
+        # 获取可执行文件所在目录
+        base_dir = os.path.dirname(sys.executable)
+        # 组合完整路径
+        json_path = os.path.join(base_dir, "AppData", "ocr_replacements.json")
+
+        # 如果AppData目录不存在则创建
+        os.makedirs(os.path.dirname(json_path), exist_ok=True)
+        # print(json_path)
+        return json_path
+
     def enter_cell(self, row, col):
         self.old_type = 'direct' if self.TableWidget_ocr_table.item(row, 0).text() == "直接替换" else 'conditional'
         self.old_key = self.TableWidget_ocr_table.item(row, 1).text()
@@ -53,8 +70,8 @@ class OcrReplacementTable(QFrame, Ui_ocrtable):
 
     def change_row(self, row, col):
         # 临时断开信号
-        self.TableWidget_ocr_table.cellChanged.disconnect(self.change_row)
-
+        # self.TableWidget_ocr_table.cellChanged.disconnect(self.change_row)
+        self.TableWidget_ocr_table.blockSignals(True)
         try:
             item = self.TableWidget_ocr_table.item(row, col)
             if not item:
@@ -107,13 +124,14 @@ class OcrReplacementTable(QFrame, Ui_ocrtable):
             )
         finally:
             # 重新连接信号
-            self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
+            # self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
+            self.TableWidget_ocr_table.blockSignals(True)
 
     def on_add_button_click(self):
-        # 临时断开信号
-        self.TableWidget_ocr_table.cellChanged.disconnect(self.change_row)
-
         try:
+            # 临时断开信号
+            # self.TableWidget_ocr_table.cellChanged.disconnect(self.change_row)
+            self.TableWidget_ocr_table.blockSignals(True)
             replace_type = 'direct' if self.ComboBox_type.currentIndex() == 0 else 'conditional'
             original_text = self.LineEdit_before.text()
             replacement_text = self.LineEdit_after.text()
@@ -146,23 +164,54 @@ class OcrReplacementTable(QFrame, Ui_ocrtable):
                 duration=2000,
                 parent=self
             )
+        except Exception as e:
+            print(e)
         finally:
             # 重新连接信号
-            self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
+            # self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
+            self.TableWidget_ocr_table.blockSignals(False)
 
     def load_json(self):
-        with open("AppData/ocr_replacements.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return data
+        # 确保文件存在
+        if not os.path.exists(self.json_path):
+            with open(self.json_path, 'w', encoding='utf-8') as f:
+                json.dump({'direct': {}, 'conditional': {}}, f, indent=4)
+
+        try:
+            with open(self.json_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading JSON: {str(e)}, path:{self.json_path}")
+            return {'direct': {}, 'conditional': {}}
 
     def save_data(self, data):
-        with open("AppData/ocr_replacements.json", "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+        try:
+            # 检查文件是否可写
+            if os.path.exists(self.json_path):
+                if not os.access(self.json_path, os.W_OK):
+                    print("错误：文件不可写！")
+                    raise PermissionError("文件不可写")
+            print("文件可写！")
+            with open(self.json_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Error saving JSON: {str(e)}, path:{self.json_path}")
+            InfoBar.error(
+                title='保存失败',
+                content=f"无法写入配置文件：{str(e)}",
+                isClosable=True,  # disable close button
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
 
     def delete_row(self):
-        # 临时断开信号
-        self.TableWidget_ocr_table.cellChanged.disconnect(self.change_row)
         try:
+            # 临时断开信号
+            # self.TableWidget_ocr_table.cellChanged.disconnect(self.change_row)
+
+            # 阻断信号传送
+            self.TableWidget_ocr_table.blockSignals(True)
             select_row = self.TableWidget_ocr_table.currentRow()
             if select_row >= 0:
                 key_type = 'direct' if self.TableWidget_ocr_table.item(select_row,
@@ -213,9 +262,12 @@ class OcrReplacementTable(QFrame, Ui_ocrtable):
                     duration=2000,
                     parent=self
                 )
+        except Exception as e:
+            print(e)
         finally:
             # 重新连接信号
-            self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
+            # self.TableWidget_ocr_table.cellChanged.connect(self.change_row)
+            self.TableWidget_ocr_table.blockSignals(False)
 
     def load_table(self):
         replacements = self.load_json()

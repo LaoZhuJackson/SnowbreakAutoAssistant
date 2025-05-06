@@ -174,8 +174,8 @@ class CollectSuppliesModule:
                                        is_log=self.is_log):
                 time.sleep(1.5)
                 self.auto.take_screenshot()
-                if self.auto.click_element('已经', 'text', crop=(1077 / 2560, 686 / 1440, 1170 / 2560, 750 / 1440),
-                                           is_log=self.is_log):
+                if self.auto.find_element('已经', 'text', crop=(1077 / 2560, 686 / 1440, 1170 / 2560, 750 / 1440),
+                                          is_log=self.is_log):
                     finish_flag = True
                     continue
                 time.sleep(3)

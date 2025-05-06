@@ -31,7 +31,7 @@ class SubTask(QThread, BaseTask):
             # print(traceback.format_exc())
             # 停止时清除ocr缓存
             ocr.stop_ocr()
-            self.logger.warn(e)
+            self.logger.warn(f"SubTask：{e}")
         self.is_running.emit(False)
 
 

@@ -47,7 +47,7 @@ class BannerWidget(QWidget):
         self.basedir = "app/resource/images/display"
         random_number = random.randint(1, 9)
         # banner_path = os.path.join(self.basedir, f"background_{random_number}.jpg")
-        banner_path = os.path.join(self.basedir, f"background_1.jpg")
+        banner_path = os.path.join(self.basedir, f"101.png")
         self.banner = QPixmap(banner_path)
         # 超链接卡片
         self.linkCardView = LinkCardView(self)

@@ -103,6 +103,8 @@ class PersonModule:
                     if self.no_chip:
                         break
                     continue
+                else:
+                    self.auto.take_screenshot()
             pos = self.auto.find_element(person_name, "text", crop=(0, 738 / 1080, 1, 838 / 1080), is_log=self.is_log)
             # 找到对应角色
             if pos:
@@ -119,7 +121,6 @@ class PersonModule:
             else:
                 self.scroll_page()
                 time.sleep(0.5)
-                continue
 
     def find_quick_fight(self, name_pos, person_name):
         """
@@ -165,6 +166,7 @@ class PersonModule:
                     self.auto.click_element('确定', 'text', crop=(1353 / 1920, 729 / 1080, 1528 / 1920, 800 / 1080),
                                             is_log=self.is_log)
                     self.auto.press_key('esc')
+                    time.sleep(1)
                     return True
             if self.auto.click_element("app/resource/images/person/add_power.png", "image",
                                        crop=(1533 / 1920, 23 / 1080, 1599 / 1920, 81 / 1080), is_log=self.is_log):
@@ -184,7 +186,7 @@ class PersonModule:
         :return:
         """
         direction = -1 if direction >= 0 else 1
-        self.auto.mouse_scroll(int(904 / self.auto.scale_x), int(538 / self.auto.scale_y), 7100 * direction * page)
+        self.auto.mouse_scroll(int(904 / self.auto.scale_x), int(538 / self.auto.scale_y), 7000 * direction * page)
 
     def update_power_times(self):
         """更新嵌片数量"""

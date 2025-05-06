@@ -445,9 +445,9 @@ class Ui_additional_features(object):
         self.gridLayout_18.addWidget(self.BodyLabel_27, 0, 0, 1, 1)
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_18.addItem(spacerItem6, 2, 0, 1, 1)
-        self.ComboBox_mode_2 = ComboBox(self.SimpleCardWidget_maze)
-        self.ComboBox_mode_2.setObjectName("ComboBox_mode_2")
-        self.gridLayout_18.addWidget(self.ComboBox_mode_2, 0, 1, 1, 1)
+        self.ComboBox_mode_maze = ComboBox(self.SimpleCardWidget_maze)
+        self.ComboBox_mode_maze.setObjectName("ComboBox_mode_maze")
+        self.gridLayout_18.addWidget(self.ComboBox_mode_maze, 0, 1, 1, 1)
         self.BodyLabel_tip_maze = BodyLabel(self.SimpleCardWidget_maze)
         self.BodyLabel_tip_maze.setTextFormat(QtCore.Qt.MarkdownText)
         self.BodyLabel_tip_maze.setObjectName("BodyLabel_tip_maze")
@@ -478,7 +478,7 @@ class Ui_additional_features(object):
         self.gridLayout.addWidget(self.SegmentedWidget, 0, 0, 1, 1)
 
         self.retranslateUi(additional_features)
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(additional_features)
 
     def retranslateUi(self, additional_features):

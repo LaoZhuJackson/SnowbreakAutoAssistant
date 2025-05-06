@@ -398,7 +398,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-            <number>3</number>
+            <number>1</number>
         </property>
         <widget class="QWidget" name="page_5">
          <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,0,0">
@@ -543,7 +543,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>285</width>
+                  <width>332</width>
                <height>503</height>
               </rect>
              </property>

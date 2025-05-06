@@ -185,15 +185,15 @@ class ShoppingModule:
         return result_list
 
     def scroll_to_bottom(self):
-        timeout = Timer(10).start()
+        timeout = Timer(20).start()
         while True:
+            self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -1200)
             self.auto.take_screenshot()
 
-            if not self.auto.find_element("光纤轴突", "text", crop=(319 / 1920, 864 / 1080, 1861 / 1920, 1037 / 1080),
+            if self.auto.find_element("光纤轴突", "text", crop=(319 / 1920, 864 / 1080, 1861 / 1920, 1037 / 1080),
                                           is_log=self.is_log):
-                self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -550)
-            else:
                 break
             if timeout.reached():
-                self.logger.error("滚动商店超时")
+                self.logger.error(
+                    "滚动商店超时：未识别到“光纤轴突”，可尝试在设置中打开显示ocr识别结果，如果识别到有错别字，再去替换表添加错别字规则")
                 break

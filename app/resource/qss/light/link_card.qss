@@ -1,11 +1,11 @@
 LinkCard {
     border: 1px solid rgb(234, 234, 234);
     border-radius: 10px;
-    background-color: rgba(249, 249, 249, 0.95);
+    background-color: rgba(249, 249, 249, 0.75);
 }
 
 LinkCard:hover {
-    background-color: rgba(249, 249, 249, 0.93);
+    background-color: rgba(249, 249, 249, 0.83);
     border: 1px solid rgb(220, 220, 220);
 }
 

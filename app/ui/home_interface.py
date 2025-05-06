@@ -224,7 +224,7 @@ class Ui_home(object):
         self.ScrollArea.setWidgetResizable(True)
         self.ScrollArea.setObjectName("ScrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 285, 503))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 332, 503))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -665,7 +665,7 @@ class Ui_home(object):
         self.gridLayout_2.setRowStretch(1, 1)
 
         self.retranslateUi(home)
-        self.PopUpAniStackedWidget.setCurrentIndex(3)
+        self.PopUpAniStackedWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(home)
 
     def retranslateUi(self, home):

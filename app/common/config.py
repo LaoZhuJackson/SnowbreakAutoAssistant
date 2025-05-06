@@ -111,8 +111,9 @@ class Config(QConfig):
     LineEdit_chasm_y1 = ConfigItem("home_interface_power", "LineEdit_chasm_y1", 540)
     LineEdit_chasm_x2 = ConfigItem("home_interface_power", "LineEdit_chasm_x2", 2053)
     LineEdit_chasm_y2 = ConfigItem("home_interface_power", "LineEdit_chasm_y2", 595)
-    stuff_pos = ConfigItem("home_interface_power", "stuff_pos", (0, 0, 1, 1))
-    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (0, 0, 1, 1))
+    stuff_pos = ConfigItem("home_interface_power", "stuff_pos", (0.7578125, 0.375, 0.801953125, 0.4131944444444444))
+    chasm_pos = ConfigItem("home_interface_power", "chasm_pos",
+                           (0.0609375, 0.5166666666666667, 0.087109375, 0.5465277777777777))
 
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
@@ -185,6 +186,8 @@ class Config(QConfig):
     Slider_template_threshold = ConfigItem("add_water", "Slider_template_threshold", 60)
     # 异星守护相关
     ComboBox_mode = OptionsConfigItem("add_alien", "ComboBox_mode", 0, OptionsValidator([0, 1]))
+    # 迷宫相关
+    ComboBox_mode_maze = OptionsConfigItem("add_maze", "ComboBox_mode_maze", 0, OptionsValidator([0, 1]))
 
 
 config = Config()

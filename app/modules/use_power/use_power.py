@@ -22,7 +22,7 @@ class UsePowerModule:
             self.by_maneuver()
 
     def check_power(self):
-        timeout = Timer(30).start()
+        timeout = Timer(50).start()
         current_check = 1  # 当前检查的体力剩余天数
         confirm_flag = False  # 是否选择好了体力
         enter_power_select = False  # 是否进入选择体力界面，用户禁止对体力图标的判断

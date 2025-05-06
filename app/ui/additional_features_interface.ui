@@ -29,7 +29,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-         <number>3</number>
+         <number>5</number>
      </property>
      <widget class="QWidget" name="page_fishing">
       <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
@@ -902,7 +902,7 @@
                                 </spacer>
                             </item>
                             <item row="0" column="1">
-                                <widget class="ComboBox" name="ComboBox_mode_2"/>
+                                <widget class="ComboBox" name="ComboBox_mode_maze"/>
                             </item>
                             <item row="3" column="0" colspan="2">
                                 <widget class="BodyLabel" name="BodyLabel_tip_maze">

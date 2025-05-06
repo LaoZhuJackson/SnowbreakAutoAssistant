@@ -63,7 +63,7 @@ class EnterGameModule:
 
     def handle_game(self):
         """处理游戏窗口部分"""
-        timeout = Timer(20).start()
+        timeout = Timer(30).start()
         while True:
             # 截图
             self.auto.take_screenshot()
@@ -77,6 +77,11 @@ class EnterGameModule:
                     '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
                 self.logger.info("已进入游戏")
                 break
+            if self.auto.click_element('登录', 'text', crop=(1198 / 2560, 835 / 1440, 1365 / 2560, 889 / 1440),
+                                       is_log=self.is_log):
+                time.sleep(1)
+                continue
+
             if self.auto.click_element('游戏', 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080),
                                        is_log=self.is_log):
                 time.sleep(2)

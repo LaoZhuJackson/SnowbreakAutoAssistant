@@ -53,7 +53,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         # 正向链接
         self.SegmentedWidget.addItem(self.page_fishing.objectName(), '钓鱼',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_fishing))
-        self.SegmentedWidget.addItem(self.page_action.objectName(), '常规行动（未完成）',
+        self.SegmentedWidget.addItem(self.page_action.objectName(), '常规行动',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_action))
         self.SegmentedWidget.addItem(self.page_jigsaw.objectName(), '信源解析（未完成）',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_jigsaw))
@@ -78,15 +78,17 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_alien.setText(
             "### 提示\n* 开始战斗后再点击开始\n* 常驻伙伴推荐带钢珠和炽热投手\n* 闯关模式为半自动一关一关打。需要手动开枪，手动选择下一关")
         self.BodyLabel_tip_maze.setText(
-            "### 提示\n* 进入选配增益界面后点击开始\n* 配队必须要有辰星-琼弦，且把角色放在中间位\n* 辅助有豹豹上豹豹防止暴毙\n* 增益推荐配技能-爆电和护盾-夺取")
+            "### 提示\n* 本功能只适用于增益迷宫（新迷宫），而非老迷宫\n* 运行模式中单次运行适合打前3关，重复运行则是一直刷最后一关\n* 进配队界面后选好增益后再点击SAA的开始迷宫\n* 增益推荐配技能-爆电和护盾-夺取\n* 配队必须要有辰星-琼弦，且把角色放在中间位\n* 辅助有豹豹上豹豹防止暴毙)")
         # 设置combobox选项
         lure_type_items = ['万能鱼饵', '普通鱼饵', '豪华鱼饵', '至尊鱼饵', '重量级鱼类虫饵', '巨型鱼类虫饵',
                            '重量级鱼类夜钓虫饵', '巨型鱼类夜钓虫饵']
         run_items = ["切换疾跑", "按住疾跑"]
         mode_items = ["无尽模式", "闯关模式"]
+        mode_maze_items = ["单次运行", "重复运行"]
         self.ComboBox_run.addItems(run_items)
         self.ComboBox_lure_type.addItems(lure_type_items)
         self.ComboBox_mode.addItems(mode_items)
+        self.ComboBox_mode_maze.addItems(mode_maze_items)
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)

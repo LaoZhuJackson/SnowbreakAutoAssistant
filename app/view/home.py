@@ -296,7 +296,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             return
         # 获取屏幕分辨率
         screen_width, screen_height = pyautogui.size()
-        if x1 > screen_width or x2 > screen_width or y1 > screen_height or y2 > screen_width:
+        if x1 > screen_width or x2 > screen_width or y1 > screen_height or y2 > screen_height:
             InfoBar.error(
                 title='更新位置出错',
                 content="坐标位置不能大于屏幕分辨率",
@@ -420,9 +420,11 @@ class Home(QFrame, Ui_home, BaseInterface):
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
         elif isinstance(widget, LineEdit):
+            # 对坐标进行数据转换处理
             if 'x1' in widget.objectName() or 'x2' in widget.objectName() or 'y1' in widget.objectName() or 'y2' in widget.objectName():
-                return
-            config.set(getattr(config, widget.objectName(), None), widget.text())
+                config.set(getattr(config, widget.objectName(), None), int(widget.text()))
+            else:
+                config.set(getattr(config, widget.objectName(), None), widget.text())
             if widget.objectName() == 'LineEdit_link':
                 self.get_tips()
 
@@ -453,8 +455,6 @@ class Home(QFrame, Ui_home, BaseInterface):
         if now < start_time:
             # 将当前日期替换成开始日期
             now = start_time
-        # print(end_time)
-        # print(now)
         time_difference = end_time - now
         days_remaining = time_difference.days + 1
         if days_remaining < 0:

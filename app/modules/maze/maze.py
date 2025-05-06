@@ -11,9 +11,12 @@ class MazeModule:
         self.auto = auto
         self.logger = logger
         self.is_log = False
+        self.run_mode = None
 
     def run(self):
-        self.is_log = config.isLog.value, is_log = self.is_log
+        self.is_log = config.isLog.value
+        self.run_mode = config.ComboBox_mode_maze.value
+
         self.fight()
 
     def fight(self):
@@ -64,6 +67,8 @@ class MazeModule:
                 continue
             if self.auto.click_element('退出', 'text', crop=(896 / 1920, 946 / 1080, 985 / 1920, 1011 / 1080),
                                        is_log=self.is_log):
+                if self.run_mode == 0:
+                    break
                 time.sleep(1)
                 continue
             if self.auto.click_element('开始作战', 'text', crop=(1731 / 1920, 976 / 1080, 1881 / 1920, 1024 / 1080),
