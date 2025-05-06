@@ -55,7 +55,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_fishing))
         self.SegmentedWidget.addItem(self.page_action.objectName(), '常规行动',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_action))
-        self.SegmentedWidget.addItem(self.page_jigsaw.objectName(), '信源解析（未完成）',
+        self.SegmentedWidget.addItem(self.page_jigsaw.objectName(), '信源解析',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_jigsaw))
         self.SegmentedWidget.addItem(self.page_water_bomb.objectName(), '心动水弹',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_water_bomb))
@@ -72,7 +72,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_action.setText(
             "### 提示\n* 自动完成常规行动，在看板娘页面点击开始\n* 重复刷指定次数实战训练第一关，不消耗体力\n* 用于完成凭证20次常规行动周常任务")
         self.BodyLabel_tip_jigsaw.setText(
-            "### 提示\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量\n* 使用自动获取碎片数量需要保证所有碎片没有被旋转过（如果旋转过就重新进一次信源解析界面）")
+            "### 提示\n* 本功能只提供解决方案，不自动拼\n* 需要手动输入当前拥有的各个拼图数量\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量")
         self.BodyLabel_tip_water.setText(
             "### 提示\n* 进入站在水弹位置后再点开始\n* 当无法识别道具或者生命时，适当调低上面两个置信度参数")
         self.BodyLabel_tip_alien.setText(

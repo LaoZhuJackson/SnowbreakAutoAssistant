@@ -168,7 +168,6 @@ class Config(QConfig):
     ComboBox_run = OptionsConfigItem("add_action", "ComboBox_run", 0, OptionsValidator([0, 1]))
     # 信源解析相关
     SpinBox_max_solutions = ConfigItem("jigsaw", "SpinBox_max_solutions", 10)
-    CheckBox_auto_update_pieces_num = ConfigItem("jigsaw", "CheckBox_auto_update_pieces_num", True, BoolValidator())
     LineEdit_jigsaw_piece_1 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_1", "0")
     LineEdit_jigsaw_piece_2 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_2", "0")
     LineEdit_jigsaw_piece_3 = ConfigItem("pieces_num", "LineEdit_jigsaw_piece_3", "0")

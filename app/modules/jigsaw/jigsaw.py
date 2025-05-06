@@ -261,7 +261,39 @@ class JigsawModule:
 
     def run(self):
         self.is_log = config.isLog.value
-        pass
+
+        for i in range(3):
+            self.identify_board()
+            if self.board:
+                self.update_pieces_num()
+                self.update_priority()
+                self.fill_board(config.SpinBox_max_solutions.value)
+                if self.piece_solution:
+                    # best_solution = self.give_score_and_display_best()
+                    self.give_score_and_display_best()
+                    break
+                    # if len(self.piece_solution) < config.SpinBox_max_solutions.value:
+                    #     logger.warn(
+                    #         f'目前总共只有{len(self.piece_solution)}种能填满全部格子的方案，不足{config.SpinBox_max_solutions.value}')
+                    # if self.place_jigsaw(best_solution):
+                    #     if self.after_place():
+                    #         if auto.click_element("继续", "text", include=True, max_retries=3, action="move_click"):
+                    #             time.sleep(2)
+                    #             continue
+                    #         else:
+                    #             auto.click_element("退出", "text", include=True, max_retries=3, action="move_click")
+                    #             break
+                    #     else:
+                    #         break
+                    # else:
+                    #     logger.error("未能正确拼完，可以按照给出的最优方案手动拼完")
+                    #     break
+                else:
+                    self.logger.warn("没有找到能填满全部格子的方案")
+                    break
+            else:
+                self.logger.error("未识别出对应的地图")
+                break
 
     def identify_board(self):
         """判断当前board是哪个"""
@@ -272,10 +304,12 @@ class JigsawModule:
         self.board_bottom_right = []
         self.board_top_left = []
 
-        for i in range(1, 17):
+        self.auto.take_screenshot()
+        for i in [1, 2, 3, 11, 13, 16]:
             try:
                 result = self.auto.find_element(f"app/resource/images/jigsaw/{i}.png", "image", threshold=0.7,
-                                           crop=(596 / 1920, 203 / 1080, 901 / 1920, 718 / 1080))
+                                                crop=(833 / 2560, 285 / 1440, 1959 / 2560, 1214 / 1440),
+                                                is_log=self.is_log)
                 if result:
                     # 更新左上角坐标
                     self.board_top_left, self.board_bottom_right = result
@@ -286,7 +320,9 @@ class JigsawModule:
                     self.board_cols = len(self.board[0])
                     break
             except Exception as e:
+                # self.logger.error(e)
                 pass
+        # self.logger.error("未匹配到对应board")
 
     def place_piece(self, x, y, piece_id: int, rotation: int, mark: bool):
         """
@@ -370,14 +406,14 @@ class JigsawModule:
                         # 需要用.copy()浅拷贝创建一个新列表对象，不然更新不成功，会一直append最开始的第一个
                         self.piece_solution.append(self.used_pieces.copy())
                         self.display_solution_board.append(copy.deepcopy(self.board))
-                        logger.info(f"成功找到第{len(self.piece_solution)}个方案")
+                        self.logger.info(f"成功找到第{len(self.piece_solution)}个方案")
                         # print(self.display_solution_board)
                 else:
                     if not any(0 in r for r in self.board):
                         # 需要用.copy()浅拷贝创建一个新列表对象，不然更新不成功，会一直append最开始的第一个
                         self.piece_solution.append(self.used_pieces.copy())
                         self.display_solution_board.append(copy.deepcopy(self.board))
-                        logger.info(f"成功找到第{len(self.piece_solution)}个方案")
+                        self.logger.info(f"成功找到第{len(self.piece_solution)}个方案")
                         # print(self.display_solution_board)
                 if len(self.piece_solution) >= max_solutions:
                     return True  # 已达到指定方案数量，停止搜索
@@ -452,11 +488,11 @@ class JigsawModule:
                 result_score += score_dic[piece[0]]
             self.solutions_score[index] = result_score
             result_score = 0
-            print(f"-------方案{index + 1}，得分：{self.solutions_score[index]}-------")
+            self.logger.info(f"-------方案{index + 1}，得分：{self.solutions_score[index]}-------")
             for r in self.display_solution_board[index]:
                 print(r)
         best_score_index = self.solutions_score.index(max(self.solutions_score))
-        print(f"最优方案为：方案{best_score_index + 1}")
+        self.logger.info(f"最优方案为：方案{best_score_index + 1}")
         signalBus.jigsawDisplaySignal.emit(self.display_solution_board[best_score_index])
         return self.piece_solution[best_score_index]
 
