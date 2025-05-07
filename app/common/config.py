@@ -111,8 +111,8 @@ class Config(QConfig):
     LineEdit_chasm_y1 = ConfigItem("home_interface_power", "LineEdit_chasm_y1", 540)
     LineEdit_chasm_x2 = ConfigItem("home_interface_power", "LineEdit_chasm_x2", 2053)
     LineEdit_chasm_y2 = ConfigItem("home_interface_power", "LineEdit_chasm_y2", 595)
-    stuff_pos = ConfigItem("home_interface_power", "stuff_pos", (0.7578125, 0.375, 0.801953125, 0.4131944444444444))
-    chasm_pos = ConfigItem("home_interface_power", "chasm_pos",
+    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (0.7578125, 0.375, 0.801953125, 0.4131944444444444))
+    stuff_pos = ConfigItem("home_interface_power", "stuff_pos",
                            (0.0609375, 0.5166666666666667, 0.087109375, 0.5465277777777777))
 
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")

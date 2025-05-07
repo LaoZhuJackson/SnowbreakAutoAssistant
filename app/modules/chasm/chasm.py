@@ -60,7 +60,8 @@ class ChasmModule:
                 continue
             if self.auto.click_element("快速测评", "text", crop=(1236 / 1920, 943 / 1080, 1552 / 1920, 1),
                                        is_log=self.is_log):
-                time.sleep(0.3)
+                # 等确定按钮出现，防止提前second_finish_flag = True
+                time.sleep(1)
                 continue
             if self.auto.click_element("精神", "text", crop=(0, 758 / 1080, 1, 828 / 1080), is_log=self.is_log):
                 continue
