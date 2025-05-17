@@ -502,6 +502,12 @@ class Automation:
         self.pause_event.set()
 
     def get_crop_form_first_screenshot(self, crop=(0, 0, 1, 1), is_resize=False):
+        """
+        从完整图中裁剪出局部图
+        :param crop:
+        :param is_resize:
+        :return:
+        """
         crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
         if config.showScreenshot.value:
             signalBus.showScreenshot.emit(crop_image)

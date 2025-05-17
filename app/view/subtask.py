@@ -43,6 +43,9 @@ class AdjustColor(QThread, BaseTask):
         self.logger = logger
 
     def run(self):
+        if not self.init_auto('game'):
+            self.logger.error("AdjustColor获取auto失败")
+            return
         self.auto.take_screenshot()
         img_np = self.auto.get_crop_form_first_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080),
                                                           is_resize=False)

@@ -1,4 +1,5 @@
 import cpufeature
+import cv2
 import numpy as np
 import win32api
 import win32con
@@ -193,5 +194,46 @@ def cpu_support_avx2():
     return cpufeature.CPUFeature["AVX2"]
 
 
+def count_color_blocks(image, lower_color, upper_color, preview=False):
+    """计算颜色块数量，并可选择预览掩膜"""
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lower_color, upper_color)
+
+    if preview:  # 添加预览模式
+        # 将掩膜与原图叠加显示
+        masked_img = cv2.bitwise_and(image, image, mask=mask)
+        cv2.imshow("Mask Preview", masked_img)
+        # cv2.waitKey(1)  # 保持1ms后自动关闭（非阻塞模式）
+        cv2.waitKey(0)  # 按任意键继续（阻塞模式）
+
+    contours, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    return len(contours)
+
+
+def rgb_to_opencv_hsv(r, g, b):
+    # 输入：RGB 值（范围 0-255）
+    # 输出：OpenCV 格式的 HSV 值（H:0-179, S:0-255, V:0-255）
+    rgb_color = np.uint8([[[b, g, r]]])  # OpenCV 使用 BGR 顺序
+    hsv_color = cv2.cvtColor(rgb_color, cv2.COLOR_BGR2HSV)
+    return hsv_color[0][0]
+
+
+def get_hsv(target_rgb):
+    # 转换为 OpenCV 的 HSV 值
+    h, s, v = rgb_to_opencv_hsv(*target_rgb)
+
+    # 设置容差范围
+    h_tolerance = 2
+    s_tolerance = 35
+    v_tolerance = 10
+
+    lower_color = np.array([max(0, h - h_tolerance), max(0, s - s_tolerance), max(0, v - v_tolerance)])
+    upper_color = np.array([min(179, h + h_tolerance), min(255, s + s_tolerance), min(255, v + v_tolerance)])
+
+    print(f"Lower HSV: {lower_color}")
+    print(f"Upper HSV: {upper_color}")
+
+
 if __name__ == "__main__":
-    print(get_date())
+    get_hsv((124, 174, 235))
+    get_hsv((112, 165, 238))

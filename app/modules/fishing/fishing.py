@@ -9,6 +9,7 @@ from fuzzywuzzy import process
 from app.common.config import config
 from app.common.image_utils import ImageUtils
 from app.common.signal_bus import signalBus
+from app.common.utils import count_color_blocks
 from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 
@@ -56,6 +57,10 @@ class FishingModule:
                 break
 
     def enter_fish(self):
+        """
+        进入钓鱼界面并选好鱼饵
+        :return:
+        """
         timeout = Timer(15).start()
         enter_flag = False
         lure_type_index = config.ComboBox_lure_type.value
@@ -141,12 +146,17 @@ class FishingModule:
                 return False
 
     def start_fish(self):
+        """
+        qte收杆钓鱼
+        :return:
+        """
         timeout = Timer(60).start()
         while True:
             self.auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080), is_interval=False)
 
             if config.ComboBox_fishing_mode.value == 0:
-                blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
+                # blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
+                blocks_num = count_color_blocks(self.auto.current_screenshot, self.lower_yellow, self.upper_yellow)
                 if blocks_num >= 2:
                     self.logger.info("到点，收杆!")
                     if self.is_use_time_judge:
@@ -155,7 +165,8 @@ class FishingModule:
                 elif blocks_num == 0:
                     time.sleep(0.3)
                     self.auto.take_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080))
-                    blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
+                    # blocks_num = self.count_yellow_blocks(self.auto.current_screenshot)
+                    blocks_num = count_color_blocks(self.auto.current_screenshot, self.lower_yellow, self.upper_yellow)
                     # 连续两次都是0才返回false,避免误判
                     if blocks_num == 0:
                         break
@@ -220,21 +231,21 @@ class FishingModule:
         self.auto.crrent_screenshot.save(file_path)
         self.logger.info(f"出了条大的！截图已保存至：{file_path}")
 
-    def count_yellow_blocks(self, image):
-        # 黄色的确切HSV值
-        """计算图像中黄色像素的数量"""
-        # 将图像转换为HSV颜色空间
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-        # 创建黄色掩膜
-        mask_yellow = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
-
-        # 查找轮廓
-        contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-        # self.logger.debug(f"黄色块数为：{len(contours_yellow)}")
-        # print(f"黄色块数为：{len(contours_yellow)}")
-        #
-        return len(contours_yellow)
+    # def count_yellow_blocks(self, image):
+    #     # 黄色的确切HSV值
+    #     """计算图像中黄色像素的数量"""
+    #     # 将图像转换为HSV颜色空间
+    #     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    #
+    #     # 创建黄色掩膜
+    #     mask_yellow = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
+    #
+    #     # 查找轮廓
+    #     contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    #     # self.logger.debug(f"黄色块数为：{len(contours_yellow)}")
+    #     # print(f"黄色块数为：{len(contours_yellow)}")
+    #     #
+    #     return len(contours_yellow)
 
     def is_spin_rod(self):
         """
