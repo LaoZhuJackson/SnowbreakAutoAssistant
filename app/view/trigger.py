@@ -26,7 +26,8 @@ class Trigger(QFrame, Ui_trigger, BaseInterface):
         self._connect_to_slot()
 
     def _initWidget(self):
-        pass
+        self.BodyLabel_trigger_tip.setText(
+            "### 提示\n* 先启动游戏再开启本功能\n* 这里的功能相当于开关，开了就会一直检测，遇到符合的情况就自动触发\n* 不影响手动游玩，更像是辅助半自动")
 
     def _connect_to_slot(self):
         self.SwitchButton_f.checkedChanged.connect(self.on_f_toggled)
