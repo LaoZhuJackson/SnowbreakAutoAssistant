@@ -14,9 +14,6 @@ class AutoFModule(BaseTask):
 
     def run(self):
         self.is_log = config.isLog.value
-
-        if not self.init_auto('game'):
-            return
         while True:
             self.auto.take_screenshot()
             if self.auto.find_element("app/resource/images/fishing/collect.png", "image",

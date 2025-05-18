@@ -2,7 +2,7 @@ import threading
 import time
 
 from PyQt5.QtWidgets import QFrame
-from qfluentwidgets import InfoBar
+from qfluentwidgets import InfoBar, SwitchButton
 
 from app.modules.base_task.base_task import BaseTask
 from app.modules.trigger.auto_f import AutoFModule
@@ -32,46 +32,68 @@ class Trigger(QFrame, Ui_trigger, BaseInterface):
         self.SwitchButton_f.checkedChanged.connect(self.on_f_toggled)
         self.SwitchButton_e.checkedChanged.connect(self.on_e_toggled)
 
-    # 采集f
+    def turn_off_e_switch(self, is_running):
+        if not is_running:
+            self.SwitchButton_e.setChecked(False)
+
+    def turn_off_f_switch(self, is_running):
+        if not is_running:
+            self.SwitchButton_f.setChecked(False)
+
     def on_f_toggled(self, isChecked: bool):
+        """
+        采集f
+        :param isChecked:
+        :return:
+        """
         if isChecked:
             self.f_thread = SubTask(AutoFModule)
+            self.f_thread.is_running.connect(self.turn_off_f_switch)
             self.f_thread.start()
-            InfoBar.success(
-                '自动按F',
-                '已开启',
-                isClosable=True,
-                duration=2000,
-                parent=self
-            )
         else:
-            self.f_thread.stop()
-            InfoBar.success(
-                '自动按F',
-                '已关闭',
-                isClosable=True,
-                duration=2000,
-                parent=self
-            )
+            if self.f_thread.run:
+                self.f_thread.stop()
+                InfoBar.success(
+                    '自动按F',
+                    '已关闭',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
+                )
+            else:
+                InfoBar.error(
+                    '错误',
+                    '游戏未打开',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
+                )
 
-    # 妮塔e
     def on_e_toggled(self, isChecked: bool):
+        """
+        妮塔e
+        :param isChecked:
+        :return:
+        """
         if isChecked:
             self.nita_e_thread = SubTask(NitaAutoEModule)
+            self.nita_e_thread.is_running.connect(self.turn_off_e_switch)
             self.nita_e_thread.start()
-            InfoBar.success(
-                '妮塔自动E',
-                '已开启',
-                isClosable=True,
-                duration=2000,
-                parent=self
-            )
         else:
-            self.nita_e_thread.stop()
-            InfoBar.success(
-                '妮塔自动E',
-                '已关闭',
-                isClosable=True,
-                duration=2000,
-                parent=self
-            )
+            if self.nita_e_thread.run:
+                self.nita_e_thread.stop()
+                InfoBar.success(
+                    '妮塔自动E',
+                    '已关闭',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
+                )
+            else:
+                InfoBar.error(
+                    '错误',
+                    '游戏未打开',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
+                )

@@ -15,28 +15,36 @@ from app.modules.ocr import ocr
 
 class SubTask(QThread, BaseTask):
     is_running = pyqtSignal(bool)
+
     def __init__(self, module):
         super().__init__()
+        self.run = False  # 用于判断是否正常结束
         if not self.init_auto('game'):
             return
-        self.module = module(self.auto, self.logger)
         self.logger = logger
+        self.module = module(self.auto, self.logger)
 
     def run(self):
-        self.auto.reset()
-        self.is_running.emit(True)
-        try:
-            self.module.run()
-        except Exception as e:
-            # print(traceback.format_exc())
-            # 停止时清除ocr缓存
-            ocr.stop_ocr()
-            self.logger.warn(f"SubTask：{e}")
-        self.is_running.emit(False)
+        if self.auto:
+            self.auto.reset()
+            self.is_running.emit(True)
+            self.run = True
+            try:
+                self.module.run()
+            except Exception as e:
+                # print(traceback.format_exc())
+                # 停止时清除ocr缓存
+                ocr.stop_ocr()
+                self.logger.warn(f"SubTask：{e}")
+            self.is_running.emit(False)
+        else:
+            # 传输信号关闭开关
+            self.is_running.emit(False)
 
 
 class AdjustColor(QThread, BaseTask):
     color_changed = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self.hsv_value = None

@@ -20,9 +20,6 @@ class NitaAutoEModule(BaseTask):
 
     def run(self):
         self.is_log = config.isLog.value
-
-        if not self.init_auto('game'):
-            return
         while True:
             self.auto.take_screenshot()
             if self.auto.find_element("12", "text", is_log=self.is_log,
