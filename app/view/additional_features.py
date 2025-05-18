@@ -175,6 +175,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         elif isinstance(widget, LineEdit):
             # 如果是钓鱼相关的lineEdit
             if widget.objectName().split('_')[1] == 'fish':
+                # 钓鱼按键
                 if widget.objectName().split('_')[2] == 'key':
                     config.set(getattr(config, widget.objectName(), None), widget.text())
                 else:
@@ -327,11 +328,12 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def update_fish_key(self, key):
         # 添加模糊查询
-        choices = ["ctrl", "space", "shift", "mouse5", "mouse4"]
+        choices = ["ctrl", "space", "shift"]
         best_match = process.extractOne(key, choices)
         if best_match[1] > 60:
             key = best_match[0]
-        self.LineEdit_fish_key.setText(key)
+        self.LineEdit_fish_key.setText(key.lower())
+        self.save_changed(self.LineEdit_fish_key)
 
     def closeEvent(self, event):
         # 恢复原始标准输出
