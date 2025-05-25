@@ -975,7 +975,7 @@
                             <item row="0" column="0">
                                 <widget class="BodyLabel" name="BodyLabel_30">
                                     <property name="text">
-                                        <string>运行模式</string>
+                                        <string>按摩对象</string>
                                     </property>
                                 </widget>
                             </item>
@@ -993,7 +993,7 @@
                                 </spacer>
                             </item>
                             <item row="0" column="1">
-                                <widget class="ComboBox" name="ComboBox_mode_maze_2"/>
+                                <widget class="ComboBox" name="ComboBox_wife"/>
                             </item>
                             <item row="3" column="0" colspan="2">
                                 <widget class="BodyLabel" name="BodyLabel_tip_massaging">

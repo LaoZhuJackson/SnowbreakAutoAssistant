@@ -386,21 +386,21 @@ class Automation:
             raise ValueError(f"错误的类型{find_type}")
         return None
 
-    def click_element_with_pos(self, pos, action="move_click", offset=(0, 0), n=3, is_calculate=True):
+    def click_element_with_pos(self, pos, action="move_click", offset=(0, 0), n=3):
         """
         根据左上和右下坐标确定点击位置并执行点击
-        :param is_calculate: 是否计算点击坐标，当传入的是（top_left,bottom_right）时需要计算，传入的是（x,y）时不需要
-        :param pos: （top_left,bottom_right）|(x,y)
+        :param pos: （top_left,bottom_right） or (x,y)
         :param action: 执行的动作类型
         :param offset: x,y的偏移量
         :param n: 聚拢值，越大越聚拢
         :return: None
         """
-        # 范围内正态分布取点
-        if is_calculate:
-            x, y = random_rectangle_point(pos, n)
-        else:
+        if not pos:
+            return False
+        if isinstance(pos[0], int):
             x, y = pos
+        else:
+            x, y = random_rectangle_point(pos, n)  # 范围内正态分布取点
         # print(f"{x=},{y=}")
         # 加上手动设置的偏移量
         click_x = x + offset[0]

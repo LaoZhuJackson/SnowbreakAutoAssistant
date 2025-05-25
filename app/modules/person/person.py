@@ -112,7 +112,7 @@ class PersonModule:
                 # 传入bottom_right更准确一点
                 quick_fight_pos = self.find_quick_fight(bottom_right, person_name)
                 if quick_fight_pos:
-                    self.auto.click_element_with_pos(quick_fight_pos, is_calculate=False)
+                    self.auto.click_element_with_pos(quick_fight_pos)
                     time.sleep(0.5)
                     continue
                 else:
@@ -168,8 +168,9 @@ class PersonModule:
                     self.auto.press_key('esc')
                     time.sleep(1)
                     return True
-            if self.auto.click_element("app/resource/images/person/add_power.png", "image",
-                                       crop=(1533 / 1920, 23 / 1080, 1599 / 1920, 81 / 1080), is_log=self.is_log):
+            # 用偏移的方式点添加嵌片
+            if self.auto.click_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080),
+                                       offset=(1400 / self.auto.scale_x, 21 / self.auto.scale_y), is_log=self.is_log):
                 time.sleep(0.5)
                 continue
             if timeout.reached():

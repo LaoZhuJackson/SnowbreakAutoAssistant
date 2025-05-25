@@ -84,17 +84,19 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_maze.setText(
             "### 提示\n* 本功能只适用于增益迷宫（新迷宫），而非老迷宫\n* 运行模式中单次运行适合打前3关，重复运行则是一直刷最后一关\n* 进配队界面选好增益后再点击SAA的开始迷宫\n* 增益推荐配技能-爆电和护盾-夺取\n* 配队必须要有辰星-琼弦，且把角色放在中间位\n* 辅助有豹豹上豹豹防止暴毙")
         self.BodyLabel_tip_massaging.setText(
-            "### 提示\n* 本功能需要按摩等级为")
+            "### 提示\n* 使用本功能建议按摩等级大于等于4级")
         # 设置combobox选项
         lure_type_items = ['万能鱼饵', '普通鱼饵', '豪华鱼饵', '至尊鱼饵', '重量级鱼类虫饵', '巨型鱼类虫饵',
                            '重量级鱼类夜钓虫饵', '巨型鱼类夜钓虫饵']
         run_items = ["切换疾跑", "按住疾跑"]
         mode_items = ["无尽模式", "闯关模式"]
         mode_maze_items = ["单次运行", "重复运行"]
+        wife_items = ["凯茜娅", "肴", "芬妮", "里芙", "安卡希雅"]
         self.ComboBox_run.addItems(run_items)
         self.ComboBox_lure_type.addItems(lure_type_items)
         self.ComboBox_mode.addItems(mode_items)
         self.ComboBox_mode_maze.addItems(mode_maze_items)
+        self.ComboBox_wife.addItems(wife_items)
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
@@ -491,7 +493,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.massaging_task.is_running.connect(self.handle_massaging)
             self.massaging_task.start()
         else:
-            self.fishing_task.stop()
+            self.massaging_task.stop()
 
     def handle_massaging(self, is_running):
         """钓鱼线程开始与结束的信号处理"""

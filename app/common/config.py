@@ -187,6 +187,8 @@ class Config(QConfig):
     ComboBox_mode = OptionsConfigItem("add_alien", "ComboBox_mode", 0, OptionsValidator([0, 1]))
     # 迷宫相关
     ComboBox_mode_maze = OptionsConfigItem("add_maze", "ComboBox_mode_maze", 0, OptionsValidator([0, 1]))
+    # 按摩相关
+    ComboBox_wife = OptionsConfigItem("add_massaging", "ComboBox_wife", 0, OptionsValidator([0, 1, 2, 3, 4]))
 
 
 config = Config()
