@@ -161,7 +161,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
-            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服\n* 遇到版本更新，收到更新活动公告链接，然后再去“刷体力”设置那更新“材料”和“深渊”位置后再运行")
+            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服\n* 遇到版本更新，先更新活动公告链接，然后再去“刷体力”设置那更新“材料”和“深渊”位置后再运行")
         self.BodyLabel_person_tip.setText(
             "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)

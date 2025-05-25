@@ -18,6 +18,9 @@ class NitaAutoEModule(BaseTask):
         self.upper_blue = np.array([109, 170, 255])
         self.lower_blue = np.array([104, 85, 200])
 
+        self.upper_green = np.array([31, 173, 230])
+        self.lower_green = np.array([27, 102, 175])
+
     def run(self):
         self.is_log = config.isLog.value
         while True:
@@ -26,9 +29,10 @@ class NitaAutoEModule(BaseTask):
                                       crop=(1100 / 2560, 931 / 1440, 1458 / 2560, 1044 / 1440)):
                 # 进一步裁剪图片
                 crop_image = self.auto.get_crop_form_first_screenshot(
-                    crop=(1130 / 2560, 1000 / 1440, 1428 / 2560, 1029 / 1440))
+                    crop=(1130 / 2560, 1003 / 1440, 1428 / 2560, 1025 / 1440))
                 blue_blocks = count_color_blocks(crop_image, self.lower_blue, self.upper_blue, False)
-                print(f"当前blue_block:{blue_blocks}")
-                if blue_blocks > 1:
+                green_blocks = count_color_blocks(crop_image, self.lower_green, self.upper_green, False)
+                # print(f"当前green_block:{green_blocks}")
+                if blue_blocks > 1 or green_blocks > 1:
                     self.auto.press_key("e")
                     time.sleep(0.3)

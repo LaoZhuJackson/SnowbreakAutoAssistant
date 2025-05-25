@@ -237,3 +237,5 @@ def get_hsv(target_rgb):
 if __name__ == "__main__":
     get_hsv((124, 174, 235))
     get_hsv((112, 165, 238))
+    # get_hsv((205, 202, 95))
+    # get_hsv((209,207, 96))

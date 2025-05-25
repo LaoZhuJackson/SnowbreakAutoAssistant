@@ -75,8 +75,8 @@ class GetRewardModule:
         while True:
             self.auto.take_screenshot()
 
-            if first_finish_flag and self.auto.find_element('解锁', 'text',
-                                                            crop=(1713 / 1920, 788 / 1080, 1869 / 1920, 830 / 1080),
+            if first_finish_flag and self.auto.find_element(['凭证', '时装'], 'text',
+                                                            crop=(2045 / 2560, 1050 / 1440, 2191 / 2560, 1109 / 1440),
                                                             is_log=self.is_log) and not self.auto.click_element(
                     '键领取', 'text', crop=(0, 950 / 1080, 295 / 1920, 1), is_log=self.is_log):
                 break
