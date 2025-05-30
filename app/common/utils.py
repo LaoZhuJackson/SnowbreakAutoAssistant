@@ -1,3 +1,5 @@
+import traceback
+
 import cpufeature
 import cv2
 import numpy as np
@@ -117,6 +119,9 @@ def get_date(url=None):
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
     }
     response = requests.get(API_URL, headers=headers)
+    response.encoding = 'utf-8'  # 或其他合适的编码
+    # print(response.status_code)
+    # print(response.text)  # 查看原始响应内容
     if response.status_code != 200:
         return {"error": f"请求失败，状态码: {response.status_code}"}
 
@@ -124,6 +129,7 @@ def get_date(url=None):
         data = response.json()
         content_html = data["data"][0]["content"]  # 获取活动内容HTML
     except Exception as e:
+        # print(traceback.print_exc())
         return {"error": f"数据解析失败: {str(e)}"}
 
     soup = BeautifulSoup(content_html, 'html.parser')
@@ -133,10 +139,14 @@ def get_date(url=None):
     while current_index < len(paragraphs):
         p = paragraphs[current_index]
         text = p.get_text(strip=True)
-
-        # 提取角色共鸣
-        if "角色共鸣" in text and "✧" in text:
-            role_name = re.search(r"「(.*?)」", text).group(1)
+        # print(text)
+        # 提取角色共鸣,同时还需要判断句号不在句子中，排除干扰
+        if "角色共鸣" in text and "✧" in text and "。" not in text:
+            match = re.search(r"「(.*?)」", text)
+            if match:
+                role_name = match.group(1)
+            else:
+                return {"error": f"未匹配到“角色共鸣”"}
             current_index += 1
             time_text = paragraphs[current_index].get_text(strip=True)
             if "活动时间：" in time_text:

@@ -114,8 +114,11 @@ class UsePowerModule:
                         'app/resource/images/use_power/chasm.png', 'image', crop=chasm_pos, is_log=self.is_log):
                     enter_maneuver_flag = True
                     continue
-                if self.auto.click_element("app/resource/images/use_power/entrance.png", "image",
-                                           crop=(1361 / 1920, 411 / 1080, 1562 / 1920, 554 / 1080), is_log=self.is_log):
+                # if self.auto.click_element("app/resource/images/use_power/entrance.png", "image",
+                #                            crop=(1361 / 1920, 411 / 1080, 1562 / 1920, 554 / 1080), is_log=self.is_log):
+                if self.auto.click_element("任务", "text", crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080),
+                                           offset=(-34 / self.auto.scale_x, 140 / self.auto.scale_y),
+                                           is_log=self.is_log):
                     time.sleep(1.5)
                     continue
             else:
