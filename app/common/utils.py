@@ -244,6 +244,39 @@ def get_hsv(target_rgb):
     print(f"Upper HSV: {upper_color}")
 
 
+def get_gitee_text(text_path: str):
+    """
+        从Gitee获取文本文件并按行返回内容
+
+        参数:
+            text_path: 文件在仓库中的路径 (如: "requirements.txt")
+
+        返回:
+            成功: 包含每行文本的列表
+            失败: None
+    """
+    url = f"https://gitee.com/laozhu520/auto_chenbai/raw/main/{text_path}"
+    headers = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"请求失败，状态码: {response.status_code}")
+        return None
+    try:
+        # 处理可能的编码问题
+        response.encoding = response.apparent_encoding  # 自动检测编码
+        # 按行分割文本
+        lines = response.text.splitlines()
+        print(lines)
+        return lines
+    except Exception as e:
+        print(f"发生错误: {str(e)}")
+        traceback.print_exc()
+        return None
+
+
 if __name__ == "__main__":
     get_hsv((124, 174, 235))
     get_hsv((112, 165, 238))

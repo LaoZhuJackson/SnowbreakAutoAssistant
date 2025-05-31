@@ -398,7 +398,7 @@
       <item row="1" column="0">
        <widget class="PopUpAniStackedWidget" name="PopUpAniStackedWidget">
         <property name="currentIndex">
-            <number>1</number>
+            <number>3</number>
         </property>
         <widget class="QWidget" name="page_5">
          <layout class="QGridLayout" name="gridLayout_12" columnstretch="1,0,0">
@@ -1069,176 +1069,194 @@
         </widget>
         <widget class="QWidget" name="page_2">
             <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,0,0,0">
-                <item row="12" column="1">
-                    <widget class="LineEdit" name="LineEdit_chasm_x2"/>
-                </item>
-                <item row="10" column="1">
-                    <widget class="LineEdit" name="LineEdit_chasm_x1"/>
-                </item>
-                <item row="11" column="0" colspan="4">
-                    <widget class="BodyLabel" name="BodyLabel_16">
+                <item row="14" column="0" colspan="2">
+                    <widget class="PushButton" name="PushButton_update_stuff">
                         <property name="text">
-                            <string>&quot;深渊&quot;右下角坐标</string>
+                            <string>更新“材料”</string>
                         </property>
                     </widget>
                 </item>
-                <item row="8" column="2">
+                <item row="13" column="3">
+                    <widget class="LineEdit" name="LineEdit_chasm_y2"/>
+                </item>
+                <item row="9" column="2">
                     <widget class="BodyLabel" name="BodyLabel_12">
                         <property name="text">
                             <string>y2:</string>
             </property>
            </widget>
           </item>
-                <item row="5" column="3">
-                    <widget class="LineEdit" name="LineEdit_stuff_y1"/>
-          </item>
-                <item row="0" column="0" colspan="4">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="CheckBox" name="CheckBox_is_use_power">
-              <property name="text">
-               <string>自动使用期限</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="ComboBox" name="ComboBox_power_day">
-              <property name="items_" stdset="0">
-               <string>1
-2
-3
-4
-5
-6</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="BodyLabel" name="BodyLabel_6">
-              <property name="text">
-               <string>天内的体力药</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-                <item row="5" column="2">
-                    <widget class="BodyLabel" name="BodyLabel_9">
-                        <property name="text">
-                            <string>y1:</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="8" column="0">
-                    <widget class="BodyLabel" name="BodyLabel_11">
-                        <property name="text">
-                            <string>x2:</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="5" column="0">
-                    <widget class="BodyLabel" name="BodyLabel_7">
-                        <property name="text">
-                            <string>x1:</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="10" column="3">
-                    <widget class="LineEdit" name="LineEdit_chasm_y1"/>
-                </item>
-                <item row="7" column="0" colspan="4">
-                    <widget class="BodyLabel" name="BodyLabel_10">
-                        <property name="text">
-                            <string>&quot;材料&quot;右下角坐标</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="3" column="0" colspan="4">
-                    <widget class="StrongBodyLabel" name="StrongBodyLabel_5">
-                        <property name="text">
-                            <string>适配新版本</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="10" column="0">
-                    <widget class="BodyLabel" name="BodyLabel_14">
-                        <property name="text">
-                            <string>x1:</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="10" column="2">
-                    <widget class="BodyLabel" name="BodyLabel_15">
-                        <property name="text">
-                            <string>y1:</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="12" column="3">
-                    <widget class="LineEdit" name="LineEdit_chasm_y2"/>
-                </item>
-                <item row="8" column="1">
-                    <widget class="LineEdit" name="LineEdit_stuff_x2"/>
-                </item>
-                <item row="4" column="0" colspan="4">
-                    <widget class="BodyLabel" name="BodyLabel_2">
-                        <property name="text">
-                            <string>&quot;材料&quot;左上角坐标</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="12" column="2">
-                    <widget class="BodyLabel" name="BodyLabel_18">
-                        <property name="text">
-                            <string>y2:</string>
-                        </property>
-                    </widget>
-                </item>
-                <item row="9" column="0" colspan="4">
-                    <widget class="BodyLabel" name="BodyLabel_13">
-                        <property name="text">
-                            <string>&quot;深渊&quot;左上角坐标</string>
-                        </property>
-                    </widget>
-                </item>
                 <item row="2" column="0" colspan="4">
                     <widget class="ComboBox" name="ComboBox_power_usage">
                         <property name="items_" stdset="0">
                             <string notr="true"/>
                         </property>
                     </widget>
-                </item>
-                <item row="8" column="3">
-                    <widget class="LineEdit" name="LineEdit_stuff_y2"/>
-                </item>
-                <item row="1" column="0" colspan="4">
-           <widget class="StrongBodyLabel" name="StrongBodyLabel_2">
-            <property name="text">
-             <string>选择体力使用方式</string>
-            </property>
-           </widget>
           </item>
-                <item row="12" column="0">
+                <item row="9" column="0">
+                    <widget class="BodyLabel" name="BodyLabel_11">
+                        <property name="text">
+                            <string>x2:</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="13" column="2">
+                    <widget class="BodyLabel" name="BodyLabel_18">
+                        <property name="text">
+                            <string>y2:</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="13" column="0">
                     <widget class="BodyLabel" name="BodyLabel_17">
                         <property name="text">
                             <string>x2:</string>
                         </property>
                     </widget>
                 </item>
-                <item row="5" column="1">
-                    <widget class="LineEdit" name="LineEdit_stuff_x1"/>
-                </item>
-                <item row="13" column="2" colspan="2">
+                <item row="14" column="2" colspan="2">
                     <widget class="PushButton" name="PushButton_update_chasm">
                         <property name="text">
                             <string>更新“深渊”</string>
                         </property>
                     </widget>
+          </item>
+                <item row="6" column="3">
+                    <widget class="LineEdit" name="LineEdit_stuff_y1"/>
                 </item>
-                <item row="13" column="0" colspan="2">
-                    <widget class="PushButton" name="PushButton_update_stuff">
+                <item row="1" column="0" colspan="4">
+                    <widget class="StrongBodyLabel" name="StrongBodyLabel_2">
                         <property name="text">
-                            <string>更新“材料”</string>
+                            <string>选择体力使用方式</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="6" column="1">
+                    <widget class="LineEdit" name="LineEdit_stuff_x1"/>
+                </item>
+                <item row="9" column="1">
+                    <widget class="LineEdit" name="LineEdit_stuff_x2"/>
+                </item>
+                <item row="11" column="2">
+                    <widget class="BodyLabel" name="BodyLabel_15">
+                        <property name="text">
+                            <string>y1:</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="13" column="1">
+                    <widget class="LineEdit" name="LineEdit_chasm_x2"/>
+                </item>
+                <item row="12" column="0" colspan="4">
+                    <widget class="BodyLabel" name="BodyLabel_16">
+                        <property name="text">
+                            <string>&quot;深渊&quot;右下角坐标</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="11" column="1">
+                    <widget class="LineEdit" name="LineEdit_chasm_x1"/>
+                </item>
+                <item row="8" column="0" colspan="4">
+                    <widget class="BodyLabel" name="BodyLabel_10">
+                        <property name="text">
+                            <string>&quot;材料&quot;右下角坐标</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="10" column="0" colspan="4">
+                    <widget class="BodyLabel" name="BodyLabel_13">
+                        <property name="text">
+                            <string>&quot;深渊&quot;左上角坐标</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="6" column="0">
+                    <widget class="BodyLabel" name="BodyLabel_7">
+                        <property name="text">
+                            <string>x1:</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="0" column="0" colspan="4">
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                        <item>
+                            <widget class="CheckBox" name="CheckBox_is_use_power">
+                                <property name="text">
+                                    <string>自动使用期限</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="ComboBox" name="ComboBox_power_day">
+                                <property name="items_" stdset="0">
+                                    <string>1
+                                        2
+                                        3
+                                        4
+                                        5
+                                        6
+                                    </string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="BodyLabel" name="BodyLabel_6">
+                                <property name="text">
+                                    <string>天内的体力药</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+                <item row="9" column="3">
+                    <widget class="LineEdit" name="LineEdit_stuff_y2"/>
+                </item>
+                <item row="6" column="2">
+                    <widget class="BodyLabel" name="BodyLabel_9">
+                        <property name="text">
+                            <string>y1:</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="5" column="0" colspan="4">
+                    <widget class="BodyLabel" name="BodyLabel_2">
+                        <property name="text">
+                            <string>&quot;材料&quot;左上角坐标</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="11" column="0">
+                    <widget class="BodyLabel" name="BodyLabel_14">
+                        <property name="text">
+                            <string>x1:</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="11" column="3">
+                    <widget class="LineEdit" name="LineEdit_chasm_y1"/>
+                </item>
+                <item row="4" column="2" colspan="2">
+                    <widget class="LineEdit" name="LineEdit_task_name"/>
+          </item>
+                <item row="4" column="0" colspan="2">
+                    <widget class="BodyLabel" name="BodyLabel_19">
+                        <property name="text">
+                            <string>新版任务名字：</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="3" column="0" colspan="2">
+                    <widget class="StrongBodyLabel" name="StrongBodyLabel_5">
+                        <property name="text">
+                            <string>适配新版本</string>
+                        </property>
+                    </widget>
+                </item>
+                <item row="3" column="2" colspan="2">
+                    <widget class="PrimaryPushButton" name="PrimaryPushButton_tutor">
+                        <property name="text">
+                            <string>适配教程</string>
                         </property>
                     </widget>
                 </item>
@@ -1412,6 +1430,11 @@
   <customwidget>
    <class>PushButton</class>
    <extends>QPushButton</extends>
+      <header>qfluentwidgets</header>
+  </customwidget>
+     <customwidget>
+         <class>PrimaryPushButton</class>
+         <extends>PushButton</extends>
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>

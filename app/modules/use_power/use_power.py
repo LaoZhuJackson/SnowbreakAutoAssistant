@@ -1,6 +1,7 @@
 import time
 
 from app.common.config import config
+from app.common.utils import random_rectangle_point
 from app.modules.automation.timer import Timer
 
 
@@ -20,6 +21,25 @@ class UsePowerModule:
             self.check_power()
         if config.ComboBox_power_usage.value == 0:
             self.by_maneuver()
+
+    def get_click_pos(self, name: str, n=3):
+        """
+        获取固定点击位置
+        :param n: 密集度
+        :param name: "stuff" or "chasm"
+        :return: (x,y)
+        """
+        if name == "stuff":
+            x1 = int(config.LineEdit_stuff_x1.value)
+            y1 = int(config.LineEdit_stuff_y1.value)
+            x2 = int(config.LineEdit_stuff_x2.value)
+            y2 = int(config.LineEdit_stuff_y2.value)
+        else:
+            x1 = int(config.LineEdit_chasm_x1.value)
+            y1 = int(config.LineEdit_chasm_y1.value)
+            x2 = int(config.LineEdit_chasm_x2.value)
+            y2 = int(config.LineEdit_chasm_y2.value)
+        return random_rectangle_point(((x1, y1), (x2, y2)), n=n)
 
     def check_power(self):
         timeout = Timer(50).start()
@@ -83,10 +103,11 @@ class UsePowerModule:
                         confirm_flag = False
                         continue
             if not confirm_flag and not enter_power_select:
-                if self.auto.click_element('app/resource/images/use_power/stamina.png', 'image',
-                                           crop=(833 / 1920, 0, 917 / 1920, 68 / 1080)):
-                    time.sleep(0.5)
-                    continue
+                # if self.auto.click_element('app/resource/images/use_power/stamina.png', 'image',
+                #                            crop=(833 / 1920, 0, 917 / 1920, 68 / 1080)):
+                self.auto.click_element_with_pos(pos=(int(880 / self.auto.scale_x), int(32 / self.auto.scale_y)))
+                time.sleep(0.5)
+                continue
             if timeout.reached():
                 self.logger.error("检查体力超时")
                 break
@@ -95,7 +116,6 @@ class UsePowerModule:
     def by_maneuver(self):
         """通过活动使用体力"""
         timeout = Timer(50).start()
-        confirm_flag = False  # 是否进入确认界面
         finish_flag = False  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
@@ -105,17 +125,56 @@ class UsePowerModule:
             self.auto.take_screenshot()
 
             if not enter_maneuver_flag:
-                if self.auto.click_element('材料', 'text', crop=stuff_pos, n=50,
-                                           is_log=self.is_log) or self.auto.click_element(
-                        'app/resource/images/use_power/stuff.png', 'image', crop=stuff_pos, is_log=self.is_log):
-                    time.sleep(0.3)
+                # 关卡未解锁
+                if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080),
+                                          is_log=self.is_log):
+                    finish_flag = True
+                    enter_maneuver_flag = True
+                    self.auto.press_key('esc')
+                    self.logger.warn("材料本未解锁“深渊”难度")
+                    time.sleep(0.5)
                     continue
-                if self.auto.find_element('深渊', 'text', crop=chasm_pos, is_log=self.is_log) or self.auto.find_element(
-                        'app/resource/images/use_power/chasm.png', 'image', crop=chasm_pos, is_log=self.is_log):
+                if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
+                                           is_log=self.is_log):
+                    time.sleep(0.7)
                     enter_maneuver_flag = True
                     continue
-                # if self.auto.click_element("app/resource/images/use_power/entrance.png", "image",
-                #                            crop=(1361 / 1920, 411 / 1080, 1562 / 1920, 554 / 1080), is_log=self.is_log):
+                if self.auto.click_element('材料', 'text', crop=stuff_pos, n=50,
+                                           is_log=self.is_log) or self.auto.click_element(
+                    'app/resource/images/use_power/stuff.png', 'image', crop=stuff_pos, is_log=self.is_log):
+                    time.sleep(0.3)
+                    continue
+                else:
+                    if not (self.auto.find_element('基地', 'text', crop=(
+                            1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element('任务',
+                                                                                                          'text',
+                                                                                                          crop=(
+                                                                                                                  1452 / 1920,
+                                                                                                                  327 / 1080,
+                                                                                                                  1529 / 1920,
+                                                                                                                  376 / 1080))):
+                        pos = self.get_click_pos("stuff")
+                        self.auto.click_element_with_pos(pos)
+                        time.sleep(0.3)
+                if self.auto.click_element('深渊', 'text', crop=chasm_pos,
+                                           is_log=self.is_log) or self.auto.click_element(
+                        'app/resource/images/use_power/chasm.png', 'image', crop=chasm_pos, is_log=self.is_log):
+
+                    time.sleep(1)
+                    continue
+                else:
+                    if not (self.auto.find_element('基地', 'text', crop=(
+                            1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element('任务',
+                                                                                                          'text',
+                                                                                                          crop=(
+                                                                                                                  1452 / 1920,
+                                                                                                                  327 / 1080,
+                                                                                                                  1529 / 1920,
+                                                                                                                  376 / 1080))):
+                        pos = self.get_click_pos("chasm")
+                        self.auto.click_element_with_pos(pos)
+                        time.sleep(1)
+                # 需要用偏移的方式实现，这样有一个对“任务”的判断，说明还在主页面
                 if self.auto.click_element("任务", "text", crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080),
                                            offset=(-34 / self.auto.scale_x, 140 / self.auto.scale_y),
                                            is_log=self.is_log):
@@ -126,7 +185,7 @@ class UsePowerModule:
                     if self.auto.find_element(['剩余', '刷新', '天'], 'text',
                                               crop=(682 / 2560, 272 / 1440, 956 / 2560, 550 / 1440),
                                               is_log=self.is_log) or self.auto.find_element('领取', 'text', crop=(
-                    0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
+                            0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
                         enter_task = True
                     if enter_task:
                         if self.auto.click_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
@@ -139,14 +198,12 @@ class UsePowerModule:
                                                is_log=self.is_log):
                         time.sleep(0.2)
                         continue
+                    else:
+                        task_name = config.LineEdit_task_name.value
+                        if task_name:
+                            self.auto.click_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1), is_log=self.is_log)
+                            time.sleep(0.2)
                 else:
-                    # 关卡未解锁
-                    if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080),
-                                              is_log=self.is_log):
-                        finish_flag = True
-                        self.auto.press_key('esc')
-                        time.sleep(0.5)
-                        continue
                     if self.auto.find_element("恢复感知", "text",
                                               crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
                                               is_log=self.is_log):
@@ -173,11 +230,6 @@ class UsePowerModule:
                                                crop=(868 / 1920, 808 / 1080, 1046 / 1920, 865 / 1080),
                                                is_log=self.is_log):
                         time.sleep(0.5)
-                        continue
-                    if not confirm_flag and self.auto.click_element('深渊', 'text', crop=chasm_pos, n=50,
-                                                                    is_log=self.is_log):
-                        confirm_flag = True
-                        time.sleep(0.7)
                         continue
 
             if timeout.reached():

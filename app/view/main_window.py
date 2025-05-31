@@ -145,7 +145,7 @@ class MainWindow(MSFluentWindow):
         # logger.info(f"区域截图识别每次平均耗时：{benchmark(ocr.run, 'app/resource/images/start_game/age.png')}")
 
     def initWindow(self):
-        self.resize(960, 780)
+        self.resize(960, 860)
         self.setMinimumWidth(760)
         self.setWindowIcon(QIcon(':app/resource/images/logo.png'))
         self.setWindowTitle('SAA尘白助手')

@@ -405,6 +405,7 @@ class Automation:
         # 加上手动设置的偏移量
         click_x = x + offset[0]
         click_y = y + offset[1]
+        # print(f"{x=},{y=}")
         # 动作到方法的映射
         action_map = {
             "mouse_click": self.mouse_click,

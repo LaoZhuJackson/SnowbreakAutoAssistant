@@ -157,6 +157,12 @@ class PersonModule:
                                       is_log=self.is_log):
                 self.no_chip = True
                 return False
+            # 未点到加号
+            if self.auto.find_element("记忆嵌片", "text", crop=(803 / 1920, 275 / 1080, 991 / 1920, 346 / 1080),
+                                      is_log=self.is_log):
+                self.auto.press_key('esc')
+                time.sleep(0.5)
+                continue
             if self.auto.find_element("是否", "text", crop=(588 / 1920, 309 / 1080, 1324 / 1920, 384 / 1080),
                                       is_log=self.is_log):
                 confirm_flag = True
@@ -169,7 +175,7 @@ class PersonModule:
                     time.sleep(1)
                     return True
             # 用偏移的方式点添加嵌片
-            if self.auto.click_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080),
+            if self.auto.click_element("故事", "text", crop=(110 / 1920, 17 / 1080, 212 / 1920, 61 / 1080), n=30,
                                        offset=(1400 / self.auto.scale_x, 21 / self.auto.scale_y), is_log=self.is_log):
                 time.sleep(0.5)
                 continue

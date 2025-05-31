@@ -50,7 +50,7 @@ class Config(QConfig):
     ])
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
     LineEdit_link = ConfigItem("home_interface_enter", "LineEdit_link",
-                               "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258")
+                               "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=270")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
                                             BoolValidator())
 
@@ -103,6 +103,7 @@ class Config(QConfig):
     ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", -1,
                                              OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     CheckBox_is_use_power = ConfigItem("home_interface_power", "CheckBox_is_use_power", False, BoolValidator())
+    LineEdit_task_name = ConfigItem("home_interface_power", "LineEdit_task_name", "")
     LineEdit_stuff_x1 = ConfigItem("home_interface_power", "LineEdit_stuff_x1", 156)
     LineEdit_stuff_y1 = ConfigItem("home_interface_power", "LineEdit_stuff_y1", 744)
     LineEdit_stuff_x2 = ConfigItem("home_interface_power", "LineEdit_stuff_x2", 223)
@@ -111,9 +112,19 @@ class Config(QConfig):
     LineEdit_chasm_y1 = ConfigItem("home_interface_power", "LineEdit_chasm_y1", 540)
     LineEdit_chasm_x2 = ConfigItem("home_interface_power", "LineEdit_chasm_x2", 2053)
     LineEdit_chasm_y2 = ConfigItem("home_interface_power", "LineEdit_chasm_y2", 595)
-    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (0.7578125, 0.375, 0.801953125, 0.4131944444444444))
+    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (
+        0.53203125,
+        0.3819444444444444,
+        0.5625,
+        0.41388888888888886
+    ))
     stuff_pos = ConfigItem("home_interface_power", "stuff_pos",
-                           (0.0609375, 0.5166666666666667, 0.087109375, 0.5465277777777777))
+                           (
+                               0.0265625,
+                               0.36666666666666664,
+                               0.052734375,
+                               0.3854166666666667
+                           ))
 
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
