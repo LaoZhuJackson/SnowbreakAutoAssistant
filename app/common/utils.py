@@ -269,7 +269,6 @@ def get_gitee_text(text_path: str):
         response.encoding = response.apparent_encoding  # 自动检测编码
         # 按行分割文本
         lines = response.text.splitlines()
-        print(lines)
         return lines
     except Exception as e:
         print(f"发生错误: {str(e)}")

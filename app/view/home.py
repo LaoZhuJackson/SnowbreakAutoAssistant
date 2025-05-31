@@ -143,6 +143,8 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.redirectOutput(self.textBrowser_log)
 
         self.get_tips()
+        if config.checkUpdateAtStartUp.value:
+            self.update_online()
 
     def _initWidget(self):
         for tool_button in self.SimpleCardWidget_option.findChildren(ToolButton):
@@ -270,8 +272,12 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def update_online(self):
         """通过gitee在线更新"""
-        text = get_gitee_text("requirements.txt")
-        # t = "1920_51_396_100_417_1021_412_1080_447"
+        text = get_gitee_text("update_data.txt")
+        if config.isLog.value:
+            self.logger.info(f'获取到更新信息：{text}')
+        if not text:
+            self.logger.error(f'在线获取更新信息失败')
+            return
         screen_width, screen_height = pyautogui.size()
         data = text[0].split("_")
         if screen_width == data[0]:
@@ -294,6 +300,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             chasm_y1 = str(int(float(data[6]) * scale))
             chasm_x2 = str(int(float(data[7]) * scale))
             chasm_y2 = str(int(float(data[8]) * scale))
+        self.LineEdit_task_name.setText(data[9])
         self.LineEdit_stuff_x1.setText(stuff_x1)
         self.LineEdit_stuff_y1.setText(stuff_y1)
         self.LineEdit_stuff_x2.setText(stuff_x2)
