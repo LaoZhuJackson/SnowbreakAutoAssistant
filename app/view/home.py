@@ -254,7 +254,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         """显示版本适配教程"""
         view = FlyoutView(
             title="如何适配新版本UI",
-            content="先填入新版本任务名，然后通过任意截图工具获取如图所示的坐标值，最后点击底部两个按钮更新。\n或者可以尝试点击下面的按钮联网在线更新",
+            content="如果在设置中勾选了“软件启动时检测更新”，则每次运行SAA这里都会联网更新数据\n如果需要手动更新，先填入新版本任务名，然后通过任意截图工具获取如图所示的坐标值，最后点击底部两个按钮更新。\n或者可以尝试点击下面的按钮联网在线更新",
             image="asset/update_tutor.png",
             isClosable=True,
         )
