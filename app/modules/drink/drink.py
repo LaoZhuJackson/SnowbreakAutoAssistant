@@ -74,7 +74,7 @@ class DrinkModule:
                                        is_log=self.is_log):
                 self.enter_success = True
                 break
-            if self.auto.find_element('少女', 'text', crop=(2051 / 2560, 1358 / 1440, 2500 / 2560, 1400 / 1440),
+            if self.auto.find_element('教学', 'text', crop=(2410 / 2560, 282 / 1440, 2477 / 2560, 319 / 1440),
                                       is_log=self.is_log):
                 enter_select = True
 
@@ -111,8 +111,7 @@ class DrinkModule:
                 self.auto.click_element_with_pos(first_pos)
                 self.auto.click_element_with_pos((first_pos[0], first_pos[1] + 150 / self.auto.scale_y))
                 self.auto.click_element_with_pos((first_pos[0], first_pos[1] + 300 / self.auto.scale_y))
-                self.auto.click_element('少女', 'text', crop=(2051 / 2560, 1358 / 1440, 2500 / 2560, 1400 / 1440),
-                                        is_log=self.is_log)
+                self.auto.click_element_with_pos((int(1664 / self.auto.scale_x), int(979 / self.auto.scale_y)))
                 continue
 
             if timeout.reached():
@@ -129,15 +128,18 @@ class DrinkModule:
                                       is_log=self.is_log):
                 break
 
-            if self.auto.find_element(['Q', 'W', 'E'], 'text',
-                                      crop=(1203 / 2560, 1304 / 1440, 1729 / 2560, 1400 / 1440), is_log=self.is_log):
-                self.auto.press_key('q')
-                self.auto.press_key('w')
-                self.auto.press_key('e')
-                continue
+            # if self.auto.find_element(['Q', 'W', 'E'], 'text',
+            #                           crop=(1203 / 2560, 1304 / 1440, 1729 / 2560, 1400 / 1440), is_log=self.is_log):
+            #     self.auto.press_key('q')
+            #     self.auto.press_key('w')
+            #     self.auto.press_key('e')
+            #     continue
             if self.auto.find_element(['指定', '牌'], 'text',
                                       crop=(265 / 2560, 1184 / 1440, 375 / 2560, 1224 / 1440),
                                       is_log=self.is_log):
+                self.auto.press_key('q')
+                self.auto.press_key('w')
+                self.auto.press_key('e')
                 if self.auto.click_element('质疑', 'text', crop=(2438 / 2560, 1143 / 1440, 2511 / 2560, 1186 / 1440),
                                            is_log=self.is_log):
                     continue

@@ -34,6 +34,7 @@
 - 自动心动水弹
 - 自动验证战场（新迷宫）
 - 自动异星守护（无尽和闯关）
+- 自动猜心对局
 ![2.png](asset%2F2.png)
 ![3.png](asset%2F3.png)
 ![4.png](asset%2F4.png)
@@ -59,6 +60,14 @@
 - 目前还没支持a卡，n卡的用户可以使用gpu运行ocr，这样可以避免cpu占用过高，使用教程如下图
 - 目前群友测试过1050显卡也可以调用gpu
   ![使用gpu](asset%2Fuse_gpu.png)
+
+## 开发者文档
+
+~~不是？真有人看开发者文档啊~~
+
+由于作者是条咸鱼，更新不一定及时，且当前项目已经趋于稳定，**万一**有人想为SAA写新功能呢？或者单纯感兴趣想看看项目结构，故写一个开发文档供需要者查看
+
+<a href="docs/developer.md">开发者文档</a>
 ## 相关项目
 - OCR文字识别 https://github.com/JaidedAI/EasyOCR
 - 三月七星穹铁道助手 https://github.com/moesnow/March7thAssistant

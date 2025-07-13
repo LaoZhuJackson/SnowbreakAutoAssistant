@@ -311,7 +311,7 @@ class MainWindow(MSFluentWindow):
             QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
 
     def check_update(self):
-        logger.warn('当前测试版还没写更新功能')
+        # logger.warn('当前测试版还没写更新功能')
         pass
 
     def showMessageBox(self, title, content):

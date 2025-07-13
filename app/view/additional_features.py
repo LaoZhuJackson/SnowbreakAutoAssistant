@@ -88,7 +88,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_maze.setText(
             "### 提示\n* 本功能只适用于增益迷宫（新迷宫），而非老迷宫\n* 运行模式中单次运行适合打前3关，重复运行则是一直刷最后一关\n* 进配队界面选好增益后再点击SAA的开始迷宫\n* 增益推荐配技能-爆电和护盾-夺取\n* 配队必须要有辰星-琼弦，且把角色放在中间位\n* 辅助有豹豹上豹豹防止暴毙")
         self.BodyLabel_tip_massaging.setText(
-            "### 提示\n* 使用本功能建议按摩等级大于等于4级")
+            "### 提示\n* 此功能还没开发完，不要使用\n* 使用本功能建议按摩等级大于等于4级")
         self.BodyLabel_tip_card.setText(
             "### 提示\n* 两种模式均无策略，目的均是为了快速结束对局刷下一把\n* 逻辑：有质疑直接质疑，轮到自己出牌时出中间的那一张\n* 实测有赢有输，挂着刷经验就行")
         # 设置combobox选项
