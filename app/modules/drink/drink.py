@@ -74,7 +74,10 @@ class DrinkModule:
                                        is_log=self.is_log):
                 self.enter_success = True
                 break
-            if self.auto.find_element('教学', 'text', crop=(2410 / 2560, 282 / 1440, 2477 / 2560, 319 / 1440),
+            # if self.auto.find_element('教学', 'text', crop=(2410 / 2560, 282 / 1440, 2477 / 2560, 319 / 1440),
+            #                           is_log=self.is_log, extract=[(196, 172, 128), 128]):
+            #     enter_select = True
+            if self.auto.find_element('少女', 'text', crop=(79 / 2560, 64 / 1440, 376 / 2560, 112 / 1440),
                                       is_log=self.is_log):
                 enter_select = True
 
