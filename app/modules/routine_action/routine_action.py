@@ -15,8 +15,6 @@ class ActionModule:
     def run(self):
         self.is_log = config.isLog.value
         self.times = config.SpinBox_action_times.value
-        print(self.times)
-        print(type(self.times))
 
         self.enter_train()
         for i in range(self.times):
@@ -49,9 +47,9 @@ class ActionModule:
                         continue
                 else:
                     if not is_move:
-                        if self.auto.find_element('黄色区域', 'text',
-                                                  crop=(1111 / 2560, 311 / 1440, 1456 / 2560, 362 / 1440),
-                                                  is_log=self.is_log):
+                        if self.auto.find_element(['技', '援技', '支援技'], 'text',
+                                                  crop=(174 / 2560, 231 / 1440, 280 / 2560, 285 / 1440),
+                                                  is_log=self.is_log, threshold=0.1):
                             self.auto.key_down("w")
                             is_move = True
                             continue

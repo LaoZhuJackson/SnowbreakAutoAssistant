@@ -90,7 +90,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_massaging.setText(
             "### 提示\n* 使用本功能建议按摩等级大于等于4级")
         self.BodyLabel_tip_card.setText(
-            "### 提示\n* 两种模式")
+            "### 提示\n* 两种模式均无策略，目的均是为了快速结束对局刷下一把\n* 逻辑：有质疑直接质疑，轮到自己出牌时出中间的那一张\n* 实测有赢有输，挂着刷经验就行")
         # 设置combobox选项
         lure_type_items = ['万能鱼饵', '普通鱼饵', '豪华鱼饵', '至尊鱼饵', '重量级鱼类虫饵', '巨型鱼类虫饵',
                            '重量级鱼类夜钓虫饵', '巨型鱼类夜钓虫饵']
@@ -98,7 +98,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         mode_items = ["无尽模式", "闯关模式"]
         mode_maze_items = ["单次运行", "重复运行"]
         wife_items = ["凯茜娅", "肴", "芬妮", "里芙", "安卡希雅"]
-        mode_card_items = ['秘盒奇袭（刷经验成就）', '标准模式（速刷经验）']
+        mode_card_items = ['标准模式（速刷经验）', '秘盒奇袭（刷经验成就）']
         self.ComboBox_run.addItems(run_items)
         self.ComboBox_lure_type.addItems(lure_type_items)
         self.ComboBox_mode.addItems(mode_items)

@@ -206,7 +206,8 @@ def get_date(url=None):
                     end = format_date(dates[1])
                     result_dict[play_name] = f"{start}-{end}"
                 else:
-                    print(f"警告：趣味玩法时间格式异常: {time_text}")
+                    # print(f"警告：趣味玩法时间格式异常: {time_text}")
+                    pass
 
         current_index += 1
 

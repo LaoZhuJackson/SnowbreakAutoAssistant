@@ -202,6 +202,8 @@ class Config(QConfig):
     ComboBox_wife = OptionsConfigItem("add_massaging", "ComboBox_wife", 0, OptionsValidator([0, 1, 2, 3, 4]))
     # 酒馆相关
     ComboBox_card_mode = OptionsConfigItem("add_drink", "ComboBox_card_mode", 0, OptionsValidator([0, 1]))
+    SpinBox_drink_times = ConfigItem("add_drink", "SpinBox_drink_times", -1)
+    CheckBox_is_speed_up = ConfigItem("add_drink", "CheckBox_is_speed_up", False, BoolValidator())
 
 
 config = Config()
