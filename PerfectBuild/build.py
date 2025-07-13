@@ -106,6 +106,7 @@ class PerfectBuild:
             "--include-data-file=AppData/version.txt=AppData/version.txt",
             "--include-data-dir=app/resource/images=app/resource/images",
             "--include-data-file=app/resource/help.md=app/resource/help.md",
+            "--include-data-file=asset=app/resource/help.md",
             "--include-data-dir=app/resource/easyocr=app/resource/easyocr",
         ]
         if platform.system() == "Windows":

@@ -200,6 +200,8 @@ class Config(QConfig):
     ComboBox_mode_maze = OptionsConfigItem("add_maze", "ComboBox_mode_maze", 0, OptionsValidator([0, 1]))
     # 按摩相关
     ComboBox_wife = OptionsConfigItem("add_massaging", "ComboBox_wife", 0, OptionsValidator([0, 1, 2, 3, 4]))
+    # 酒馆相关
+    ComboBox_card_mode = OptionsConfigItem("add_drink", "ComboBox_card_mode", 0, OptionsValidator([0, 1]))
 
 
 config = Config()

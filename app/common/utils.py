@@ -112,8 +112,14 @@ def get_hwnd(window_title, window_class):
 
 
 def get_date(url=None):
+    def format_date(date_str):
+        """格式化日期字符串为 MM.DD 格式"""
+        parts = date_str.split('月')
+        month = parts[0].zfill(2)
+        day = parts[1].replace('日', '').zfill(2)
+        return f"{month}.{day}"
     # url = 'https://www.cbjq.com/p/zt/2023/04/13/index/news.html?catid=7131&infoid=247'
-    API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258"
+    API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=282"
     API_URL = url
     headers = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
@@ -149,20 +155,29 @@ def get_date(url=None):
                 return {"error": f"未匹配到“角色共鸣”"}
             current_index += 1
             time_text = paragraphs[current_index].get_text(strip=True)
-            if "活动时间：" in time_text:
+            if "活动时间：" in time_text and "常驻" not in time_text:
                 dates = re.findall(r"\d+月\d+日", time_text)
-                start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
-                end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
-                result_dict[role_name] = f"{start}-{end}"
+                # 检查是否匹配到两个日期
+                if len(dates) >= 2:
+                    start = format_date(dates[0])
+                    end = format_date(dates[1])
+                    result_dict[role_name] = f"{start}-{end}"
+                else:
+                    print(f"警告：角色共鸣时间格式异常: {time_text}")
+                    # 跳过或记录错误
 
         # 提取活动任务时间
         elif "【调查清单】活动任务" in text:
             current_index += 1
             time_text = paragraphs[current_index].get_text(strip=True)
-            dates = re.findall(r"\d+月\d+日", time_text)
-            start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
-            end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
-            result_dict["调查清单"] = f"{start}-{end}"
+            if "常驻" not in time_text:
+                dates = re.findall(r"\d+月\d+日", time_text)
+                if len(dates) >= 2:
+                    start = format_date(dates[0])
+                    end = format_date(dates[1])
+                    result_dict["调查清单"] = f"{start}-{end}"
+                else:
+                    print(f"警告：调查清单时间格式异常: {time_text}")
 
         # 提取挑战玩法
         elif "挑战玩法" in text and "✧" in text:
@@ -171,10 +186,14 @@ def get_date(url=None):
             while "活动时间" not in time_text:
                 current_index += 1
                 time_text = paragraphs[current_index].get_text(strip=True)
-            dates = re.findall(r"\d+月\d+日", time_text)
-            start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
-            end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
-            result_dict[challenge_name] = f"{start}-{end}"
+            if "常驻" not in time_text:
+                dates = re.findall(r"\d+月\d+日", time_text)
+                if len(dates) >= 2:
+                    start = format_date(dates[0])
+                    end = format_date(dates[1])
+                    result_dict[challenge_name] = f"{start}-{end}"
+                else:
+                    print(f"警告：挑战玩法时间格式异常: {time_text}")
 
         elif "趣味玩法" in text and "✧" in text:
             play_name = re.search(r"【(.*?)】", text).group(1)
@@ -182,9 +201,12 @@ def get_date(url=None):
             time_text = paragraphs[current_index].get_text(strip=True)
             if "常驻" not in time_text:
                 dates = re.findall(r"\d+月\d+日", time_text)
-                start = f"{dates[0].split('月')[0].zfill(2)}.{dates[0].split('月')[1].replace('日', '').zfill(2)}"
-                end = f"{dates[1].split('月')[0].zfill(2)}.{dates[1].split('月')[1].replace('日', '').zfill(2)}"
-                result_dict[play_name] = f"{start}-{end}"
+                if len(dates) >= 2:
+                    start = format_date(dates[0])
+                    end = format_date(dates[1])
+                    result_dict[play_name] = f"{start}-{end}"
+                else:
+                    print(f"警告：趣味玩法时间格式异常: {time_text}")
 
         current_index += 1
 

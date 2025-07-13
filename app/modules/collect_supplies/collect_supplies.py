@@ -63,7 +63,7 @@ class CollectSuppliesModule:
 
             # 按正常流程走完的退出情况
             if confirm_flag:
-                if self.auto.click_element('购买', 'text', crop=(1271 / 1920, 747 / 1080, 1353 / 1920, 795 / 1080),
+                if self.auto.click_element('购买', 'text', crop=(1741 / 2560, 1004 / 1440, 1831 / 2560, 1060 / 1440),
                                            is_log=self.is_log):
                     break
             # 已经领取但重复进入的情况
@@ -162,7 +162,11 @@ class CollectSuppliesModule:
             if finish_flag and self.auto.click_element('退出', 'text',
                                                        crop=(2161 / 2560, 32 / 1440, 2250 / 2560, 94 / 1440),
                                                        is_log=self.is_log):
-                time.sleep(3)
+                while self.auto.click_element('退出', 'text',
+                                              crop=(2161 / 2560, 32 / 1440, 2250 / 2560, 94 / 1440),
+                                              is_log=self.is_log):
+                    self.auto.take_screenshot()
+                    time.sleep(1)
                 break
             if self.auto.click_element('谢谢', 'text', crop=(1138 / 2560, 1075 / 1440, 1418 / 2560, 1153 / 1440),
                                        is_log=self.is_log):

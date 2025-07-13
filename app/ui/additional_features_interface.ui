@@ -29,7 +29,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-         <number>6</number>
+         <number>7</number>
      </property>
      <widget class="QWidget" name="page_fishing">
       <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
@@ -1036,6 +1036,104 @@
                                 </widget>
                             </item>
                         </layout>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QWidget" name="page_card">
+            <layout class="QGridLayout" name="gridLayout_25" columnstretch="2,1">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>2</number>
+                </property>
+                <item row="0" column="0">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_card">
+                        <layout class="QGridLayout" name="gridLayout_23">
+                            <item row="1" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_action_6">
+                                    <property name="text">
+                                        <string/>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="0" column="0">
+                                <widget class="BodyLabel" name="BodyLabel_31">
+                                    <property name="text">
+                                        <string>模式</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="2" column="0">
+                                <spacer name="verticalSpacer_9">
+                                    <property name="orientation">
+                                        <enum>Qt::Vertical</enum>
+                                    </property>
+                                    <property name="sizeHint" stdset="0">
+                                        <size>
+                                            <width>20</width>
+                                            <height>40</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </item>
+                            <item row="0" column="1">
+                                <widget class="ComboBox" name="ComboBox_card_mode"/>
+                            </item>
+                            <item row="3" column="0" colspan="2">
+                                <widget class="BodyLabel" name="BodyLabel_tip_card">
+                                    <property name="text">
+                                        <string>Body label</string>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>Qt::MarkdownText</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="0" column="1" rowspan="2">
+                    <widget class="SimpleCardWidget" name="SimpleCardWidget_8">
+                        <layout class="QGridLayout" name="gridLayout_24">
+                            <item row="0" column="0">
+                                <widget class="TitleLabel" name="TitleLabel_7">
+                                    <property name="text">
+                                        <string>日志</string>
+                                    </property>
+                                </widget>
+                            </item>
+                            <item row="1" column="0">
+                                <widget class="QTextBrowser" name="textBrowser_log_card">
+                                    <property name="styleSheet">
+                                        <string notr="true"/>
+                                    </property>
+                                    <property name="verticalScrollBarPolicy">
+                                        <enum>Qt::ScrollBarAlwaysOff</enum>
+                                    </property>
+                                </widget>
+                            </item>
+                        </layout>
+                    </widget>
+                </item>
+                <item row="1" column="0">
+                    <widget class="PushButton" name="PushButton_start_drink">
+                        <property name="text">
+                            <string>开始喝酒</string>
+                        </property>
                     </widget>
                 </item>
             </layout>

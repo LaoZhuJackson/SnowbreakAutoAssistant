@@ -142,7 +142,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self._connect_to_slot()
         self.redirectOutput(self.textBrowser_log)
 
-        self.get_tips()
+        # self.get_tips()
         if config.checkUpdateAtStartUp.value:
             self.update_online()
 
@@ -255,7 +255,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         view = FlyoutView(
             title="如何适配新版本UI",
             content="如果在设置中勾选了“软件启动时检测更新”，则每次运行SAA这里都会联网更新数据\n如果需要手动更新，先填入新版本任务名，然后通过任意截图工具获取如图所示的坐标值，最后点击底部两个按钮更新。\n或者可以尝试点击下面的按钮联网在线更新",
-            image="asset/update_tutor.png",
+            image="app/resource/images/update_tutor.png",
             isClosable=True,
         )
         # 添加按钮
@@ -319,6 +319,11 @@ class Home(QFrame, Ui_home, BaseInterface):
                 widget = self.page_2.findChild(LineEdit, config_list[i])
                 widget.setText(new_data_list[i])
                 widget.editingFinished.emit()
+
+        # 更新链接
+        url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={data[10]}&id={data[11]}"
+        self.LineEdit_link.setText(url)
+        self.get_tips(url=url)
 
         if is_update:
             self.on_update_click('stuff')
@@ -539,7 +544,9 @@ class Home(QFrame, Ui_home, BaseInterface):
 
         return days_remaining, (days_remaining / total_day) * 100, days_remaining == total_day
 
-    def get_tips(self):
+    def get_tips(self, url=None):
+        if url:
+            config.set(config.LineEdit_link, url)
         tips_dic = get_date(config.LineEdit_link.value)
         if "error" in tips_dic.keys():
             logger.error("获取活动时间失败：" + tips_dic["error"])
