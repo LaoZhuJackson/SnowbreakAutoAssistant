@@ -141,7 +141,9 @@ class DrinkModule:
                                       crop=(265 / 2560, 1184 / 1440, 375 / 2560, 1224 / 1440),
                                       is_log=self.is_log):
                 self.auto.press_key('q')
+                time.sleep(0.2)
                 self.auto.press_key('w')
+                time.sleep(0.2)
                 self.auto.press_key('e')
                 if self.auto.click_element('质疑', 'text', crop=(2438 / 2560, 1143 / 1440, 2511 / 2560, 1186 / 1440),
                                            is_log=self.is_log):
@@ -185,15 +187,20 @@ class DrinkModule:
                 time.sleep(0.3)
                 continue
 
-            if self.auto.find_element(['Q', 'W', 'E'], 'text',
-                                      crop=(1203 / 2560, 1304 / 1440, 1729 / 2560, 1400 / 1440), is_log=self.is_log):
-                self.auto.press_key('q')
-                self.auto.press_key('w')
-                self.auto.press_key('e')
-                continue
+            # if self.auto.find_element(['Q', 'W', 'E'], 'text',
+            #                           crop=(1203 / 2560, 1304 / 1440, 1729 / 2560, 1400 / 1440), is_log=self.is_log):
+            #     self.auto.press_key('q')
+            #     self.auto.press_key('w')
+            #     self.auto.press_key('e')
+            #     continue
             if self.auto.find_element(['指定', '牌'], 'text',
                                       crop=(265 / 2560, 1184 / 1440, 375 / 2560, 1224 / 1440),
                                       is_log=self.is_log):
+                self.auto.press_key('q')
+                time.sleep(0.2)
+                self.auto.press_key('w')
+                time.sleep(0.2)
+                self.auto.press_key('e')
                 if self.auto.click_element('质疑', 'text', crop=(2438 / 2560, 1143 / 1440, 2511 / 2560, 1186 / 1440),
                                            is_log=self.is_log):
                     select_first = False
