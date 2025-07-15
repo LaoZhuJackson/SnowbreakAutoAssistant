@@ -311,8 +311,47 @@ class Input:
 
 
 if __name__ == '__main__':
-    title = "西山居启动器-尘白禁区"
-    i = Input(title, logger)
+    import win32gui
+
+
+    def get_hwnd_by_title(window_title):
+
+        def callback(hwnd, hwnd_list):
+            if window_title.lower() in win32gui.GetWindowText(hwnd).lower():
+                hwnd_list.append(hwnd)
+            return True
+
+        hwnd_list = []
+        win32gui.EnumWindows(callback, hwnd_list)
+        return hwnd_list[0] if hwnd_list else None
+
+
+    def enumerate_child_windows(parent_hwnd):
+        def callback(handle, windows):
+            windows.append(handle)
+            return True
+
+        child_windows = []
+        win32gui.EnumChildWindows(parent_hwnd, callback, child_windows)
+        return child_windows
+
+
+    def get_hwnd(window_title):
+        """根据传入的窗口名和类型确定可操作的句柄"""
+        hwnd = win32gui.FindWindow(None, window_title)
+        handle_list = []
+        if hwnd:
+            handle_list.append(hwnd)
+            handle_list.extend(enumerate_child_windows(hwnd))
+            print(handle_list)
+        return None
+
+
+    hwnd = get_hwnd_by_title("BrownDust II")
+    print(f"窗口句柄：{hwnd}")
+    title = "BrownDust II"
+    get_hwnd(title)
+    i = Input(hwnd, logger)
     click_dict = {
         "SAA尘白助手": [230, 895],
         "无标题 - 画图": [933, 594],
@@ -322,11 +361,14 @@ if __name__ == '__main__':
         "Wuthering Waves": [1178, 477],
         "西山居启动器-尘白禁区": [337, 559],
         "尘白禁区": [110, 463],
+        "BrownDust II": [1441, 1336],
     }
     x_1 = click_dict[title][0]
     y_1 = click_dict[title][1]
-    # time.sleep(2)
+    time.sleep(2)
     # i.move_click('left', x_1, y_1,press_time=1)
-    i.mouse_click(x_1, y_1, 'left', press_time=0.02)
+    # i.mouse_click(x_1, y_1)
+    # i.move_click(x_1, y_1)
+    # time.sleep(1)
     # i.press_key('esc')
     # i.mouse_scroll(-120,1532,534)

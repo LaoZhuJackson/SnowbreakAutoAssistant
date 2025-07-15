@@ -341,16 +341,16 @@ class Automation:
                      match_method=cv2.TM_SQDIFF_NORMED, is_log=False):
         """
         寻找元素
-        :param is_log:
-        :param match_method: 模版匹配方法
-        :param target:
-        :param find_type:
-        :param threshold:
-        :param crop:
-        :param take_screenshot:
-        :param include:
-        :param need_ocr:
-        :param extract:
+        :param is_log: 是否显示详细日志
+        :param match_method: 模版匹配方法（已废弃：目前的方案是用特征匹配）
+        :param target: 寻找目标，图像路径或文字
+        :param find_type: 寻找类型
+        :param threshold: 置信度
+        :param crop: 截图区域，take_screenshot为任何值crop都生效，为true时直接得到裁剪后的截图，为false时将根据crop对current_screenshot进行二次裁剪
+        :param take_screenshot: 是否截图
+        :param include: 是否允许target含于ocr结果
+        :param need_ocr: 是否ocr
+        :param extract: 是否使截图转换成白底黑字，只有find_type=="text"且需要ocr的时候才生效，[(文字rgb颜色),threshold数值]
         :return: 查找成功返回（top_left,bottom_right），失败返回None
         """
         top_left = bottom_right = image_threshold = None
@@ -427,7 +427,7 @@ class Automation:
         """
         寻找目标位置，并在位置做出对应action
         :param is_log:
-        :param match_method: 模版匹配方法
+        :param match_method: 模版匹配方法（已废弃：目前使用特征匹配）
         :param n: 正态分布随机获取点的居中程度，越大越居中
         :param target: 寻找目标
         :param find_type: 寻找类型

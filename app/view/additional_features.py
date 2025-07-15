@@ -82,7 +82,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_jigsaw.setText(
             "### 提示\n* 本功能只提供解决方案，不自动拼\n* 需要手动输入当前拥有的各个拼图数量\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量")
         self.BodyLabel_tip_water.setText(
-            "### 提示\n* 进入站在水弹位置后再点开始\n* 当无法识别道具或者生命时，适当调低上面两个置信度参数")
+            "### 提示\n* 进入站在水弹入口位置后再点开始\n* 当无法识别道具或者生命时，适当调低上面两个置信度参数")
         self.BodyLabel_tip_alien.setText(
             "### 提示\n* 开始战斗后再点击开始\n* 常驻伙伴推荐带钢珠和炽热投手\n* 闯关模式为半自动一关一关打。需要手动开枪，手动选择下一关")
         self.BodyLabel_tip_maze.setText(
@@ -90,7 +90,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.BodyLabel_tip_massaging.setText(
             "### 提示\n* 此功能还没开发完，不要使用\n* 使用本功能建议按摩等级大于等于4级")
         self.BodyLabel_tip_card.setText(
-            "### 提示\n* 两种模式均无策略，目的均是为了快速结束对局刷下一把\n* 逻辑：有质疑直接质疑，轮到自己出牌时出中间的那一张\n* 实测有赢有输，挂着刷经验就行")
+            "### 提示\n* 进入站在猜心对局入口位置后再点开始\n* 两种模式均无策略，目的均是为了快速结束对局刷下一把\n* 逻辑：有质疑直接质疑，轮到自己出牌时出中间的那一张\n* 实测有赢有输，挂着刷经验就行")
         # 设置combobox选项
         lure_type_items = ['万能鱼饵', '普通鱼饵', '豪华鱼饵', '至尊鱼饵', '重量级鱼类虫饵', '巨型鱼类虫饵',
                            '重量级鱼类夜钓虫饵', '巨型鱼类夜钓虫饵']
