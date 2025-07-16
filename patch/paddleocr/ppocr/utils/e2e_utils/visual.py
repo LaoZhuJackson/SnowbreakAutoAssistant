@@ -132,9 +132,9 @@ def expand_poly_along_width(poly, shrink_ratio_of_width=0.3):
     point_num = poly.shape[0]
     left_quad = np.array([poly[0], poly[1], poly[-2], poly[-1]], dtype=np.float32)
     left_ratio = (
-            -shrink_ratio_of_width
-            * np.linalg.norm(left_quad[0] - left_quad[3])
-            / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
+        -shrink_ratio_of_width
+        * np.linalg.norm(left_quad[0] - left_quad[3])
+        / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
     )
     left_quad_expand = shrink_quad_along_width(left_quad, left_ratio, 1.0)
     right_quad = np.array(
@@ -159,8 +159,8 @@ def expand_poly_along_width(poly, shrink_ratio_of_width=0.3):
 
 def norm2(x, axis=None):
     if axis:
-        return np.sqrt(np.sum(x ** 2, axis=axis))
-    return np.sqrt(np.sum(x ** 2))
+        return np.sqrt(np.sum(x**2, axis=axis))
+    return np.sqrt(np.sum(x**2))
 
 
 def cos(p1, p2):

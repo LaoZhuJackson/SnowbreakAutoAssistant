@@ -116,10 +116,10 @@ def get_date(url=None):
     API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258"
     API_URL = url
     headers = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
     }
     response = requests.get(API_URL, headers=headers)
-    response.encoding = 'utf-8'  # 或其他合适的编码
+    response.encoding = "utf-8"  # 或其他合适的编码
     # print(response.status_code)
     # print(response.text)  # 查看原始响应内容
     if response.status_code != 200:
@@ -132,8 +132,8 @@ def get_date(url=None):
         # print(traceback.print_exc())
         return {"error": f"数据解析失败: {str(e)}"}
 
-    soup = BeautifulSoup(content_html, 'html.parser')
-    paragraphs = soup.find_all('p')
+    soup = BeautifulSoup(content_html, "html.parser")
+    paragraphs = soup.find_all("p")
     result_dict = {}
     current_index = 0
     while current_index < len(paragraphs):
@@ -167,7 +167,7 @@ def get_date(url=None):
         # 提取挑战玩法
         elif "挑战玩法" in text and "✧" in text:
             challenge_name = re.search(r"【(.*?)】", text).group(1)
-            time_text = ''
+            time_text = ""
             while "活动时间" not in time_text:
                 current_index += 1
                 time_text = paragraphs[current_index].get_text(strip=True)
@@ -189,7 +189,7 @@ def get_date(url=None):
         current_index += 1
 
     if len(result_dict) != 0:
-        with open('Appdata/activity_date.json', 'w') as f:
+        with open("Appdata/activity_date.json", "w") as f:
             json.dump(result_dict, f, indent=4)
         return result_dict
     else:
@@ -237,8 +237,16 @@ def get_hsv(target_rgb):
     s_tolerance = 35
     v_tolerance = 10
 
-    lower_color = np.array([max(0, h - h_tolerance), max(0, s - s_tolerance), max(0, v - v_tolerance)])
-    upper_color = np.array([min(179, h + h_tolerance), min(255, s + s_tolerance), min(255, v + v_tolerance)])
+    lower_color = np.array(
+        [max(0, h - h_tolerance), max(0, s - s_tolerance), max(0, v - v_tolerance)]
+    )
+    upper_color = np.array(
+        [
+            min(179, h + h_tolerance),
+            min(255, s + s_tolerance),
+            min(255, v + v_tolerance),
+        ]
+    )
 
     print(f"Lower HSV: {lower_color}")
     print(f"Upper HSV: {upper_color}")
@@ -246,18 +254,18 @@ def get_hsv(target_rgb):
 
 def get_gitee_text(text_path: str):
     """
-        从Gitee获取文本文件并按行返回内容
+    从Gitee获取文本文件并按行返回内容
 
-        参数:
-            text_path: 文件在仓库中的路径 (如: "requirements.txt")
+    参数:
+        text_path: 文件在仓库中的路径 (如: "requirements.txt")
 
-        返回:
-            成功: 包含每行文本的列表
-            失败: None
+    返回:
+        成功: 包含每行文本的列表
+        失败: None
     """
     url = f"https://gitee.com/laozhu520/auto_chenbai/raw/main/{text_path}"
     headers = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
     }
     response = requests.get(url, headers=headers)
 

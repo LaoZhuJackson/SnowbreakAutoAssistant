@@ -3,7 +3,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 
 class SignalBus(QObject):
-    """ Signal bus """
+    """Signal bus"""
 
     checkUpdateSig = pyqtSignal(int)
     micaEnableChanged = pyqtSignal(bool)

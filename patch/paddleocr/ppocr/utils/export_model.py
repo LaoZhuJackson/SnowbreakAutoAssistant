@@ -104,7 +104,7 @@ def dump_infer_config(config, path, logger):
 
 
 def export_single_model(
-        model, arch_config, save_path, logger, input_shape=None, quanter=None
+    model, arch_config, save_path, logger, input_shape=None, quanter=None
 ):
     if arch_config["algorithm"] == "SRN":
         max_text_length = arch_config["Head"]["max_text_length"]
@@ -235,9 +235,9 @@ def export_single_model(
         if arch_config["model_type"] == "rec":
             infer_shape = [3, 32, -1]  # for rec model, H must be 32
             if (
-                    "Transform" in arch_config
-                    and arch_config["Transform"] is not None
-                    and arch_config["Transform"]["name"] == "TPS"
+                "Transform" in arch_config
+                and arch_config["Transform"] is not None
+                and arch_config["Transform"]["name"] == "TPS"
             ):
                 logger.info(
                     "When there is tps in the network, variable length input is not supported, and the input size needs to be the same as during training"
@@ -257,8 +257,8 @@ def export_single_model(
         )
 
     if (
-            arch_config["model_type"] != "sr"
-            and arch_config["Backbone"]["name"] == "PPLCNetV3"
+        arch_config["model_type"] != "sr"
+        and arch_config["Backbone"]["name"] == "PPLCNetV3"
     ):
         # for rep lcnetv3
         for layer in model.sublayers():
@@ -289,7 +289,7 @@ def export(config, base_model=None, save_path=None):
         ]:  # distillation model
             for key in config["Architecture"]["Models"]:
                 if (
-                        config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
+                    config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
                 ):  # multi head
                     out_channels_list = {}
                     if config["PostProcess"]["name"] == "DistillationSARLabelDecode":
@@ -303,9 +303,9 @@ def export(config, base_model=None, save_path=None):
                         "out_channels_list"
                     ] = out_channels_list
                 else:
-                    config["Architecture"]["Models"][key]["Head"][
-                        "out_channels"
-                    ] = char_num
+                    config["Architecture"]["Models"][key]["Head"]["out_channels"] = (
+                        char_num
+                    )
                 # just one final tensor needs to exported for inference
                 config["Architecture"]["Models"][key]["return_all_feats"] = False
         elif config["Architecture"]["Head"]["name"] == "MultiHead":  # multi head
@@ -349,8 +349,8 @@ def export(config, base_model=None, save_path=None):
     arch_config = config["Architecture"]
 
     if (
-            arch_config["algorithm"] in ["SVTR", "CPPD"]
-            and arch_config["Head"]["name"] != "MultiHead"
+        arch_config["algorithm"] in ["SVTR", "CPPD"]
+        and arch_config["Head"]["name"] != "MultiHead"
     ):
         input_shape = config["Eval"]["dataset"]["transforms"][-2]["SVTRRecResizeImg"][
             "image_shape"

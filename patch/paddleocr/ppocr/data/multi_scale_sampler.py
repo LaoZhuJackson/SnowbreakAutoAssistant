@@ -8,16 +8,16 @@ import math
 
 class MultiScaleSampler(Sampler):
     def __init__(
-            self,
-            data_source,
-            scales,
-            first_bs=128,
-            fix_bs=True,
-            divided_factor=[8, 16],
-            is_training=True,
-            ratio_wh=0.8,
-            max_w=480.0,
-            seed=None,
+        self,
+        data_source,
+        scales,
+        first_bs=128,
+        fix_bs=True,
+        divided_factor=[8, 16],
+        is_training=True,
+        ratio_wh=0.8,
+        max_w=480.0,
+        seed=None,
     ):
         """
         multi scale samper
@@ -92,11 +92,11 @@ class MultiScaleSampler(Sampler):
         self.batch_list = []
         self.current = 0
         last_index = num_samples_per_replica * num_replicas
-        indices_rank_i = self.img_indices[self.rank: last_index: self.num_replicas]
+        indices_rank_i = self.img_indices[self.rank : last_index : self.num_replicas]
         while self.current < self.n_samples_per_replica:
             for curr_w, curr_h, curr_bsz in self.img_batch_pairs:
                 end_index = min(self.current + curr_bsz, self.n_samples_per_replica)
-                batch_ids = indices_rank_i[self.current: end_index]
+                batch_ids = indices_rank_i[self.current : end_index]
                 n_batch_samples = len(batch_ids)
                 if n_batch_samples != curr_bsz:
                     batch_ids += indices_rank_i[: (curr_bsz - n_batch_samples)]
@@ -130,12 +130,12 @@ class MultiScaleSampler(Sampler):
                 random.shuffle(self.img_indices)
             random.shuffle(self.img_batch_pairs)
             indices_rank_i = self.img_indices[
-                             self.rank: len(self.img_indices): self.num_replicas
-                             ]
+                self.rank : len(self.img_indices) : self.num_replicas
+            ]
         else:
             indices_rank_i = self.img_indices[
-                             self.rank: len(self.img_indices): self.num_replicas
-                             ]
+                self.rank : len(self.img_indices) : self.num_replicas
+            ]
 
         start_index = 0
         batchs_in_one_epoch = []

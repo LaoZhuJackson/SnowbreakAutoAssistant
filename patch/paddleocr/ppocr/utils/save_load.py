@@ -95,9 +95,9 @@ def load_model(config, model, optimizer=None, model_type="det"):
     if checkpoints:
         if checkpoints.endswith(".pdparams"):
             checkpoints = checkpoints.replace(".pdparams", "")
-        assert os.path.exists(
-            checkpoints + ".pdparams"
-        ), "The {}.pdparams does not exists!".format(checkpoints)
+        assert os.path.exists(checkpoints + ".pdparams"), (
+            "The {}.pdparams does not exists!".format(checkpoints)
+        )
 
         # load params from trained model
         params = paddle.load(checkpoints + ".pdparams")
@@ -161,9 +161,9 @@ def load_pretrained_params(model, path):
     path = maybe_download_params(path)
     if path.endswith(".pdparams"):
         path = path.replace(".pdparams", "")
-    assert os.path.exists(
-        path + ".pdparams"
-    ), "The {}.pdparams does not exists!".format(path)
+    assert os.path.exists(path + ".pdparams"), (
+        "The {}.pdparams does not exists!".format(path)
+    )
 
     params = paddle.load(path + ".pdparams")
 
@@ -199,14 +199,14 @@ def load_pretrained_params(model, path):
 
 
 def save_model(
-        model,
-        optimizer,
-        model_path,
-        logger,
-        config,
-        is_best=False,
-        prefix="ppocr",
-        **kwargs,
+    model,
+    optimizer,
+    model_path,
+    logger,
+    config,
+    is_best=False,
+    prefix="ppocr",
+    **kwargs,
 ):
     """
     save model to the target path

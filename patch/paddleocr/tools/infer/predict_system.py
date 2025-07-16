@@ -172,7 +172,7 @@ def sorted_boxes(dt_boxes):
     for i in range(num_boxes - 1):
         for j in range(i, -1, -1):
             if abs(_boxes[j + 1][0][1] - _boxes[j][0][1]) < 10 and (
-                    _boxes[j + 1][0][0] < _boxes[j][0][0]
+                _boxes[j + 1][0][0] < _boxes[j][0][0]
             ):
                 tmp = _boxes[j]
                 _boxes[j] = _boxes[j + 1]
@@ -184,7 +184,7 @@ def sorted_boxes(dt_boxes):
 
 def main(args):
     image_file_list = get_image_file_list(args.image_dir)
-    image_file_list = image_file_list[args.process_id:: args.total_process_num]
+    image_file_list = image_file_list[args.process_id :: args.total_process_num]
     text_sys = TextSystem(args)
     is_visualize = True
     font_path = args.vis_font_path
@@ -250,19 +250,19 @@ def main(args):
             ]
             if len(imgs) > 1:
                 save_pred = (
-                        os.path.basename(image_file)
-                        + "_"
-                        + str(index)
-                        + "\t"
-                        + json.dumps(res, ensure_ascii=False)
-                        + "\n"
+                    os.path.basename(image_file)
+                    + "_"
+                    + str(index)
+                    + "\t"
+                    + json.dumps(res, ensure_ascii=False)
+                    + "\n"
                 )
             else:
                 save_pred = (
-                        os.path.basename(image_file)
-                        + "\t"
-                        + json.dumps(res, ensure_ascii=False)
-                        + "\n"
+                    os.path.basename(image_file)
+                    + "\t"
+                    + json.dumps(res, ensure_ascii=False)
+                    + "\n"
                 )
             save_results.append(save_pred)
 
@@ -302,7 +302,7 @@ def main(args):
         text_sys.text_recognizer.autolog.report()
 
     with open(
-            os.path.join(draw_img_save_dir, "system_results.txt"), "w", encoding="utf-8"
+        os.path.join(draw_img_save_dir, "system_results.txt"), "w", encoding="utf-8"
     ) as f:
         f.writelines(save_results)
 
@@ -314,9 +314,9 @@ if __name__ == "__main__":
         total_process_num = args.total_process_num
         for process_id in range(total_process_num):
             cmd = (
-                    [sys.executable, "-u"]
-                    + sys.argv
-                    + ["--process_id={}".format(process_id), "--use_mp={}".format(False)]
+                [sys.executable, "-u"]
+                + sys.argv
+                + ["--process_id={}".format(process_id), "--use_mp={}".format(False)]
             )
             p = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stdout)
             p_list.append(p)

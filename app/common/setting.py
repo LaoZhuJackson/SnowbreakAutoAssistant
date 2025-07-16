@@ -11,7 +11,7 @@ AUTHOR = "LaoZhu"
 def read_version_from_file(filename):
     """从文件中读取版本号"""
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             version = file.readline().strip()
         return version
     except FileNotFoundError:
@@ -45,5 +45,5 @@ ACTIVITY = [
     ["勇者游戏", "2024-12-2", "2024-12-16"],
 ]
 
-CONFIG_FOLDER = Path('AppData').absolute()
+CONFIG_FOLDER = Path("AppData").absolute()
 CONFIG_FILE = CONFIG_FOLDER / "config.json"

@@ -73,7 +73,7 @@ def area_of_union(det_x, det_y, gt_x, gt_y):
 
 def iou(det_x, det_y, gt_x, gt_y):
     return area_of_intersection(det_x, det_y, gt_x, gt_y) / (
-            area_of_union(det_x, det_y, gt_x, gt_y) + 1.0
+        area_of_union(det_x, det_y, gt_x, gt_y) + 1.0
     )
 
 

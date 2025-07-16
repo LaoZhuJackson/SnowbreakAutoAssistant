@@ -166,7 +166,7 @@ VkCode = {
     "lcontrol": 0xA2,
     "rcontrol": 0xA3,
     "lmenu": 0xA4,
-    "rmenu": 0XA5
+    "rmenu": 0xA5,
 }
 
 
@@ -181,7 +181,7 @@ def get_virtual_keycode(key: str):
     """
     if len(key) == 1 and key in string.printable:
         # https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-vkkeyscana
-        return VkKeyScanA(ord(key)) & 0xff
+        return VkKeyScanA(ord(key)) & 0xFF
     else:
         return VkCode[key]
 
@@ -212,7 +212,7 @@ def key_up(handle: HWND, key: str):
     scan_code = MapVirtualKeyW(vk_code, 0)
     # https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-keyup
     wparam = vk_code
-    lparam = (scan_code << 16) | 0XC0000001
+    lparam = (scan_code << 16) | 0xC0000001
     PostMessageW(handle, WM_KEYUP, wparam, lparam)
 
 
@@ -277,12 +277,12 @@ def enumerate_child_windows(parent_hwnd):
 
 def print_window_info(hwnd):
     window_title, class_name, window_text, window_rect = get_window_properties(hwnd)
-    print('--' * 60)
-    print(f'窗口句柄：{hwnd}')
-    print(f'标题：{window_title}')
-    print(f'类名：{class_name}')
-    print(f'文本内容：{window_text}')
-    print(f'矩形位置：{window_rect}')
+    print("--" * 60)
+    print(f"窗口句柄：{hwnd}")
+    print(f"标题：{window_title}")
+    print(f"类名：{class_name}")
+    print(f"文本内容：{window_text}")
+    print(f"矩形位置：{window_rect}")
 
 
 def find_window_by_title_contains(keyword):
@@ -317,7 +317,9 @@ def send_background_click(hwnd, x_screen, y_screen):
     lParam = win32api.MAKELONG(x_client, y_client)
 
     # 附加输入线程（可选，可能需要）
-    foreground_thread = win32process.GetWindowThreadProcessId(win32gui.GetForegroundWindow())
+    foreground_thread = win32process.GetWindowThreadProcessId(
+        win32gui.GetForegroundWindow()
+    )
     current_thread = win32api.GetCurrentThreadId()
     print(f"{current_thread=}")
     print(f"{foreground_thread=}")
@@ -347,8 +349,9 @@ def send_background_click(hwnd, x_screen, y_screen):
 #             ctypes.windll.user32.SetCursorPos(x, y)
 #     return ctypes.windll.user32.CallNextHookEx(None, nCode, wParam, lParam)
 
+
 def refresh_window(hwnd):
-    """ 强制刷新窗口，而不改变其 z 轴位置 """
+    """强制刷新窗口，而不改变其 z 轴位置"""
     # InvalidateRect：让窗口的区域失效，要求重新绘制
     win32gui.InvalidateRect(hwnd, None, True)  # None 表示整个窗口区域
     # UpdateWindow：强制更新窗口内容
@@ -362,8 +365,7 @@ if __name__ == "__main__":
     if not windll.shell32.IsUserAnAdmin():
         print("不是管理员")
         # 不是管理员就提权
-        windll.shell32.ShellExecuteW(
-            None, "runas", sys.executable, __file__, None, 1)
+        windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
     else:
         print("是管理员")
 

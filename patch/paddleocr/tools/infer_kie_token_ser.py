@@ -136,9 +136,9 @@ if __name__ == "__main__":
         infer_imgs = get_image_file_list(config["Global"]["infer_img"])
 
     with open(
-            os.path.join(config["Global"]["save_res_path"], "infer_results.txt"),
-            "w",
-            encoding="utf-8",
+        os.path.join(config["Global"]["save_res_path"], "infer_results.txt"),
+        "w",
+        encoding="utf-8",
     ) as fout:
         for idx, info in enumerate(infer_imgs):
             if config["Global"].get("infer_mode", None) is False:

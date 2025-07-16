@@ -20,25 +20,27 @@ class BaseTask:
 
     def init_auto(self, name):
         if config.server_interface.value != 2:
-            game_name = '尘白禁区'
-            game_class = 'UnrealWindow'
+            game_name = "尘白禁区"
+            game_class = "UnrealWindow"
         else:
-            game_name = 'Snowbreak: Containment Zone'  # 国际服
-            game_class = 'UnrealWindow'
+            game_name = "Snowbreak: Containment Zone"  # 国际服
+            game_class = "UnrealWindow"
         auto_dict = {
-            'game': [game_name, game_class],
+            "game": [game_name, game_class],
             # 'starter': [config.LineEdit_starter_name.value, config.LineEdit_starter_class.value]
         }
         if self.auto is None:
             try:
-                self.auto = Automation(auto_dict[name][0], auto_dict[name][1], self.logger)
+                self.auto = Automation(
+                    auto_dict[name][0], auto_dict[name][1], self.logger
+                )
                 signalBus.sendHwnd.emit(self.auto.hwnd)
                 return True
             except Exception as e:
-                self.logger.error(f'初始化auto失败：{e}')
+                self.logger.error(f"初始化auto失败：{e}")
                 return False
         else:
-            self.logger.debug(f'延用auto：{self.auto.hwnd}')
+            self.logger.debug(f"延用auto：{self.auto.hwnd}")
             return True
         # else:
         #     if switch:

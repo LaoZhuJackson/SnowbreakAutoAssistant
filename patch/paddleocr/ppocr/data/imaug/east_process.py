@@ -15,6 +15,7 @@
 This code is refered from:
 https://github.com/songdejia/EAST/blob/master/data_utils.py
 """
+
 import math
 import cv2
 import numpy as np
@@ -27,12 +28,12 @@ __all__ = ["EASTProcessTrain"]
 
 class EASTProcessTrain(object):
     def __init__(
-            self,
-            image_shape=[512, 512],
-            background_ratio=0.125,
-            min_crop_side_ratio=0.1,
-            min_text_size=10,
-            **kwargs,
+        self,
+        image_shape=[512, 512],
+        background_ratio=0.125,
+        min_crop_side_ratio=0.1,
+        min_text_size=10,
+        **kwargs,
     ):
         self.input_size = image_shape[1]
         self.random_scale = np.array([0.5, 1, 2.0, 3.0])
@@ -86,14 +87,14 @@ class EASTProcessTrain(object):
             for j in range(4):
                 sx, sy = wordBB[j][0], wordBB[j][1]
                 dx = (
-                        math.cos(rot_angle) * (sx - cx)
-                        - math.sin(rot_angle) * (sy - cy)
-                        + ncx
+                    math.cos(rot_angle) * (sx - cx)
+                    - math.sin(rot_angle) * (sy - cy)
+                    + ncx
                 )
                 dy = (
-                        math.sin(rot_angle) * (sx - cx)
-                        + math.cos(rot_angle) * (sy - cy)
-                        + ncy
+                    math.sin(rot_angle) * (sx - cx)
+                    + math.cos(rot_angle) * (sy - cy)
+                    + ncy
                 )
                 poly.append([dx, dy])
             dst_polys.append(poly)
@@ -254,8 +255,8 @@ class EASTProcessTrain(object):
                 r[i] = min(dist1, dist2)
             # score map
             shrinked_poly = self.shrink_poly(poly.copy(), r).astype(np.int32)[
-                            np.newaxis, :, :
-                            ]
+                np.newaxis, :, :
+            ]
             cv2.fillPoly(score_map, shrinked_poly, 1)
             cv2.fillPoly(poly_mask, shrinked_poly, poly_idx + 1)
             # if the poly is too small, then ignore it during training
@@ -280,10 +281,10 @@ class EASTProcessTrain(object):
             for pno in range(4):
                 geo_channel_beg = pno * 2
                 geo_map[y_in_poly, x_in_poly, geo_channel_beg] = (
-                        x_in_poly - poly[pno, 0]
+                    x_in_poly - poly[pno, 0]
                 )
                 geo_map[y_in_poly, x_in_poly, geo_channel_beg + 1] = (
-                        y_in_poly - poly[pno, 1]
+                    y_in_poly - poly[pno, 1]
                 )
             geo_map[y_in_poly, x_in_poly, 8] = 1.0 / max(min(poly_h, poly_w), 1.0)
         return score_map, geo_map, training_mask
@@ -307,10 +308,10 @@ class EASTProcessTrain(object):
             poly = np.round(poly, decimals=0).astype(np.int32)
             minx = np.min(poly[:, 0])
             maxx = np.max(poly[:, 0])
-            w_array[minx + pad_w: maxx + pad_w] = 1
+            w_array[minx + pad_w : maxx + pad_w] = 1
             miny = np.min(poly[:, 1])
             maxy = np.max(poly[:, 1])
-            h_array[miny + pad_h: maxy + pad_h] = 1
+            h_array[miny + pad_h : maxy + pad_h] = 1
         # ensure the cropped area not across a text
         h_axis = np.where(h_array == 0)[0]
         w_axis = np.where(w_array == 0)[0]
@@ -329,17 +330,17 @@ class EASTProcessTrain(object):
             ymin = np.clip(ymin, 0, h - 1)
             ymax = np.clip(ymax, 0, h - 1)
             if (
-                    xmax - xmin < self.min_crop_side_ratio * w
-                    or ymax - ymin < self.min_crop_side_ratio * h
+                xmax - xmin < self.min_crop_side_ratio * w
+                or ymax - ymin < self.min_crop_side_ratio * h
             ):
                 # area too small
                 continue
             if polys.shape[0] != 0:
                 poly_axis_in_area = (
-                        (polys[:, :, 0] >= xmin)
-                        & (polys[:, :, 0] <= xmax)
-                        & (polys[:, :, 1] >= ymin)
-                        & (polys[:, :, 1] <= ymax)
+                    (polys[:, :, 0] >= xmin)
+                    & (polys[:, :, 0] <= xmax)
+                    & (polys[:, :, 1] >= ymin)
+                    & (polys[:, :, 1] <= ymax)
                 )
                 selected_polys = np.where(np.sum(poly_axis_in_area, axis=1) == 4)[0]
             else:
@@ -348,14 +349,14 @@ class EASTProcessTrain(object):
             if len(selected_polys) == 0:
                 # no text in this area
                 if crop_background:
-                    im = im[ymin: ymax + 1, xmin: xmax + 1, :]
+                    im = im[ymin : ymax + 1, xmin : xmax + 1, :]
                     polys = []
                     tags = []
                     return im, polys, tags
                 else:
                     continue
 
-            im = im[ymin: ymax + 1, xmin: xmax + 1, :]
+            im = im[ymin : ymax + 1, xmin : xmax + 1, :]
             polys = polys[selected_polys]
             tags = tags[selected_polys]
             polys[:, :, 0] -= xmin

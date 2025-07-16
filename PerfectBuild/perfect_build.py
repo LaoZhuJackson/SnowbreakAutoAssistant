@@ -23,6 +23,7 @@ class Config:
     app_dir = "D:/Learning/Project/auto_chenbai"
     # app_dir = app_dir()
 
+
 # class MainWindow(QDialog):
 #     def __init__(self, parent=None):
 #         super().__init__(parent)

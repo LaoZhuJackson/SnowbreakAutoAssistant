@@ -5,14 +5,14 @@ from ppocr.utils.logging import get_logger
 
 class WandbLogger(BaseLogger):
     def __init__(
-            self,
-            project=None,
-            name=None,
-            id=None,
-            entity=None,
-            save_dir=None,
-            config=None,
-            **kwargs,
+        self,
+        project=None,
+        name=None,
+        id=None,
+        entity=None,
+        save_dir=None,
+        config=None,
+        **kwargs,
     ):
         try:
             import wandb

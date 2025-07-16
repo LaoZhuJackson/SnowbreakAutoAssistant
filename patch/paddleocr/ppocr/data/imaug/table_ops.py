@@ -49,12 +49,12 @@ class GenTableMask(object):
         box_list = []
         for i in range(len(project_val_array)):
             if (
-                    in_text == False and project_val_array[i] > spilt_threshold
+                in_text == False and project_val_array[i] > spilt_threshold
             ):  # 进入字符区了
                 in_text = True
                 start_idx = i
             elif (
-                    project_val_array[i] <= spilt_threshold and in_text == True
+                project_val_array[i] <= spilt_threshold and in_text == True
             ):  # 进入空白区了
                 end_idx = i
                 in_text = False
@@ -100,12 +100,12 @@ class GenTableMask(object):
         spilt_threshold = 0
         for i in range(len(project_val_array)):
             if (
-                    in_text == False and project_val_array[i] > spilt_threshold
+                in_text == False and project_val_array[i] > spilt_threshold
             ):  # 进入字符区了
                 in_text = True
                 start_idx = i
             elif (
-                    project_val_array[i] <= spilt_threshold and in_text == True
+                project_val_array[i] <= spilt_threshold and in_text == True
             ):  # 进入空白区了
                 end_idx = i
                 in_text = False
@@ -126,7 +126,7 @@ class GenTableMask(object):
                     h_start = 0
                 if i == len(box_list):
                     h_end = h
-                word_img = erosion[h_start: h_end + 1, :]
+                word_img = erosion[h_start : h_end + 1, :]
                 word_h, word_w = word_img.shape
                 w_split_list, w_projection_map = self.projection(
                     word_img.T, word_w, word_h
@@ -135,7 +135,7 @@ class GenTableMask(object):
                 if h_start > 0:
                     h_start -= 1
                 h_end += 1
-                word_img = box_img[h_start: h_end + 1:, w_start: w_end + 1, :]
+                word_img = box_img[h_start : h_end + 1 :, w_start : w_end + 1, :]
                 split_bbox_list.append([w_start, h_start, w_end, h_end])
         else:
             split_bbox_list.append([0, 0, w, h])

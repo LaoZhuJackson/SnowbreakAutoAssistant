@@ -15,6 +15,7 @@
 This part code is refered from:
 https://github.com/songdejia/EAST/blob/master/data_utils.py
 """
+
 import math
 import cv2
 import numpy as np
@@ -27,13 +28,13 @@ __all__ = ["SASTProcessTrain"]
 
 class SASTProcessTrain(object):
     def __init__(
-            self,
-            image_shape=[512, 512],
-            min_crop_size=24,
-            min_crop_side_ratio=0.3,
-            min_text_size=10,
-            max_text_size=512,
-            **kwargs,
+        self,
+        image_shape=[512, 512],
+        min_crop_size=24,
+        min_crop_side_ratio=0.3,
+        min_text_size=10,
+        max_text_size=512,
+        **kwargs,
     ):
         self.input_size = image_shape[1]
         self.min_crop_size = min_crop_size
@@ -72,10 +73,10 @@ class SASTProcessTrain(object):
             min_dist = 1e4
             for i in range(4):
                 dist = (
-                        np.linalg.norm(box[(i + 0) % 4] - poly[0])
-                        + np.linalg.norm(box[(i + 1) % 4] - poly[point_num // 2 - 1])
-                        + np.linalg.norm(box[(i + 2) % 4] - poly[point_num // 2])
-                        + np.linalg.norm(box[(i + 3) % 4] - poly[-1])
+                    np.linalg.norm(box[(i + 0) % 4] - poly[0])
+                    + np.linalg.norm(box[(i + 1) % 4] - poly[point_num // 2 - 1])
+                    + np.linalg.norm(box[(i + 2) % 4] - poly[point_num // 2])
+                    + np.linalg.norm(box[(i + 3) % 4] - poly[-1])
                 )
                 if dist < min_dist:
                     min_dist = dist
@@ -150,10 +151,10 @@ class SASTProcessTrain(object):
             poly = np.round(poly, decimals=0).astype(np.int32)
             minx = np.min(poly[:, 0])
             maxx = np.max(poly[:, 0])
-            w_array[minx + pad_w: maxx + pad_w] = 1
+            w_array[minx + pad_w : maxx + pad_w] = 1
             miny = np.min(poly[:, 1])
             maxy = np.max(poly[:, 1])
-            h_array[miny + pad_h: maxy + pad_h] = 1
+            h_array[miny + pad_h : maxy + pad_h] = 1
         # ensure the cropped area not across a text
         h_axis = np.where(h_array == 0)[0]
         w_axis = np.where(w_array == 0)[0]
@@ -177,10 +178,10 @@ class SASTProcessTrain(object):
                 continue
             if polys.shape[0] != 0:
                 poly_axis_in_area = (
-                        (polys[:, :, 0] >= xmin)
-                        & (polys[:, :, 0] <= xmax)
-                        & (polys[:, :, 1] >= ymin)
-                        & (polys[:, :, 1] <= ymax)
+                    (polys[:, :, 0] >= xmin)
+                    & (polys[:, :, 0] <= xmax)
+                    & (polys[:, :, 1] >= ymin)
+                    & (polys[:, :, 1] <= ymax)
                 )
                 selected_polys = np.where(np.sum(poly_axis_in_area, axis=1) == 4)[0]
             else:
@@ -189,14 +190,14 @@ class SASTProcessTrain(object):
                 # no text in this area
                 if crop_background:
                     return (
-                        im[ymin: ymax + 1, xmin: xmax + 1, :],
+                        im[ymin : ymax + 1, xmin : xmax + 1, :],
                         polys[selected_polys],
                         tags[selected_polys],
                         hv_tags[selected_polys],
                     )
                 else:
                     continue
-            im = im[ymin: ymax + 1, xmin: xmax + 1, :]
+            im = im[ymin : ymax + 1, xmin : xmax + 1, :]
             polys = polys[selected_polys]
             tags = tags[selected_polys]
             hv_tags = hv_tags[selected_polys]
@@ -212,11 +213,11 @@ class SASTProcessTrain(object):
         height_list = []
         for quad in poly_quads:
             quad_w = (
-                             np.linalg.norm(quad[0] - quad[1]) + np.linalg.norm(quad[2] - quad[3])
-                     ) / 2.0
+                np.linalg.norm(quad[0] - quad[1]) + np.linalg.norm(quad[2] - quad[3])
+            ) / 2.0
             quad_h = (
-                             np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[2] - quad[1])
-                     ) / 2.0
+                np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[2] - quad[1])
+            ) / 2.0
             width_list.append(quad_w)
             height_list.append(quad_h)
         norm_width = max(sum(width_list) / (len(width_list) + 1e-6), 1.0)
@@ -225,9 +226,9 @@ class SASTProcessTrain(object):
         for quad in poly_quads:
             direct_vector_full = ((quad[1] + quad[2]) - (quad[0] + quad[3])) / 2.0
             direct_vector = (
-                    direct_vector_full
-                    / (np.linalg.norm(direct_vector_full) + 1e-6)
-                    * norm_width
+                direct_vector_full
+                / (np.linalg.norm(direct_vector_full) + 1e-6)
+                * norm_width
             )
             direction_label = tuple(
                 map(
@@ -247,14 +248,14 @@ class SASTProcessTrain(object):
         height_list = []
         for quad in poly_quads:
             quad_h = (
-                             np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[2] - quad[1])
-                     ) / 2.0
+                np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[2] - quad[1])
+            ) / 2.0
             height_list.append(quad_h)
         average_height = max(sum(height_list) / len(height_list), 1.0)
         return average_height
 
     def generate_tcl_label(
-            self, hw, polys, tags, ds_ratio, tcl_ratio=0.3, shrink_ratio_of_width=0.15
+        self, hw, polys, tags, ds_ratio, tcl_ratio=0.3, shrink_ratio_of_width=0.15
     ):
         """
         Generate polygon.
@@ -289,17 +290,17 @@ class SASTProcessTrain(object):
             # generate min_area_quad
             min_area_quad, center_point = self.gen_min_area_quad_from_poly(poly)
             min_area_quad_h = 0.5 * (
-                    np.linalg.norm(min_area_quad[0] - min_area_quad[3])
-                    + np.linalg.norm(min_area_quad[1] - min_area_quad[2])
+                np.linalg.norm(min_area_quad[0] - min_area_quad[3])
+                + np.linalg.norm(min_area_quad[1] - min_area_quad[2])
             )
             min_area_quad_w = 0.5 * (
-                    np.linalg.norm(min_area_quad[0] - min_area_quad[1])
-                    + np.linalg.norm(min_area_quad[2] - min_area_quad[3])
+                np.linalg.norm(min_area_quad[0] - min_area_quad[1])
+                + np.linalg.norm(min_area_quad[2] - min_area_quad[3])
             )
 
             if (
-                    min(min_area_quad_h, min_area_quad_w) < self.min_text_size * ds_ratio
-                    or min(min_area_quad_h, min_area_quad_w) > self.max_text_size * ds_ratio
+                min(min_area_quad_h, min_area_quad_w) < self.min_text_size * ds_ratio
+                or min(min_area_quad_h, min_area_quad_w) > self.max_text_size * ds_ratio
             ):
                 continue
 
@@ -366,12 +367,12 @@ class SASTProcessTrain(object):
             # generate min_area_quad
             min_area_quad, center_point = self.gen_min_area_quad_from_poly(poly)
             min_area_quad_h = 0.5 * (
-                    np.linalg.norm(min_area_quad[0] - min_area_quad[3])
-                    + np.linalg.norm(min_area_quad[1] - min_area_quad[2])
+                np.linalg.norm(min_area_quad[0] - min_area_quad[3])
+                + np.linalg.norm(min_area_quad[1] - min_area_quad[2])
             )
             min_area_quad_w = 0.5 * (
-                    np.linalg.norm(min_area_quad[0] - min_area_quad[1])
-                    + np.linalg.norm(min_area_quad[2] - min_area_quad[3])
+                np.linalg.norm(min_area_quad[0] - min_area_quad[1])
+                + np.linalg.norm(min_area_quad[2] - min_area_quad[3])
             )
 
             # generate tcl map and text, 128 * 128
@@ -440,7 +441,7 @@ class SASTProcessTrain(object):
             vector_1 = poly[0] - poly[1]
             vector_2 = poly[1] - poly[2]
             cos_theta = np.dot(vector_1, vector_2) / (
-                    np.linalg.norm(vector_1) * np.linalg.norm(vector_2) + 1e-6
+                np.linalg.norm(vector_1) * np.linalg.norm(vector_2) + 1e-6
             )
             theta = np.arccos(np.round(cos_theta, decimals=4))
 
@@ -469,10 +470,10 @@ class SASTProcessTrain(object):
             min_dist = 1e4
             for i in range(4):
                 dist = (
-                        np.linalg.norm(box[(i + 0) % 4] - poly[0])
-                        + np.linalg.norm(box[(i + 1) % 4] - poly[point_num // 2 - 1])
-                        + np.linalg.norm(box[(i + 2) % 4] - poly[point_num // 2])
-                        + np.linalg.norm(box[(i + 3) % 4] - poly[-1])
+                    np.linalg.norm(box[(i + 0) % 4] - poly[0])
+                    + np.linalg.norm(box[(i + 1) % 4] - poly[point_num // 2 - 1])
+                    + np.linalg.norm(box[(i + 2) % 4] - poly[point_num // 2])
+                    + np.linalg.norm(box[(i + 3) % 4] - poly[-1])
                 )
                 if dist < min_dist:
                     min_dist = dist
@@ -495,7 +496,7 @@ class SASTProcessTrain(object):
         return np.array([p0_1[0], p0_1[1], p3_2[1], p3_2[0]])
 
     def shrink_poly_along_width(
-            self, quads, shrink_ratio_of_width, expand_height_ratio=1.0
+        self, quads, shrink_ratio_of_width, expand_height_ratio=1.0
     ):
         """
         shrink poly with given length.
@@ -518,7 +519,7 @@ class SASTProcessTrain(object):
         right_length = np.linalg.norm(quads[-1][1] - quads[-1][2]) * expand_height_ratio
 
         shrink_length = (
-                min(left_length, right_length, sum(upper_edge_list)) * shrink_ratio_of_width
+            min(left_length, right_length, sum(upper_edge_list)) * shrink_ratio_of_width
         )
         # shrinking length
         upper_len_left = shrink_length
@@ -616,7 +617,7 @@ class SASTProcessTrain(object):
 
         for idx in range(point_num // 2):
             point_pair = (
-                    poly[idx] + (poly[point_num - 1 - idx] - poly[idx]) * ratio_pair
+                poly[idx] + (poly[point_num - 1 - idx] - poly[idx]) * ratio_pair
             )
             tcl_poly[idx] = point_pair[0]
             tcl_poly[point_num - 1 - idx] = point_pair[1]
@@ -631,10 +632,10 @@ class SASTProcessTrain(object):
         lower_line = self.line_cross_two_point(quad[3], quad[2])
 
         quad_h = 0.5 * (
-                np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[1] - quad[2])
+            np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[1] - quad[2])
         )
         quad_w = 0.5 * (
-                np.linalg.norm(quad[0] - quad[1]) + np.linalg.norm(quad[2] - quad[3])
+            np.linalg.norm(quad[0] - quad[1]) + np.linalg.norm(quad[2] - quad[3])
         )
 
         # average angle of left and right line.
@@ -775,7 +776,7 @@ class SASTProcessTrain(object):
             sw = int(np.random.rand() * del_w)
 
         # Padding
-        im_padded[sh: sh + new_h, sw: sw + new_w, :] = im.copy()
+        im_padded[sh : sh + new_h, sw : sw + new_w, :] = im.copy()
         text_polys[:, :, 0] += sw
         text_polys[:, :, 1] += sh
 

@@ -54,9 +54,9 @@ class ReArgsParser(ArgsParser):
 
     def parse_args(self, argv=None):
         args = super(ReArgsParser, self).parse_args(argv)
-        assert (
-                args.config_ser is not None
-        ), "Please specify --config_ser=ser_configure_file_path."
+        assert args.config_ser is not None, (
+            "Please specify --config_ser=ser_configure_file_path."
+        )
         args.opt_ser = self._parse_opt(args.opt_ser)
         return args
 
@@ -83,11 +83,11 @@ def make_input(ser_inputs, ser_results):
 
     entities = np.full([max_seq_len + 1, 3], fill_value=-1, dtype=np.int64)
     entities[0, 0] = len(start)
-    entities[1: len(start) + 1, 0] = start
+    entities[1 : len(start) + 1, 0] = start
     entities[0, 1] = len(end)
-    entities[1: len(end) + 1, 1] = end
+    entities[1 : len(end) + 1, 1] = end
     entities[0, 2] = len(label)
-    entities[1: len(label) + 1, 2] = label
+    entities[1 : len(label) + 1, 2] = label
 
     # relations
     head = []
@@ -100,9 +100,9 @@ def make_input(ser_inputs, ser_results):
 
     relations = np.full([len(head) + 1, 2], fill_value=-1, dtype=np.int64)
     relations[0, 0] = len(head)
-    relations[1: len(head) + 1, 0] = head
+    relations[1 : len(head) + 1, 0] = head
     relations[0, 1] = len(tail)
-    relations[1: len(tail) + 1, 1] = tail
+    relations[1 : len(tail) + 1, 1] = tail
 
     entities = np.expand_dims(entities, axis=0)
     entities = np.repeat(entities, batch_size, axis=0)
@@ -194,9 +194,9 @@ if __name__ == "__main__":
         infer_imgs = get_image_file_list(config["Global"]["infer_img"])
 
     with open(
-            os.path.join(config["Global"]["save_res_path"], "infer_results.txt"),
-            "w",
-            encoding="utf-8",
+        os.path.join(config["Global"]["save_res_path"], "infer_results.txt"),
+        "w",
+        encoding="utf-8",
     ) as fout:
         for idx, info in enumerate(infer_imgs):
             if config["Global"].get("infer_mode", None) is False:

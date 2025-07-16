@@ -47,9 +47,9 @@ class CustomConfig(Config):
         """Compares attributes of trees"""
         # print(node1.tag)
         if (
-                (node1.tag != node2.tag)
-                or (node1.colspan != node2.colspan)
-                or (node1.rowspan != node2.rowspan)
+            (node1.tag != node2.tag)
+            or (node1.colspan != node2.colspan)
+            or (node1.rowspan != node2.rowspan)
         ):
             return 1.0
         if node1.tag == "td":
@@ -63,9 +63,9 @@ class CustomConfig_del_short(Config):
     def rename(self, node1, node2):
         """Compares attributes of trees"""
         if (
-                (node1.tag != node2.tag)
-                or (node1.colspan != node2.colspan)
-                or (node1.rowspan != node2.rowspan)
+            (node1.tag != node2.tag)
+            or (node1.colspan != node2.colspan)
+            or (node1.rowspan != node2.rowspan)
         ):
             return 1.0
         if node1.tag == "td":
@@ -87,9 +87,9 @@ class CustomConfig_del_block(Config):
     def rename(self, node1, node2):
         """Compares attributes of trees"""
         if (
-                (node1.tag != node2.tag)
-                or (node1.colspan != node2.colspan)
-                or (node1.rowspan != node2.rowspan)
+            (node1.tag != node2.tag)
+            or (node1.colspan != node2.colspan)
+            or (node1.rowspan != node2.rowspan)
         ):
             return 1.0
         if node1.tag == "td":
@@ -110,9 +110,9 @@ class TEDS(object):
     """Tree Edit Distance basead Similarity"""
 
     def __init__(self, structure_only=False, n_jobs=1, ignore_nodes=None):
-        assert isinstance(n_jobs, int) and (
-                n_jobs >= 1
-        ), "n_jobs must be an integer greather than 1"
+        assert isinstance(n_jobs, int) and (n_jobs >= 1), (
+            "n_jobs must be an integer greather than 1"
+        )
         self.structure_only = structure_only
         self.n_jobs = n_jobs
         self.ignore_nodes = ignore_nodes

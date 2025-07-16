@@ -56,8 +56,8 @@ class LaTeXOCRDataSet(Dataset):
         temp = {}
         for k in data:
             if (
-                    self.min_dimensions[0] <= k[0] <= self.max_dimensions[0]
-                    and self.min_dimensions[1] <= k[1] <= self.max_dimensions[1]
+                self.min_dimensions[0] <= k[0] <= self.max_dimensions[0]
+                and self.min_dimensions[1] <= k[1] <= self.max_dimensions[1]
             ):
                 temp[k] = data[k]
         self.data = temp
@@ -75,7 +75,7 @@ class LaTeXOCRDataSet(Dataset):
                 else paddle.arange(len(info))
             )
             for i in range(0, len(info), self.batchsize):
-                batch = info[p[i: i + self.batchsize]]
+                batch = info[p[i : i + self.batchsize]]
                 if len(batch.shape) == 1:
                     batch = batch[None, :]
                 if len(batch) < self.batchsize and not self.keep_smaller_batches:
@@ -108,10 +108,10 @@ class LaTeXOCRDataSet(Dataset):
                 ][0]
                 dataset_config["transforms"][border_map_id]["MakeBorderMap"][
                     "epoch"
-                ] = (seed if seed is not None else 0)
+                ] = seed if seed is not None else 0
                 dataset_config["transforms"][shrink_map_id]["MakeShrinkMap"][
                     "epoch"
-                ] = (seed if seed is not None else 0)
+                ] = seed if seed is not None else 0
             except Exception as E:
                 print(E)
                 return
@@ -152,7 +152,6 @@ class LaTeXOCRDataSet(Dataset):
             return (images_transform, labels, attention_mask)
 
         except:
-
             self.logger.error(
                 "When parsing line {}, error happened with msg: {}".format(
                     data["img_path"], traceback.format_exc()
