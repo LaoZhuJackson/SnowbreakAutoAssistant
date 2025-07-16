@@ -184,7 +184,7 @@ if __name__ == '__main__':
     # 替换成你的游戏窗口标题
     game_window = "尘白禁区"
     screen = Screenshot(logger=logger)
-    hwnd = screen.get_window(game_window)
+    hwnd = screen.get_window('BrownDust II')
     result = screen.screenshot(hwnd, (0, 0, 1, 1), False)
 
     # game_window = "尘白禁区"
@@ -196,6 +196,6 @@ if __name__ == '__main__':
         img_resized, scale_x, scale_y, screenshot_pos = result
         print(scale_x, scale_y, screenshot_pos)
         img_resized = auto_crop_image(img_resized)
-        # cv2.imshow("Game Screenshot", img_resized)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+        cv2.imshow("Game Screenshot", img_resized)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()

@@ -93,42 +93,9 @@ class Automation:
         hwnd = get_hwnd(self.window_title, self.window_class)
         if hwnd:
             self.logger.info(f"找到窗口 {self.window_title} 的句柄为：{hwnd}")
-            if self.determine_screen_ratio(hwnd):
-                return hwnd
-            else:
-                raise ValueError(f"当前游戏窗口比例不是16:9")
+            return hwnd
         else:
             raise ValueError(f"未找到{self.window_title}的句柄")
-
-    def determine_screen_ratio(self, hwnd):
-        """判断句柄对应窗口是否为16:9"""
-        # 获取窗口客户区尺寸（不含边框和标题栏）
-        client_rect = win32gui.GetClientRect(hwnd)
-        client_width = client_rect[2] - client_rect[0]
-        client_height = client_rect[3] - client_rect[1]
-
-        # 避免除零错误
-        if client_height == 0:
-            self.logger.warning("窗口高度为0，无法计算比例")
-            return False
-
-        # 计算实际宽高比
-        actual_ratio = client_width / client_height
-        # 16:9的标准比例值
-        target_ratio = 16 / 9
-
-        # 允许1%的容差范围
-        tolerance = 0.01
-        is_16_9 = abs(actual_ratio - target_ratio) <= (target_ratio * tolerance)
-
-        # 记录结果
-        status = "符合" if is_16_9 else "不符合"
-        self.logger.info(
-            f"窗口客户区尺寸: {client_width}x{client_height} "
-            f"({actual_ratio:.3f}:1), {status}16:9标准比例"
-        )
-
-        return is_16_9
 
     def back_to_home(self):
         timeout = Timer(10).start()

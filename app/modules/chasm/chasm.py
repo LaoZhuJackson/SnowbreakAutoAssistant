@@ -55,8 +55,9 @@ class ChasmModule:
                     continue
             if enter_second and first_finish_flag and not self.auto.find_element("快速测评", "text",
                                                                                  crop=(
-                                                                                 1236 / 1920, 943 / 1080, 1552 / 1920,
-                                                                                 1), is_log=self.is_log):
+                                                                                         1236 / 1920, 943 / 1080,
+                                                                                         1552 / 1920,
+                                                                                         1), is_log=self.is_log):
                 second_finish_flag = True
                 continue
             if self.auto.click_element("快速测评", "text", crop=(1236 / 1920, 943 / 1080, 1552 / 1920, 1),
@@ -98,8 +99,9 @@ class ChasmModule:
                 enter_flag = True
                 continue
             if not enter_flag:
-                if self.auto.click_element('app/resource/images/chasm/reward.png', 'image',
-                                           crop=(112 / 1920, 885 / 1080, 171 / 1920, 942 / 1080), is_log=self.is_log):
+                if self.auto.find_element(['拟境', '精神'], 'text',
+                                          crop=(73 / 1920, 56 / 1080, 218 / 1920, 112 / 1080), is_log=self.is_log):
+                    self.auto.click_element_with_pos((int(143 / self.auto.scale_x), int(911 / self.auto.scale_y)))
                     time.sleep(1)
                     continue
 

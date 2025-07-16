@@ -1,3 +1,4 @@
+import copy
 import re
 import sys
 from datetime import datetime
@@ -85,7 +86,7 @@ class StartThread(QThread, BaseTask):
             if normal_stop_flag:
                 self.is_running_signal.emit('end')
             else:
-                # 未创建auto，没开游戏，提前结束
+                # 未成功创建auto，没开游戏或屏幕比例不对
                 self.is_running_signal.emit('no_auto')
 
 
@@ -447,18 +448,34 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.PushButton_start.setText("开始")
             # 后处理
             self.after_finish()
+            self.resize_window()
         elif str_flag == 'no_auto':
             self.is_running = False
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
             InfoBar.error(
-                title='未打开游戏',
-                content="先打开游戏（不是启动器），再点击开始",
+                title='未成功初始化auto',
+                content="先打开游戏（不是启动器），并且确保游戏窗口比例是16:9，然后再点击开始",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=-1,
                 parent=self
+            )
+
+    def resize_window(self):
+        # 恢复窗口
+        if config.is_resize.value is not None:
+            state = config.is_resize.value
+            config.set(config.is_resize, None)
+            win32gui.SetWindowPos(
+                self.game_hwnd,
+                win32con.HWND_TOP,
+                state[0],  # 原始左边界
+                state[1],  # 原始上边界
+                state[2] - state[0],  # 宽度
+                state[3] - state[1],  # 高度
+                win32con.SWP_NOZORDER | win32con.SWP_NOACTIVATE
             )
 
     def after_finish(self):
