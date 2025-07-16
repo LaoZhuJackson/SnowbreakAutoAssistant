@@ -16,3 +16,5 @@
 /build/
 /AppData/scale_cache.json
 /AppData/activity_date.json
+.venv
+nuitka-crash-report.xml
