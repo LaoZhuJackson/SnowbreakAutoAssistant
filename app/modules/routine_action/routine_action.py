@@ -31,6 +31,10 @@ class ActionModule:
             self.auto.take_screenshot()
             if not is_finish:
                 if not is_enter:
+                    # 防止上一次没退出
+                    if self.auto.click_element("退出", 'text', crop=(903 / 1920, 938 / 1080, 1017 / 1920, 1004 / 1080),
+                                               is_log=self.is_log):
+                        continue
                     if self.auto.click_element('开始', 'text',
                                                crop=(2303 / 2560, 1300 / 1440, 2492 / 2560, 1383 / 1440),
                                                is_log=self.is_log):
