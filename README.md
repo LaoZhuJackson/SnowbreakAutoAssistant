@@ -74,6 +74,15 @@
 - 三月七星穹铁道助手 https://github.com/moesnow/March7thAssistant
 - maa明日方舟助手 https://github.com/MaaAssistantArknights/MaaAssistantArknights
 - 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
+
+## SAA仓库状态
+
+![Alt](https://repobeats.axiom.co/api/embed/0ceb9f68a219c51ebc15ebeb8be43535880464c7.svg "Repobeats analytics image")
+
+### Star 趋势
+
+[![star趋势](https://starchart.cc/LaoZhuJackson/SnowbreakAutoAssistant.svg?variant=adaptive)](https://starchart.cc/LaoZhuJackson/SnowbreakAutoAssistant)
+
 ## 赞助
 
 - 微信
