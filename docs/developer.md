@@ -119,13 +119,13 @@ SnowbreakAutoAssistant/
       * `move_click`
         ：尘白专供，尘白的点击会检测鼠标，如果点击时鼠标不在附近，游戏内只能看到点击特效但是点击不生效，所以这个函数加入了对用户鼠标移动的判断，在鼠标不移动的时候快速移动到对应位置点击然后再返回原位置，快速瞬移实现“假后台”点击
       * `mouse_click`：真后台，不抢鼠标，后台按键点击，默认左键
-      * `mouse_down`：鼠标抬起，可以指定按键, 默认左键
-      * `mouse_up`：鼠标按下，可以指定按键, 默认左键
+      * `mouse_down`：鼠标按下，可以指定按键, 默认左键
+      * `mouse_up`：鼠标抬起，可以指定按键, 默认左键
     * 滚轮`mouse_scroll`
   * 键盘动作
     * 按键按下`key_down`
-    * 按键按下`key_up`
-    * 一次完整的键盘模拟：`key_press` = `key_up`+ 停顿 + `key_up`
+    * 按键松开`key_up`
+    * 一次完整的键盘模拟：`key_press` = `key_down`+ 停顿 + `key_up`
 * screenshot.py：实现后台的核心部分如下
 
 ```python
