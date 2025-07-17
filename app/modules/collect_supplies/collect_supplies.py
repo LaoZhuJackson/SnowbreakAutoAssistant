@@ -64,6 +64,7 @@ class CollectSuppliesModule:
 
     def station_power(self):
         confirm_flag = False
+
         timeout = Timer(30).start()
         while True:
             self.auto.take_screenshot()
@@ -76,25 +77,24 @@ class CollectSuppliesModule:
             # 已经领取但重复进入的情况
             if self.auto.find_element(['限时', '补给箱'], 'text',
                                       crop=(195 / 1920, 113 / 1080, 325 / 1920, 160 / 1080), is_log=self.is_log):
-                if not self.auto.find_element("每日物资配给箱", "text",
+                if not self.auto.find_element(["每日", "物资配给箱"], "text",
                                               crop=(223 / 1920, 625 / 1080, 500 / 1920, 677 / 1080),
                                               is_log=self.is_log):
                     break
-            # if self.auto.click_element("app/resource/images/collect_supplies/supply_station.png", "image",
-            #                            crop=(0, 397 / 1080, 91 / 1920, 486 / 1080), is_log=self.is_log):
-            #     pass
-            if self.auto.find_element(["供", "推荐"], 'text', crop=(133 / 1920, 44 / 1080, 376 / 1920, 91 / 1080),
-                                      is_log=self.is_log):
-                self.auto.click_element_with_pos((int(47 / self.auto.scale_x), int(448 / self.auto.scale_y)))
-                time.sleep(0.3)
-                continue
-            if self.auto.click_element("每日物资配给箱", "text", crop=(223 / 1920, 625 / 1080, 500 / 1920, 677 / 1080),
+            if self.auto.click_element(["每日", "物资配给箱"], "text",
+                                       crop=(223 / 1920, 625 / 1080, 500 / 1920, 677 / 1080),
                                        is_log=self.is_log):
                 confirm_flag = True
                 time.sleep(1)
                 continue
             if self.auto.click_element('供应站', 'text', crop=(141 / 1920, 553 / 1080, 229 / 1920, 596 / 1080),
                                        is_log=self.is_log):
+                continue
+
+            if not self.auto.find_element(["补给"], 'text', crop=(133 / 1920, 44 / 1080, 376 / 1920, 91 / 1080),
+                                          is_log=self.is_log):
+                self.auto.click_element_with_pos((int(47 / self.auto.scale_x), int(448 / self.auto.scale_y)))
+                time.sleep(0.3)
                 continue
             if timeout.reached():
                 self.logger.error("购买每日物资配给箱超时")
@@ -118,8 +118,15 @@ class CollectSuppliesModule:
                                        is_log=self.is_log):
                 click_flag = True
                 continue
-            if self.auto.click_element('app/resource/images/collect_supplies/mail.png', 'image',
-                                       crop=(76 / 1920, 437 / 1080, 151 / 1920, 491 / 1080), is_log=self.is_log):
+            # if self.auto.click_element('app/resource/images/collect_supplies/mail.png', 'image',
+            #                            crop=(76 / 1920, 437 / 1080, 151 / 1920, 491 / 1080), is_log=self.is_log):
+            #     continue
+            if self.auto.find_element('基地', 'text', crop=(
+                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
+                '任务', 'text', crop=(
+                        1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+                self.auto.click_element_with_pos((int(115 / self.auto.scale_x), int(468 / self.auto.scale_y)))
+                time.sleep(0.3)
                 continue
 
             if timeout.reached():
