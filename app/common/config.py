@@ -154,6 +154,7 @@ class Config(QConfig):
     isLog = ConfigItem("setting_personal", "isLog", False, BoolValidator())
     showScreenshot = ConfigItem("setting_personal", "showScreenshot", False, BoolValidator())
     saveScaleCache = ConfigItem("setting_personal", "saveScaleCache", False, BoolValidator(), restart=True)
+    autoScaling = ConfigItem("setting_personal", "autoScaling", True, BoolValidator())
     update_proxies = ConfigItem("Update", "update_proxies", '')
     cpu_support_avx2 = ConfigItem("about", "cpu_support_avx2", None)
     ocr_use_gpu = ConfigItem("setting_personal", "ocr_use_gpu", True)

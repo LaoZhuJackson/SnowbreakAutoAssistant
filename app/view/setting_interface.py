@@ -116,7 +116,7 @@ class SettingInterface(ScrollArea):
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
             self.tr('Check for updates when the application starts'),
-            '版本更稳定且拥有更多新功能',
+            '如果开启，每次游戏版本更新会自动更新对应活动刷体力的坐标和SAA提醒的链接',
             configItem=config.checkUpdateAtStartUp,
             parent=self.aboutSoftwareGroup
         )
@@ -147,6 +147,13 @@ class SettingInterface(ScrollArea):
             self.tr('保存缩放比例数据'),
             '如果你的游戏窗口固定使用，可以选择保存，这样运行会匹配得更快，如果窗口大小经常变化则取消勾选',
             configItem=config.saveScaleCache,
+            parent=self.aboutSoftwareGroup
+        )
+        self.autoScaling = SwitchSettingCard(
+            FIF.BACK_TO_WINDOW,
+            self.tr('自动缩放比例'),
+            '默认开启，在启动SAA时如果发现游戏窗口比例不是16:9会自动缩放成1920*1080并贴在左上角',
+            configItem=config.autoScaling,
             parent=self.aboutSoftwareGroup
         )
 
@@ -214,6 +221,7 @@ class SettingInterface(ScrollArea):
         self.aboutSoftwareGroup.addSettingCard(self.isLogCard)
         self.aboutSoftwareGroup.addSettingCard(self.showScreenshotCard)
         self.aboutSoftwareGroup.addSettingCard(self.saveScaleCacheCard)
+        self.aboutSoftwareGroup.addSettingCard(self.autoScaling)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)
