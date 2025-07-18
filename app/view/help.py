@@ -23,6 +23,6 @@ class Help(QFrame, Ui_help):
         pass
 
     def load_markdown(self):
-        with open('./app/resource/help.md', 'r', encoding='utf-8') as file:
+        with open('./docs/help.md', 'r', encoding='utf-8') as file:
             text = file.read()
             self.TextEdit_markdown.setMarkdown(text)
