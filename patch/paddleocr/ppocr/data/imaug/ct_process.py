@@ -241,7 +241,7 @@ class GroupRandomCropPadding:
         for idx in range(len(imgs)):
             if len(imgs[idx].shape) == 3:
                 s3_length = int(imgs[idx].shape[-1])
-                img = imgs[idx][i : i + t_h, j : j + t_w, :]
+                img = imgs[idx][i: i + t_h, j: j + t_w, :]
                 img_p = cv2.copyMakeBorder(
                     img,
                     0,
@@ -252,7 +252,7 @@ class GroupRandomCropPadding:
                     value=tuple(0 for i in range(s3_length)),
                 )
             else:
-                img = imgs[idx][i : i + t_h, j : j + t_w]
+                img = imgs[idx][i: i + t_h, j: j + t_w]
                 img_p = cv2.copyMakeBorder(
                     img,
                     0,
@@ -279,8 +279,8 @@ class MakeCentripetalShift:
         dis = np.sqrt(
             np.sum(
                 (
-                    As[:, np.newaxis, :].repeat(B, axis=1)
-                    - Bs[np.newaxis, :, :].repeat(A, axis=0)
+                        As[:, np.newaxis, :].repeat(B, axis=1)
+                        - Bs[np.newaxis, :, :].repeat(A, axis=0)
                 )
                 ** 2,
                 axis=-1,

@@ -1,3 +1,4 @@
+import copy
 import re
 import sys
 from datetime import datetime
@@ -8,20 +9,8 @@ import win32con
 import win32gui
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
-from qfluentwidgets import (
-    FluentIcon as FIF,
-    InfoBar,
-    InfoBarPosition,
-    CheckBox,
-    ComboBox,
-    ToolButton,
-    LineEdit,
-    BodyLabel,
-    ProgressBar,
-    FlyoutView,
-    Flyout,
-    PushButton,
-)
+from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
+    BodyLabel, ProgressBar, FlyoutView, Flyout, PushButton
 
 from app.common.config import config
 from app.common.logger import original_stdout, original_stderr, logger
@@ -50,25 +39,17 @@ class StartThread(QThread, BaseTask):
         super().__init__()
         self.checkbox_dic = checkbox_dic
         self._is_running = True
-        self.name_list_zh = [
-            "自动登录",
-            "领取物资",
-            "商店购买",
-            "刷体力",
-            "人物碎片",
-            "精神拟境",
-            "领取奖励",
-        ]
+        self.name_list_zh = ['自动登录', '领取物资', '商店购买', '刷体力', '人物碎片', '精神拟境', '领取奖励']
 
     def run(self):
-        self.is_running_signal.emit("start")
+        self.is_running_signal.emit('start')
         normal_stop_flag = True
         try:
             for key, value in self.checkbox_dic.items():
                 if value:
-                    index = int(re.search(r"\d+", key).group()) - 1
+                    index = int(re.search(r'\d+', key).group()) - 1
                     self.logger.info(f"当前任务：{self.name_list_zh[index]}")
-                    if not self.init_auto("game"):
+                    if not self.init_auto('game'):
                         normal_stop_flag = False
                         break
                     self.auto.reset()
@@ -103,10 +84,10 @@ class StartThread(QThread, BaseTask):
         finally:
             # 运行完成
             if normal_stop_flag:
-                self.is_running_signal.emit("end")
+                self.is_running_signal.emit('end')
             else:
-                # 未创建auto，没开游戏，提前结束
-                self.is_running_signal.emit("no_auto")
+                # 未成功创建auto，没开游戏或屏幕比例不对
+                self.is_running_signal.emit('no_auto')
 
 
 def select_all(widget):
@@ -124,7 +105,7 @@ def no_select(widget):
 class Home(QFrame, Ui_home, BaseInterface):
     def __init__(self, text: str, parent=None):
         super().__init__()
-        self.setting_name_list = ["登录", "物资", "商店", "体力", "碎片"]
+        self.setting_name_list = ['登录', '物资', '商店', '体力', '碎片']
         self.person_dic = {
             "人物碎片": "item_person_0",
             "肴": "item_person_1",
@@ -149,7 +130,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         }
 
         self.setupUi(self)
-        self.setObjectName(text.replace(" ", "-"))
+        self.setObjectName(text.replace(' ', '-'))
         self.parent = parent
 
         self.is_running = False
@@ -162,7 +143,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self._connect_to_slot()
         self.redirectOutput(self.textBrowser_log)
 
-        self.get_tips()
+        # self.get_tips()
         if config.checkUpdateAtStartUp.value:
             self.update_online()
 
@@ -171,9 +152,9 @@ class Home(QFrame, Ui_home, BaseInterface):
             tool_button.setIcon(FIF.SETTING)
 
         # 设置combobox选项
-        after_use_items = ["无动作", "退出游戏和代理", "退出代理", "退出游戏"]
-        power_day_items = ["1", "2", "3", "4", "5", "6"]
-        power_usage_items = ["活动材料本", "其他待开发"]
+        after_use_items = ['无动作', '退出游戏和代理', '退出代理', '退出游戏']
+        power_day_items = ['1', '2', '3', '4', '5', '6']
+        power_usage_items = ['活动材料本', '其他待开发']
         self.ComboBox_after_use.addItems(after_use_items)
         self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
@@ -183,15 +164,11 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
-            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服\n* 遇到版本更新，先更新活动公告链接，然后再去“刷体力”设置那更新“材料”和“深渊”位置后再运行"
-        )
+            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服\n* 遇到版本更新，先更新活动公告链接，然后再去“刷体力”设置那更新“材料”和“深渊”位置后再运行")
         self.BodyLabel_person_tip.setText(
-            "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”"
-        )
+            "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
-        self.TitleLabel_setting.setText(
-            "设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()]
-        )
+        self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
         self.PushButton_start.setShortcut("F1")
         self.PushButton_start.setToolTip("快捷键：F1")
 
@@ -201,9 +178,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self._load_config()
         # 和其他控件有相关状态判断的，要放在load_config后
         self.ComboBox_power_day.setEnabled(self.CheckBox_is_use_power.isChecked())
-        self.PushButton_select_directory.setEnabled(
-            self.CheckBox_auto_open_starter.isChecked()
-        )
+        self.PushButton_select_directory.setEnabled(self.CheckBox_auto_open_starter.isChecked())
 
         StyleSheet.HOME_INTERFACE.apply(self)
         # 使背景透明，适应主题
@@ -212,21 +187,13 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def _connect_to_slot(self):
         self.PushButton_start.clicked.connect(self.on_start_button_click)
-        self.PushButton_select_all.clicked.connect(
-            lambda: select_all(self.SimpleCardWidget_option)
-        )
-        self.PushButton_no_select.clicked.connect(
-            lambda: no_select(self.SimpleCardWidget_option)
-        )
+        self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
+        self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
         self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
         # 版本适配更新
         self.PrimaryPushButton_tutor.clicked.connect(self.on_update_tutor_click)
-        self.PushButton_update_stuff.clicked.connect(
-            lambda: self.on_update_click("stuff")
-        )
-        self.PushButton_update_chasm.clicked.connect(
-            lambda: self.on_update_click("chasm")
-        )
+        self.PushButton_update_stuff.clicked.connect(lambda: self.on_update_click('stuff'))
+        self.PushButton_update_chasm.clicked.connect(lambda: self.on_update_click('chasm'))
 
         self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
         self.ToolButton_collect.clicked.connect(lambda: self.set_current_index(1))
@@ -244,9 +211,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             config_item = getattr(config, widget.objectName(), None)
             if config_item:
                 if isinstance(widget, CheckBox):
-                    widget.setChecked(
-                        config_item.value
-                    )  # 使用配置项的值设置 CheckBox 的状态
+                    widget.setChecked(config_item.value)  # 使用配置项的值设置 CheckBox 的状态
                 elif isinstance(widget, ComboBox):
                     # widget.setPlaceholderText("未选择")
                     widget.setCurrentIndex(config_item.value)
@@ -258,17 +223,13 @@ class Home(QFrame, Ui_home, BaseInterface):
         item = QTreeWidgetItemIterator(self.select_person.tree)
         while item.value():
             config_item = getattr(config, self.person_dic[item.value().text(0)], None)
-            item.value().setCheckState(
-                0, Qt.Checked if config_item.value else Qt.Unchecked
-            )
+            item.value().setCheckState(0, Qt.Checked if config_item.value else Qt.Unchecked)
             item += 1
 
         item2 = QTreeWidgetItemIterator(self.select_weapon.tree)
         while item2.value():
             config_item2 = getattr(config, self.weapon_dic[item2.value().text(0)], None)
-            item2.value().setCheckState(
-                0, Qt.Checked if config_item2.value else Qt.Unchecked
-            )
+            item2.value().setCheckState(0, Qt.Checked if config_item2.value else Qt.Unchecked)
             item2 += 1
 
     def _connect_to_save_changed(self):
@@ -283,9 +244,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                 # children.stateChanged.connect(lambda: save_changed(children))
                 children.stateChanged.connect(partial(self.save_changed, children))
             elif isinstance(children, ComboBox):
-                children.currentIndexChanged.connect(
-                    partial(self.save_changed, children)
-                )
+                children.currentIndexChanged.connect(partial(self.save_changed, children))
             elif isinstance(children, LineEdit):
                 children.editingFinished.connect(partial(self.save_changed, children))
 
@@ -297,11 +256,11 @@ class Home(QFrame, Ui_home, BaseInterface):
         view = FlyoutView(
             title="如何适配新版本UI",
             content="如果在设置中勾选了“软件启动时检测更新”，则每次运行SAA这里都会联网更新数据\n如果需要手动更新，先填入新版本任务名，然后通过任意截图工具获取如图所示的坐标值，最后点击底部两个按钮更新。\n或者可以尝试点击下面的按钮联网在线更新",
-            image="asset/update_tutor.png",
+            image="app/resource/images/update_tutor.png",
             isClosable=True,
         )
         # 添加按钮
-        button = PushButton("更新")
+        button = PushButton('更新')
         button.clicked.connect(self.update_online)
         button.setFixedWidth(120)
         view.addWidget(button, align=Qt.AlignRight)
@@ -316,9 +275,9 @@ class Home(QFrame, Ui_home, BaseInterface):
         """通过gitee在线更新"""
         text = get_gitee_text("update_data.txt")
         if config.isLog.value:
-            logger.info(f"获取到更新信息：{text}")
+            logger.info(f'获取到更新信息：{text}')
         if not text:
-            logger.error(f"在线获取更新信息失败")
+            logger.error(f'在线获取更新信息失败')
             return
         screen_width, screen_height = pyautogui.size()
         data = text[0].split("_")
@@ -343,28 +302,16 @@ class Home(QFrame, Ui_home, BaseInterface):
             chasm_x2 = str(int(float(data[7]) * scale))
             chasm_y2 = str(int(float(data[8]) * scale))
         is_update = False
-        config_list = [
-            "LineEdit_task_name",
-            "LineEdit_stuff_x1",
-            "LineEdit_stuff_y1",
-            "LineEdit_stuff_x2",
-            "LineEdit_stuff_y2",
-            "LineEdit_chasm_x1",
-            "LineEdit_chasm_y1",
-            "LineEdit_chasm_x2",
-            "LineEdit_chasm_y2",
-        ]
-        new_data_list = [
-            data[9],
-            stuff_x1,
-            stuff_y1,
-            stuff_x2,
-            stuff_y2,
-            chasm_x1,
-            chasm_y1,
-            chasm_x2,
-            chasm_y2,
-        ]
+        config_list = ["LineEdit_task_name",
+                       "LineEdit_stuff_x1", "LineEdit_stuff_y1",
+                       "LineEdit_stuff_x2", "LineEdit_stuff_y2",
+                       "LineEdit_chasm_x1", "LineEdit_chasm_y1",
+                       "LineEdit_chasm_x2", "LineEdit_chasm_y2"]
+        new_data_list = [data[9],
+                         stuff_x1, stuff_y1,
+                         stuff_x2, stuff_y2,
+                         chasm_x1, chasm_y1,
+                         chasm_x2, chasm_y2]
         for i in range(9):
             config_item = getattr(config, config_list[i], None)
             if str(config_item.value) != new_data_list[i]:
@@ -374,18 +321,19 @@ class Home(QFrame, Ui_home, BaseInterface):
                 widget.setText(new_data_list[i])
                 widget.editingFinished.emit()
 
+        # 更新链接
+        url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={data[10]}&id={data[11]}"
+        self.LineEdit_link.setText(url)
+        self.get_tips(url=url)
+
         if is_update:
-            self.on_update_click("stuff")
-            self.on_update_click("chasm")
+            self.on_update_click('stuff')
+            self.on_update_click('chasm')
 
     def on_select_directory_click(self):
-        """选择启动器路径"""
-        file_path, _ = QFileDialog.getOpenFileName(
-            self,
-            "选择启动器",
-            config.LineEdit_starter_directory.value,
-            "Executable Files (*.exe);;All Files (*)",
-        )
+        """ 选择启动器路径 """
+        file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
+                                                   "Executable Files (*.exe);;All Files (*)")
         if not file_path or config.LineEdit_starter_directory.value == file_path:
             return
         self.LineEdit_starter_directory.setText(file_path)
@@ -409,76 +357,53 @@ class Home(QFrame, Ui_home, BaseInterface):
             y2 = config.LineEdit_chasm_y2.value
         if x2 < 0 or y2 < 0 or x1 < 0 or y1 < 0:
             InfoBar.error(
-                title="更新位置出错",
+                title='更新位置出错',
                 content="坐标位置需要大于等于0",
                 orient=Qt.Horizontal,
                 isClosable=True,  # disable close button
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=2000,
-                parent=self,
+                parent=self
             )
             return
         if x2 <= x1 or y2 <= y1:
             InfoBar.error(
-                title="更新位置出错",
+                title='更新位置出错',
                 content="右下角坐标数值需要大于左上角坐标数值",
                 orient=Qt.Horizontal,
                 isClosable=True,  # disable close button
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=2000,
-                parent=self,
+                parent=self
             )
             return
         # 获取屏幕分辨率
         screen_width, screen_height = pyautogui.size()
-        if (
-            x1 > screen_width
-            or x2 > screen_width
-            or y1 > screen_height
-            or y2 > screen_height
-        ):
+        if x1 > screen_width or x2 > screen_width or y1 > screen_height or y2 > screen_height:
             InfoBar.error(
-                title="更新位置出错",
+                title='更新位置出错',
                 content="坐标位置不能大于屏幕分辨率",
                 orient=Qt.Horizontal,
                 isClosable=True,  # disable close button
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=2000,
-                parent=self,
+                parent=self
             )
             return
         if button_type == "stuff":
-            config.set(
-                config.stuff_pos,
-                (
-                    x1 / screen_width,
-                    y1 / screen_height,
-                    x2 / screen_width,
-                    y2 / screen_height,
-                ),
-            )
+            config.set(config.stuff_pos, (x1 / screen_width, y1 / screen_height, x2 / screen_width, y2 / screen_height))
         else:
-            config.set(
-                config.chasm_pos,
-                (
-                    x1 / screen_width,
-                    y1 / screen_height,
-                    x2 / screen_width,
-                    y2 / screen_height,
-                ),
-            )
+            config.set(config.chasm_pos, (x1 / screen_width, y1 / screen_height, x2 / screen_width, y2 / screen_height))
         text = "材料" if button_type == "stuff" else "深渊"
-        pos = (
-            config.stuff_pos.value if button_type == "stuff" else config.chasm_pos.value
-        )
+        pos = config.stuff_pos.value if button_type == "stuff" else config.chasm_pos.value
         InfoBar.info(
-            title=f"更新{text}位置成功",
+            title=f'更新{text}位置成功',
             content=f"坐标更新为{pos}",
             orient=Qt.Horizontal,
             isClosable=True,  # disable close button
             position=InfoBarPosition.TOP_RIGHT,
             duration=2000,
-            parent=self,
+            parent=self
         )
 
     def on_start_button_click(self):
@@ -492,11 +417,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             if not self.is_running:
                 # 对字典进行排序
                 sorted_dict = dict(
-                    sorted(
-                        checkbox_dic.items(),
-                        key=lambda item: int(re.search(r"\d+", item[0]).group()),
-                    )
-                )
+                    sorted(checkbox_dic.items(), key=lambda item: int(re.search(r'\d+', item[0]).group())))
                 # logger.debug(sorted_dict)
                 self.redirectOutput(self.textBrowser_log)
                 self.start_thread = StartThread(sorted_dict)
@@ -506,39 +427,55 @@ class Home(QFrame, Ui_home, BaseInterface):
                 self.start_thread.stop()
         else:
             InfoBar.error(
-                title="未勾选工作",
+                title='未勾选工作',
                 content="需要至少勾选一项工作才能开始",
                 orient=Qt.Horizontal,
                 isClosable=False,  # disable close button
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=2000,
-                parent=self,
+                parent=self
             )
 
     def handle_start(self, str_flag):
         """设置按钮"""
-        if str_flag == "start":
+        if str_flag == 'start':
             self.is_running = True
             self.set_checkbox_enable(False)
             self.PushButton_start.setText("停止")
-        elif str_flag == "end":
+        elif str_flag == 'end':
             self.is_running = False
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
             # 后处理
             self.after_finish()
-        elif str_flag == "no_auto":
+            self.resize_window()
+        elif str_flag == 'no_auto':
             self.is_running = False
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
             InfoBar.error(
-                title="未打开游戏",
-                content="先打开游戏（不是启动器），再点击开始",
+                title='未成功初始化auto',
+                content="先打开游戏（不是启动器），并且确保游戏窗口比例是16:9，然后再点击开始",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
                 duration=-1,
-                parent=self,
+                parent=self
+            )
+
+    def resize_window(self):
+        # 恢复窗口
+        if config.is_resize.value is not None:
+            state = config.is_resize.value
+            config.set(config.is_resize, None)
+            win32gui.SetWindowPos(
+                self.game_hwnd,
+                win32con.HWND_TOP,
+                state[0],  # 原始左边界
+                state[1],  # 原始上边界
+                state[2] - state[0],  # 宽度
+                state[3] - state[1],  # 高度
+                win32con.SWP_NOZORDER | win32con.SWP_NOACTIVATE
             )
 
     def after_finish(self):
@@ -549,7 +486,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             if self.game_hwnd:
                 win32gui.SendMessage(self.game_hwnd, win32con.WM_CLOSE, 0, 0)
             else:
-                self.logger.warn("home未获取窗口句柄，无法关闭游戏")
+                self.logger.warn('home未获取窗口句柄，无法关闭游戏')
             self.parent.close()
         elif self.ComboBox_after_use.currentIndex() == 2:
             self.parent.close()
@@ -557,7 +494,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             if self.game_hwnd:
                 win32gui.SendMessage(self.game_hwnd, win32con.WM_CLOSE, 0, 0)
             else:
-                self.logger.warn("home未获取窗口句柄，无法关闭游戏")
+                self.logger.warn('home未获取窗口句柄，无法关闭游戏')
 
     def set_checkbox_enable(self, enable: bool):
         for checkbox in self.findChildren(CheckBox):
@@ -575,43 +512,28 @@ class Home(QFrame, Ui_home, BaseInterface):
         # 当与配置相关的控件状态改变时调用此函数保存配置
         if isinstance(widget, CheckBox):
             config.set(getattr(config, widget.objectName(), None), widget.isChecked())
-            if widget.objectName() == "CheckBox_is_use_power":
+            if widget.objectName() == 'CheckBox_is_use_power':
                 self.ComboBox_power_day.setEnabled(widget.isChecked())
-            elif widget.objectName() == "CheckBox_auto_open_starter":
+            elif widget.objectName() == 'CheckBox_auto_open_starter':
                 self.PushButton_select_directory.setEnabled(widget.isChecked())
         elif isinstance(widget, ComboBox):
-            config.set(
-                getattr(config, widget.objectName(), None), widget.currentIndex()
-            )
+            config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
         elif isinstance(widget, LineEdit):
             # 对坐标进行数据转换处理
-            if (
-                "x1" in widget.objectName()
-                or "x2" in widget.objectName()
-                or "y1" in widget.objectName()
-                or "y2" in widget.objectName()
-            ):
-                config.set(
-                    getattr(config, widget.objectName(), None), int(widget.text())
-                )
+            if 'x1' in widget.objectName() or 'x2' in widget.objectName() or 'y1' in widget.objectName() or 'y2' in widget.objectName():
+                config.set(getattr(config, widget.objectName(), None), int(widget.text()))
             else:
                 config.set(getattr(config, widget.objectName(), None), widget.text())
-            if widget.objectName() == "LineEdit_link":
+            if widget.objectName() == 'LineEdit_link':
                 self.get_tips()
 
     def save_item_changed(self, index, check_state):
         # print(index, check_state)
-        config.set(
-            getattr(config, f"item_person_{index}", None),
-            False if check_state == 0 else True,
-        )
+        config.set(getattr(config, f"item_person_{index}", None), False if check_state == 0 else True)
 
     def save_item2_changed(self, index, check_state):
         # print(index, check_state)
-        config.set(
-            getattr(config, f"item_weapon_{index}", None),
-            False if check_state == 0 else True,
-        )
+        config.set(getattr(config, f"item_weapon_{index}", None), False if check_state == 0 else True)
 
     def get_time_difference(self, date_due: str):
         """
@@ -620,16 +542,10 @@ class Home(QFrame, Ui_home, BaseInterface):
         :return:如果活动过期，则返回None,否则返回时间差，剩余百分比
         """
         current_year = datetime.now().year
-        start_time = datetime.strptime(
-            f"{current_year}.{date_due.split('-')[0]}", "%Y.%m.%d"
-        )
-        end_time = datetime.strptime(
-            f"{current_year}.{date_due.split('-')[1]}", "%Y.%m.%d"
-        )
+        start_time = datetime.strptime(f"{current_year}.{date_due.split('-')[0]}", "%Y.%m.%d")
+        end_time = datetime.strptime(f"{current_year}.{date_due.split('-')[1]}", "%Y.%m.%d")
         if end_time.month < start_time.month:
-            end_time = datetime.strptime(
-                f"{current_year + 1}.{date_due.split('-')[1]}", "%Y.%m.%d"
-            )
+            end_time = datetime.strptime(f"{current_year + 1}.{date_due.split('-')[1]}", "%Y.%m.%d")
         # 获取当前日期和时间
         now = datetime.now()
 
@@ -643,13 +559,11 @@ class Home(QFrame, Ui_home, BaseInterface):
         if days_remaining < 0:
             return 0, 0
 
-        return (
-            days_remaining,
-            (days_remaining / total_day) * 100,
-            days_remaining == total_day,
-        )
+        return days_remaining, (days_remaining / total_day) * 100, days_remaining == total_day
 
-    def get_tips(self):
+    def get_tips(self, url=None):
+        if url:
+            config.set(config.LineEdit_link, url)
         tips_dic = get_date(config.LineEdit_link.value)
         if "error" in tips_dic.keys():
             logger.error("获取活动时间失败：" + tips_dic["error"])
@@ -661,22 +575,15 @@ class Home(QFrame, Ui_home, BaseInterface):
         items_list = []
         try:
             for key, value in tips_dic.items():
-                if self.SimpleCardWidget_tips.findChild(
-                    BodyLabel, name=f"BodyLabel_tip_{index + 1}"
-                ):
-                    BodyLabel_tip = self.SimpleCardWidget_tips.findChild(
-                        BodyLabel, name=f"BodyLabel_tip_{index + 1}"
-                    )
+                if self.SimpleCardWidget_tips.findChild(BodyLabel, name=f"BodyLabel_tip_{index + 1}"):
+                    BodyLabel_tip = self.SimpleCardWidget_tips.findChild(BodyLabel, name=f"BodyLabel_tip_{index + 1}")
                 else:
                     # 创建label
                     BodyLabel_tip = BodyLabel(self.scrollAreaWidgetContents_tips)
                     BodyLabel_tip.setObjectName(f"BodyLabel_tip_{index + 1}")
-                if self.SimpleCardWidget_tips.findChild(
-                    ProgressBar, name=f"ProgressBar_tip{index + 1}"
-                ):
-                    ProgressBar_tip = self.SimpleCardWidget_tips.findChild(
-                        ProgressBar, name=f"ProgressBar_tip{index + 1}"
-                    )
+                if self.SimpleCardWidget_tips.findChild(ProgressBar, name=f"ProgressBar_tip{index + 1}"):
+                    ProgressBar_tip = self.SimpleCardWidget_tips.findChild(ProgressBar,
+                                                                           name=f"ProgressBar_tip{index + 1}")
                 else:
                     # 创建进度条
                     ProgressBar_tip = ProgressBar(self.scrollAreaWidgetContents_tips)

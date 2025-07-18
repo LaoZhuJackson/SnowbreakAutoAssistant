@@ -61,7 +61,7 @@ def _download(url, save_path):
             retry_cnt += 1
         else:
             raise RuntimeError(
-                "Download from {} failed. Retry limit reached".format(url)
+                "Download from {} failed. " "Retry limit reached".format(url)
             )
 
         try:
@@ -77,7 +77,8 @@ def _download(url, save_path):
 
         if req.status_code != 200:
             raise RuntimeError(
-                "Downloading from {} failed with code {}!".format(url, req.status_code)
+                "Downloading from {} failed with code "
+                "{}!".format(url, req.status_code)
             )
 
         # For protecting download interupted, download to
@@ -104,7 +105,7 @@ def maybe_download(model_storage_directory, url):
     # using custom model
     tar_file_name_list = [".pdiparams", ".pdiparams.info", ".pdmodel"]
     if not os.path.exists(
-        os.path.join(model_storage_directory, "inference.pdiparams")
+            os.path.join(model_storage_directory, "inference.pdiparams")
     ) or not os.path.exists(os.path.join(model_storage_directory, "inference.pdmodel")):
         assert url.endswith(".tar"), "Only supports tar compressed package"
         tmp_path = os.path.join(model_storage_directory, url.split("/")[-1])

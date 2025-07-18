@@ -29,7 +29,7 @@ class BannerWidget(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         # 大标题
         self.galleryLabel = QLabel(
-            f"尘白自动化助手 {VERSION}\nSnowbreak Auto Assistant", self
+            f'尘白自动化助手 {VERSION}\nSnowbreak Auto Assistant', self
         )
         self.galleryLabel.setStyleSheet(
             "color: #ECF9F8;font-size: 30px; font-weight: 600;"

@@ -67,9 +67,7 @@ class Ui_home(object):
         self.PushButton_select_all = PushButton(self.SimpleCardWidget_option)
         self.PushButton_select_all.setObjectName("PushButton_select_all")
         self.gridLayout_7.addWidget(self.PushButton_select_all, 10, 1, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 30, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 30, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         self.gridLayout_7.addItem(spacerItem, 1, 2, 1, 1)
         self.PushButton_no_select = PushButton(self.SimpleCardWidget_option)
         self.PushButton_no_select.setObjectName("PushButton_no_select")
@@ -82,9 +80,7 @@ class Ui_home(object):
         self.ToolButton_chasm.setEnabled(False)
         self.ToolButton_chasm.setObjectName("ToolButton_chasm")
         self.gridLayout_7.addWidget(self.ToolButton_chasm, 7, 4, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            20, 30, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(20, 30, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         self.gridLayout_7.addItem(spacerItem1, 9, 2, 1, 1)
         self.CheckBox_chasm_6 = CheckBox(self.SimpleCardWidget_option)
         self.CheckBox_chasm_6.setLayoutDirection(QtCore.Qt.LeftToRight)
@@ -128,9 +124,7 @@ class Ui_home(object):
         self.SimpleCardWidget_3.setObjectName("SimpleCardWidget_3")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.SimpleCardWidget_3)
         self.gridLayout_5.setObjectName("gridLayout_5")
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem2, 0, 0, 1, 1)
         self.BodyLabel = BodyLabel(self.SimpleCardWidget_3)
         self.BodyLabel.setObjectName("BodyLabel")
@@ -140,19 +134,13 @@ class Ui_home(object):
         self.ComboBox_after_use.setProperty("items_", "")
         self.ComboBox_after_use.setObjectName("ComboBox_after_use")
         self.gridLayout_5.addWidget(self.ComboBox_after_use, 2, 0, 1, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem3, 3, 0, 1, 1)
         self.PushButton_start = PushButton(self.SimpleCardWidget_3)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.PushButton_start.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.PushButton_start.sizePolicy().hasHeightForWidth())
         self.PushButton_start.setSizePolicy(sizePolicy)
         self.PushButton_start.setMinimumSize(QtCore.QSize(0, 60))
         self.PushButton_start.setFocusPolicy(QtCore.Qt.StrongFocus)
@@ -161,9 +149,7 @@ class Ui_home(object):
         self.PushButton_start.setWhatsThis("")
         self.PushButton_start.setObjectName("PushButton_start")
         self.gridLayout_5.addWidget(self.PushButton_start, 4, 0, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem4, 5, 0, 1, 1)
         self.gridLayout_2.addWidget(self.SimpleCardWidget_3, 1, 0, 1, 1)
         self.SimpleCardWidget_2 = SimpleCardWidget(home)
@@ -195,9 +181,7 @@ class Ui_home(object):
         self.BodyLabel_enter_tip.setWordWrap(True)
         self.BodyLabel_enter_tip.setObjectName("BodyLabel_enter_tip")
         self.gridLayout_12.addWidget(self.BodyLabel_enter_tip, 6, 0, 1, 3)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_12.addItem(spacerItem5, 5, 0, 1, 1)
         self.CheckBox_auto_open_starter = CheckBox(self.page_5)
         self.CheckBox_auto_open_starter.setObjectName("CheckBox_auto_open_starter")
@@ -217,9 +201,7 @@ class Ui_home(object):
         self.gridLayout_10 = QtWidgets.QGridLayout(self.page_3)
         self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_10.setObjectName("gridLayout_10")
-        spacerItem6 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_10.addItem(spacerItem6, 3, 0, 1, 1)
         self.CheckBox_mail = CheckBox(self.page_3)
         self.CheckBox_mail.setObjectName("CheckBox_mail")
@@ -248,52 +230,40 @@ class Ui_home(object):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.CheckBox_buy_12 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_12.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_12.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_12.setSizePolicy(sizePolicy)
         self.CheckBox_buy_12.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_12.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_12.setObjectName("CheckBox_buy_12")
         self.gridLayout.addWidget(self.CheckBox_buy_12, 16, 0, 1, 1)
         self.CheckBox_buy_9 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_9.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_9.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_9.setSizePolicy(sizePolicy)
         self.CheckBox_buy_9.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_9.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_9.setObjectName("CheckBox_buy_9")
         self.gridLayout.addWidget(self.CheckBox_buy_9, 12, 0, 1, 1)
         self.line_3 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line_3.sizePolicy().hasHeightForWidth())
         self.line_3.setSizePolicy(sizePolicy)
         self.line_3.setAutoFillBackground(False)
-        self.line_3.setStyleSheet(
-            "QFrame\n"
-            "{\n"
-            "    border:none;\n"
-            "    background-color: rgba(0, 159, 170, 15);\n"
-            "    min-height : 3px;\n"
-            "    max-height : 3px;\n"
-            "    border-radius: 3px;\n"
-            "}"
-        )
+        self.line_3.setStyleSheet("QFrame\n"
+"{\n"
+"    border:none;\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
+"    min-height : 3px;\n"
+"    max-height : 3px;\n"
+"    border-radius: 3px;\n"
+"}")
         self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_3.setLineWidth(10)
         self.line_3.setMidLineWidth(0)
@@ -304,38 +274,30 @@ class Ui_home(object):
         self.StrongBodyLabel.setObjectName("StrongBodyLabel")
         self.gridLayout.addWidget(self.StrongBodyLabel, 0, 0, 1, 1)
         self.CheckBox_buy_10 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_10.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_10.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_10.setSizePolicy(sizePolicy)
         self.CheckBox_buy_10.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_10.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_10.setObjectName("CheckBox_buy_10")
         self.gridLayout.addWidget(self.CheckBox_buy_10, 13, 0, 1, 1)
         self.line_4 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line_4.sizePolicy().hasHeightForWidth())
         self.line_4.setSizePolicy(sizePolicy)
         self.line_4.setAutoFillBackground(False)
-        self.line_4.setStyleSheet(
-            "QFrame\n"
-            "{\n"
-            "    border:none;\n"
-            "    background-color: rgba(0, 159, 170, 15);\n"
-            "    min-height : 3px;\n"
-            "    max-height : 3px;\n"
-            "    border-radius: 3px;\n"
-            "}"
-        )
+        self.line_4.setStyleSheet("QFrame\n"
+"{\n"
+"    border:none;\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
+"    min-height : 3px;\n"
+"    max-height : 3px;\n"
+"    border-radius: 3px;\n"
+"}")
         self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_4.setLineWidth(10)
         self.line_4.setMidLineWidth(0)
@@ -343,80 +305,60 @@ class Ui_home(object):
         self.line_4.setObjectName("line_4")
         self.gridLayout.addWidget(self.line_4, 15, 0, 1, 1)
         self.CheckBox_buy_15 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_15.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_15.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_15.setSizePolicy(sizePolicy)
         self.CheckBox_buy_15.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_15.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_15.setObjectName("CheckBox_buy_15")
         self.gridLayout.addWidget(self.CheckBox_buy_15, 20, 0, 1, 1)
         self.CheckBox_buy_11 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_11.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_11.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_11.setSizePolicy(sizePolicy)
         self.CheckBox_buy_11.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_11.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_11.setObjectName("CheckBox_buy_11")
         self.gridLayout.addWidget(self.CheckBox_buy_11, 14, 0, 1, 1)
         self.CheckBox_buy_5 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_5.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_5.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_5.setSizePolicy(sizePolicy)
         self.CheckBox_buy_5.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_5.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_5.setObjectName("CheckBox_buy_5")
         self.gridLayout.addWidget(self.CheckBox_buy_5, 6, 0, 1, 1)
         self.CheckBox_buy_3 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_3.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_3.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_3.setSizePolicy(sizePolicy)
         self.CheckBox_buy_3.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_3.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_3.setObjectName("CheckBox_buy_3")
         self.gridLayout.addWidget(self.CheckBox_buy_3, 4, 0, 1, 1)
         self.line_2 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line_2.sizePolicy().hasHeightForWidth())
         self.line_2.setSizePolicy(sizePolicy)
         self.line_2.setAutoFillBackground(False)
-        self.line_2.setStyleSheet(
-            "QFrame\n"
-            "{\n"
-            "    border:none;\n"
-            "    background-color: rgba(0, 159, 170, 15);\n"
-            "    min-height : 3px;\n"
-            "    max-height : 3px;\n"
-            "    border-radius: 3px;\n"
-            "}"
-        )
+        self.line_2.setStyleSheet("QFrame\n"
+"{\n"
+"    border:none;\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
+"    min-height : 3px;\n"
+"    max-height : 3px;\n"
+"    border-radius: 3px;\n"
+"}")
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setLineWidth(10)
         self.line_2.setMidLineWidth(0)
@@ -424,38 +366,30 @@ class Ui_home(object):
         self.line_2.setObjectName("line_2")
         self.gridLayout.addWidget(self.line_2, 7, 0, 1, 1)
         self.CheckBox_buy_13 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_13.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_13.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_13.setSizePolicy(sizePolicy)
         self.CheckBox_buy_13.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_13.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_13.setObjectName("CheckBox_buy_13")
         self.gridLayout.addWidget(self.CheckBox_buy_13, 17, 0, 1, 1)
         self.line_5 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line_5.sizePolicy().hasHeightForWidth())
         self.line_5.setSizePolicy(sizePolicy)
         self.line_5.setAutoFillBackground(False)
-        self.line_5.setStyleSheet(
-            "QFrame\n"
-            "{\n"
-            "    border:none;\n"
-            "    background-color: rgba(0, 159, 170, 15);\n"
-            "    min-height : 3px;\n"
-            "    max-height : 3px;\n"
-            "    border-radius: 3px;\n"
-            "}"
-        )
+        self.line_5.setStyleSheet("QFrame\n"
+"{\n"
+"    border:none;\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
+"    min-height : 3px;\n"
+"    max-height : 3px;\n"
+"    border-radius: 3px;\n"
+"}")
         self.line_5.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_5.setLineWidth(10)
         self.line_5.setMidLineWidth(0)
@@ -463,14 +397,10 @@ class Ui_home(object):
         self.line_5.setObjectName("line_5")
         self.gridLayout.addWidget(self.line_5, 19, 0, 1, 1)
         self.CheckBox_buy_4 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_4.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_4.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_4.setSizePolicy(sizePolicy)
         self.CheckBox_buy_4.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_4.setMaximumSize(QtCore.QSize(16777215, 16777215))
@@ -480,24 +410,20 @@ class Ui_home(object):
         self.widget.setObjectName("widget")
         self.gridLayout.addWidget(self.widget, 2, 0, 1, 1)
         self.line = QtWidgets.QFrame(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
         self.line.setSizePolicy(sizePolicy)
         self.line.setAutoFillBackground(False)
-        self.line.setStyleSheet(
-            "QFrame\n"
-            "{\n"
-            "    border:none;\n"
-            "    background-color: rgba(0, 159, 170, 15);\n"
-            "    min-height : 3px;\n"
-            "    max-height : 3px;\n"
-            "    border-radius: 3px;\n"
-            "}"
-        )
+        self.line.setStyleSheet("QFrame\n"
+"{\n"
+"    border:none;\n"
+"    background-color: rgba(0, 159, 170, 15);\n"
+"    min-height : 3px;\n"
+"    max-height : 3px;\n"
+"    border-radius: 3px;\n"
+"}")
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setLineWidth(10)
         self.line.setMidLineWidth(0)
@@ -505,56 +431,40 @@ class Ui_home(object):
         self.line.setObjectName("line")
         self.gridLayout.addWidget(self.line, 3, 0, 1, 1)
         self.CheckBox_buy_6 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_6.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_6.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_6.setSizePolicy(sizePolicy)
         self.CheckBox_buy_6.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_6.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_6.setObjectName("CheckBox_buy_6")
         self.gridLayout.addWidget(self.CheckBox_buy_6, 8, 0, 1, 1)
         self.CheckBox_buy_7 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_7.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_7.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_7.setSizePolicy(sizePolicy)
         self.CheckBox_buy_7.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_7.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_7.setObjectName("CheckBox_buy_7")
         self.gridLayout.addWidget(self.CheckBox_buy_7, 9, 0, 1, 1)
         self.CheckBox_buy_8 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_8.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_8.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_8.setSizePolicy(sizePolicy)
         self.CheckBox_buy_8.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_8.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.CheckBox_buy_8.setObjectName("CheckBox_buy_8")
         self.gridLayout.addWidget(self.CheckBox_buy_8, 10, 0, 1, 1)
         self.CheckBox_buy_14 = CheckBox(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.CheckBox_buy_14.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.CheckBox_buy_14.sizePolicy().hasHeightForWidth())
         self.CheckBox_buy_14.setSizePolicy(sizePolicy)
         self.CheckBox_buy_14.setMinimumSize(QtCore.QSize(29, 22))
         self.CheckBox_buy_14.setMaximumSize(QtCore.QSize(16777215, 16777215))
@@ -730,9 +640,7 @@ class Ui_home(object):
         self.horizontalLayout_3.setStretch(0, 1)
         self.horizontalLayout_3.setStretch(1, 2)
         self.gridLayout_11.addLayout(self.horizontalLayout_3, 2, 0, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_11.addItem(spacerItem7, 8, 0, 1, 1)
         self.PopUpAniStackedWidget.addWidget(self.page_4)
         self.gridLayout_8.addWidget(self.PopUpAniStackedWidget, 1, 0, 1, 1)
@@ -754,9 +662,7 @@ class Ui_home(object):
         self.ScrollArea_tips.setObjectName("ScrollArea_tips")
         self.scrollAreaWidgetContents_tips = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_tips.setGeometry(QtCore.QRect(0, 0, 332, 190))
-        self.scrollAreaWidgetContents_tips.setObjectName(
-            "scrollAreaWidgetContents_tips"
-        )
+        self.scrollAreaWidgetContents_tips.setObjectName("scrollAreaWidgetContents_tips")
         self.gridLayout_tips = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_tips)
         self.gridLayout_tips.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_tips.setObjectName("gridLayout_tips")
@@ -791,12 +697,8 @@ class Ui_home(object):
         self.StrongBodyLabel_4.setText(_translate("home", "启动器路径"))
         self.StrongBodyLabel_6.setText(_translate("home", "活动公告链接"))
         self.CheckBox_auto_open_starter.setText(_translate("home", "自动打开启动器"))
-        self.LineEdit_link.setText(
-            _translate(
-                "home",
-                "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258",
-            )
-        )
+        self.LineEdit_link.setText(_translate("home",
+                                              "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=258"))
         self.CheckBox_mail.setText(_translate("home", "领取邮件"))
         self.CheckBox_fish_bait.setText(_translate("home", "领取鱼饵"))
         self.CheckBox_dormitory.setText(_translate("home", "宿舍碎片"))
@@ -822,17 +724,20 @@ class Ui_home(object):
         self.PushButton_update_chasm.setText(_translate("home", "更新“深渊”"))
         self.StrongBodyLabel_2.setText(_translate("home", "选择体力使用方式"))
         self.BodyLabel_15.setText(_translate("home", "y1:"))
-        self.BodyLabel_16.setText(_translate("home", '"深渊"右下角坐标'))
-        self.BodyLabel_10.setText(_translate("home", '"材料"右下角坐标'))
-        self.BodyLabel_13.setText(_translate("home", '"深渊"左上角坐标'))
+        self.BodyLabel_16.setText(_translate("home", "\"深渊\"右下角坐标"))
+        self.BodyLabel_10.setText(_translate("home", "\"材料\"右下角坐标"))
+        self.BodyLabel_13.setText(_translate("home", "\"深渊\"左上角坐标"))
         self.BodyLabel_7.setText(_translate("home", "x1:"))
         self.CheckBox_is_use_power.setText(_translate("home", "自动使用期限"))
-        self.ComboBox_power_day.setProperty(
-            "items_", _translate("home", "1\n2\n3\n4\n5\n6")
-        )
+        self.ComboBox_power_day.setProperty("items_", _translate("home", "1\n"
+"2\n"
+"3\n"
+"4\n"
+"5\n"
+"6"))
         self.BodyLabel_6.setText(_translate("home", "天内的体力药"))
         self.BodyLabel_9.setText(_translate("home", "y1:"))
-        self.BodyLabel_2.setText(_translate("home", '"材料"左上角坐标'))
+        self.BodyLabel_2.setText(_translate("home", "\"材料\"左上角坐标"))
         self.BodyLabel_14.setText(_translate("home", "x1:"))
         self.BodyLabel_19.setText(_translate("home", "新版任务名字："))
         self.StrongBodyLabel_5.setText(_translate("home", "适配新版本"))
@@ -848,17 +753,5 @@ class Ui_home(object):
         self.TitleLabel_3.setText(_translate("home", "提醒"))
 
 
-from qfluentwidgets import (
-    BodyLabel,
-    CheckBox,
-    ComboBox,
-    LineEdit,
-    PopUpAniStackedWidget,
-    PrimaryPushButton,
-    PushButton,
-    ScrollArea,
-    SimpleCardWidget,
-    StrongBodyLabel,
-    TitleLabel,
-    ToolButton,
-)
+from qfluentwidgets import BodyLabel, CheckBox, ComboBox, LineEdit, PopUpAniStackedWidget, PrimaryPushButton, \
+    PushButton, ScrollArea, SimpleCardWidget, StrongBodyLabel, TitleLabel, ToolButton

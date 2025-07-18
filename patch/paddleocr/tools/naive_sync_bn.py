@@ -38,15 +38,16 @@ def differentiable_all_reduce(input):
     Differentiable counterpart of `dist.all_reduce`.
     """
     if (
-        not dist.is_available()
-        or not dist.is_initialized()
-        or dist.get_world_size() == 1
+            not dist.is_available()
+            or not dist.is_initialized()
+            or dist.get_world_size() == 1
     ):
         return input
     return _AllReduce.apply(input)
 
 
 class NaiveSyncBatchNorm(nn.BatchNorm2D):
+
     def __init__(self, *args, stats_mode="", **kwargs):
         super().__init__(*args, **kwargs)
         assert stats_mode in ["", "N"]
@@ -62,14 +63,14 @@ class NaiveSyncBatchNorm(nn.BatchNorm2D):
         meansqr = paddle.mean(input * input, axis=[0, 2, 3])
 
         if self._stats_mode == "":
-            assert B > 0, (
-                'SyncBatchNorm(stats_mode="") does not support zero batch size.'
-            )
+            assert (
+                    B > 0
+            ), 'SyncBatchNorm(stats_mode="") does not support zero batch size.'
             vec = paddle.concat([mean, meansqr], axis=0)
             vec = differentiable_all_reduce(vec) * (1.0 / dist.get_world_size())
             mean, meansqr = paddle.split(vec, [C, C])
             momentum = (
-                1 - self._momentum
+                    1 - self._momentum
             )  # NOTE: paddle has reverse momentum defination
         else:
             if B == 0:
@@ -88,7 +89,7 @@ class NaiveSyncBatchNorm(nn.BatchNorm2D):
 
             total_batch = vec[-1].detach()
             momentum = total_batch.clip(max=1) * (
-                1 - self._momentum
+                    1 - self._momentum
             )  # no update if total_batch is 0
             mean, meansqr, _ = paddle.split(
                 vec / total_batch.clip(min=1), [C, C, int(vec.shape[0] - 2 * C)]

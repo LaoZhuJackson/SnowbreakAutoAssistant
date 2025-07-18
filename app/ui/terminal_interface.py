@@ -27,12 +27,10 @@ class Ui_Terminal(object):
         self.TitleLabel.setObjectName("TitleLabel")
         self.verticalLayout.addWidget(self.TitleLabel)
         self.textBrowser = QtWidgets.QTextBrowser(self.verticalLayoutWidget)
-        self.textBrowser.setStyleSheet(
-            "border-radius: 20px;\n"
-            "margin-left: 3px;\n"
-            "margin-right: 3px;\n"
-            "margin-bottom: 6px;"
-        )
+        self.textBrowser.setStyleSheet("border-radius: 20px;\n"
+"margin-left: 3px;\n"
+"margin-right: 3px;\n"
+"margin-bottom: 6px;")
         self.textBrowser.setObjectName("textBrowser")
         self.verticalLayout.addWidget(self.textBrowser)
         self.verticalLayout.setStretch(0, 1)
@@ -45,14 +43,11 @@ class Ui_Terminal(object):
         _translate = QtCore.QCoreApplication.translate
         Terminal.setWindowTitle(_translate("Terminal", "Frame"))
         self.TitleLabel.setText(_translate("Terminal", "终端"))
-
-
 from qfluentwidgets import TitleLabel
 
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     Terminal = QtWidgets.QFrame()
     ui = Ui_Terminal()

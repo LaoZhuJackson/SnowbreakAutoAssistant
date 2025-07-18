@@ -156,9 +156,9 @@ class TableStructurer(object):
         bbox_list = post_result["bbox_batch_list"][0]
         structure_str_list = structure_str_list[0]
         structure_str_list = (
-            ["<html>", "<body>", "<table>"]
-            + structure_str_list
-            + ["</table>", "</body>", "</html>"]
+                ["<html>", "<body>", "<table>"]
+                + structure_str_list
+                + ["</table>", "</body>", "</html>"]
         )
         elapse = time.time() - starttime
         if self.args.benchmark:
@@ -173,7 +173,7 @@ def main(args):
     total_time = 0
     os.makedirs(args.output, exist_ok=True)
     with open(
-        os.path.join(args.output, "infer.txt"), mode="w", encoding="utf-8"
+            os.path.join(args.output, "infer.txt"), mode="w", encoding="utf-8"
     ) as f_w:
         for image_file in image_file_list:
             img, flag, _ = check_and_read(image_file)

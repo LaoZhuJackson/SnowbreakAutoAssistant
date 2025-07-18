@@ -1,14 +1,7 @@
 # coding:utf-8
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QDesktopServices
-from PyQt5.QtWidgets import (
-    QWidget,
-    QFrame,
-    QLabel,
-    QVBoxLayout,
-    QHBoxLayout,
-    QGraphicsOpacityEffect,
-)
+from PyQt5.QtWidgets import QWidget, QFrame, QLabel, QVBoxLayout, QHBoxLayout, QGraphicsOpacityEffect
 
 from qfluentwidgets import IconWidget, TextWrap, FlowLayout, CardWidget, FluentIcon
 from ..common.signal_bus import signalBus
@@ -16,7 +9,7 @@ from ..common.style_sheet import StyleSheet
 
 
 class SampleCard(CardWidget):
-    """Sample card"""
+    """ Sample card """
 
     def __init__(self, icon, title, content, routeKey, index, parent=None):
         super().__init__(parent=parent)
@@ -62,8 +55,8 @@ class SampleCard(CardWidget):
         self.vBoxLayout.addWidget(self.contentLabel)
         self.vBoxLayout.addStretch(1)
 
-        self.titleLabel.setObjectName("titleLabel")
-        self.contentLabel.setObjectName("contentLabel")
+        self.titleLabel.setObjectName('titleLabel')
+        self.contentLabel.setObjectName('contentLabel')
 
     def mouseReleaseEvent(self, e):
         super().mouseReleaseEvent(e)
@@ -86,7 +79,7 @@ class SampleCard(CardWidget):
 
 
 class SampleCard_URL(CardWidget):
-    """Sample card"""
+    """ Sample card """
 
     def __init__(self, icon, title, content, url, parent=None):
         super().__init__(parent=parent)
@@ -141,8 +134,8 @@ class SampleCard_URL(CardWidget):
         self.vBoxLayout.addWidget(self.contentLabel)
         self.vBoxLayout.addStretch(1)
 
-        self.titleLabel.setObjectName("titleLabel")
-        self.contentLabel.setObjectName("contentLabel")
+        self.titleLabel.setObjectName('titleLabel')
+        self.contentLabel.setObjectName('contentLabel')
 
     def mouseReleaseEvent(self, e):
         super().mouseReleaseEvent(e)
@@ -166,7 +159,7 @@ class SampleCard_URL(CardWidget):
 
 
 class SampleCardView(QWidget):
-    """Sample card view"""
+    """ Sample card view """
 
     def __init__(self, title: str, parent=None):
         super().__init__(parent=parent)
@@ -183,15 +176,15 @@ class SampleCardView(QWidget):
         self.vBoxLayout.addWidget(self.titleLabel)
         self.vBoxLayout.addLayout(self.flowLayout, 1)
 
-        self.titleLabel.setObjectName("viewTitleLabel")
+        self.titleLabel.setObjectName('viewTitleLabel')
         StyleSheet.SAMPLE_CARD.apply(self)
 
     def addSampleCard(self, icon, title, content, routeKey, index):
-        """add sample card"""
+        """ add sample card """
         card = SampleCard(icon, title, content, routeKey, index, self)
         self.flowLayout.addWidget(card)
 
     def addSampleCard_URL(self, icon, title, content, url):
-        """add sample card"""
+        """ add sample card """
         card = SampleCard_URL(icon, title, content, url, self)
         self.flowLayout.addWidget(card)

@@ -139,9 +139,7 @@ def find_a_in_b_1(img_a, img_b, min_matches=1, ransac_thresh=5.0, show_result=Tr
 
     # 计算图 A 在图 B 中的投影角点
     h, w = gray_a.shape
-    corners_a = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(
-        -1, 1, 2
-    )
+    corners_a = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
     corners_b = cv2.perspectiveTransform(corners_a, H)
 
     # 转换为整数坐标
@@ -153,20 +151,14 @@ def find_a_in_b_1(img_a, img_b, min_matches=1, ransac_thresh=5.0, show_result=Tr
     # 可视化结果
     if show_result:
         # 绘制匹配点
-        draw_params = dict(
-            matchColor=(0, 255, 0),  # 绿色连线
-            singlePointColor=None,
-            matchesMask=inliers_mask,
-            flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS,
-        )
-        img_matches = cv2.drawMatches(
-            img_a, kp_a, img_b, kp_b, good_matches, None, **draw_params
-        )
+        draw_params = dict(matchColor=(0, 255, 0),  # 绿色连线
+                           singlePointColor=None,
+                           matchesMask=inliers_mask,
+                           flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        img_matches = cv2.drawMatches(img_a, kp_a, img_b, kp_b, good_matches, None, **draw_params)
 
         # 在图 B 中绘制矩形框
-        img_result = cv2.polylines(
-            img_b, [np.int32(corners_b)], True, (0, 0, 255), 2, cv2.LINE_AA
-        )
+        img_result = cv2.polylines(img_b, [np.int32(corners_b)], True, (0, 0, 255), 2, cv2.LINE_AA)
 
         # 显示结果
         cv2.imshow("Matches", img_matches)
@@ -247,9 +239,7 @@ def find_a_in_b_2(a_img, b_img, min_matches=2, match_ratio=0.5, ransac_thresh=5.
 
         # 计算模板在目标图像中的位置（投影角点）
         h, w = a_img.shape[:2]
-        corners = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(
-            -1, 1, 2
-        )
+        corners = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
         projected_corners = cv2.perspectiveTransform(corners, H)
 
         # 计算边界框
@@ -263,12 +253,12 @@ def find_a_in_b_2(a_img, b_img, min_matches=2, match_ratio=0.5, ransac_thresh=5.
             max(0, int(x_min)),
             max(0, int(y_min)),
             min(b_img.shape[1] - 1, int(x_max)),
-            min(b_img.shape[0] - 1, int(y_max)),
+            min(b_img.shape[0] - 1, int(y_max))
         ]
 
         # 计算相似度得分（内点比例）
         score = inlier_count / len(good_matches)
-        results.append({"bbox": bbox, "score": score})
+        results.append({'bbox': bbox, 'score': score})
 
         # 移除已使用的内点，继续查找下一个可能的位置
         remaining_idx = [i for i, val in enumerate(inliers) if val == 0]
@@ -280,17 +270,10 @@ def find_a_in_b_2(a_img, b_img, min_matches=2, match_ratio=0.5, ransac_thresh=5.
     if len(results) > 0:
         output = cv2.cvtColor(b_img, cv2.COLOR_GRAY2BGR)
         for match in results:
-            x1, y1, x2, y2 = match["bbox"]
+            x1, y1, x2, y2 = match['bbox']
             cv2.rectangle(output, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(
-                output,
-                f"Score: {match['score']:.2f}",
-                (x1, y1 - 10),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (0, 255, 0),
-                1,
-            )
+            cv2.putText(output, f"Score: {match['score']:.2f}",
+                        (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
         cv2.imshow("Matches", output)
         cv2.waitKey(0)
     else:
@@ -338,14 +321,12 @@ def find_a_in_b_2(a_img, b_img, min_matches=2, match_ratio=0.5, ransac_thresh=5.
 #     else:
 #         print("未找到图 A 的位置")
 
-if __name__ == "__main__":
-    img1 = cv2.imread("app/resource/images/water_bomb/gem_of_life_steal.png")
+if __name__ == '__main__':
+    img1 = cv2.imread('app/resource/images/water_bomb/gem_of_life_steal.png')
     # img1 = cv2.imread('app/resource/images/water_bomb/reverse_magic_steal.png')
     # img1 = cv2.imread('app/resource/images/water_bomb/1.png')
     # img1 = cv2.imread('app/resource/images/water_bomb/hp.png')
-    img2 = cv2.imread(
-        "C:/Users/laozhu/Desktop/2560_1440/PixPin_2025-02-28_15-29-15.png"
-    )
+    img2 = cv2.imread('C:/Users/laozhu/Desktop/2560_1440/PixPin_2025-02-28_15-29-15.png')
     # img2 = ImageUtils.extract_letters(img2,[255,255,255],128)
     # ImageUtils.show_ndarray(img2)
     # img2 = cv2.imread('app/resource/images/water_bomb/4.png')

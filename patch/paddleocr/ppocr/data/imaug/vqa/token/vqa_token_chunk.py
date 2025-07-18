@@ -51,7 +51,7 @@ class VQASerTokenChunk(object):
 
 class VQAReTokenChunk(object):
     def __init__(
-        self, max_seq_len=512, entities_labels=None, infer_mode=False, **kwargs
+            self, max_seq_len=512, entities_labels=None, infer_mode=False, **kwargs
     ):
         self.max_seq_len = max_seq_len
         self.entities_labels = (
@@ -80,7 +80,7 @@ class VQAReTokenChunk(object):
                     if self.infer_mode and key == "labels":
                         item[key] = data[key]
                     else:
-                        item[key] = data[key][index : index + self.max_seq_len]
+                        item[key] = data[key][index: index + self.max_seq_len]
                 else:
                     item[key] = data[key]
             # select entity in current chunk
@@ -88,8 +88,8 @@ class VQAReTokenChunk(object):
             global_to_local_map = {}  #
             for entity_id, entity in enumerate(entities):
                 if (
-                    index <= entity["start"] < index + self.max_seq_len
-                    and index <= entity["end"] < index + self.max_seq_len
+                        index <= entity["start"] < index + self.max_seq_len
+                        and index <= entity["end"] < index + self.max_seq_len
                 ):
                     entity["start"] = entity["start"] - index
                     entity["end"] = entity["end"] - index
@@ -100,8 +100,8 @@ class VQAReTokenChunk(object):
             relations_in_this_span = []
             for relation in relations:
                 if (
-                    index <= relation["start_index"] < index + self.max_seq_len
-                    and index <= relation["end_index"] < index + self.max_seq_len
+                        index <= relation["start_index"] < index + self.max_seq_len
+                        and index <= relation["end_index"] < index + self.max_seq_len
                 ):
                     relations_in_this_span.append(
                         {

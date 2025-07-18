@@ -111,8 +111,8 @@ class TableMatch:
                 if td_index in matched_index.keys():
                     b_with = False
                     if (
-                        "<b>" in ocr_contents[matched_index[td_index][0]]
-                        and len(matched_index[td_index]) > 1
+                            "<b>" in ocr_contents[matched_index[td_index][0]]
+                            and len(matched_index[td_index]) > 1
                     ):
                         b_with = True
                         end_html.extend("<b>")
@@ -130,8 +130,8 @@ class TableMatch:
                             if len(content) == 0:
                                 continue
                             if (
-                                i != len(matched_index[td_index]) - 1
-                                and " " != content[-1]
+                                    i != len(matched_index[td_index]) - 1
+                                    and " " != content[-1]
                             ):
                                 content += " "
                         # escape content
@@ -157,8 +157,8 @@ class TableMatch:
                 b_with = False
                 if td_index in matched_index.keys():
                     if (
-                        "<b>" in ocr_contents[matched_index[td_index][0]]
-                        and len(matched_index[td_index]) > 1
+                            "<b>" in ocr_contents[matched_index[td_index][0]]
+                            and len(matched_index[td_index]) > 1
                     ):
                         b_with = True
                     for i, td_index_index in enumerate(matched_index[td_index]):
@@ -175,8 +175,8 @@ class TableMatch:
                             if len(content) == 0:
                                 continue
                             if (
-                                i != len(matched_index[td_index]) - 1
-                                and " " != content[-1]
+                                    i != len(matched_index[td_index]) - 1
+                                    and " " != content[-1]
                             ):
                                 content += " "
                         txt += content

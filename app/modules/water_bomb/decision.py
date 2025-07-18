@@ -4,27 +4,26 @@
 模块作者: polynya-code@outlook.com
 最后修改日期: 2025-02-28
 """
-
 from copy import deepcopy
 from typing import List, Dict, Tuple
 
 
 class Status:
     def __init__(
-        self,
-        maxhp: int,  # 最大生命上限
-        shp: int,  # 我方hp
-        ehp: int,  # 敌方hp
-        live: int,  # 剩余实弹数
-        blank: int,  # 剩余虚弹数
-        fired: List[int],  # 已经射击的子弹类型 0:虚弹 1:实弹
-        sitems: List[str],  # 我方道具列表
-        eitems: List[str],  # 敌方道具列表
-        power: int,  # 当前子弹威力
-        bullet: int,  # 当前子弹类型 -1:未知 0:虚弹 1:实弹
-        reversal: bool,  # 当前子弹伤害是否取反
-        extra_opp: bool,  # 是否能够多一次额外的机会
-        computer: bool,  # 当前操作玩家
+            self,
+            maxhp: int,  # 最大生命上限
+            shp: int,  # 我方hp
+            ehp: int,  # 敌方hp
+            live: int,  # 剩余实弹数
+            blank: int,  # 剩余虚弹数
+            fired: List[int],  # 已经射击的子弹类型 0:虚弹 1:实弹
+            sitems: List[str],  # 我方道具列表
+            eitems: List[str],  # 敌方道具列表
+            power: int,  # 当前子弹威力
+            bullet: int,  # 当前子弹类型 -1:未知 0:虚弹 1:实弹
+            reversal: bool,  # 当前子弹伤害是否取反
+            extra_opp: bool,  # 是否能够多一次额外的机会
+            computer: bool,  # 当前操作玩家
     ):
         self._maxhp = maxhp
         self._shp = shp
@@ -42,19 +41,19 @@ class Status:
 
     def __str__(self):
         return (
-            f"[maxhp:{self._maxhp}"
-            f"|shp:{self._shp}"
-            f"|ehp:{self._ehp}"
-            f"|live:{self._live}"
-            f"|blank:{self._blank}"
-            f"|fired:{self._fired}"
-            f"|sitems:{sorted(self._sitems)}"
-            f"|eitems:{sorted(self._eitems)}"
-            f"|power:{self._power}"
-            f"|bullet:{self._bullet}"
-            f"|reversal:{self._reversal}"
-            f"|extra_opp:{self._extra_opp}"
-            f"|computer:{self._computer}]"
+            f'[maxhp:{self._maxhp}'
+            f'|shp:{self._shp}'
+            f'|ehp:{self._ehp}'
+            f'|live:{self._live}'
+            f'|blank:{self._blank}'
+            f'|fired:{self._fired}'
+            f'|sitems:{sorted(self._sitems)}'
+            f'|eitems:{sorted(self._eitems)}'
+            f'|power:{self._power}'
+            f'|bullet:{self._bullet}'
+            f'|reversal:{self._reversal}'
+            f'|extra_opp:{self._extra_opp}'
+            f'|computer:{self._computer}]'
         )
 
     @property
@@ -113,7 +112,7 @@ class Status:
     def from_dict(status_dict: Dict):
         status = Status(4, 4, 4, 2, 2, [], [], [], 1, -1, False, False, False).copy()
         for key, value in status_dict.items():
-            key = "_" + key
+            key = '_' + key
             if hasattr(status, key):
                 setattr(status, key, value)
         return status
@@ -124,18 +123,18 @@ class Status:
     def gem_of_life(self):  # 生命宝石
         status = self.copy()
         status._shp += 1
-        status._sitems.remove("gem_of_life")
+        status._sitems.remove('gem_of_life')
         return status
 
     def handcuffs(self):  # 手铐
         status = self.copy()
         status._extra_opp = True
-        status._sitems.remove("handcuffs")
+        status._sitems.remove('handcuffs')
         return status
 
     def hand_of_kaito(self, item: str):  # 怪盗之手
         status = self.copy()
-        status._sitems.remove("hand_of_kaito")
+        status._sitems.remove('hand_of_kaito')
         status._eitems.remove(item)
         status._sitems.append(item)
         return status
@@ -143,7 +142,7 @@ class Status:
     def insight_sunglasses(self, bullet: int):  # 看破墨镜
         status = self.copy()
         status._bullet = bullet
-        status._sitems.remove("insight_sunglasses")
+        status._sitems.remove('insight_sunglasses')
         return status
 
     def unload_puppet(self, live: bool):  # 退弹布偶
@@ -152,7 +151,7 @@ class Status:
             status._live -= 1
         else:
             status._blank -= 1
-        status._sitems.remove("unload_puppet")
+        status._sitems.remove('unload_puppet')
         status._bullet = -1  # 退弹后不知道最新的子弹类型
         if status.live == 0 and status.blank != 0:  # 可预知子弹情况
             status._bullet = 0
@@ -163,14 +162,14 @@ class Status:
 
     def reverse_magic(self):  # 反转魔法
         status = self.copy()
-        status._reversal = self.reversal == False
-        status._sitems.remove("reverse_magic")
+        status._reversal = (self.reversal == False)
+        status._sitems.remove('reverse_magic')
         return status
 
     def advanced_barrel(self):  # 进阶枪管
         status = self.copy()
         status._power = 2
-        status._sitems.remove("advanced_barrel")
+        status._sitems.remove('advanced_barrel')
         return status
 
     def reset_hammer(self, old_items: List[str], new_items: List[str]):  # 重置之锤
@@ -178,7 +177,7 @@ class Status:
         for old_item, new_item in zip(old_items, new_items):
             status._sitems.remove(old_item)
             status._sitems.append(new_item)
-        status._sitems.remove("reset_hammer")
+        status._sitems.remove('reset_hammer')
         return status
 
     def shoot(self, enemy: bool, live: bool):
@@ -217,13 +216,11 @@ class Status:
         extra_opp = False
         sitems = self.sitems
         eitems = self.eitems
-        if self.extra_opp or (
-            not enemy and power == 0
-        ):  # 处理回合交替 (额外机会或者打自己没事)
+        if self.extra_opp or (not enemy and power == 0):  # 处理回合交替 (额外机会或者打自己没事)
             computer = self.computer
-            extra_opp = self.extra_opp and (not enemy and power == 0)
+            extra_opp = (self.extra_opp and (not enemy and power == 0))
         else:
-            computer = self.computer == False
+            computer = (self.computer == False)
             sitems = self.eitems
             eitems = self.sitems
             thp = shp
@@ -243,7 +240,7 @@ class Status:
             bullet=bullet,
             reversal=False,
             extra_opp=extra_opp,
-            computer=computer,
+            computer=computer
         ).copy()
 
 
@@ -254,14 +251,14 @@ class Round:
     def optimal_strategy(self, status: Status):
         # 基本情况处理
         if status.shp == 0:  # 己方死亡
-            return 0.0, "end"
+            return 0.0, 'end'
         elif status.ehp == 0:  # 敌方死亡
-            return 1.0, "end"
+            return 1.0, 'end'
         elif status.live + status.blank == 0:
             if status.shp == status.ehp:  # 血量相同 (当前谁操作，当前谁胜率就高)
-                return 0.5, "reload"
+                return 0.5, 'reload'
             else:  # 血量不同 先验胜率为血量之比
-                return (status.shp / (status.shp + status.ehp)), "reload"
+                return (status.shp / (status.shp + status.ehp)), 'reload'
 
         # 记忆化检查
         if str(status) in self.memo:
@@ -279,73 +276,59 @@ class Round:
             blank_prob = 1.0
 
         # 当前最好操作
-        strategy = ""
+        strategy = ''
         win_prob = 0
 
         # 生命宝石 (优先使用)
-        if "gem_of_life" in status.sitems and status.shp < status.maxhp:
+        if 'gem_of_life' in status.sitems and status.shp < status.maxhp:
             gem_of_life = self.optimal_strategy(status.gem_of_life())[0]
-            return gem_of_life, "gem_of_life"
+            return gem_of_life, 'gem_of_life'
 
         # 拘束手铐 (优先使用)
-        if "handcuffs" in status.sitems and not status.extra_opp:
+        if 'handcuffs' in status.sitems and not status.extra_opp:
             handcuffs = self.optimal_strategy(status.handcuffs())[0]
-            return handcuffs, "handcuffs"
+            return handcuffs, 'handcuffs'
 
         # 怪盗之手 (对面有怪盗之手优先使用)
-        if "hand_of_kaito" in status.sitems:
+        if 'hand_of_kaito' in status.sitems:
             for item in status.eitems:
-                if item == "unload_puppet":
+                if item == 'unload_puppet':
                     continue
                 hand_of_kaito = self.optimal_strategy(status.hand_of_kaito(item))[0]
-                if item == "hand_of_kaito":
-                    return hand_of_kaito, "hand_of_kaito.hand_of_kaito"
+                if item == 'hand_of_kaito':
+                    return hand_of_kaito, 'hand_of_kaito.hand_of_kaito'
                 if hand_of_kaito > win_prob:
                     win_prob = hand_of_kaito
-                    strategy = f"hand_of_kaito.{item}"
+                    strategy = f'hand_of_kaito.{item}'
 
         # 看破墨镜
-        if "insight_sunglasses" in status.sitems and status.bullet == -1:
-            bullet_blank = (
-                blank_prob * self.optimal_strategy(status.insight_sunglasses(0))[0]
-            )
-            bullet_live = (
-                live_prob * self.optimal_strategy(status.insight_sunglasses(1))[0]
-            )
+        if 'insight_sunglasses' in status.sitems and status.bullet == -1:
+            bullet_blank = blank_prob * self.optimal_strategy(status.insight_sunglasses(0))[0]
+            bullet_live = live_prob * self.optimal_strategy(status.insight_sunglasses(1))[0]
             insight = bullet_blank + bullet_live
             if insight > win_prob:
                 win_prob = insight
-                strategy = "insight_sunglasses"
+                strategy = 'insight_sunglasses'
 
         # 退弹布偶
-        if (
-            "unload_puppet" in status.sitems
-            and ((status.live + status.blank) > 1)
-            and status.power == 1
-        ):
-            if status.bullet != 0 or not (
-                status.bullet == 1 and status.reversal
-            ):  # 已知虚弹一定不退弹或者反转实弹不退弹
-                unload_live = (
-                    live_prob * self.optimal_strategy(status.unload_puppet(True))[0]
-                )
-                unload_blank = (
-                    blank_prob * self.optimal_strategy(status.unload_puppet(False))[0]
-                )
+        if 'unload_puppet' in status.sitems and ((status.live + status.blank) > 1) and status.power == 1:
+            if status.bullet != 0 or not (status.bullet == 1 and status.reversal):  # 已知虚弹一定不退弹或者反转实弹不退弹
+                unload_live = live_prob * self.optimal_strategy(status.unload_puppet(True))[0]
+                unload_blank = blank_prob * self.optimal_strategy(status.unload_puppet(False))[0]
                 unload = unload_live + unload_blank
                 if unload > win_prob:
                     win_prob = unload
-                    strategy = "unload_puppet"
+                    strategy = 'unload_puppet'
 
         # 反转魔术
-        if "reverse_magic" in status.sitems and not status.reversal:
+        if 'reverse_magic' in status.sitems and not status.reversal:
             reverse_magic = self.optimal_strategy(status.reverse_magic())[0]
             if reverse_magic > win_prob:
                 win_prob = reverse_magic
-                strategy = "reverse_magic"
+                strategy = 'reverse_magic'
 
         # 重置之锤
-        if "reset_hammer" in status.sitems:
+        if 'reset_hammer' in status.sitems:
             pass
 
         # 如果射击
@@ -356,75 +339,52 @@ class Round:
         if status.live > 0 and (status.bullet != 0):
             # 射击敌方的情况
             if status.extra_opp:  # 有额外机会一定回合不换
-                shoot_enemy += (
-                    live_prob * self.optimal_strategy(status.shoot(True, True))[0]
-                )
+                shoot_enemy += live_prob * self.optimal_strategy(status.shoot(True, True))[0]
             else:  # 没额外机会一定会回合切换
-                shoot_enemy += live_prob * (
-                    1 - self.optimal_strategy(status.shoot(True, True))[0]
-                )
+                shoot_enemy += live_prob * (1 - self.optimal_strategy(status.shoot(True, True))[0])
             # 射击自己的情况
             if status.extra_opp or status.reversal:
-                shoot_self += (
-                    live_prob * self.optimal_strategy(status.shoot(False, True))[0]
-                )
+                shoot_self += live_prob * self.optimal_strategy(status.shoot(False, True))[0]
             else:
-                shoot_self += live_prob * (
-                    1 - self.optimal_strategy(status.shoot(False, True))[0]
-                )
+                shoot_self += live_prob * (1 - self.optimal_strategy(status.shoot(False, True))[0])
 
         # 虚弹分支
         if status.blank > 0 and (status.bullet != 1):
             # 射击敌方的情况
             if status.extra_opp:  # 有额外机会一定回合不换
-                shoot_enemy += (
-                    blank_prob * self.optimal_strategy(status.shoot(True, False))[0]
-                )
+                shoot_enemy += blank_prob * self.optimal_strategy(status.shoot(True, False))[0]
             else:  # 没额外机会一定会回合切换
-                shoot_enemy += blank_prob * (
-                    1 - self.optimal_strategy(status.shoot(True, False))[0]
-                )
+                shoot_enemy += blank_prob * (1 - self.optimal_strategy(status.shoot(True, False))[0])
             # 射击自己的情况
             if status.reversal and not status.extra_opp:  # 反转且没有保持
-                shoot_self += blank_prob * (
-                    1 - self.optimal_strategy(status.shoot(False, False))[0]
-                )
+                shoot_self += blank_prob * (1 - self.optimal_strategy(status.shoot(False, False))[0])
             else:
-                shoot_self += (
-                    blank_prob * self.optimal_strategy(status.shoot(False, False))[0]
-                )
+                shoot_self += blank_prob * self.optimal_strategy(status.shoot(False, False))[0]
 
         shoot_self = round(shoot_self, 2)
         shoot_enemy = round(shoot_enemy, 2)
 
         # 取最优策略并记忆化
-        if (live_prob == 1.0 and status.reversal) or (
-            blank_prob == 1.0 and not status.reversal
-        ):
-            shoot = "shoot_self"
-        elif (blank_prob == 1.0 and status.reversal) or (
-            live_prob == 1.0 and not status.reversal
-        ):
-            shoot = "shoot_enemy"
-        elif (
-            shoot_enemy < shoot_self
-            or (blank_prob > live_prob and not status.reversal and status.power == 1)
-            or (live_prob > blank_prob and status.reversal and status.power == 1)
-        ):
-            shoot = "shoot_self"
+        if (live_prob == 1.0 and status.reversal) or (blank_prob == 1.0 and not status.reversal):
+            shoot = 'shoot_self'
+        elif (blank_prob == 1.0 and status.reversal) or (live_prob == 1.0 and not status.reversal):
+            shoot = 'shoot_enemy'
+        elif shoot_enemy < shoot_self or (blank_prob > live_prob and not status.reversal and status.power == 1) or (
+                live_prob > blank_prob and status.reversal and status.power == 1):
+            shoot = 'shoot_self'
         else:
-            shoot = "shoot_enemy"
+            shoot = 'shoot_enemy'
 
         if max(shoot_enemy, shoot_self) > win_prob or max(shoot_enemy, shoot_self) == 1:
             win_prob = max(shoot_enemy, shoot_self)
             strategy = shoot
 
         # 进阶枪管
-        if "advanced_barrel" in status.sitems and status.power == 1:
+        if 'advanced_barrel' in status.sitems and status.power == 1:
             advanced_barrel = self.optimal_strategy(status.advanced_barrel())[0]
             if advanced_barrel > win_prob:
                 win_prob = advanced_barrel
-                strategy = "advanced_barrel"
+                strategy = 'advanced_barrel'
 
         self.memo[str(status)] = win_prob, strategy
         return win_prob, strategy

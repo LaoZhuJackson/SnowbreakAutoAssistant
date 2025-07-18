@@ -24,21 +24,21 @@ from numpy.linalg import norm
 
 class DRRGTargets(object):
     def __init__(
-        self,
-        orientation_thr=2.0,
-        resample_step=8.0,
-        num_min_comps=9,
-        num_max_comps=600,
-        min_width=8.0,
-        max_width=24.0,
-        center_region_shrink_ratio=0.3,
-        comp_shrink_ratio=1.0,
-        comp_w_h_ratio=0.3,
-        text_comp_nms_thr=0.25,
-        min_rand_half_height=8.0,
-        max_rand_half_height=24.0,
-        jitter_level=0.2,
-        **kwargs,
+            self,
+            orientation_thr=2.0,
+            resample_step=8.0,
+            num_min_comps=9,
+            num_max_comps=600,
+            min_width=8.0,
+            max_width=24.0,
+            center_region_shrink_ratio=0.3,
+            comp_shrink_ratio=1.0,
+            comp_w_h_ratio=0.3,
+            text_comp_nms_thr=0.25,
+            min_rand_half_height=8.0,
+            max_rand_half_height=24.0,
+            jitter_level=0.2,
+            **kwargs,
     ):
         super().__init__()
         self.orientation_thr = orientation_thr
@@ -119,15 +119,15 @@ class DRRGTargets(object):
             score_matrix = np.zeros((len(score), len(score) - 3))
             x = np.arange(len(score) - 3) / float(len(score) - 4)
             gaussian = (
-                1.0
-                / (np.sqrt(2.0 * np.pi) * 0.5)
-                * np.exp(-np.power((x - 0.5) / 0.5, 2.0) / 2)
+                    1.0
+                    / (np.sqrt(2.0 * np.pi) * 0.5)
+                    * np.exp(-np.power((x - 0.5) / 0.5, 2.0) / 2)
             )
             gaussian = gaussian / np.max(gaussian)
             for i in range(len(score)):
                 score_matrix[i, :] = (
-                    score[i]
-                    + pad_score[(i + 2) : (i + len(score) - 1)] * gaussian * 0.3
+                        score[i]
+                        + pad_score[(i + 2): (i + len(score) - 1)] * gaussian * 0.3
                 )
 
             head_start, tail_increment = np.unravel_index(
@@ -144,7 +144,7 @@ class DRRGTargets(object):
             tail_inds = [tail_start, tail_end]
         else:
             if self.vector_slope(points[1] - points[0]) + self.vector_slope(
-                points[3] - points[2]
+                    points[3] - points[2]
             ) < self.vector_slope(points[2] - points[1]) + self.vector_slope(
                 points[0] - points[3]
             ):
@@ -185,8 +185,8 @@ class DRRGTargets(object):
         pad_points = np.vstack([points, points])
         if tail_inds[1] < 1:
             tail_inds[1] = len(points)
-        sideline1 = pad_points[head_inds[1] : tail_inds[1]]
-        sideline2 = pad_points[tail_inds[1] : (head_inds[1] + len(points))]
+        sideline1 = pad_points[head_inds[1]: tail_inds[1]]
+        sideline2 = pad_points[tail_inds[1]: (head_inds[1] + len(points))]
         sideline_mean_shift = np.mean(sideline1, axis=0) - np.mean(sideline2, axis=0)
 
         if sideline_mean_shift[1] > 0:
@@ -224,7 +224,7 @@ class DRRGTargets(object):
                 edge_ind += 1
             t_l, t_r = t_org[edge_ind], t_org[edge_ind + 1]
             weight = np.array([t_r - t, t - t_l], dtype=np.float32) / (
-                t_r - t_l + self.eps
+                    t_r - t_l + self.eps
             )
             p_coords = np.dot(weight, line[[edge_ind, edge_ind + 1]])
             points.append(p_coords)
@@ -255,29 +255,29 @@ class DRRGTargets(object):
         assert isinstance(line, tuple)
         point1, point2 = line
         d = abs(np.cross(point2 - point1, point - point1)) / (
-            norm(point2 - point1) + 1e-8
+                norm(point2 - point1) + 1e-8
         )
         return d
 
     def draw_center_region_maps(
-        self,
-        top_line,
-        bot_line,
-        center_line,
-        center_region_mask,
-        top_height_map,
-        bot_height_map,
-        sin_map,
-        cos_map,
-        region_shrink_ratio,
+            self,
+            top_line,
+            bot_line,
+            center_line,
+            center_region_mask,
+            top_height_map,
+            bot_height_map,
+            sin_map,
+            cos_map,
+            region_shrink_ratio,
     ):
         assert top_line.shape == bot_line.shape == center_line.shape
         assert (
-            center_region_mask.shape
-            == top_height_map.shape
-            == bot_height_map.shape
-            == sin_map.shape
-            == cos_map.shape
+                center_region_mask.shape
+                == top_height_map.shape
+                == bot_height_map.shape
+                == sin_map.shape
+                == cos_map.shape
         )
         assert isinstance(region_shrink_ratio, float)
 
@@ -291,12 +291,12 @@ class DRRGTargets(object):
 
             tl = center_line[i] + (top_line[i] - center_line[i]) * region_shrink_ratio
             tr = (
-                center_line[i + 1]
-                + (top_line[i + 1] - center_line[i + 1]) * region_shrink_ratio
+                    center_line[i + 1]
+                    + (top_line[i + 1] - center_line[i + 1]) * region_shrink_ratio
             )
             br = (
-                center_line[i + 1]
-                + (bot_line[i + 1] - center_line[i + 1]) * region_shrink_ratio
+                    center_line[i + 1]
+                    + (bot_line[i + 1] - center_line[i + 1]) * region_shrink_ratio
             )
             bl = center_line[i] + (bot_line[i] - center_line[i]) * region_shrink_ratio
             current_center_box = np.vstack([tl, tr, br, bl]).astype(np.int32)
@@ -358,33 +358,33 @@ class DRRGTargets(object):
                     resampled_bot_line = resampled_bot_line[::-1]
 
             line_head_shrink_len = (
-                np.clip(
-                    (norm(top_line[0] - bot_line[0]) * self.comp_w_h_ratio),
-                    self.min_width,
-                    self.max_width,
-                )
-                / 2
+                    np.clip(
+                        (norm(top_line[0] - bot_line[0]) * self.comp_w_h_ratio),
+                        self.min_width,
+                        self.max_width,
+                    )
+                    / 2
             )
             line_tail_shrink_len = (
-                np.clip(
-                    (norm(top_line[-1] - bot_line[-1]) * self.comp_w_h_ratio),
-                    self.min_width,
-                    self.max_width,
-                )
-                / 2
+                    np.clip(
+                        (norm(top_line[-1] - bot_line[-1]) * self.comp_w_h_ratio),
+                        self.min_width,
+                        self.max_width,
+                    )
+                    / 2
             )
             num_head_shrink = int(line_head_shrink_len // self.resample_step)
             num_tail_shrink = int(line_tail_shrink_len // self.resample_step)
             if len(center_line) > num_head_shrink + num_tail_shrink + 2:
                 center_line = center_line[
-                    num_head_shrink : len(center_line) - num_tail_shrink
-                ]
+                              num_head_shrink: len(center_line) - num_tail_shrink
+                              ]
                 resampled_top_line = resampled_top_line[
-                    num_head_shrink : len(resampled_top_line) - num_tail_shrink
-                ]
+                                     num_head_shrink: len(resampled_top_line) - num_tail_shrink
+                                     ]
                 resampled_bot_line = resampled_bot_line[
-                    num_head_shrink : len(resampled_bot_line) - num_tail_shrink
-                ]
+                                     num_head_shrink: len(resampled_bot_line) - num_tail_shrink
+                                     ]
             center_lines.append(center_line.astype(np.int32))
 
             self.draw_center_region_maps(
@@ -422,7 +422,7 @@ class DRRGTargets(object):
             max_rand_height * self.comp_w_h_ratio, self.min_width, self.max_width
         )
         margin = (
-            int(np.sqrt((max_rand_height / 2) ** 2 + (max_rand_width / 2) ** 2)) + 1
+                int(np.sqrt((max_rand_height / 2) ** 2 + (max_rand_width / 2) ** 2)) + 1
         )
 
         if 2 * margin + 1 > min(h, w):
@@ -435,12 +435,12 @@ class DRRGTargets(object):
                 max_rand_height * self.comp_w_h_ratio, self.min_width, self.max_width
             )
             margin = (
-                int(np.sqrt((max_rand_height / 2) ** 2 + (max_rand_width / 2) ** 2)) + 1
+                    int(np.sqrt((max_rand_height / 2) ** 2 + (max_rand_width / 2) ** 2)) + 1
             )
 
         inner_center_sample_mask = np.zeros_like(center_sample_mask)
-        inner_center_sample_mask[margin : h - margin, margin : w - margin] = (
-            center_sample_mask[margin : h - margin, margin : w - margin]
+        inner_center_sample_mask[margin: h - margin, margin: w - margin] = (
+            center_sample_mask[margin: h - margin, margin: w - margin]
         )
         kernel_size = int(np.clip(max_rand_half_height, 7, 21))
         inner_center_sample_mask = cv2.erode(
@@ -461,7 +461,7 @@ class DRRGTargets(object):
 
         rand_cos = 2 * np.random.random(size=(len(rand_centers), 1)) - 1
         rand_sin = 2 * np.random.random(size=(len(rand_centers), 1)) - 1
-        scale = np.sqrt(1.0 / (rand_cos**2 + rand_sin**2 + 1e-8))
+        scale = np.sqrt(1.0 / (rand_cos ** 2 + rand_sin ** 2 + 1e-8))
         rand_cos = rand_cos * scale
         rand_sin = rand_sin * scale
 
@@ -507,14 +507,14 @@ class DRRGTargets(object):
         comp_labels = comp_attribs[:, 6].reshape((-1, 1))
 
         x += (
-            (np.random.random(size=(len(comp_attribs), 1)) - 0.5)
-            * (h * np.abs(cos) + w * np.abs(sin))
-            * jitter_level
+                (np.random.random(size=(len(comp_attribs), 1)) - 0.5)
+                * (h * np.abs(cos) + w * np.abs(sin))
+                * jitter_level
         )
         y += (
-            (np.random.random(size=(len(comp_attribs), 1)) - 0.5)
-            * (h * np.abs(sin) + w * np.abs(cos))
-            * jitter_level
+                (np.random.random(size=(len(comp_attribs), 1)) - 0.5)
+                * (h * np.abs(sin) + w * np.abs(cos))
+                * jitter_level
         )
 
         h += (np.random.random(size=(len(comp_attribs), 1)) - 0.5) * h * jitter_level
@@ -523,7 +523,7 @@ class DRRGTargets(object):
         cos += (np.random.random(size=(len(comp_attribs), 1)) - 0.5) * 2 * jitter_level
         sin += (np.random.random(size=(len(comp_attribs), 1)) - 0.5) * 2 * jitter_level
 
-        scale = np.sqrt(1.0 / (cos**2 + sin**2 + 1e-8))
+        scale = np.sqrt(1.0 / (cos ** 2 + sin ** 2 + 1e-8))
         cos = cos * scale
         sin = sin * scale
 
@@ -532,14 +532,14 @@ class DRRGTargets(object):
         return jittered_comp_attribs
 
     def generate_comp_attribs(
-        self,
-        center_lines,
-        text_mask,
-        center_region_mask,
-        top_height_map,
-        bot_height_map,
-        sin_map,
-        cos_map,
+            self,
+            center_lines,
+            text_mask,
+            center_region_mask,
+            top_height_map,
+            bot_height_map,
+            sin_map,
+            cos_map,
     ):
         """Generate text component attributes.
 
@@ -565,12 +565,12 @@ class DRRGTargets(object):
 
         assert isinstance(center_lines, list)
         assert (
-            text_mask.shape
-            == center_region_mask.shape
-            == top_height_map.shape
-            == bot_height_map.shape
-            == sin_map.shape
-            == cos_map.shape
+                text_mask.shape
+                == center_region_mask.shape
+                == top_height_map.shape
+                == bot_height_map.shape
+                == sin_map.shape
+                == cos_map.shape
         )
 
         center_lines_mask = np.zeros_like(center_region_mask)
@@ -647,8 +647,8 @@ class DRRGTargets(object):
             )
 
         num_comps = (
-            np.ones((comp_attribs.shape[0], 1), dtype=np.float32)
-            * comp_attribs.shape[0]
+                np.ones((comp_attribs.shape[0], 1), dtype=np.float32)
+                * comp_attribs.shape[0]
         )
         comp_attribs = np.hstack([num_comps, comp_attribs])
 

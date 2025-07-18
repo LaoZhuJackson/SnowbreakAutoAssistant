@@ -39,8 +39,8 @@ def txt2pickle(images, equations, save_dir):
         for i, im in tqdm(enumerate(images_list), total=len(images_list)):
             width, height = imagesize.get(im)
             if (
-                min_dimensions[0] <= width <= max_dimensions[0]
-                and min_dimensions[1] <= height <= max_dimensions[1]
+                    min_dimensions[0] <= width <= max_dimensions[0]
+                    and min_dimensions[1] <= height <= max_dimensions[1]
             ):
                 divide_h = math.ceil(height / 16) * 16
                 divide_w = math.ceil(width / 16) * 16

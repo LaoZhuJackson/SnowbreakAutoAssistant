@@ -109,8 +109,8 @@ def crop_area(im, text_polys, min_crop_side_ratio, max_tries):
             ymin, ymax = random_select(h_axis, h)
 
         if (
-            xmax - xmin < min_crop_side_ratio * w
-            or ymax - ymin < min_crop_side_ratio * h
+                xmax - xmin < min_crop_side_ratio * w
+                or ymax - ymin < min_crop_side_ratio * h
         ):
             # area too small
             continue
@@ -128,12 +128,12 @@ def crop_area(im, text_polys, min_crop_side_ratio, max_tries):
 
 class EastRandomCropData(object):
     def __init__(
-        self,
-        size=(640, 640),
-        max_tries=10,
-        min_crop_side_ratio=0.1,
-        keep_ratio=True,
-        **kwargs,
+            self,
+            size=(640, 640),
+            max_tries=10,
+            min_crop_side_ratio=0.1,
+            keep_ratio=True,
+            **kwargs,
     ):
         self.size = size
         self.max_tries = max_tries
@@ -159,12 +159,12 @@ class EastRandomCropData(object):
         if self.keep_ratio:
             padimg = np.zeros((self.size[1], self.size[0], img.shape[2]), img.dtype)
             padimg[:h, :w] = cv2.resize(
-                img[crop_y : crop_y + crop_h, crop_x : crop_x + crop_w], (w, h)
+                img[crop_y: crop_y + crop_h, crop_x: crop_x + crop_w], (w, h)
             )
             img = padimg
         else:
             img = cv2.resize(
-                img[crop_y : crop_y + crop_h, crop_x : crop_x + crop_w],
+                img[crop_y: crop_y + crop_h, crop_x: crop_x + crop_w],
                 tuple(self.size),
             )
         # crop 文本框
@@ -221,17 +221,17 @@ class RandomCropImgMask(object):
             if k in self.crop_keys:
                 if len(data[k].shape) == 3:
                     if np.argmin(data[k].shape) == 0:
-                        img = data[k][:, i : i + th, j : j + tw]
+                        img = data[k][:, i: i + th, j: j + tw]
                         if img.shape[1] != img.shape[2]:
                             a = 1
                     elif np.argmin(data[k].shape) == 2:
-                        img = data[k][i : i + th, j : j + tw, :]
+                        img = data[k][i: i + th, j: j + tw, :]
                         if img.shape[1] != img.shape[0]:
                             a = 1
                     else:
                         img = data[k]
                 else:
-                    img = data[k][i : i + th, j : j + tw]
+                    img = data[k][i: i + th, j: j + tw]
                     if img.shape[0] != img.shape[1]:
                         a = 1
                 data[k] = img

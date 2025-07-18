@@ -34,13 +34,13 @@ class PSEPostProcess(object):
     """
 
     def __init__(
-        self,
-        thresh=0.5,
-        box_thresh=0.85,
-        min_area=16,
-        box_type="quad",
-        scale=4,
-        **kwargs,
+            self,
+            thresh=0.5,
+            box_thresh=0.85,
+            min_area=16,
+            box_type="quad",
+            scale=4,
+            **kwargs,
     ):
         assert box_type in ["quad", "poly"], "Only quad and poly is supported"
         self.thresh = thresh

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Contains various CTC decoders."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -91,7 +90,7 @@ def ctc_greedy_decoder(probs_seq, blank=95, keep_blank_in_idxs=True):
 
 
 def instance_ctc_greedy_decoder(
-    gather_info, logits_map, pts_num=4, point_gather_mode=None
+        gather_info, logits_map, pts_num=4, point_gather_mode=None
 ):
     _, _, C = logits_map.shape
     if point_gather_mode == "align":
@@ -109,8 +108,8 @@ def instance_ctc_greedy_decoder(
             )
             max_points = int(max(stride_x, stride_y))
             stride = (
-                gather_info[index + insert_num] - gather_info[index + 1 + insert_num]
-            ) / (max_points)
+                             gather_info[index + insert_num] - gather_info[index + 1 + insert_num]
+                     ) / (max_points)
             insert_num_temp = max_points - 1
 
             for i in range(int(insert_num_temp)):
@@ -133,7 +132,7 @@ def instance_ctc_greedy_decoder(
 
 
 def ctc_decoder_for_image(
-    gather_info_list, logits_map, Lexicon_Table, pts_num=6, point_gather_mode=None
+        gather_info_list, logits_map, Lexicon_Table, pts_num=6, point_gather_mode=None
 ):
     """
     CTC decoder using multiple processes.
@@ -218,7 +217,7 @@ def sort_and_expand_with_direction(pos_list, f_direction):
     point_num = len(sorted_list)
     sub_direction_len = max(point_num // 3, 2)
     left_direction = point_direction[:sub_direction_len, :]
-    right_dirction = point_direction[point_num - sub_direction_len :, :]
+    right_dirction = point_direction[point_num - sub_direction_len:, :]
 
     left_average_direction = -np.mean(left_direction, axis=0, keepdims=True)
     left_average_len = np.linalg.norm(left_average_direction)
@@ -267,7 +266,7 @@ def sort_and_expand_with_direction_v2(pos_list, f_direction, binary_tcl_map):
     point_num = len(sorted_list)
     sub_direction_len = max(point_num // 3, 2)
     left_direction = point_direction[:sub_direction_len, :]
-    right_dirction = point_direction[point_num - sub_direction_len :, :]
+    right_dirction = point_direction[point_num - sub_direction_len:, :]
 
     left_average_direction = -np.mean(left_direction, axis=0, keepdims=True)
     left_average_len = np.linalg.norm(left_average_direction)
@@ -340,9 +339,9 @@ def expand_poly_along_width(poly, shrink_ratio_of_width=0.3):
     point_num = poly.shape[0]
     left_quad = np.array([poly[0], poly[1], poly[-2], poly[-1]], dtype=np.float32)
     left_ratio = (
-        -shrink_ratio_of_width
-        * np.linalg.norm(left_quad[0] - left_quad[3])
-        / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
+            -shrink_ratio_of_width
+            * np.linalg.norm(left_quad[0] - left_quad[3])
+            / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
     )
     left_quad_expand = shrink_quad_along_width(left_quad, left_ratio, 1.0)
     right_quad = np.array(
@@ -366,7 +365,7 @@ def expand_poly_along_width(poly, shrink_ratio_of_width=0.3):
 
 
 def restore_poly(
-    instance_yxs_list, seq_strs, p_border, ratio_w, ratio_h, src_w, src_h, valid_set
+        instance_yxs_list, seq_strs, p_border, ratio_w, ratio_h, src_w, src_h, valid_set
 ):
     poly_list = []
     keep_str_list = []
@@ -384,9 +383,9 @@ def restore_poly(
             offset = p_border[:, y, x].reshape(2, 2) * offset_expand
             ori_yx = np.array([y, x], dtype=np.float32)
             point_pair = (
-                (ori_yx + offset)[:, ::-1]
-                * 4.0
-                / np.array([ratio_w, ratio_h]).reshape(-1, 2)
+                    (ori_yx + offset)[:, ::-1]
+                    * 4.0
+                    / np.array([ratio_w, ratio_h]).reshape(-1, 2)
             )
             point_pair_list.append(point_pair)
 
@@ -411,12 +410,12 @@ def restore_poly(
 
 
 def generate_pivot_list_fast(
-    p_score,
-    p_char_maps,
-    f_direction,
-    Lexicon_Table,
-    score_thresh=0.5,
-    point_gather_mode=None,
+        p_score,
+        p_char_maps,
+        f_direction,
+        Lexicon_Table,
+        score_thresh=0.5,
+        point_gather_mode=None,
 ):
     """
     return center point and end point of TCL instance; filter with the char maps;

@@ -389,9 +389,9 @@ def parse_args(mMain=True):
         choices=SUPPORT_OCR_MODEL_VERSION,
         default="PP-OCRv4",
         help="OCR Model version, the current model support list is as follows: "
-        "1. PP-OCRv4/v3 Support Chinese and English detection and recognition model, and direction classifier model"
-        "2. PP-OCRv2 Support Chinese detection and recognition model. "
-        "3. PP-OCR support Chinese detection, recognition and direction classifier and multilingual recognition model.",
+             "1. PP-OCRv4/v3 Support Chinese and English detection and recognition model, and direction classifier model"
+             "2. PP-OCRv2 Support Chinese detection and recognition model. "
+             "3. PP-OCR support Chinese detection, recognition and direction classifier and multilingual recognition model.",
     )
     parser.add_argument(
         "--structure_version",
@@ -399,8 +399,8 @@ def parse_args(mMain=True):
         choices=SUPPORT_STRUCTURE_MODEL_VERSION,
         default="PP-StructureV2",
         help="Model version, the current model support list is as follows:"
-        " 1. PP-Structure Support en table structure model."
-        " 2. PP-StructureV2 Support ch and en table structure model.",
+             " 1. PP-Structure Support en table structure model."
+             " 2. PP-StructureV2 Support ch and en table structure model.",
     )
 
     for action in parser._actions:
@@ -507,10 +507,10 @@ def parse_lang(lang):
         lang = "cyrillic"
     elif lang in devanagari_lang:
         lang = "devanagari"
-    assert lang in MODEL_URLS["OCR"][DEFAULT_OCR_MODEL_VERSION]["rec"], (
-        "param lang must in {}, but got {}".format(
-            MODEL_URLS["OCR"][DEFAULT_OCR_MODEL_VERSION]["rec"].keys(), lang
-        )
+    assert (
+            lang in MODEL_URLS["OCR"][DEFAULT_OCR_MODEL_VERSION]["rec"]
+    ), "param lang must in {}, but got {}".format(
+        MODEL_URLS["OCR"][DEFAULT_OCR_MODEL_VERSION]["rec"].keys(), lang
     )
     if lang == "ch":
         det_lang = "ch"
@@ -629,10 +629,10 @@ class PaddleOCR(predict_system.TextSystem):
         """
         params = parse_args(mMain=False)
         params.__dict__.update(**kwargs)
-        assert params.ocr_version in SUPPORT_OCR_MODEL_VERSION, (
-            "ocr_version must in {}, but get {}".format(
-                SUPPORT_OCR_MODEL_VERSION, params.ocr_version
-            )
+        assert (
+                params.ocr_version in SUPPORT_OCR_MODEL_VERSION
+        ), "ocr_version must in {}, but get {}".format(
+            SUPPORT_OCR_MODEL_VERSION, params.ocr_version
         )
         params.use_gpu = check_gpu(params.use_gpu)
 
@@ -688,15 +688,15 @@ class PaddleOCR(predict_system.TextSystem):
         self.page_num = params.page_num
 
     def ocr(
-        self,
-        img,
-        det=True,
-        rec=True,
-        cls=True,
-        bin=False,
-        inv=False,
-        alpha_color=(255, 255, 255),
-        slice={},
+            self,
+            img,
+            det=True,
+            rec=True,
+            cls=True,
+            bin=False,
+            inv=False,
+            alpha_color=(255, 255, 255),
+            slice={},
     ):
         """
         OCR with PaddleOCR
@@ -811,10 +811,10 @@ class PPStructure(StructureSystem):
         """
         params = parse_args(mMain=False)
         params.__dict__.update(**kwargs)
-        assert params.structure_version in SUPPORT_STRUCTURE_MODEL_VERSION, (
-            "structure_version must in {}, but get {}".format(
-                SUPPORT_STRUCTURE_MODEL_VERSION, params.structure_version
-            )
+        assert (
+                params.structure_version in SUPPORT_STRUCTURE_MODEL_VERSION
+        ), "structure_version must in {}, but get {}".format(
+            SUPPORT_STRUCTURE_MODEL_VERSION, params.structure_version
         )
         params.use_gpu = check_gpu(params.use_gpu)
         params.mode = "structure"
@@ -894,11 +894,11 @@ class PPStructure(StructureSystem):
         super().__init__(params)
 
     def __call__(
-        self,
-        img,
-        return_ocr_result_in_table=False,
-        img_idx=0,
-        alpha_color=(255, 255, 255),
+            self,
+            img,
+            return_ocr_result_in_table=False,
+            img_idx=0,
+            alpha_color=(255, 255, 255),
     ):
         """
         Performs structure analysis on the input image.

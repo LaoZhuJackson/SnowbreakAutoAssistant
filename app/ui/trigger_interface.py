@@ -24,9 +24,7 @@ class Ui_trigger(object):
         self.SimpleCardWidget.setObjectName("SimpleCardWidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.SimpleCardWidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_2.addItem(spacerItem, 4, 0, 1, 1)
         self.SimpleCardWidget_f_2 = SimpleCardWidget(self.SimpleCardWidget)
         self.SimpleCardWidget_f_2.setMaximumSize(QtCore.QSize(16777215, 16777215))
@@ -35,9 +33,7 @@ class Ui_trigger(object):
         self.gridLayout_6.setContentsMargins(11, 11, 11, 11)
         self.gridLayout_6.setSpacing(6)
         self.gridLayout_6.setObjectName("gridLayout_6")
-        spacerItem1 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_6.addItem(spacerItem1, 2, 5, 1, 1)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -63,9 +59,7 @@ class Ui_trigger(object):
         self.gridLayout_5.setContentsMargins(11, 11, 11, 11)
         self.gridLayout_5.setSpacing(6)
         self.gridLayout_5.setObjectName("gridLayout_5")
-        spacerItem2 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_5.addItem(spacerItem2, 2, 5, 1, 1)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
@@ -100,12 +94,4 @@ class Ui_trigger(object):
         self.StrongBodyLabel.setText(_translate("trigger", "自动采集"))
         self.BodyLabel.setText(_translate("trigger", "自动在采集按钮出现时按下F键"))
         self.BodyLabel_trigger_tip.setText(_translate("trigger", "Body label"))
-
-
-from qfluentwidgets import (
-    BodyLabel,
-    SimpleCardWidget,
-    StrongBodyLabel,
-    SwitchButton,
-    TitleLabel,
-)
+from qfluentwidgets import BodyLabel, SimpleCardWidget, StrongBodyLabel, SwitchButton, TitleLabel

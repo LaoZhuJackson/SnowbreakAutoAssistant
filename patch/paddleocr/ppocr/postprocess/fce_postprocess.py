@@ -26,12 +26,12 @@ from ppocr.utils.poly_nms import poly_nms, valid_boundary
 def fill_hole(input_mask):
     h, w = input_mask.shape
     canvas = np.zeros((h + 2, w + 2), np.uint8)
-    canvas[1 : h + 1, 1 : w + 1] = input_mask.copy()
+    canvas[1: h + 1, 1: w + 1] = input_mask.copy()
 
     mask = np.zeros((h + 4, w + 4), np.uint8)
 
     cv2.floodFill(canvas, mask, (0, 0), 1)
-    canvas = canvas[1 : h + 1, 1 : w + 1].astype(np.bool_)
+    canvas = canvas[1: h + 1, 1: w + 1].astype(np.bool_)
 
     return ~canvas | input_mask
 
@@ -50,7 +50,7 @@ def fourier2poly(fourier_coeff, num_reconstr_points=50):
     a = np.zeros((len(fourier_coeff), num_reconstr_points), dtype="complex")
     k = (len(fourier_coeff[0]) - 1) // 2
 
-    a[:, 0 : k + 1] = fourier_coeff[:, k:]
+    a[:, 0: k + 1] = fourier_coeff[:, k:]
     a[:, -k:] = fourier_coeff[:, :k]
 
     poly_complex = ifft(a) * num_reconstr_points
@@ -66,17 +66,17 @@ class FCEPostProcess(object):
     """
 
     def __init__(
-        self,
-        scales,
-        fourier_degree=5,
-        num_reconstr_points=50,
-        decoding_type="fcenet",
-        score_thr=0.3,
-        nms_thr=0.1,
-        alpha=1.0,
-        beta=1.0,
-        box_type="poly",
-        **kwargs,
+            self,
+            scales,
+            fourier_degree=5,
+            num_reconstr_points=50,
+            decoding_type="fcenet",
+            score_thr=0.3,
+            nms_thr=0.1,
+            alpha=1.0,
+            beta=1.0,
+            box_type="poly",
+            **kwargs,
     ):
         self.scales = scales
         self.fourier_degree = fourier_degree
@@ -118,8 +118,8 @@ class FCEPostProcess(object):
             scores.append(b[-1])
             b = (
                 (
-                    np.array(b[: sz - 1])
-                    * (np.tile(scale_factor[:2], int((sz - 1) / 2)).reshape(1, sz - 1))
+                        np.array(b[: sz - 1])
+                        * (np.tile(scale_factor[:2], int((sz - 1) / 2)).reshape(1, sz - 1))
                 )
                 .flatten()
                 .tolist()
@@ -161,16 +161,16 @@ class FCEPostProcess(object):
         )
 
     def fcenet_decode(
-        self,
-        preds,
-        fourier_degree,
-        num_reconstr_points,
-        scale,
-        alpha=1.0,
-        beta=2.0,
-        box_type="poly",
-        score_thr=0.3,
-        nms_thr=0.1,
+            self,
+            preds,
+            fourier_degree,
+            num_reconstr_points,
+            scale,
+            alpha=1.0,
+            beta=2.0,
+            box_type="poly",
+            score_thr=0.3,
+            nms_thr=0.1,
     ):
         """Decoding predictions of FCENet to instances.
 
@@ -203,7 +203,7 @@ class FCEPostProcess(object):
 
         reg_pred = preds[1][0].transpose([1, 2, 0])
         x_pred = reg_pred[:, :, : 2 * fourier_degree + 1]
-        y_pred = reg_pred[:, :, 2 * fourier_degree + 1 :]
+        y_pred = reg_pred[:, :, 2 * fourier_degree + 1:]
 
         score_pred = (tr_pred[1] ** alpha) * (tcl_pred[1] ** beta)
         tr_pred_mask = (score_pred) > score_thr

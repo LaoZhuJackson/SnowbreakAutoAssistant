@@ -389,12 +389,12 @@ def resize_img(img, input_size=600):
 
 
 def draw_ocr(
-    image,
-    boxes,
-    txts=None,
-    scores=None,
-    drop_score=0.5,
-    font_path="./doc/fonts/simfang.ttf",
+        image,
+        boxes,
+        txts=None,
+        scores=None,
+        drop_score=0.5,
+        font_path="./doc/fonts/simfang.ttf",
 ):
     """
     Visualize the results of OCR detection and recognition
@@ -432,12 +432,12 @@ def draw_ocr(
 
 
 def draw_ocr_box_txt(
-    image,
-    boxes,
-    txts=None,
-    scores=None,
-    drop_score=0.5,
-    font_path="./doc/fonts/simfang.ttf",
+        image,
+        boxes,
+        txts=None,
+        scores=None,
+        drop_score=0.5,
+        font_path="./doc/fonts/simfang.ttf",
 ):
     h, w = image.height, image.width
     img_left = image.copy()
@@ -543,7 +543,7 @@ def str_count(s):
 
 
 def text_visual(
-    texts, scores, img_h=400, img_w=600, threshold=0.0, font_path="./doc/simfang.ttf"
+        texts, scores, img_h=400, img_w=600, threshold=0.0, font_path="./doc/simfang.ttf"
 ):
     """
     create new blank img and draw txt on it
@@ -556,13 +556,13 @@ def text_visual(
     return(array):
     """
     if scores is not None:
-        assert len(texts) == len(scores), (
-            "The number of txts and corresponding scores must match"
-        )
+        assert len(texts) == len(
+            scores
+        ), "The number of txts and corresponding scores must match"
 
     def create_blank_img():
         blank_img = np.ones(shape=[img_h, img_w], dtype=np.int8) * 255
-        blank_img[:, img_w - 1 :] = 0
+        blank_img[:, img_w - 1:] = 0
         blank_img = Image.fromarray(blank_img).convert("RGB")
         draw_txt = ImageDraw.Draw(blank_img)
         return blank_img, draw_txt
@@ -591,7 +591,7 @@ def text_visual(
             else:
                 new_txt = "    " + txt
             draw_txt.text((0, gap * count), new_txt, txt_color, font=font)
-            txt = tmp[img_w // font_size - 4 :]
+            txt = tmp[img_w // font_size - 4:]
             if count >= img_h // gap - 1:
                 txt_img_list.append(np.array(blank_img))
                 blank_img, draw_txt = create_blank_img()
@@ -711,25 +711,25 @@ def slice_generator(image, horizontal_stride, vertical_stride, maximum_slices=50
     vertical_num_slices = (image_h + vertical_stride - 1) // vertical_stride
     horizontal_num_slices = (image_w + horizontal_stride - 1) // horizontal_stride
 
-    assert vertical_num_slices > 0, (
-        f"Invalid number ({vertical_num_slices}) of vertical slices"
-    )
+    assert (
+            vertical_num_slices > 0
+    ), f"Invalid number ({vertical_num_slices}) of vertical slices"
 
-    assert horizontal_num_slices > 0, (
-        f"Invalid number ({horizontal_num_slices}) of horizontal slices"
-    )
+    assert (
+            horizontal_num_slices > 0
+    ), f"Invalid number ({horizontal_num_slices}) of horizontal slices"
 
     if vertical_num_slices >= maximum_slices:
         recommended_vertical_stride = max(1, image_h // maximum_slices) + 1
-        assert False, (
-            f"Too computationally expensive with {vertical_num_slices} slices, try a higher vertical stride (recommended minimum: {recommended_vertical_stride})"
-        )
+        assert (
+            False
+        ), f"Too computationally expensive with {vertical_num_slices} slices, try a higher vertical stride (recommended minimum: {recommended_vertical_stride})"
 
     if horizontal_num_slices >= maximum_slices:
         recommended_horizontal_stride = max(1, image_w // maximum_slices) + 1
-        assert False, (
-            f"Too computationally expensive with {horizontal_num_slices} slices, try a higher horizontal stride (recommended minimum: {recommended_horizontal_stride})"
-        )
+        assert (
+            False
+        ), f"Too computationally expensive with {horizontal_num_slices} slices, try a higher horizontal stride (recommended minimum: {recommended_horizontal_stride})"
 
     for v_slice_idx in range(vertical_num_slices):
         v_start = max(0, (v_slice_idx * vertical_stride))
@@ -756,9 +756,9 @@ def merge_boxes(box1, box2, x_threshold, y_threshold):
     min_x2, max_x2, min_y2, max_y2 = calculate_box_extents(box2)
 
     if (
-        abs(min_y1 - min_y2) <= y_threshold
-        and abs(max_y1 - max_y2) <= y_threshold
-        and abs(max_x1 - min_x2) <= x_threshold
+            abs(min_y1 - min_y2) <= y_threshold
+            and abs(max_y1 - max_y2) <= y_threshold
+            and abs(max_x1 - min_x2) <= x_threshold
     ):
         new_xmin = min(min_x1, min_x2)
         new_xmax = max(max_x1, max_x2)
@@ -784,7 +784,7 @@ def merge_fragmented(boxes, x_threshold=10, y_threshold=10):
 
         merged_box = [point[:] for point in box1]
 
-        for j, box2 in enumerate(boxes[i + 1 :], start=i + 1):
+        for j, box2 in enumerate(boxes[i + 1:], start=i + 1):
             if j not in visited:
                 merged_result = merge_boxes(
                     merged_box, box2, x_threshold=x_threshold, y_threshold=y_threshold
@@ -803,7 +803,7 @@ def merge_fragmented(boxes, x_threshold=10, y_threshold=10):
 
 def check_gpu(use_gpu):
     if use_gpu and (
-        not paddle.is_compiled_with_cuda() or paddle.device.get_device() == "cpu"
+            not paddle.is_compiled_with_cuda() or paddle.device.get_device() == "cpu"
     ):
         use_gpu = False
     return use_gpu

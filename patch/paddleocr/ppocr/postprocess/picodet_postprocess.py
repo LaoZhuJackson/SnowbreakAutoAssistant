@@ -106,13 +106,13 @@ class PicoDetPostProcess(object):
     """
 
     def __init__(
-        self,
-        layout_dict_path,
-        strides=[8, 16, 32, 64],
-        score_threshold=0.4,
-        nms_threshold=0.5,
-        nms_top_k=1000,
-        keep_top_k=100,
+            self,
+            layout_dict_path,
+            strides=[8, 16, 32, 64],
+            score_threshold=0.4,
+            nms_threshold=0.5,
+            nms_top_k=1000,
+            keep_top_k=100,
     ):
         self.labels = self.load_layout_dict(layout_dict_path)
         self.strides = strides

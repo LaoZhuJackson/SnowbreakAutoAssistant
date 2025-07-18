@@ -51,7 +51,7 @@ def org_tcl_rois(batch_size, pos_lists, pos_masks, label_lists, tcl_bs):
 
 
 def pre_process(
-    label_list, pos_list, pos_mask, max_text_length, max_text_nums, pad_num, tcl_bs
+        label_list, pos_list, pos_mask, max_text_length, max_text_nums, pad_num, tcl_bs
 ):
     label_list = label_list.numpy()
     batch, _, _, _ = label_list.shape

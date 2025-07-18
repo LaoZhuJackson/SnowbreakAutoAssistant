@@ -29,13 +29,13 @@ from extract_textpoint_fast import generate_pivot_list_fast, restore_poly
 class PGNet_PostProcess(object):
     # two different post-process
     def __init__(
-        self,
-        character_dict_path,
-        valid_set,
-        score_thresh,
-        outs_dict,
-        shape_list,
-        point_gather_mode=None,
+            self,
+            character_dict_path,
+            valid_set,
+            score_thresh,
+            outs_dict,
+            shape_list,
+            point_gather_mode=None,
     ):
         self.Lexicon_Table = get_dict(character_dict_path)
         self.valid_set = valid_set
@@ -138,9 +138,9 @@ class PGNet_PostProcess(object):
                     offset = offset + offset_detal
                 ori_yx = np.array([y, x], dtype=np.float32)
                 point_pair = (
-                    (ori_yx + offset)[:, ::-1]
-                    * 4.0
-                    / np.array([ratio_w, ratio_h]).reshape(-1, 2)
+                        (ori_yx + offset)[:, ::-1]
+                        * 4.0
+                        / np.array([ratio_w, ratio_h]).reshape(-1, 2)
                 )
                 point_pair_list.append(point_pair)
 
@@ -164,8 +164,8 @@ class PGNet_PostProcess(object):
             if self.valid_set == "partvgg":
                 middle_point = len(detected_poly) // 2
                 detected_poly = detected_poly[
-                    [0, middle_point - 1, middle_point, -1], :
-                ]
+                                [0, middle_point - 1, middle_point, -1], :
+                                ]
                 poly_list.append(detected_poly)
             elif self.valid_set == "totaltext":
                 poly_list.append(detected_poly)

@@ -16,7 +16,7 @@ class Trigger(QFrame, Ui_trigger, BaseInterface):
     def __init__(self, text: str, parent=None):
         super().__init__()
         self.setupUi(self)
-        self.setObjectName(text.replace(" ", "-"))
+        self.setObjectName(text.replace(' ', '-'))
         self.parent = parent
 
         self.collect_thread = None
@@ -27,8 +27,7 @@ class Trigger(QFrame, Ui_trigger, BaseInterface):
 
     def _initWidget(self):
         self.BodyLabel_trigger_tip.setText(
-            "### 提示\n* 先启动游戏再开启本功能\n* 这里的功能相当于开关，开了就会一直检测，遇到符合的情况就自动触发\n* 不影响手动游玩，更像是辅助半自动"
-        )
+            "### 提示\n* 先启动游戏再开启本功能\n* 这里的功能相当于开关，开了就会一直检测，遇到符合的情况就自动触发\n* 不影响手动游玩，更像是辅助半自动")
 
     def _connect_to_slot(self):
         self.SwitchButton_f.checkedChanged.connect(self.on_f_toggled)
@@ -56,11 +55,19 @@ class Trigger(QFrame, Ui_trigger, BaseInterface):
             if self.f_thread.run:
                 self.f_thread.stop()
                 InfoBar.success(
-                    "自动按F", "已关闭", isClosable=True, duration=2000, parent=self
+                    '自动按F',
+                    '已关闭',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
                 )
             else:
                 InfoBar.error(
-                    "错误", "游戏未打开", isClosable=True, duration=2000, parent=self
+                    '错误',
+                    '游戏未打开',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
                 )
 
     def on_e_toggled(self, isChecked: bool):
@@ -77,9 +84,17 @@ class Trigger(QFrame, Ui_trigger, BaseInterface):
             if self.nita_e_thread.run:
                 self.nita_e_thread.stop()
                 InfoBar.success(
-                    "妮塔自动E", "已关闭", isClosable=True, duration=2000, parent=self
+                    '妮塔自动E',
+                    '已关闭',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
                 )
             else:
                 InfoBar.error(
-                    "错误", "游戏未打开", isClosable=True, duration=2000, parent=self
+                    '错误',
+                    '游戏未打开',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
                 )

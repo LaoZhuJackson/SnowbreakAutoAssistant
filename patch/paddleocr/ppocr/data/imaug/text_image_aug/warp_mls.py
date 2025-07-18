@@ -72,8 +72,8 @@ class WarpMLS:
                         break
 
                     w[k] = 1.0 / (
-                        (i - self.dst_pts[k][0]) * (i - self.dst_pts[k][0])
-                        + (j - self.dst_pts[k][1]) * (j - self.dst_pts[k][1])
+                            (i - self.dst_pts[k][0]) * (i - self.dst_pts[k][0])
+                            + (j - self.dst_pts[k][1]) * (j - self.dst_pts[k][1])
                     )
 
                     sw += w[k]
@@ -103,12 +103,12 @@ class WarpMLS:
 
                         tmp_pt = np.zeros(2, dtype=np.float32)
                         tmp_pt[0] = (
-                            np.sum(pt_i * cur_pt) * self.src_pts[k][0]
-                            - np.sum(pt_j * cur_pt) * self.src_pts[k][1]
+                                np.sum(pt_i * cur_pt) * self.src_pts[k][0]
+                                - np.sum(pt_j * cur_pt) * self.src_pts[k][1]
                         )
                         tmp_pt[1] = (
-                            -np.sum(pt_i * cur_pt_j) * self.src_pts[k][0]
-                            + np.sum(pt_j * cur_pt_j) * self.src_pts[k][1]
+                                -np.sum(pt_i * cur_pt_j) * self.src_pts[k][0]
+                                + np.sum(pt_j * cur_pt_j) * self.src_pts[k][1]
                         )
                         tmp_pt *= w[k] / miu_s
                         new_pt += tmp_pt
@@ -172,7 +172,7 @@ class WarpMLS:
                 else:
                     x = ny - nyi
                     y = nx - nxi
-                dst[i : i + h, j : j + w] = self.__bilinear_interp(
+                dst[i: i + h, j: j + w] = self.__bilinear_interp(
                     x,
                     y,
                     self.src[nyi, nxi],

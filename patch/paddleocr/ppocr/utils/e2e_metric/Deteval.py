@@ -112,13 +112,13 @@ def get_socre_A(gt_dir, pred_dict):
 
     for input_id in range(allInputs):
         if (
-            (input_id != ".DS_Store")
-            and (input_id != "Pascal_result.txt")
-            and (input_id != "Pascal_result_curved.txt")
-            and (input_id != "Pascal_result_non_curved.txt")
-            and (input_id != "Deteval_result.txt")
-            and (input_id != "Deteval_result_curved.txt")
-            and (input_id != "Deteval_result_non_curved.txt")
+                (input_id != ".DS_Store")
+                and (input_id != "Pascal_result.txt")
+                and (input_id != "Pascal_result_curved.txt")
+                and (input_id != "Pascal_result_non_curved.txt")
+                and (input_id != "Deteval_result.txt")
+                and (input_id != "Deteval_result_curved.txt")
+                and (input_id != "Deteval_result_non_curved.txt")
         ):
             detections = input_reading_mod(pred_dict)
             groundtruths = gt_reading_mod(gt_dir)
@@ -243,13 +243,13 @@ def get_socre_B(gt_dir, img_id, pred_dict):
 
     for input_id in range(allInputs):
         if (
-            (input_id != ".DS_Store")
-            and (input_id != "Pascal_result.txt")
-            and (input_id != "Pascal_result_curved.txt")
-            and (input_id != "Pascal_result_non_curved.txt")
-            and (input_id != "Deteval_result.txt")
-            and (input_id != "Deteval_result_curved.txt")
-            and (input_id != "Deteval_result_non_curved.txt")
+                (input_id != ".DS_Store")
+                and (input_id != "Pascal_result.txt")
+                and (input_id != "Pascal_result_curved.txt")
+                and (input_id != "Pascal_result_non_curved.txt")
+                and (input_id != "Deteval_result.txt")
+                and (input_id != "Deteval_result_curved.txt")
+                and (input_id != "Deteval_result_non_curved.txt")
         ):
             detections = input_reading_mod(pred_dict)
             groundtruths = gt_reading_mod(gt_dir, img_id).tolist()
@@ -446,16 +446,16 @@ def combine_results(all_data, rec_flag=True):
     hit_count = 0
 
     def one_to_one(
-        local_sigma_table,
-        local_tau_table,
-        local_accumulative_recall,
-        local_accumulative_precision,
-        global_accumulative_recall,
-        global_accumulative_precision,
-        gt_flag,
-        det_flag,
-        idy,
-        rec_flag,
+            local_sigma_table,
+            local_tau_table,
+            local_accumulative_recall,
+            local_accumulative_precision,
+            global_accumulative_recall,
+            global_accumulative_precision,
+            gt_flag,
+            det_flag,
+            idy,
+            rec_flag,
     ):
         hit_str_num = 0
         for gt_id in range(num_gt):
@@ -486,10 +486,10 @@ def combine_results(all_data, rec_flag=True):
             )
 
             if (
-                (gt_matching_num_qualified_sigma_candidates == 1)
-                and (gt_matching_num_qualified_tau_candidates == 1)
-                and (det_matching_num_qualified_sigma_candidates == 1)
-                and (det_matching_num_qualified_tau_candidates == 1)
+                    (gt_matching_num_qualified_sigma_candidates == 1)
+                    and (gt_matching_num_qualified_tau_candidates == 1)
+                    and (det_matching_num_qualified_sigma_candidates == 1)
+                    and (det_matching_num_qualified_tau_candidates == 1)
             ):
                 global_accumulative_recall = global_accumulative_recall + 1.0
                 global_accumulative_precision = global_accumulative_precision + 1.0
@@ -520,16 +520,16 @@ def combine_results(all_data, rec_flag=True):
         )
 
     def one_to_many(
-        local_sigma_table,
-        local_tau_table,
-        local_accumulative_recall,
-        local_accumulative_precision,
-        global_accumulative_recall,
-        global_accumulative_precision,
-        gt_flag,
-        det_flag,
-        idy,
-        rec_flag,
+            local_sigma_table,
+            local_tau_table,
+            local_accumulative_recall,
+            local_accumulative_precision,
+            global_accumulative_recall,
+            global_accumulative_precision,
+            gt_flag,
+            det_flag,
+            idy,
+            rec_flag,
     ):
         hit_str_num = 0
         for gt_id in range(num_gt):
@@ -549,16 +549,16 @@ def combine_results(all_data, rec_flag=True):
 
                 if num_qualified_tau_candidates == 1:
                     if (local_tau_table[gt_id, qualified_tau_candidates] >= tp) and (
-                        local_sigma_table[gt_id, qualified_tau_candidates] >= tr
+                            local_sigma_table[gt_id, qualified_tau_candidates] >= tr
                     ):
                         # became an one-to-one case
                         global_accumulative_recall = global_accumulative_recall + 1.0
                         global_accumulative_precision = (
-                            global_accumulative_precision + 1.0
+                                global_accumulative_precision + 1.0
                         )
                         local_accumulative_recall = local_accumulative_recall + 1.0
                         local_accumulative_precision = (
-                            local_accumulative_precision + 1.0
+                                local_accumulative_precision + 1.0
                         )
 
                         gt_flag[0, gt_id] = 1
@@ -593,14 +593,14 @@ def combine_results(all_data, rec_flag=True):
 
                     global_accumulative_recall = global_accumulative_recall + fsc_k
                     global_accumulative_precision = (
-                        global_accumulative_precision
-                        + num_qualified_tau_candidates * fsc_k
+                            global_accumulative_precision
+                            + num_qualified_tau_candidates * fsc_k
                     )
 
                     local_accumulative_recall = local_accumulative_recall + fsc_k
                     local_accumulative_precision = (
-                        local_accumulative_precision
-                        + num_qualified_tau_candidates * fsc_k
+                            local_accumulative_precision
+                            + num_qualified_tau_candidates * fsc_k
                     )
 
         return (
@@ -614,16 +614,16 @@ def combine_results(all_data, rec_flag=True):
         )
 
     def many_to_one(
-        local_sigma_table,
-        local_tau_table,
-        local_accumulative_recall,
-        local_accumulative_precision,
-        global_accumulative_recall,
-        global_accumulative_precision,
-        gt_flag,
-        det_flag,
-        idy,
-        rec_flag,
+            local_sigma_table,
+            local_tau_table,
+            local_accumulative_recall,
+            local_accumulative_precision,
+            global_accumulative_recall,
+            global_accumulative_precision,
+            gt_flag,
+            det_flag,
+            idy,
+            rec_flag,
     ):
         hit_str_num = 0
         for det_id in range(num_det):
@@ -643,16 +643,16 @@ def combine_results(all_data, rec_flag=True):
 
                 if num_qualified_sigma_candidates == 1:
                     if (local_tau_table[qualified_sigma_candidates, det_id] >= tp) and (
-                        local_sigma_table[qualified_sigma_candidates, det_id] >= tr
+                            local_sigma_table[qualified_sigma_candidates, det_id] >= tr
                     ):
                         # became an one-to-one case
                         global_accumulative_recall = global_accumulative_recall + 1.0
                         global_accumulative_precision = (
-                            global_accumulative_precision + 1.0
+                                global_accumulative_precision + 1.0
                         )
                         local_accumulative_recall = local_accumulative_recall + 1.0
                         local_accumulative_precision = (
-                            local_accumulative_precision + 1.0
+                                local_accumulative_precision + 1.0
                         )
 
                         gt_flag[0, qualified_sigma_candidates] = 1
@@ -696,16 +696,16 @@ def combine_results(all_data, rec_flag=True):
                     # recg end
 
                     global_accumulative_recall = (
-                        global_accumulative_recall
-                        + num_qualified_sigma_candidates * fsc_k
+                            global_accumulative_recall
+                            + num_qualified_sigma_candidates * fsc_k
                     )
                     global_accumulative_precision = (
-                        global_accumulative_precision + fsc_k
+                            global_accumulative_precision + fsc_k
                     )
 
                     local_accumulative_recall = (
-                        local_accumulative_recall
-                        + num_qualified_sigma_candidates * fsc_k
+                            local_accumulative_recall
+                            + num_qualified_sigma_candidates * fsc_k
                     )
                     local_accumulative_precision = local_accumulative_precision + fsc_k
         return (

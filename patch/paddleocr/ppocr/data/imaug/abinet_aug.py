@@ -15,7 +15,6 @@
 This code is refer from:
 https://github.com/FangShancheng/ABINet/blob/main/transforms.py
 """
-
 import math
 import numbers
 import random
@@ -91,18 +90,18 @@ class CVRandomAffine(object):
         self.degrees = degrees
 
         if translate is not None:
-            assert isinstance(translate, (tuple, list)) and len(translate) == 2, (
-                "translate should be a list or tuple and it must be of length 2."
-            )
+            assert (
+                    isinstance(translate, (tuple, list)) and len(translate) == 2
+            ), "translate should be a list or tuple and it must be of length 2."
             for t in translate:
                 if not (0.0 <= t <= 1.0):
                     raise ValueError("translation values should be between 0 and 1")
         self.translate = translate
 
         if scale is not None:
-            assert isinstance(scale, (tuple, list)) and len(scale) == 2, (
-                "scale should be a list or tuple and it must be of length 2."
-            )
+            assert (
+                    isinstance(scale, (tuple, list)) and len(scale) == 2
+            ), "scale should be a list or tuple and it must be of length 2."
             for s in scale:
                 if s <= 0:
                     raise ValueError("scale values should be positive")
@@ -116,9 +115,9 @@ class CVRandomAffine(object):
                     )
                 self.shear = [shear]
             else:
-                assert isinstance(shear, (tuple, list)) and (len(shear) == 2), (
-                    "shear should be a list or tuple and it must be of length 2."
-                )
+                assert isinstance(shear, (tuple, list)) and (
+                        len(shear) == 2
+                ), "shear should be a list or tuple and it must be of length 2."
                 self.shear = shear
         else:
             self.shear = shear
@@ -308,7 +307,7 @@ class CVGaussianNoise(object):
             raise Exception("degree must be number or list with length 2")
 
     def __call__(self, img):
-        noise = np.random.normal(self.mean, self.var**0.5, img.shape)
+        noise = np.random.normal(self.mean, self.var ** 0.5, img.shape)
         img = np.clip(img + noise, 0, 255).astype(np.uint8)
         return img
 
@@ -370,13 +369,13 @@ class CVMotionBlur(object):
 
 class CVGeometry(object):
     def __init__(
-        self,
-        degrees=15,
-        translate=(0.3, 0.3),
-        scale=(0.5, 2.0),
-        shear=(45, 15),
-        distortion=0.5,
-        p=0.5,
+            self,
+            degrees=15,
+            translate=(0.3, 0.3),
+            scale=(0.5, 2.0),
+            shear=(45, 15),
+            distortion=0.5,
+            p=0.5,
     ):
         self.p = p
         type_p = random.random()
@@ -480,14 +479,14 @@ class ParseQDeterioration(object):
 
 class SVTRGeometry(object):
     def __init__(
-        self,
-        aug_type=0,
-        degrees=15,
-        translate=(0.3, 0.3),
-        scale=(0.5, 2.0),
-        shear=(45, 15),
-        distortion=0.5,
-        p=0.5,
+            self,
+            aug_type=0,
+            degrees=15,
+            translate=(0.3, 0.3),
+            scale=(0.5, 2.0),
+            shear=(45, 15),
+            distortion=0.5,
+            p=0.5,
     ):
         self.aug_type = aug_type
         self.p = p

@@ -39,9 +39,9 @@ class SimpleDataSet(Dataset):
         if isinstance(ratio_list, (float, int)):
             ratio_list = [float(ratio_list)] * int(data_source_num)
 
-        assert len(ratio_list) == data_source_num, (
-            "The length of ratio_list should be the same as the file_list."
-        )
+        assert (
+                len(ratio_list) == data_source_num
+        ), "The length of ratio_list should be the same as the file_list."
         self.data_dir = dataset_config["data_dir"]
         self.do_shuffle = loader_config["shuffle"]
         self.seed = seed

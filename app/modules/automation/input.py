@@ -77,7 +77,7 @@ class Input:
             "lcontrol": 0xA2,
             "rcontrol": 0xA3,
             "lmenu": 0xA4,
-            "rmenu": 0xA5,
+            "rmenu": 0XA5
         }
         # https://learn.microsoft.com/zh-cn/windows/win32/inputdev/mouse-input-notifications
         self.WmCode = {
@@ -113,7 +113,7 @@ class Input:
         # 获取打印字符
         if len(key) == 1 and key in string.printable:
             # https://docs.microsoft.com/zh/windows/win32/api/winuser/nf-winuser-vkkeyscana
-            return windll.user32.VkKeyScanA(ord(key)) & 0xFF
+            return windll.user32.VkKeyScanA(ord(key)) & 0xff
         # 获取控制字符
         else:
             return self.VkCode[key]
@@ -121,7 +121,7 @@ class Input:
     def activate(self):
         win32gui.PostMessage(self.hwnd, win32con.WM_ACTIVATE, win32con.WA_ACTIVE, 0)
 
-    def mouse_down(self, x: int, y: int, mouse_key: str = "left"):
+    def mouse_down(self, x: int, y: int, mouse_key: str = 'left'):
         """鼠标按下，可以指定按键, 默认左键"""
         wparam = 0
         if mouse_key in ["x1", "x2"]:
@@ -130,7 +130,7 @@ class Input:
         message = self.WmCode[f"{mouse_key}_down"]
         win32gui.PostMessage(self.hwnd, message, wparam, lparam)
 
-    def mouse_up(self, x: int, y: int, mouse_key: str = "left"):
+    def mouse_up(self, x: int, y: int, mouse_key: str = 'left'):
         """鼠标抬起，可以指定按键, 默认左键"""
         wparam = 0
         if mouse_key in ["x1", "x2"]:
@@ -154,21 +154,12 @@ class Input:
         current_position = win32api.GetCursorPos()
 
         # 检查鼠标是否移动（阈值小于一定距离认为是未移动）
-        if (
-            abs(current_position[0] - last_position[0]) > threshold
-            or abs(current_position[1] - last_position[1]) > threshold
-        ):
+        if abs(current_position[0] - last_position[0]) > threshold or abs(
+                current_position[1] - last_position[1]) > threshold:
             return True  # 鼠标有活动
         return False  # 鼠标没有活动
 
-    def move_click(
-        self,
-        x: int,
-        y: int,
-        mouse_key="left",
-        press_time: float = 0.04,
-        time_out: float = 10,
-    ):
+    def move_click(self, x: int, y: int, mouse_key='left', press_time: float = 0.04, time_out: float = 10):
         """
         检测是否正在用鼠标，用户不使用鼠标时快速移动到x，y后点击再返回原位置，主要用于主界面有光标等地方，允许指定鼠标按键，运行设定按下时间
         假后台：能穿透窗口直接点到对应句柄的窗口，但是会抢一瞬间的鼠标
@@ -208,7 +199,7 @@ class Input:
             # print(traceback.format_exc())
             self.logger.error(f"鼠标移动点击({x}, {y})出错：{repr(e)}")
 
-    def mouse_click(self, x: int, y: int, mouse_key="left", press_time: float = 0.002):
+    def mouse_click(self, x: int, y: int, mouse_key='left', press_time: float = 0.002):
         """真后台：不抢鼠标，后台按键点击，主要用于无光标时，默认左键"""
         try:
             self.activate()
@@ -231,17 +222,17 @@ class Input:
         # https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mousemove
         wparam = 0
         lparam = y << 16 | x
-        win32gui.PostMessage(self.hwnd, self.WmCode["mouse_move"], wparam, lparam)
+        win32gui.PostMessage(self.hwnd, self.WmCode['mouse_move'], wparam, lparam)
 
-    def move_down(self, x, y, mouse_key="left"):
+    def move_down(self, x, y, mouse_key='left'):
         """鼠标移动到（x,y）后按下key键,默认左键"""
         pass
 
-    def move_up(self, x, y, mouse_key="left"):
+    def move_up(self, x, y, mouse_key='left'):
         """鼠标移动到（x,y）后松开key键,默认左键"""
         pass
 
-    def mouse_scroll(self, x: int, y: int, delta: int = 120, time_out: float = 10.0):
+    def mouse_scroll(self, x: int, y: int, delta: int = 120, time_out: float = 10.):
         """
         假后台：在坐标(x, y)滚动鼠标滚轮一次
         :param delta: 为正向上滚动，为负向下滚动
@@ -251,7 +242,7 @@ class Input:
         :return:
         """
         wparam = delta << 16
-        message = self.WmCode["mouse_wheel"]
+        message = self.WmCode['mouse_wheel']
         lparam = y << 16 | x
 
         last_position = win32api.GetCursorPos()  # 获取初始鼠标位置
@@ -319,9 +310,48 @@ class Input:
         win32gui.PostMessage(self.hwnd, self.WmCode["key_up"], wparam, lparam)
 
 
-if __name__ == "__main__":
-    title = "西山居启动器-尘白禁区"
-    i = Input(title, logger)
+if __name__ == '__main__':
+    import win32gui
+
+
+    def get_hwnd_by_title(window_title):
+
+        def callback(hwnd, hwnd_list):
+            if window_title.lower() in win32gui.GetWindowText(hwnd).lower():
+                hwnd_list.append(hwnd)
+            return True
+
+        hwnd_list = []
+        win32gui.EnumWindows(callback, hwnd_list)
+        return hwnd_list[0] if hwnd_list else None
+
+
+    def enumerate_child_windows(parent_hwnd):
+        def callback(handle, windows):
+            windows.append(handle)
+            return True
+
+        child_windows = []
+        win32gui.EnumChildWindows(parent_hwnd, callback, child_windows)
+        return child_windows
+
+
+    def get_hwnd(window_title):
+        """根据传入的窗口名和类型确定可操作的句柄"""
+        hwnd = win32gui.FindWindow(None, window_title)
+        handle_list = []
+        if hwnd:
+            handle_list.append(hwnd)
+            handle_list.extend(enumerate_child_windows(hwnd))
+            print(handle_list)
+        return None
+
+
+    hwnd = get_hwnd_by_title("BrownDust II")
+    print(f"窗口句柄：{hwnd}")
+    title = "BrownDust II"
+    get_hwnd(title)
+    i = Input(hwnd, logger)
     click_dict = {
         "SAA尘白助手": [230, 895],
         "无标题 - 画图": [933, 594],
@@ -331,11 +361,14 @@ if __name__ == "__main__":
         "Wuthering Waves": [1178, 477],
         "西山居启动器-尘白禁区": [337, 559],
         "尘白禁区": [110, 463],
+        "BrownDust II": [1441, 1336],
     }
     x_1 = click_dict[title][0]
     y_1 = click_dict[title][1]
-    # time.sleep(2)
+    time.sleep(2)
     # i.move_click('left', x_1, y_1,press_time=1)
-    i.mouse_click(x_1, y_1, "left", press_time=0.02)
+    # i.mouse_click(x_1, y_1)
+    # i.move_click(x_1, y_1)
+    # time.sleep(1)
     # i.press_key('esc')
     # i.mouse_scroll(-120,1532,534)

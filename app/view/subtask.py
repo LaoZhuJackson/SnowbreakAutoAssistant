@@ -19,7 +19,7 @@ class SubTask(QThread, BaseTask):
     def __init__(self, module):
         super().__init__()
         self.run = False  # 用于判断是否正常结束
-        if not self.init_auto("game"):
+        if not self.init_auto('game'):
             return
         self.logger = logger
         self.module = module(self.auto, self.logger)
@@ -51,13 +51,12 @@ class AdjustColor(QThread, BaseTask):
         self.logger = logger
 
     def run(self):
-        if not self.init_auto("game"):
+        if not self.init_auto('game'):
             self.logger.error("AdjustColor获取auto失败")
             return
         self.auto.take_screenshot()
-        img_np = self.auto.get_crop_form_first_screenshot(
-            crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080), is_resize=False
-        )
+        img_np = self.auto.get_crop_form_first_screenshot(crop=(1130 / 1920, 240 / 1080, 1500 / 1920, 570 / 1080),
+                                                          is_resize=False)
         # 显示图像并让用户点击选择一个点
         cv2.imshow("Select yellow area", img_np)
         self.logger.info("请点击图像上的黄色完美收杆区域，选择后按任意键关闭。")
@@ -81,9 +80,7 @@ class AdjustColor(QThread, BaseTask):
     def save_color_to_config(self):
         hue, sat, val = self.hsv_value
         lower_yellow = np.array([max(hue - 2, 0), max(sat - 35, 0), max(val - 10, 0)])
-        upper_yellow = np.array(
-            [min(hue + 2, 179), min(sat + 35, 255), min(val + 10, 255)]
-        )
+        upper_yellow = np.array([min(hue + 2, 179), min(sat + 35, 255), min(val + 10, 255)])
         base = f"{hue},{sat},{val}"
         upper = f"{upper_yellow[0]},{upper_yellow[1]},{upper_yellow[2]}"
         lower = f"{lower_yellow[0]},{lower_yellow[1]},{lower_yellow[2]}"

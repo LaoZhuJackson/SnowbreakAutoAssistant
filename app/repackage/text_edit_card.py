@@ -8,15 +8,8 @@ from qfluentwidgets import SettingCard, qconfig, FluentIconBase, LineEdit
 class TextEditCard(SettingCard):
     textChanged = pyqtSignal(str)
 
-    def __init__(
-        self,
-        configItem,
-        icon: Union[str, QIcon, FluentIconBase],
-        title,
-        placeholder,
-        content=None,
-        parent=None,
-    ):
+    def __init__(self, configItem, icon: Union[str, QIcon, FluentIconBase], title, placeholder, content=None,
+                 parent=None):
         """
         Parameters
         ----------

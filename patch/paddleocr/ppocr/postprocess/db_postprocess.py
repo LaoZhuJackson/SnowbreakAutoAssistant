@@ -15,7 +15,6 @@
 This code is refered from:
 https://github.com/WenmuZhou/DBNet.pytorch/blob/master/post_processing/seg_detector_representer.py
 """
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -33,15 +32,15 @@ class DBPostProcess(object):
     """
 
     def __init__(
-        self,
-        thresh=0.3,
-        box_thresh=0.7,
-        max_candidates=1000,
-        unclip_ratio=2.0,
-        use_dilation=False,
-        score_mode="fast",
-        box_type="quad",
-        **kwargs,
+            self,
+            thresh=0.3,
+            box_thresh=0.7,
+            max_candidates=1000,
+            unclip_ratio=2.0,
+            use_dilation=False,
+            score_mode="fast",
+            box_type="quad",
+            **kwargs,
     ):
         self.thresh = thresh
         self.box_thresh = box_thresh
@@ -202,7 +201,7 @@ class DBPostProcess(object):
         box[:, 0] = box[:, 0] - xmin
         box[:, 1] = box[:, 1] - ymin
         cv2.fillPoly(mask, box.reshape(1, -1, 2).astype("int32"), 1)
-        return cv2.mean(bitmap[ymin : ymax + 1, xmin : xmax + 1], mask)[0]
+        return cv2.mean(bitmap[ymin: ymax + 1, xmin: xmax + 1], mask)[0]
 
     def box_score_slow(self, bitmap, contour):
         """
@@ -223,7 +222,7 @@ class DBPostProcess(object):
         contour[:, 1] = contour[:, 1] - ymin
 
         cv2.fillPoly(mask, contour.reshape(1, -1, 2).astype("int32"), 1)
-        return cv2.mean(bitmap[ymin : ymax + 1, xmin : xmax + 1], mask)[0]
+        return cv2.mean(bitmap[ymin: ymax + 1, xmin: xmax + 1], mask)[0]
 
     def __call__(self, outs_dict, shape_list):
         pred = outs_dict["maps"]
@@ -259,17 +258,17 @@ class DBPostProcess(object):
 
 class DistillationDBPostProcess(object):
     def __init__(
-        self,
-        model_name=["student"],
-        key=None,
-        thresh=0.3,
-        box_thresh=0.6,
-        max_candidates=1000,
-        unclip_ratio=1.5,
-        use_dilation=False,
-        score_mode="fast",
-        box_type="quad",
-        **kwargs,
+            self,
+            model_name=["student"],
+            key=None,
+            thresh=0.3,
+            box_thresh=0.6,
+            max_candidates=1000,
+            unclip_ratio=1.5,
+            use_dilation=False,
+            score_mode="fast",
+            box_type="quad",
+            **kwargs,
     ):
         self.model_name = model_name
         self.key = key

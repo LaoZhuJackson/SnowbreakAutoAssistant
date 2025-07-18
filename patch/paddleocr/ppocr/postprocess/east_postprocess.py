@@ -49,7 +49,7 @@ class EASTPostProcess(object):
         return pred_quads
 
     def detect(
-        self, score_map, geo_map, score_thresh=0.8, cover_thresh=0.1, nms_thresh=0.2
+            self, score_map, geo_map, score_thresh=0.8, cover_thresh=0.1, nms_thresh=0.2
     ):
         """
         restore text boxes from score map and geo map
@@ -132,8 +132,8 @@ class EASTPostProcess(object):
                 for i_box, box in enumerate(boxes):
                     box = self.sort_poly(box.astype(np.int32))
                     if (
-                        np.linalg.norm(box[0] - box[1]) < 5
-                        or np.linalg.norm(box[3] - box[0]) < 5
+                            np.linalg.norm(box[0] - box[1]) < 5
+                            or np.linalg.norm(box[3] - box[0]) < 5
                     ):
                         continue
                     boxes_norm.append(box)

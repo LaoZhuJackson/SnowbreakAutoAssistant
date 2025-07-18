@@ -6,25 +6,11 @@ import time
 import traceback
 from functools import partial
 
-from qfluentwidgets import (
-    SwitchSettingCard,
-    FolderListSettingCard,
-    OptionsSettingCard,
-    PushSettingCard,
-    HyperlinkCard,
-    PrimaryPushSettingCard,
-    ScrollArea,
-    ComboBoxSettingCard,
-    ExpandLayout,
-    Theme,
-    CustomColorSettingCard,
-    setTheme,
-    setThemeColor,
-    isDarkTheme,
-    setFont,
-    MessageBox,
-    ProgressBar,
-)
+from qfluentwidgets import (SwitchSettingCard, FolderListSettingCard,
+                            OptionsSettingCard, PushSettingCard,
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
+                            ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
+                            setTheme, setThemeColor, isDarkTheme, setFont, MessageBox, ProgressBar)
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import SettingCardGroup as CardGroup
 from qfluentwidgets import InfoBar
@@ -41,6 +27,7 @@ from ..common.style_sheet import StyleSheet
 
 
 class UpdatingThread(QThread):
+
     def __init__(self, updater):
         super().__init__()
         self.updater = updater
@@ -50,13 +37,14 @@ class UpdatingThread(QThread):
 
 
 class SettingCardGroup(CardGroup):
+
     def __init__(self, title: str, parent=None):
         super().__init__(title, parent)
         setFont(self.titleLabel, 14, QFont.Weight.DemiBold)
 
 
 class SettingInterface(ScrollArea):
-    """Setting interface"""
+    """ Setting interface """
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -72,30 +60,35 @@ class SettingInterface(ScrollArea):
 
         # personalization
         self.personalGroup = SettingCardGroup(
-            self.tr("Personalization"), self.scrollWidget
-        )
+            self.tr('Personalization'), self.scrollWidget)
         self.micaCard = SwitchSettingCard(
             FIF.TRANSPARENT,
-            self.tr("Mica effect"),
-            self.tr("Apply semi transparent to windows and surfaces"),
+            self.tr('Mica effect'),
+            self.tr('Apply semi transparent to windows and surfaces'),
             config.micaEnabled,
-            self.personalGroup,
+            self.personalGroup
         )
         self.themeCard = ComboBoxSettingCard(
             config.themeMode,
             FIF.BRUSH,
-            self.tr("Application theme"),
+            self.tr('Application theme'),
             self.tr("Change the appearance of your application"),
-            texts=[self.tr("Light"), self.tr("Dark"), self.tr("Use system setting")],
-            parent=self.personalGroup,
+            texts=[
+                self.tr('Light'), self.tr('Dark'),
+                self.tr('Use system setting')
+            ],
+            parent=self.personalGroup
         )
         self.enterCard = ComboBoxSettingCard(
             config.enter_interface,
             FIF.HOME,
-            "启动时进入",
+            '启动时进入',
             self.tr("选择启动软件时直接进入哪个页面"),
-            texts=[self.tr("展示页"), self.tr("主页"), self.tr("小工具")],
-            parent=self.personalGroup,
+            texts=[
+                self.tr('展示页'), self.tr('主页'),
+                self.tr('小工具')
+            ],
+            parent=self.personalGroup
         )
         self.zoomCard = ComboBoxSettingCard(
             config.dpiScale,
@@ -103,14 +96,10 @@ class SettingInterface(ScrollArea):
             self.tr("Interface zoom"),
             self.tr("Change the size of widgets and fonts"),
             texts=[
-                "100%",
-                "125%",
-                "150%",
-                "175%",
-                "200%",
-                self.tr("Use system setting"),
+                "100%", "125%", "150%", "175%", "200%",
+                self.tr("Use system setting")
             ],
-            parent=self.personalGroup,
+            parent=self.personalGroup
         )
         # self.languageCard = ComboBoxSettingCard(
         #     config.language,
@@ -123,68 +112,74 @@ class SettingInterface(ScrollArea):
 
         # update software
         self.aboutSoftwareGroup = SettingCardGroup(
-            self.tr("软件相关"), self.scrollWidget
-        )
+            self.tr("软件相关"), self.scrollWidget)
         self.updateOnStartUpCard = SwitchSettingCard(
             FIF.UPDATE,
-            self.tr("Check for updates when the application starts"),
-            "版本更稳定且拥有更多新功能",
+            self.tr('Check for updates when the application starts'),
+            '如果开启，每次游戏版本更新会自动更新对应活动刷体力的坐标和SAA提醒的链接',
             configItem=config.checkUpdateAtStartUp,
-            parent=self.aboutSoftwareGroup,
+            parent=self.aboutSoftwareGroup
         )
         self.serverCard = ComboBoxSettingCard(
             config.server_interface,
             FIF.GAME,
-            "游戏渠道选择",
+            '游戏渠道选择',
             self.tr("请选择你所在的区服"),
-            texts=[self.tr("官服"), self.tr("b服"), self.tr("国际服")],
-            parent=self.aboutSoftwareGroup,
+            texts=[self.tr('官服'), self.tr('b服'), self.tr('国际服')],
+            parent=self.aboutSoftwareGroup
         )
         self.isLogCard = SwitchSettingCard(
             FIF.DEVELOPER_TOOLS,
-            self.tr("展示ocr识别结果"),
-            "打开将在日志中显示ocr识别结果，获得更详细的日志信息",
+            self.tr('展示ocr识别结果'),
+            '打开将在日志中显示ocr识别结果，获得更详细的日志信息',
             configItem=config.isLog,
-            parent=self.aboutSoftwareGroup,
+            parent=self.aboutSoftwareGroup
         )
         self.showScreenshotCard = SwitchSettingCard(
             FIF.PHOTO,
-            self.tr("展示运行时的窗口截图"),
-            "用于在查错时查看是否正确截取了游戏对应位置的画面",
+            self.tr('展示运行时的窗口截图'),
+            '用于在查错时查看是否正确截取了游戏对应位置的画面',
             configItem=config.showScreenshot,
-            parent=self.aboutSoftwareGroup,
+            parent=self.aboutSoftwareGroup
         )
         self.saveScaleCacheCard = SwitchSettingCard(
             FIF.SAVE,
-            self.tr("保存缩放比例数据"),
-            "如果你的游戏窗口固定使用，可以选择保存，这样运行会匹配得更快，如果窗口大小经常变化则取消勾选",
+            self.tr('保存缩放比例数据'),
+            '如果你的游戏窗口固定使用，可以选择保存，这样运行会匹配得更快，如果窗口大小经常变化则取消勾选',
             configItem=config.saveScaleCache,
-            parent=self.aboutSoftwareGroup,
+            parent=self.aboutSoftwareGroup
+        )
+        self.autoScaling = SwitchSettingCard(
+            FIF.BACK_TO_WINDOW,
+            self.tr('自动缩放比例'),
+            '默认开启，在启动SAA时如果发现游戏窗口比例不是16:9会自动缩放成1920*1080并贴在左上角',
+            configItem=config.autoScaling,
+            parent=self.aboutSoftwareGroup
         )
 
         # application
-        self.aboutGroup = SettingCardGroup(self.tr("About"), self.scrollWidget)
+        self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
         self.proxyCard = TextEditCard(
             config.update_proxies,
             FIF.GLOBE,
-            "代理端口",
+            '代理端口',
             "如‘7890’",
-            "如果选择开代理则需要填入代理端口，不开代理则置空",
-            self.aboutGroup,
+            '如果选择开代理则需要填入代理端口，不开代理则置空',
+            self.aboutGroup
         )
         self.feedbackCard = PrimaryPushSettingCard(
-            "前往B站",
+            '前往B站',
             FIF.FEEDBACK,
-            "提供反馈",
-            "唯一平台b站：芬妮舞狮，QQ群：" + QQ,
-            self.aboutGroup,
+            '提供反馈',
+            '唯一平台b站：芬妮舞狮，QQ群：' + QQ,
+            self.aboutGroup
         )
         self.aboutCard = PrimaryPushSettingCard(
-            self.tr("Check update"),
+            self.tr('Check update'),
             "app/resource/images/logo.png",
-            self.tr("About"),
+            self.tr('About'),
             "本助手免费开源，当前版本：" + VERSION,
-            self.aboutGroup,
+            self.aboutGroup
         )
 
         self.__initWidget()
@@ -195,12 +190,12 @@ class SettingInterface(ScrollArea):
         self.setViewportMargins(0, 100, 0, 20)
         self.setWidget(self.scrollWidget)
         self.setWidgetResizable(True)
-        self.setObjectName("settingInterface")
+        self.setObjectName('settingInterface')
 
         # initialize style sheet
         setFont(self.settingLabel, 23, QFont.Weight.DemiBold)
-        self.scrollWidget.setObjectName("scrollWidget")
-        self.settingLabel.setObjectName("settingLabel")
+        self.scrollWidget.setObjectName('scrollWidget')
+        self.settingLabel.setObjectName('settingLabel')
         StyleSheet.SETTING_INTERFACE.apply(self)
         self.scrollWidget.setStyleSheet("QWidget{background:transparent}")
 
@@ -226,6 +221,7 @@ class SettingInterface(ScrollArea):
         self.aboutSoftwareGroup.addSettingCard(self.isLogCard)
         self.aboutSoftwareGroup.addSettingCard(self.showScreenshotCard)
         self.aboutSoftwareGroup.addSettingCard(self.saveScaleCacheCard)
+        self.aboutSoftwareGroup.addSettingCard(self.autoScaling)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)
@@ -239,16 +235,16 @@ class SettingInterface(ScrollArea):
         self.expandLayout.addWidget(self.aboutGroup)
 
     def _showRestartTooltip(self):
-        """show restart tooltip"""
+        """ show restart tooltip """
         InfoBar.success(
-            self.tr("Updated successfully"),
-            self.tr("Configuration takes effect after restart"),
+            self.tr('Updated successfully'),
+            self.tr('Configuration takes effect after restart'),
             duration=2000,
-            parent=self,
+            parent=self
         )
 
     def _connectSignalToSlot(self):
-        """connect signal to slot"""
+        """ connect signal to slot """
         config.appRestartSig.connect(self._showRestartTooltip)
 
         # personalization
@@ -260,8 +256,7 @@ class SettingInterface(ScrollArea):
 
         # about
         self.feedbackCard.clicked.connect(
-            lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL))
-        )
+            lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
 
     def check_update(self):
         pass
@@ -315,37 +310,35 @@ class SettingInterface(ScrollArea):
         self.progressBar.setVisible(True)
         self.updating_thread = UpdatingThread(updater)
         signalBus.checkUpdateSig.connect(self.update_progress)
-        self.updating_thread.finished.connect(
-            partial(self.update_finished, updater.download_file_path)
-        )
+        self.updating_thread.finished.connect(partial(self.update_finished, updater.download_file_path))
         self.updating_thread.start()
 
     def update_progress(self, value):
-        """Update the progress bar"""
+        """ Update the progress bar """
         self.progressBar.setValue(value)
 
     def update_finished(self, zip_path):
-        """Hide progress bar and show completion message"""
+        """ Hide progress bar and show completion message """
         self.progressBar.setVisible(False)
         if os.path.exists(zip_path):
-            title = "更新完成"
-            content = f"压缩包已下载至{zip_path}，即将重启更新"
+            title = '更新完成'
+            content = f'压缩包已下载至{zip_path}，即将重启更新'
             message_box = MessageBox(title, content, self.parent.window())
             message_box.cancelButton.setVisible(False)
             if message_box.exec():
-                subprocess.Popen([sys.executable, "update.py", zip_path])
+                subprocess.Popen([sys.executable, 'update.py', zip_path])
                 self.parent.close()
         else:
             InfoBar.error(
-                "更新下载失败",
-                f"请前往github/gitee自行下载release，或者去群{QQ}找最新文件下载",
+                '更新下载失败',
+                f'请前往github/gitee自行下载release，或者去群{QQ}找最新文件下载',
                 isClosable=True,
                 duration=-1,
-                parent=self,
+                parent=self
             )
 
     def scrollToAboutCard(self):
-        """scroll to example card"""
+        """ scroll to example card """
         try:
             w = self.aboutCard
             self.verticalScrollBar().setValue(w.y())

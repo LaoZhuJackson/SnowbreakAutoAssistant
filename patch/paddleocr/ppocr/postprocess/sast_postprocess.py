@@ -36,14 +36,14 @@ class SASTPostProcess(object):
     """
 
     def __init__(
-        self,
-        score_thresh=0.5,
-        nms_thresh=0.2,
-        sample_pts_num=2,
-        shrink_ratio_of_width=0.3,
-        expand_scale=1.0,
-        tcl_map_thresh=0.5,
-        **kwargs,
+            self,
+            score_thresh=0.5,
+            nms_thresh=0.2,
+            sample_pts_num=2,
+            shrink_ratio_of_width=0.3,
+            expand_scale=1.0,
+            tcl_map_thresh=0.5,
+            **kwargs,
     ):
         self.score_thresh = score_thresh
         self.nms_thresh = nms_thresh
@@ -87,9 +87,9 @@ class SASTPostProcess(object):
         point_num = poly.shape[0]
         left_quad = np.array([poly[0], poly[1], poly[-2], poly[-1]], dtype=np.float32)
         left_ratio = (
-            -shrink_ratio_of_width
-            * np.linalg.norm(left_quad[0] - left_quad[3])
-            / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
+                -shrink_ratio_of_width
+                * np.linalg.norm(left_quad[0] - left_quad[3])
+                / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
         )
         left_quad_expand = self.shrink_quad_along_width(left_quad, left_ratio, 1.0)
         right_quad = np.array(
@@ -188,11 +188,11 @@ class SASTPostProcess(object):
         Estimate sample points number.
         """
         eh = (
-            np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[1] - quad[2])
-        ) / 2.0
+                     np.linalg.norm(quad[0] - quad[3]) + np.linalg.norm(quad[1] - quad[2])
+             ) / 2.0
         ew = (
-            np.linalg.norm(quad[0] - quad[1]) + np.linalg.norm(quad[2] - quad[3])
-        ) / 2.0
+                     np.linalg.norm(quad[0] - quad[1]) + np.linalg.norm(quad[2] - quad[3])
+             ) / 2.0
 
         dense_sample_pts_num = max(2, int(ew))
         dense_xy_center_line = xy_text[
@@ -212,19 +212,19 @@ class SASTPostProcess(object):
         return sample_pts_num
 
     def detect_sast(
-        self,
-        tcl_map,
-        tvo_map,
-        tbo_map,
-        tco_map,
-        ratio_w,
-        ratio_h,
-        src_w,
-        src_h,
-        shrink_ratio_of_width=0.3,
-        tcl_map_thresh=0.5,
-        offset_expand=1.0,
-        out_strid=4.0,
+            self,
+            tcl_map,
+            tvo_map,
+            tbo_map,
+            tco_map,
+            ratio_w,
+            ratio_h,
+            src_w,
+            src_h,
+            shrink_ratio_of_width=0.3,
+            tcl_map_thresh=0.5,
+            offset_expand=1.0,
+            out_strid=4.0,
     ):
         """
         first resize the tcl_map, tvo_map and tbo_map to the input_size, then restore the polys
@@ -282,7 +282,7 @@ class SASTPostProcess(object):
                 [[(quad[1, 0] + quad[2, 0]) / 2.0, (quad[1, 1] + quad[2, 1]) / 2.0]]
             )  # (1, 2)
             proj_unit_vec = (right_center_pt - left_center_pt) / (
-                np.linalg.norm(right_center_pt - left_center_pt) + 1e-6
+                    np.linalg.norm(right_center_pt - left_center_pt) + 1e-6
             )
             proj_value = np.sum(xy_text * proj_unit_vec, axis=1)
             xy_text = xy_text[np.argsort(proj_value)]
@@ -316,9 +316,9 @@ class SASTPostProcess(object):
                     # original point
                 ori_yx = np.array([y, x], dtype=np.float32)
                 point_pair = (
-                    (ori_yx + offset)[:, ::-1]
-                    * out_strid
-                    / np.array([ratio_w, ratio_h]).reshape(-1, 2)
+                        (ori_yx + offset)[:, ::-1]
+                        * out_strid
+                        / np.array([ratio_w, ratio_h]).reshape(-1, 2)
                 )
                 point_pair_list.append(point_pair)
 

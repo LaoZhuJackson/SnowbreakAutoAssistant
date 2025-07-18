@@ -389,9 +389,7 @@ class APP_Image2Doc(QWidget):
         )
         if lang == "EN":
             args.det_model_dir = os.path.join(
-                root,
-                "inference",
-                "en_PP-OCRv3_det_infer",  # 此处从这里找到模型存放位置
+                root, "inference", "en_PP-OCRv3_det_infer"  # 此处从这里找到模型存放位置
             )
             args.rec_model_dir = os.path.join(
                 root, "inference", "en_PP-OCRv3_rec_infer"
@@ -406,9 +404,7 @@ class APP_Image2Doc(QWidget):
             lang_dict = DICT_EN
         elif lang == "CN":
             args.det_model_dir = os.path.join(
-                root,
-                "inference",
-                "cn_PP-OCRv3_det_infer",  # 此处从这里找到模型存放位置
+                root, "inference", "cn_PP-OCRv3_det_infer"  # 此处从这里找到模型存放位置
             )
             args.rec_model_dir = os.path.join(
                 root, "inference", "cn_PP-OCRv3_rec_infer"
@@ -501,8 +497,8 @@ class APP_Image2Doc(QWidget):
         # calculate time left of recognition
         lenbar = self.pb.maximum()
         avg_time = (
-            time.time() - self.time_start
-        ) / i  # Use average time to prevent time fluctuations
+                           time.time() - self.time_start
+                   ) / i  # Use average time to prevent time fluctuations
         time_left = str(datetime.timedelta(seconds=avg_time * (lenbar - i))).split(".")[
             0
         ]  # Remove microseconds

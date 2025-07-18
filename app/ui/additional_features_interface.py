@@ -35,9 +35,7 @@ class Ui_additional_features(object):
         self.gridLayout_7.addWidget(self.TitleLabel, 0, 0, 1, 1)
         self.textBrowser_log_fishing = QtWidgets.QTextBrowser(self.SimpleCardWidget)
         self.textBrowser_log_fishing.setStyleSheet("")
-        self.textBrowser_log_fishing.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
+        self.textBrowser_log_fishing.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log_fishing.setObjectName("textBrowser_log_fishing")
         self.gridLayout_7.addWidget(self.textBrowser_log_fishing, 1, 0, 1, 1)
         self.gridLayout_2.addWidget(self.SimpleCardWidget, 0, 1, 3, 1)
@@ -63,16 +61,12 @@ class Ui_additional_features(object):
         self.CheckBox_is_limit_time = CheckBox(self.SimpleCardWidget_fish)
         self.CheckBox_is_limit_time.setObjectName("CheckBox_is_limit_time")
         self.gridLayout_5.addWidget(self.CheckBox_is_limit_time, 3, 0, 1, 3)
-        spacerItem = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem, 12, 1, 1, 1)
         self.BodyLabel_21 = BodyLabel(self.SimpleCardWidget_fish)
         self.BodyLabel_21.setObjectName("BodyLabel_21")
         self.gridLayout_5.addWidget(self.BodyLabel_21, 1, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem1, 6, 1, 1, 1)
         self.StrongBodyLabel = StrongBodyLabel(self.SimpleCardWidget_fish)
         self.StrongBodyLabel.setObjectName("StrongBodyLabel")
@@ -97,9 +91,7 @@ class Ui_additional_features(object):
         self.BodyLabel_6.setObjectName("BodyLabel_6")
         self.gridLayout_5.addWidget(self.BodyLabel_6, 9, 0, 1, 1)
         self.PixmapLabel = PixmapLabel(self.SimpleCardWidget_fish)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.PixmapLabel.sizePolicy().hasHeightForWidth())
@@ -162,9 +154,7 @@ class Ui_additional_features(object):
         self.BodyLabel_tip_action.setTextFormat(QtCore.Qt.MarkdownText)
         self.BodyLabel_tip_action.setObjectName("BodyLabel_tip_action")
         self.gridLayout_6.addWidget(self.BodyLabel_tip_action, 2, 0, 1, 2)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_6.addItem(spacerItem2, 3, 0, 1, 1)
         self.BodyLabel_4 = BodyLabel(self.SimpleCardWidget_action)
         self.BodyLabel_4.setObjectName("BodyLabel_4")
@@ -189,9 +179,7 @@ class Ui_additional_features(object):
         self.gridLayout_8.addWidget(self.TitleLabel_2, 0, 0, 1, 1)
         self.textBrowser_log_action = QtWidgets.QTextBrowser(self.SimpleCardWidget_2)
         self.textBrowser_log_action.setStyleSheet("")
-        self.textBrowser_log_action.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
+        self.textBrowser_log_action.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log_action.setObjectName("textBrowser_log_action")
         self.gridLayout_8.addWidget(self.textBrowser_log_action, 1, 0, 1, 1)
         self.gridLayout_3.addWidget(self.SimpleCardWidget_2, 1, 1, 2, 1)
@@ -250,9 +238,7 @@ class Ui_additional_features(object):
         self.LineEdit_jigsaw_piece_3 = LineEdit(self.SimpleCardWidget_jigsaw)
         self.LineEdit_jigsaw_piece_3.setObjectName("LineEdit_jigsaw_piece_3")
         self.gridLayout_10.addWidget(self.LineEdit_jigsaw_piece_3, 4, 2, 1, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_10.addItem(spacerItem3, 14, 0, 1, 1)
         self.BodyLabel_18 = BodyLabel(self.SimpleCardWidget_jigsaw)
         self.BodyLabel_18.setObjectName("BodyLabel_18")
@@ -315,9 +301,7 @@ class Ui_additional_features(object):
         self.TitleLabel_log_jigsaw.setObjectName("TitleLabel_log_jigsaw")
         self.gridLayout_9.addWidget(self.TitleLabel_log_jigsaw, 0, 0, 1, 1)
         self.textBrowser_log_jigsaw = QtWidgets.QTextBrowser(self.SimpleCardWidget_3)
-        self.textBrowser_log_jigsaw.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
+        self.textBrowser_log_jigsaw.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log_jigsaw.setObjectName("textBrowser_log_jigsaw")
         self.gridLayout_9.addWidget(self.textBrowser_log_jigsaw, 1, 0, 1, 1)
         self.gridLayout_4.addWidget(self.SimpleCardWidget_3, 0, 1, 2, 1)
@@ -345,9 +329,7 @@ class Ui_additional_features(object):
         self.BodyLabel_28 = BodyLabel(self.SimpleCardWidget_water_bomb)
         self.BodyLabel_28.setObjectName("BodyLabel_28")
         self.gridLayout_12.addWidget(self.BodyLabel_28, 1, 0, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_12.addItem(spacerItem4, 3, 0, 1, 1)
         self.BodyLabel_tip_water = BodyLabel(self.SimpleCardWidget_water_bomb)
         self.BodyLabel_tip_water.setTextFormat(QtCore.Qt.MarkdownText)
@@ -383,13 +365,9 @@ class Ui_additional_features(object):
         self.TitleLabel_3 = TitleLabel(self.SimpleCardWidget_4)
         self.TitleLabel_3.setObjectName("TitleLabel_3")
         self.gridLayout_11.addWidget(self.TitleLabel_3, 0, 0, 1, 1)
-        self.textBrowser_log_water_bomb = QtWidgets.QTextBrowser(
-            self.SimpleCardWidget_4
-        )
+        self.textBrowser_log_water_bomb = QtWidgets.QTextBrowser(self.SimpleCardWidget_4)
         self.textBrowser_log_water_bomb.setStyleSheet("")
-        self.textBrowser_log_water_bomb.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
+        self.textBrowser_log_water_bomb.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log_water_bomb.setObjectName("textBrowser_log_water_bomb")
         self.gridLayout_11.addWidget(self.textBrowser_log_water_bomb, 1, 0, 1, 1)
         self.gridLayout_13.addWidget(self.SimpleCardWidget_4, 0, 1, 2, 1)
@@ -401,12 +379,8 @@ class Ui_additional_features(object):
         self.gridLayout_16.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_16.setSpacing(2)
         self.gridLayout_16.setObjectName("gridLayout_16")
-        self.SimpleCardWidget_alien_guardian = SimpleCardWidget(
-            self.page_alien_guardian
-        )
-        self.SimpleCardWidget_alien_guardian.setObjectName(
-            "SimpleCardWidget_alien_guardian"
-        )
+        self.SimpleCardWidget_alien_guardian = SimpleCardWidget(self.page_alien_guardian)
+        self.SimpleCardWidget_alien_guardian.setObjectName("SimpleCardWidget_alien_guardian")
         self.gridLayout_15 = QtWidgets.QGridLayout(self.SimpleCardWidget_alien_guardian)
         self.gridLayout_15.setObjectName("gridLayout_15")
         self.BodyLabel_tip_action_3 = BodyLabel(self.SimpleCardWidget_alien_guardian)
@@ -417,9 +391,7 @@ class Ui_additional_features(object):
         self.BodyLabel_25 = BodyLabel(self.SimpleCardWidget_alien_guardian)
         self.BodyLabel_25.setObjectName("BodyLabel_25")
         self.gridLayout_15.addWidget(self.BodyLabel_25, 0, 0, 1, 1)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_15.addItem(spacerItem5, 2, 0, 1, 1)
         self.ComboBox_mode = ComboBox(self.SimpleCardWidget_alien_guardian)
         self.ComboBox_mode.setObjectName("ComboBox_mode")
@@ -436,22 +408,14 @@ class Ui_additional_features(object):
         self.TitleLabel_4 = TitleLabel(self.SimpleCardWidget_5)
         self.TitleLabel_4.setObjectName("TitleLabel_4")
         self.gridLayout_14.addWidget(self.TitleLabel_4, 0, 0, 1, 1)
-        self.textBrowser_log_alien_guardian = QtWidgets.QTextBrowser(
-            self.SimpleCardWidget_5
-        )
+        self.textBrowser_log_alien_guardian = QtWidgets.QTextBrowser(self.SimpleCardWidget_5)
         self.textBrowser_log_alien_guardian.setStyleSheet("")
-        self.textBrowser_log_alien_guardian.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
-        self.textBrowser_log_alien_guardian.setObjectName(
-            "textBrowser_log_alien_guardian"
-        )
+        self.textBrowser_log_alien_guardian.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.textBrowser_log_alien_guardian.setObjectName("textBrowser_log_alien_guardian")
         self.gridLayout_14.addWidget(self.textBrowser_log_alien_guardian, 1, 0, 1, 1)
         self.gridLayout_16.addWidget(self.SimpleCardWidget_5, 0, 1, 2, 1)
         self.PushButton_start_alien_guardian = PushButton(self.page_alien_guardian)
-        self.PushButton_start_alien_guardian.setObjectName(
-            "PushButton_start_alien_guardian"
-        )
+        self.PushButton_start_alien_guardian.setObjectName("PushButton_start_alien_guardian")
         self.gridLayout_16.addWidget(self.PushButton_start_alien_guardian, 1, 0, 1, 1)
         self.gridLayout_16.setColumnStretch(0, 2)
         self.gridLayout_16.setColumnStretch(1, 1)
@@ -474,9 +438,7 @@ class Ui_additional_features(object):
         self.BodyLabel_27 = BodyLabel(self.SimpleCardWidget_maze)
         self.BodyLabel_27.setObjectName("BodyLabel_27")
         self.gridLayout_18.addWidget(self.BodyLabel_27, 0, 0, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_18.addItem(spacerItem6, 2, 0, 1, 1)
         self.ComboBox_mode_maze = ComboBox(self.SimpleCardWidget_maze)
         self.ComboBox_mode_maze.setObjectName("ComboBox_mode_maze")
@@ -495,9 +457,7 @@ class Ui_additional_features(object):
         self.gridLayout_17.addWidget(self.TitleLabel_5, 0, 0, 1, 1)
         self.textBrowser_log_maze = QtWidgets.QTextBrowser(self.SimpleCardWidget_6)
         self.textBrowser_log_maze.setStyleSheet("")
-        self.textBrowser_log_maze.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
+        self.textBrowser_log_maze.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log_maze.setObjectName("textBrowser_log_maze")
         self.gridLayout_17.addWidget(self.textBrowser_log_maze, 1, 0, 1, 1)
         self.gridLayout_19.addWidget(self.SimpleCardWidget_6, 0, 1, 2, 1)
@@ -525,9 +485,7 @@ class Ui_additional_features(object):
         self.BodyLabel_30 = BodyLabel(self.SimpleCardWidget_massaging)
         self.BodyLabel_30.setObjectName("BodyLabel_30")
         self.gridLayout_20.addWidget(self.BodyLabel_30, 0, 0, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem7 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_20.addItem(spacerItem7, 2, 0, 1, 1)
         self.ComboBox_wife = ComboBox(self.SimpleCardWidget_massaging)
         self.ComboBox_wife.setObjectName("ComboBox_wife")
@@ -549,9 +507,7 @@ class Ui_additional_features(object):
         self.gridLayout_21.addWidget(self.TitleLabel_6, 0, 0, 1, 1)
         self.textBrowser_log_massaging = QtWidgets.QTextBrowser(self.SimpleCardWidget_7)
         self.textBrowser_log_massaging.setStyleSheet("")
-        self.textBrowser_log_massaging.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff
-        )
+        self.textBrowser_log_massaging.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_log_massaging.setObjectName("textBrowser_log_massaging")
         self.gridLayout_21.addWidget(self.textBrowser_log_massaging, 1, 0, 1, 1)
         self.gridLayout_22.addWidget(self.SimpleCardWidget_7, 0, 1, 2, 1)
@@ -628,38 +584,21 @@ class Ui_additional_features(object):
         _translate = QtCore.QCoreApplication.translate
         additional_features.setWindowTitle(_translate("additional_features", "Frame"))
         self.TitleLabel.setText(_translate("additional_features", "日志"))
-        self.CheckBox_is_save_fish.setText(
-            _translate("additional_features", "是否保存新纪录截图")
-        )
+        self.CheckBox_is_save_fish.setText(_translate("additional_features", "是否保存新纪录截图"))
         self.BodyLabel_7.setText(_translate("additional_features", "颜色查找下限"))
-        self.PrimaryPushButton_get_color.setText(
-            _translate("additional_features", "校准颜色")
-        )
+        self.PrimaryPushButton_get_color.setText(_translate("additional_features", "校准颜色"))
         self.BodyLabel.setText(_translate("additional_features", "钓鱼次数："))
-        self.CheckBox_is_limit_time.setText(
-            _translate("additional_features", "是否限制单次收杆时间间隔上限")
-        )
+        self.CheckBox_is_limit_time.setText(_translate("additional_features", "是否限制单次收杆时间间隔上限"))
         self.BodyLabel_21.setText(_translate("additional_features", "自定义钓鱼键"))
-        self.StrongBodyLabel.setText(
-            _translate(
-                "additional_features",
-                "校准完美收杆区域HSV（当收杆出错，日志说黄色块大于2时用）",
-            )
-        )
-        self.LineEdit_fish_key.setPlaceholderText(
-            _translate("additional_features", "钓鱼键与尘白闪避键绑定")
-        )
+        self.StrongBodyLabel.setText(_translate("additional_features", "校准完美收杆区域HSV（当收杆出错，日志说黄色块大于2时用）"))
+        self.LineEdit_fish_key.setPlaceholderText(_translate("additional_features", "钓鱼键与尘白闪避键绑定"))
         self.BodyLabel_6.setText(_translate("additional_features", "颜色查找上限"))
         self.BodyLabel_5.setText(_translate("additional_features", "基准HSV值"))
         self.BodyLabel_2.setText(_translate("additional_features", "钓鱼模式"))
         self.PushButton_reset.setText(_translate("additional_features", "重置"))
         self.BodyLabel_23.setText(_translate("additional_features", "鱼饵类型："))
-        self.PushButton_start_fishing.setText(
-            _translate("additional_features", "开始钓鱼")
-        )
-        self.PushButton_start_action.setText(
-            _translate("additional_features", "开始行动")
-        )
+        self.PushButton_start_fishing.setText(_translate("additional_features", "开始钓鱼"))
+        self.PushButton_start_action.setText(_translate("additional_features", "开始行动"))
         self.BodyLabel_4.setText(_translate("additional_features", "刷取次数"))
         self.BodyLabel_22.setText(_translate("additional_features", "疾跑方式"))
         self.TitleLabel_2.setText(_translate("additional_features", "日志"))
@@ -667,12 +606,8 @@ class Ui_additional_features(object):
         self.BodyLabel_11.setText(_translate("additional_features", "2号碎片"))
         self.BodyLabel_3.setText(_translate("additional_features", "寻找最大方案数："))
         self.BodyLabel_10.setText(_translate("additional_features", "1号碎片"))
-        self.BodyLabel_8.setText(
-            _translate("additional_features", "当前寻找到的最优方案：")
-        )
-        self.BodyLabel_tip_jigsaw.setText(
-            _translate("additional_features", "Body label")
-        )
+        self.BodyLabel_8.setText(_translate("additional_features", "当前寻找到的最优方案："))
+        self.BodyLabel_tip_jigsaw.setText(_translate("additional_features", "Body label"))
         self.BodyLabel_16.setText(_translate("additional_features", "7号碎片"))
         self.BodyLabel_18.setText(_translate("additional_features", "9号碎片"))
         self.BodyLabel_14.setText(_translate("additional_features", "5号碎片"))
@@ -681,51 +616,29 @@ class Ui_additional_features(object):
         self.BodyLabel_17.setText(_translate("additional_features", "8号碎片"))
         self.BodyLabel_13.setText(_translate("additional_features", "4号碎片"))
         self.BodyLabel_12.setText(_translate("additional_features", "3号碎片"))
-        self.BodyLabel_9.setText(
-            _translate("additional_features", "当前用户碎片数量：")
-        )
-        self.PushButton_start_jigsaw.setText(
-            _translate("additional_features", "开始拼图")
-        )
+        self.BodyLabel_9.setText(_translate("additional_features", "当前用户碎片数量："))
+        self.PushButton_start_jigsaw.setText(_translate("additional_features", "开始拼图"))
         self.TitleLabel_log_jigsaw.setText(_translate("additional_features", "日志"))
         self.BodyLabel_28.setText(_translate("additional_features", "模版图置信度"))
-        self.BodyLabel_tip_water.setText(
-            _translate("additional_features", "Body label")
-        )
+        self.BodyLabel_tip_water.setText(_translate("additional_features", "Body label"))
         self.BodyLabel_29.setText(_translate("additional_features", "计数置信度"))
         self.BodyLabel_24.setText(_translate("additional_features", "连胜"))
-        self.BodyLabel_count_threshold.setText(
-            _translate("additional_features", "Body label")
-        )
-        self.BodyLabel_template_threshold.setText(
-            _translate("additional_features", "Body label")
-        )
+        self.BodyLabel_count_threshold.setText(_translate("additional_features", "Body label"))
+        self.BodyLabel_template_threshold.setText(_translate("additional_features", "Body label"))
         self.BodyLabel_26.setText(_translate("additional_features", "次后停止"))
-        self.PushButton_start_water_bomb.setText(
-            _translate("additional_features", "开始心动水弹")
-        )
+        self.PushButton_start_water_bomb.setText(_translate("additional_features", "开始心动水弹"))
         self.TitleLabel_3.setText(_translate("additional_features", "日志"))
         self.BodyLabel_25.setText(_translate("additional_features", "运行模式"))
-        self.BodyLabel_tip_alien.setText(
-            _translate("additional_features", "Body label")
-        )
+        self.BodyLabel_tip_alien.setText(_translate("additional_features", "Body label"))
         self.TitleLabel_4.setText(_translate("additional_features", "日志"))
-        self.PushButton_start_alien_guardian.setText(
-            _translate("additional_features", "开始异星守护")
-        )
+        self.PushButton_start_alien_guardian.setText(_translate("additional_features", "开始异星守护"))
         self.BodyLabel_27.setText(_translate("additional_features", "运行模式"))
         self.BodyLabel_tip_maze.setText(_translate("additional_features", "Body label"))
         self.TitleLabel_5.setText(_translate("additional_features", "日志"))
-        self.PushButton_start_maze.setText(
-            _translate("additional_features", "开始迷宫")
-        )
+        self.PushButton_start_maze.setText(_translate("additional_features", "开始迷宫"))
         self.BodyLabel_30.setText(_translate("additional_features", "按摩对象"))
-        self.BodyLabel_tip_massaging.setText(
-            _translate("additional_features", "Body label")
-        )
-        self.PushButton_start_massaging.setText(
-            _translate("additional_features", "开始按摩")
-        )
+        self.BodyLabel_tip_massaging.setText(_translate("additional_features", "Body label"))
+        self.PushButton_start_massaging.setText(_translate("additional_features", "开始按摩"))
         self.TitleLabel_6.setText(_translate("additional_features", "日志"))
         self.BodyLabel_32.setText(_translate("additional_features", "刷取次数(-1代表无限刷)"))
         self.BodyLabel_31.setText(_translate("additional_features", "模式"))
@@ -735,18 +648,5 @@ class Ui_additional_features(object):
         self.PushButton_start_drink.setText(_translate("additional_features", "开始喝酒"))
 
 
-from qfluentwidgets import (
-    BodyLabel,
-    CheckBox,
-    ComboBox,
-    LineEdit,
-    PixmapLabel,
-    PrimaryPushButton,
-    PushButton,
-    SegmentedWidget,
-    SimpleCardWidget,
-    Slider,
-    SpinBox,
-    StrongBodyLabel,
-    TitleLabel,
-)
+from qfluentwidgets import BodyLabel, CheckBox, ComboBox, LineEdit, PixmapLabel, PrimaryPushButton, PushButton, \
+    SegmentedWidget, SimpleCardWidget, Slider, SpinBox, StrongBodyLabel, TitleLabel

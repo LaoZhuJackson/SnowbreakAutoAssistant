@@ -1,24 +1,18 @@
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import (
-    QTreeWidgetItem,
-    QFrame,
-    QHBoxLayout,
-    QTreeWidgetItemIterator,
-    QScrollArea,
-    QApplication,
-)
+from PyQt5.QtWidgets import QTreeWidgetItem, QFrame, QHBoxLayout, QTreeWidgetItemIterator, QScrollArea, QApplication
 from qfluentwidgets import TreeWidget, ScrollArea
 
 from app.common.style_sheet import StyleSheet
 
 
 class Frame(QFrame):
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.hBoxLayout = QHBoxLayout(self)
         self.hBoxLayout.setContentsMargins(0, 8, 0, 0)
 
-        self.setObjectName("frame")
+        self.setObjectName('frame')
         StyleSheet.VIEW_INTERFACE.apply(self)
 
     def addWidget(self, widget):
@@ -34,24 +28,22 @@ class TreeFrame_person(Frame):
         self.tree = TreeWidget(self.parent)
         self.addWidget(self.tree)
 
-        item1 = QTreeWidgetItem(["人物碎片"])
-        item1.addChildren(
-            [
-                QTreeWidgetItem(["肴"]),
-                QTreeWidgetItem(["安卡希雅"]),
-                QTreeWidgetItem(["里芙"]),
-                QTreeWidgetItem(["辰星"]),
-                QTreeWidgetItem(["茉莉安"]),
-                QTreeWidgetItem(["芬妮"]),
-                QTreeWidgetItem(["芙提雅"]),
-                QTreeWidgetItem(["瑟瑞斯"]),
-                QTreeWidgetItem(["琴诺"]),
-                QTreeWidgetItem(["猫汐尔"]),
-                QTreeWidgetItem(["晴"]),
-                QTreeWidgetItem(["恩雅"]),
-                QTreeWidgetItem(["妮塔"]),
-            ]
-        )
+        item1 = QTreeWidgetItem(['人物碎片'])
+        item1.addChildren([
+            QTreeWidgetItem(["肴"]),
+            QTreeWidgetItem(["安卡希雅"]),
+            QTreeWidgetItem(["里芙"]),
+            QTreeWidgetItem(["辰星"]),
+            QTreeWidgetItem(["茉莉安"]),
+            QTreeWidgetItem(["芬妮"]),
+            QTreeWidgetItem(["芙提雅"]),
+            QTreeWidgetItem(["瑟瑞斯"]),
+            QTreeWidgetItem(["琴诺"]),
+            QTreeWidgetItem(["猫汐尔"]),
+            QTreeWidgetItem(["晴"]),
+            QTreeWidgetItem(["恩雅"]),
+            QTreeWidgetItem(["妮塔"]),
+        ])
         self.tree.addTopLevelItem(item1)
 
         self.tree.setHeaderHidden(True)
@@ -81,23 +73,19 @@ class TreeFrame_person(Frame):
         total_height = 0
         for i in range(self.tree.topLevelItemCount()):
             item = self.tree.topLevelItem(i)
-            total_height += self.tree.sizeHintForIndex(
-                self.tree.indexFromItem(item)
-            ).height()
+            total_height += self.tree.sizeHintForIndex(self.tree.indexFromItem(item)).height()
             total_height += self._calculateHeightForChildren(item)
 
         # 调整当前窗口大小
         self.setFixedSize(250, total_height + 5)  # 适当增加额外的空间
 
     def _calculateHeightForChildren(self, item):
-        """递归计算子节点的高度"""
+        """ 递归计算子节点的高度 """
         height = 0
         if item.isExpanded():
             for i in range(item.childCount()):
                 child = item.child(i)
-                height += self.tree.sizeHintForIndex(
-                    self.tree.indexFromItem(child)
-                ).height()
+                height += self.tree.sizeHintForIndex(self.tree.indexFromItem(child)).height()
                 height += self._calculateHeightForChildren(child)
         return height
 
@@ -142,14 +130,12 @@ class TreeFrame_weapon(Frame):
         self.tree = TreeWidget(self.parent)
         self.addWidget(self.tree)
 
-        item1 = QTreeWidgetItem(["武器"])
-        item1.addChildren(
-            [
-                QTreeWidgetItem(["彩虹打火机"]),
-                QTreeWidgetItem(["草莓蛋糕"]),
-                QTreeWidgetItem(["深海呼唤"]),
-            ]
-        )
+        item1 = QTreeWidgetItem(['武器'])
+        item1.addChildren([
+            QTreeWidgetItem(["彩虹打火机"]),
+            QTreeWidgetItem(["草莓蛋糕"]),
+            QTreeWidgetItem(["深海呼唤"]),
+        ])
         self.tree.addTopLevelItem(item1)
 
         self.tree.setHeaderHidden(True)
@@ -179,23 +165,19 @@ class TreeFrame_weapon(Frame):
         total_height = 0
         for i in range(self.tree.topLevelItemCount()):
             item = self.tree.topLevelItem(i)
-            total_height += self.tree.sizeHintForIndex(
-                self.tree.indexFromItem(item)
-            ).height()
+            total_height += self.tree.sizeHintForIndex(self.tree.indexFromItem(item)).height()
             total_height += self._calculateHeightForChildren(item)
 
         # 调整当前窗口大小
         self.setFixedSize(250, total_height + 5)  # 适当增加额外的空间
 
     def _calculateHeightForChildren(self, item):
-        """递归计算子节点的高度"""
+        """ 递归计算子节点的高度 """
         height = 0
         if item.isExpanded():
             for i in range(item.childCount()):
                 child = item.child(i)
-                height += self.tree.sizeHintForIndex(
-                    self.tree.indexFromItem(child)
-                ).height()
+                height += self.tree.sizeHintForIndex(self.tree.indexFromItem(child)).height()
                 height += self._calculateHeightForChildren(child)
         return height
 

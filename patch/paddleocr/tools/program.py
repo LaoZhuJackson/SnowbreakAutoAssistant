@@ -52,7 +52,7 @@ class ArgsParser(ArgumentParser):
             type=str,
             default=None,
             help="The option of profiler, which should be in format "
-            '"key1=value1;key2=value2;key3=value3".',
+                 '"key1=value1;key2=value2;key3=value3".',
         )
 
     def parse_args(self, argv=None):
@@ -139,9 +139,9 @@ def check_device(use_gpu, use_xpu=False, use_npu=False, use_mlu=False):
             sys.exit(1)
         if use_npu:
             if (
-                int(paddle.version.major) != 0
-                and int(paddle.version.major) <= 2
-                and int(paddle.version.minor) <= 4
+                    int(paddle.version.major) != 0
+                    and int(paddle.version.major) <= 2
+                    and int(paddle.version.minor) <= 4
             ):
                 if not paddle.device.is_compiled_with_npu():
                     print(err.format("use_npu", "npu", "npu", "use_npu"))
@@ -179,25 +179,25 @@ def to_float32(preds):
 
 
 def train(
-    config,
-    train_dataloader,
-    valid_dataloader,
-    device,
-    model,
-    loss_class,
-    optimizer,
-    lr_scheduler,
-    post_process_class,
-    eval_class,
-    pre_best_model_dict,
-    logger,
-    step_pre_epoch,
-    log_writer=None,
-    scaler=None,
-    amp_level="O2",
-    amp_custom_black_list=[],
-    amp_custom_white_list=[],
-    amp_dtype="float16",
+        config,
+        train_dataloader,
+        valid_dataloader,
+        device,
+        model,
+        loss_class,
+        optimizer,
+        lr_scheduler,
+        post_process_class,
+        eval_class,
+        pre_best_model_dict,
+        logger,
+        step_pre_epoch,
+        log_writer=None,
+        scaler=None,
+        amp_level="O2",
+        amp_custom_black_list=[],
+        amp_custom_white_list=[],
+        amp_dtype="float16",
 ):
     cal_metric_during_train = config["Global"].get("cal_metric_during_train", False)
     calc_epoch_interval = config["Global"].get("calc_epoch_interval", 1)
@@ -223,7 +223,8 @@ def train(
         )
         if len(valid_dataloader) == 0:
             logger.info(
-                "No Images in eval dataset, evaluation during training will be disabled"
+                "No Images in eval dataset, evaluation during training "
+                "will be disabled"
             )
             start_eval_step = 1e111
         logger.info(
@@ -265,9 +266,9 @@ def train(
     if config["Architecture"]["algorithm"] == "Distillation":
         for key in config["Architecture"]["Models"]:
             extra_input = (
-                extra_input
-                or config["Architecture"]["Models"][key]["algorithm"]
-                in extra_input_models
+                    extra_input
+                    or config["Architecture"]["Models"][key]["algorithm"]
+                    in extra_input_models
             )
     else:
         extra_input = config["Architecture"]["algorithm"] in extra_input_models
@@ -318,10 +319,10 @@ def train(
             # use amp
             if scaler:
                 with paddle.amp.auto_cast(
-                    level=amp_level,
-                    custom_black_list=amp_custom_black_list,
-                    custom_white_list=amp_custom_white_list,
-                    dtype=amp_dtype,
+                        level=amp_level,
+                        custom_black_list=amp_custom_black_list,
+                        custom_white_list=amp_custom_white_list,
+                        dtype=amp_dtype,
                 ):
                     if model_type == "table" or extra_input:
                         preds = model(images, data=batch[1:])
@@ -358,7 +359,7 @@ def train(
             optimizer.clear_grad()
 
             if (
-                cal_metric_during_train and epoch % calc_epoch_interval == 0
+                    cal_metric_during_train and epoch % calc_epoch_interval == 0
             ):  # only rec and cls need
                 batch = [item.numpy() for item in batch]
                 if model_type in ["kie", "sr"]:
@@ -412,19 +413,19 @@ def train(
                 )
 
             if (global_step > 0 and global_step % print_batch_step == 0) or (
-                idx >= len(train_dataloader) - 1
+                    idx >= len(train_dataloader) - 1
             ):
                 logs = train_stats.log()
 
                 eta_sec = (
-                    (epoch_num + 1 - epoch) * len(train_dataloader) - idx - 1
-                ) * eta_meter.avg
+                                  (epoch_num + 1 - epoch) * len(train_dataloader) - idx - 1
+                          ) * eta_meter.avg
                 eta_sec_format = str(datetime.timedelta(seconds=int(eta_sec)))
                 max_mem_reserved_str = ""
                 max_mem_allocated_str = ""
                 if paddle.device.is_compiled_with_cuda() and print_mem_info:
-                    max_mem_reserved_str = f", max_mem_reserved: {paddle.device.cuda.max_memory_reserved() // (1024**2)} MB,"
-                    max_mem_allocated_str = f" max_mem_allocated: {paddle.device.cuda.max_memory_allocated() // (1024**2)} MB"
+                    max_mem_reserved_str = f", max_mem_reserved: {paddle.device.cuda.max_memory_reserved() // (1024 ** 2)} MB,"
+                    max_mem_allocated_str = f" max_mem_allocated: {paddle.device.cuda.max_memory_allocated() // (1024 ** 2)} MB"
                 strs = (
                     "epoch: [{}/{}], global_step: {}, {}, avg_reader_cost: "
                     "{:.5f} s, avg_batch_cost: {:.5f} s, avg_samples: {}, "
@@ -449,9 +450,9 @@ def train(
                 train_batch_cost = 0.0
             # eval
             if (
-                global_step > start_eval_step
-                and (global_step - start_eval_step) % eval_batch_step == 0
-                and dist.get_rank() == 0
+                    global_step > start_eval_step
+                    and (global_step - start_eval_step) % eval_batch_step == 0
+                    and dist.get_rank() == 0
             ):
                 if model_average:
                     Model_Average = paddle.incubate.ModelAverage(
@@ -609,17 +610,17 @@ def train(
 
 
 def eval(
-    model,
-    valid_dataloader,
-    post_process_class,
-    eval_class,
-    model_type=None,
-    extra_input=False,
-    scaler=None,
-    amp_level="O2",
-    amp_custom_black_list=[],
-    amp_custom_white_list=[],
-    amp_dtype="float16",
+        model,
+        valid_dataloader,
+        post_process_class,
+        eval_class,
+        model_type=None,
+        extra_input=False,
+        scaler=None,
+        amp_level="O2",
+        amp_custom_black_list=[],
+        amp_custom_white_list=[],
+        amp_dtype="float16",
 ):
     model.eval()
     with paddle.no_grad():
@@ -643,9 +644,9 @@ def eval(
             # use amp
             if scaler:
                 with paddle.amp.auto_cast(
-                    level=amp_level,
-                    custom_black_list=amp_custom_black_list,
-                    dtype=amp_dtype,
+                        level=amp_level,
+                        custom_black_list=amp_custom_black_list,
+                        dtype=amp_dtype,
                 ):
                     if model_type == "table" or extra_input:
                         preds = model(images, data=batch[1:])
@@ -735,8 +736,8 @@ def update_center(char_center, post_result, preds):
                 index = logit[idx_time]
                 if index in char_center.keys():
                     char_center[index][0] = (
-                        char_center[index][0] * char_center[index][1] + feat[idx_time]
-                    ) / (char_center[index][1] + 1)
+                                                    char_center[index][0] * char_center[index][1] + feat[idx_time]
+                                            ) / (char_center[index][1] + 1)
                     char_center[index][1] += 1
                 else:
                     char_center[index] = [feat[idx_time], 1]
@@ -864,11 +865,12 @@ def preprocess(is_train=False):
 
     if "use_visualdl" in config["Global"] and config["Global"]["use_visualdl"]:
         logger.warning(
-            "You are using VisualDL, the VisualDL is deprecated and removed in ppocr!"
+            "You are using VisualDL, the VisualDL is deprecated and "
+            "removed in ppocr!"
         )
         log_writer = None
     if (
-        "use_wandb" in config["Global"] and config["Global"]["use_wandb"]
+            "use_wandb" in config["Global"] and config["Global"]["use_wandb"]
     ) or "wandb" in config:
         save_dir = config["Global"]["save_model_dir"]
         wandb_writer_path = "{}/wandb".format(save_dir)

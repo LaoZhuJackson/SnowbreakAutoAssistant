@@ -89,14 +89,7 @@ class ImageUtils:
         return similarity_index
 
     @staticmethod
-    def match_template(
-        screenshot,
-        template,
-        mask=None,
-        scale=(1, 1),
-        match_method=cv2.TM_SQDIFF_NORMED,
-        extract=None,
-    ):
+    def match_template(screenshot, template, mask=None, scale=(1, 1), match_method=cv2.TM_SQDIFF_NORMED, extract=None):
         """
         对模版与截图进行匹配，找出匹配位置
         :param extract: 对传过来的图像进行提取
@@ -156,10 +149,15 @@ class ImageUtils:
                 crop_left + left + 7,
                 crop_top + top + 40,
                 crop_right + left + 7,
-                crop_bottom + top + 40,
+                crop_bottom + top + 40
             )
         else:
-            relative_pos = (crop_left, crop_top, crop_right, crop_bottom)
+            relative_pos = (
+                crop_left,
+                crop_top,
+                crop_right,
+                crop_bottom
+            )
         # print(relative_pos)
         return img_cropped, relative_pos
 
@@ -179,9 +177,7 @@ class ImageUtils:
         new_height = int(height * scale[1])
 
         # 使用cv2.resize()函数缩放图片
-        resized_image = cv2.resize(
-            image, (new_width, new_height), interpolation=cv2.INTER_CUBIC
-        )
+        resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
 
         return resized_image
 
@@ -244,9 +240,7 @@ class ImageUtils:
         botton_right = (top_left[0] + width, top_left[1] + height)
         for match_top_left in matches:
             match_botton_right = (match_top_left[0] + width, match_top_left[1] + height)
-            if ImageUtils.intersected(
-                top_left, botton_right, match_top_left, match_botton_right
-            ):
+            if ImageUtils.intersected(top_left, botton_right, match_top_left, match_botton_right):
                 return False
         return True
 

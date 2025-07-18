@@ -10,14 +10,12 @@ from app.common.image_utils import ImageUtils
 
 
 class Matcher:
-    def __init__(
-        self,
-        scale_steps=100,
-        scale_factor=0.01,
-        match_threshold=0.5,
-        early_stop_threshold=0.7,
-        nms_threshold=0.4,
-    ):
+    def __init__(self,
+                 scale_steps=100,
+                 scale_factor=0.01,
+                 match_threshold=0.5,
+                 early_stop_threshold=0.7,
+                 nms_threshold=0.4):
         self.scale_steps = scale_steps
         self.scale_factor = scale_factor
         self.match_threshold = match_threshold
@@ -36,7 +34,7 @@ class Matcher:
             if os.path.exists(file_path):
                 try:
                     # 打开并读取 JSON 文件
-                    with open(file_path, "r", encoding="utf-8") as file:
+                    with open(file_path, 'r', encoding='utf-8') as file:
                         self.scales = json.load(file)  # 将 JSON 数据加载到 self.scales
                     # print("scale_cache.json 文件已加载，数据已赋值给 self.scales。")
                 except Exception as e:
@@ -59,7 +57,7 @@ class Matcher:
 
         try:
             # 将 self.scales 写入 JSON 文件
-            with open(file_path, "w", encoding="utf-8") as file:
+            with open(file_path, 'w', encoding='utf-8') as file:
                 json.dump(self.scales, file, indent=4)  # 使用 indent 参数格式化 JSON
             # print("self.scales 已成功保存到 scale_cache.json 文件。")
         except Exception as e:
@@ -86,7 +84,11 @@ class Matcher:
         resized = cv2.resize(target, (resized_w, resized_h))
 
         # 模板匹配（使用归一化相关系数法）
-        result = cv2.matchTemplate(resized, template, cv2.TM_CCOEFF_NORMED, mask=mask)
+        result = cv2.matchTemplate(
+            resized,
+            template,
+            cv2.TM_CCOEFF_NORMED,
+            mask=mask)
 
         # 获取所有超过阈值的匹配位置
         loc = np.where(result >= self.match_threshold)
@@ -101,7 +103,12 @@ class Matcher:
             orig_tpl_w = int(tpl_w / scale)
             orig_tpl_h = int(tpl_h / scale)
             # 收集候选框（原始图像坐标系）
-            step_boxes.append([orig_x, orig_y, orig_tpl_w, orig_tpl_h])
+            step_boxes.append([
+                orig_x,
+                orig_y,
+                orig_tpl_w,
+                orig_tpl_h
+            ])
             step_confidences.append(float(confidence))
         return step_confidences, step_boxes
 
@@ -134,7 +141,14 @@ class Matcher:
             for i in range(self.scale_steps):
                 scale = self.max_scale - i * self.scale_factor
                 step_confidences, step_boxes = self.step(
-                    scale, orig_w, orig_h, tpl_w, tpl_h, template, target, mask
+                    scale,
+                    orig_w,
+                    orig_h,
+                    tpl_w,
+                    tpl_h,
+                    template,
+                    target,
+                    mask
                 )
                 if len(step_confidences) == 0:
                     continue
@@ -148,7 +162,14 @@ class Matcher:
         else:
             # print(f'else的scale:{self.scales[template_path]}')
             confidences, boxes = self.step(
-                scale, orig_w, orig_h, tpl_w, tpl_h, template, target, mask
+                scale,
+                orig_w,
+                orig_h,
+                tpl_w,
+                tpl_h,
+                template,
+                target,
+                mask
             )
 
         if len(boxes) == 0:
@@ -156,10 +177,9 @@ class Matcher:
 
         # 非极大值抑制（在原始图像坐标系进行）
         indices = cv2.dnn.NMSBoxes(
-            boxes,
-            confidences,
+            boxes, confidences,
             score_threshold=self.match_threshold,
-            nms_threshold=self.nms_threshold,
+            nms_threshold=self.nms_threshold
         )
 
         # 收集检测框

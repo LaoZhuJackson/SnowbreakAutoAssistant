@@ -141,11 +141,11 @@ class TableMasterLabelDecode(TableLabelDecode):
     """ """
 
     def __init__(
-        self,
-        character_dict_path,
-        box_shape="ori",
-        merge_no_span_structure=True,
-        **kwargs,
+            self,
+            character_dict_path,
+            box_shape="ori",
+            merge_no_span_structure=True,
+            **kwargs,
     ):
         super(TableMasterLabelDecode, self).__init__(
             character_dict_path, merge_no_span_structure

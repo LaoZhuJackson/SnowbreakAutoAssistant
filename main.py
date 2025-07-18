@@ -16,8 +16,7 @@ if config.get(config.dpiScale) != "Auto":
     os.environ["QT_SCALE_FACTOR"] = str(config.get(config.dpiScale))
 else:
     QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
-    )
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
 # create application

@@ -122,7 +122,7 @@ def main():
                     tmp_json["points"] = np.array(box).tolist()
                     dt_boxes_json.append(tmp_json)
                 save_det_path = (
-                    os.path.dirname(config["Global"]["save_res_path"]) + "/det_results/"
+                        os.path.dirname(config["Global"]["save_res_path"]) + "/det_results/"
                 )
                 draw_det_res(boxes, config, src_img, file, save_det_path)
             otstr = file + "\t" + json.dumps(dt_boxes_json) + "\n"

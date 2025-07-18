@@ -46,14 +46,14 @@ class FCENetTargets:
     """
 
     def __init__(
-        self,
-        fourier_degree=5,
-        resample_step=4.0,
-        center_region_shrink_ratio=0.3,
-        level_size_divisors=(8, 16, 32),
-        level_proportion_range=((0, 0.25), (0.2, 0.65), (0.55, 1.0)),
-        orientation_thr=2.0,
-        **kwargs,
+            self,
+            fourier_degree=5,
+            resample_step=4.0,
+            center_region_shrink_ratio=0.3,
+            level_size_divisors=(8, 16, 32),
+            level_proportion_range=((0, 0.25), (0.2, 0.65), (0.55, 1.0)),
+            orientation_thr=2.0,
+            **kwargs,
     ):
         super().__init__()
         assert isinstance(level_size_divisors, tuple)
@@ -107,8 +107,8 @@ class FCENetTargets:
             current_line_len = i * delta_length
 
             while (
-                current_edge_ind + 1 < len(length_cumsum)
-                and current_line_len >= length_cumsum[current_edge_ind + 1]
+                    current_edge_ind + 1 < len(length_cumsum)
+                    and current_line_len >= length_cumsum[current_edge_ind + 1]
             ):
                 current_edge_ind += 1
 
@@ -118,9 +118,9 @@ class FCENetTargets:
                 break
             end_shift_ratio = current_edge_end_shift / length_list[current_edge_ind]
             current_point = (
-                line[current_edge_ind]
-                + (line[current_edge_ind + 1] - line[current_edge_ind])
-                * end_shift_ratio
+                    line[current_edge_ind]
+                    + (line[current_edge_ind + 1] - line[current_edge_ind])
+                    * end_shift_ratio
             )
             resampled_line.append(current_point)
         resampled_line.append(line[-1])
@@ -156,8 +156,8 @@ class FCENetTargets:
         pad_points = np.vstack([points, points])
         if tail_inds[1] < 1:
             tail_inds[1] = len(points)
-        sideline1 = pad_points[head_inds[1] : tail_inds[1]]
-        sideline2 = pad_points[tail_inds[1] : (head_inds[1] + len(points))]
+        sideline1 = pad_points[head_inds[1]: tail_inds[1]]
+        sideline2 = pad_points[tail_inds[1]: (head_inds[1] + len(points))]
         sideline_mean_shift = np.mean(sideline1, axis=0) - np.mean(sideline2, axis=0)
 
         if sideline_mean_shift[1] > 0:
@@ -220,15 +220,15 @@ class FCENetTargets:
             score_matrix = np.zeros((len(score), len(score) - 3))
             x = np.arange(len(score) - 3) / float(len(score) - 4)
             gaussian = (
-                1.0
-                / (np.sqrt(2.0 * np.pi) * 0.5)
-                * np.exp(-np.power((x - 0.5) / 0.5, 2.0) / 2)
+                    1.0
+                    / (np.sqrt(2.0 * np.pi) * 0.5)
+                    * np.exp(-np.power((x - 0.5) / 0.5, 2.0) / 2)
             )
             gaussian = gaussian / np.max(gaussian)
             for i in range(len(score)):
                 score_matrix[i, :] = (
-                    score[i]
-                    + pad_score[(i + 2) : (i + len(score) - 1)] * gaussian * 0.3
+                        score[i]
+                        + pad_score[(i + 2): (i + len(score) - 1)] * gaussian * 0.3
                 )
 
             head_start, tail_increment = np.unravel_index(
@@ -245,7 +245,7 @@ class FCENetTargets:
             tail_inds = [tail_start, tail_end]
         else:
             if vector_slope(points[1] - points[0]) + vector_slope(
-                points[3] - points[2]
+                    points[3] - points[2]
             ) < vector_slope(points[2] - points[1]) + vector_slope(
                 points[0] - points[3]
             ):
@@ -344,44 +344,44 @@ class FCENetTargets:
             center_line = (resampled_top_line + resampled_bot_line) / 2
 
             line_head_shrink_len = (
-                norm(resampled_top_line[0] - resampled_bot_line[0]) / 4.0
+                    norm(resampled_top_line[0] - resampled_bot_line[0]) / 4.0
             )
             line_tail_shrink_len = (
-                norm(resampled_top_line[-1] - resampled_bot_line[-1]) / 4.0
+                    norm(resampled_top_line[-1] - resampled_bot_line[-1]) / 4.0
             )
             head_shrink_num = int(line_head_shrink_len // self.resample_step)
             tail_shrink_num = int(line_tail_shrink_len // self.resample_step)
             if len(center_line) > head_shrink_num + tail_shrink_num + 2:
                 center_line = center_line[
-                    head_shrink_num : len(center_line) - tail_shrink_num
-                ]
+                              head_shrink_num: len(center_line) - tail_shrink_num
+                              ]
                 resampled_top_line = resampled_top_line[
-                    head_shrink_num : len(resampled_top_line) - tail_shrink_num
-                ]
+                                     head_shrink_num: len(resampled_top_line) - tail_shrink_num
+                                     ]
                 resampled_bot_line = resampled_bot_line[
-                    head_shrink_num : len(resampled_bot_line) - tail_shrink_num
-                ]
+                                     head_shrink_num: len(resampled_bot_line) - tail_shrink_num
+                                     ]
 
             for i in range(0, len(center_line) - 1):
                 tl = (
-                    center_line[i]
-                    + (resampled_top_line[i] - center_line[i])
-                    * self.center_region_shrink_ratio
+                        center_line[i]
+                        + (resampled_top_line[i] - center_line[i])
+                        * self.center_region_shrink_ratio
                 )
                 tr = (
-                    center_line[i + 1]
-                    + (resampled_top_line[i + 1] - center_line[i + 1])
-                    * self.center_region_shrink_ratio
+                        center_line[i + 1]
+                        + (resampled_top_line[i + 1] - center_line[i + 1])
+                        * self.center_region_shrink_ratio
                 )
                 br = (
-                    center_line[i + 1]
-                    + (resampled_bot_line[i + 1] - center_line[i + 1])
-                    * self.center_region_shrink_ratio
+                        center_line[i + 1]
+                        + (resampled_bot_line[i + 1] - center_line[i + 1])
+                        * self.center_region_shrink_ratio
                 )
                 bl = (
-                    center_line[i]
-                    + (resampled_bot_line[i] - center_line[i])
-                    * self.center_region_shrink_ratio
+                        center_line[i]
+                        + (resampled_bot_line[i] - center_line[i])
+                        * self.center_region_shrink_ratio
                 )
                 current_center_box = np.vstack([tl, tr, br, bl]).astype(np.int32)
                 center_region_boxes.append(current_center_box)
@@ -532,12 +532,12 @@ class FCENetTargets:
             for i in range(-k, k + 1):
                 if i != 0:
                     real_map[i + k, :, :] = (
-                        mask * fourier_coeff[i + k, 0]
-                        + (1 - mask) * real_map[i + k, :, :]
+                            mask * fourier_coeff[i + k, 0]
+                            + (1 - mask) * real_map[i + k, :, :]
                     )
                     imag_map[i + k, :, :] = (
-                        mask * fourier_coeff[i + k, 1]
-                        + (1 - mask) * imag_map[i + k, :, :]
+                            mask * fourier_coeff[i + k, 1]
+                            + (1 - mask) * imag_map[i + k, :, :]
                     )
                 else:
                     yx = np.argwhere(mask > 0.5)

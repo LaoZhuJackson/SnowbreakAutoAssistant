@@ -15,7 +15,6 @@
 This code is refer from:
 https://github.com/open-mmlab/mmocr/blob/main/mmocr/datasets/pipelines/transforms.py
 """
-
 import numpy as np
 from PIL import Image, ImageDraw
 import cv2
@@ -58,7 +57,7 @@ class RandomScaling:
 
 class RandomCropFlip:
     def __init__(
-        self, pad_ratio=0.1, crop_ratio=0.5, iter_num=1, min_area_ratio=0.2, **kwargs
+            self, pad_ratio=0.1, crop_ratio=0.5, iter_num=1, min_area_ratio=0.2, **kwargs
     ):
         """Random crop and flip a patch of the image.
 
@@ -132,8 +131,8 @@ class RandomCropFlip:
                 ppi = Polygon(polygon.reshape(-1, 2))
                 ppiou, _ = poly_intersection(ppi, pp, buffer=0)
                 if (
-                    np.abs(ppiou - float(ppi.area)) > self.epsilon
-                    and np.abs(ppiou) > self.epsilon
+                        np.abs(ppiou - float(ppi.area)) > self.epsilon
+                        and np.abs(ppiou) > self.epsilon
                 ):
                     fail_flag = True
                     break
@@ -215,10 +214,10 @@ class RandomCropFlip:
             poly = np.round(poly, decimals=0).astype(np.int32)
             minx = np.min(poly[:, 0])
             maxx = np.max(poly[:, 0])
-            w_array[minx + pad_w : maxx + pad_w] = 1
+            w_array[minx + pad_w: maxx + pad_w] = 1
             miny = np.min(poly[:, 1])
             maxy = np.max(poly[:, 1])
-            h_array[miny + pad_h : maxy + pad_h] = 1
+            h_array[miny + pad_h: maxy + pad_h] = 1
 
         h_axis = np.where(h_array == 0)[0]
         w_axis = np.where(w_array == 0)[0]
@@ -289,8 +288,8 @@ class RandomCropPolyInstances:
             min_x, max_x = np.min(clip_x), np.max(clip_x)
             min_y, max_y = np.min(clip_y), np.max(clip_y)
 
-            x_valid_array[min_x - 2 : max_x + 3] = 0
-            y_valid_array[min_y - 2 : max_y + 3] = 0
+            x_valid_array[min_x - 2: max_x + 3] = 0
+            y_valid_array[min_y - 2: max_y + 3] = 0
 
         min_w = int(w * self.min_side_ratio)
         min_h = int(h * self.min_side_ratio)
@@ -309,7 +308,7 @@ class RandomCropPolyInstances:
         h, w, _ = img.shape
         assert 0 <= bbox[1] < bbox[3] <= h
         assert 0 <= bbox[0] < bbox[2] <= w
-        return img[bbox[1] : bbox[3], bbox[0] : bbox[2]]
+        return img[bbox[1]: bbox[3], bbox[0]: bbox[2]]
 
     def __call__(self, results):
         image = results["image"]
@@ -333,10 +332,10 @@ class RandomCropPolyInstances:
             valid_tags_list = []
             for ind, polygon in enumerate(polygons):
                 if (
-                    (polygon[:, ::2] > -4).all()
-                    and (polygon[:, ::2] < w + 4).all()
-                    and (polygon[:, 1::2] > -4).all()
-                    and (polygon[:, 1::2] < h + 4).all()
+                        (polygon[:, ::2] > -4).all()
+                        and (polygon[:, ::2] < w + 4).all()
+                        and (polygon[:, 1::2] > -4).all()
+                        and (polygon[:, 1::2] < h + 4).all()
                 ):
                     polygon[:, ::2] = np.clip(polygon[:, ::2], 0, w)
                     polygon[:, 1::2] = np.clip(polygon[:, 1::2], 0, h)
@@ -355,12 +354,12 @@ class RandomCropPolyInstances:
 
 class RandomRotatePolyInstances:
     def __init__(
-        self,
-        rotate_ratio=0.5,
-        max_angle=10,
-        pad_with_fixed_color=False,
-        pad_value=(0, 0, 0),
-        **kwargs,
+            self,
+            rotate_ratio=0.5,
+            max_angle=10,
+            pad_with_fixed_color=False,
+            pad_value=(0, 0, 0),
+            **kwargs,
     ):
         """Randomly rotate images and polygon masks.
 
@@ -434,7 +433,7 @@ class RandomRotatePolyInstances:
                 np.random.randint(0, h * 7 // 8),
                 np.random.randint(0, w * 7 // 8),
             )
-            img_cut = img[h_ind : (h_ind + h // 9), w_ind : (w_ind + w // 9)]
+            img_cut = img[h_ind: (h_ind + h // 9), w_ind: (w_ind + w // 9)]
             img_cut = cv2.resize(img_cut, (canvas_size[1], canvas_size[0]))
 
             mask = cv2.warpAffine(
@@ -483,12 +482,12 @@ class RandomRotatePolyInstances:
 
 class SquareResizePad:
     def __init__(
-        self,
-        target_size,
-        pad_ratio=0.6,
-        pad_with_fixed_color=False,
-        pad_value=(0, 0, 0),
-        **kwargs,
+            self,
+            target_size,
+            pad_ratio=0.6,
+            pad_with_fixed_color=False,
+            pad_value=(0, 0, 0),
+            **kwargs,
     ):
         """Resize or pad images to be square shape.
 
@@ -532,13 +531,13 @@ class SquareResizePad:
                 np.random.randint(0, h * 7 // 8),
                 np.random.randint(0, w * 7 // 8),
             )
-            img_cut = img[h_ind : (h_ind + h // 9), w_ind : (w_ind + w // 9)]
+            img_cut = img[h_ind: (h_ind + h // 9), w_ind: (w_ind + w // 9)]
             expand_img = cv2.resize(img_cut, (pad_size, pad_size))
         if h > w:
             y0, x0 = 0, (h - w) // 2
         else:
             y0, x0 = (w - h) // 2, 0
-        expand_img[y0 : y0 + h, x0 : x0 + w] = img
+        expand_img[y0: y0 + h, x0: x0 + w] = img
         offset = (x0, y0)
 
         return expand_img, offset

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Contains various CTC decoders."""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -76,9 +75,9 @@ def expand_poly_along_width(poly, shrink_ratio_of_width=0.3):
     point_num = poly.shape[0]
     left_quad = np.array([poly[0], poly[1], poly[-2], poly[-1]], dtype=np.float32)
     left_ratio = (
-        -shrink_ratio_of_width
-        * np.linalg.norm(left_quad[0] - left_quad[3])
-        / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
+            -shrink_ratio_of_width
+            * np.linalg.norm(left_quad[0] - left_quad[3])
+            / (np.linalg.norm(left_quad[0] - left_quad[1]) + 1e-6)
     )
     left_quad_expand = shrink_quad_along_width(left_quad, left_ratio, 1.0)
     right_quad = np.array(
@@ -246,7 +245,7 @@ def sort_and_expand_with_direction(pos_list, f_direction):
     point_num = len(sorted_list)
     sub_direction_len = max(point_num // 3, 2)
     left_direction = point_direction[:sub_direction_len, :]
-    right_dirction = point_direction[point_num - sub_direction_len :, :]
+    right_dirction = point_direction[point_num - sub_direction_len:, :]
 
     left_average_direction = -np.mean(left_direction, axis=0, keepdims=True)
     left_average_len = np.linalg.norm(left_average_direction)
@@ -296,7 +295,7 @@ def sort_and_expand_with_direction_v2(pos_list, f_direction, binary_tcl_map):
     point_num = len(sorted_list)
     sub_direction_len = max(point_num // 3, 2)
     left_direction = point_direction[:sub_direction_len, :]
-    right_dirction = point_direction[point_num - sub_direction_len :, :]
+    right_dirction = point_direction[point_num - sub_direction_len:, :]
 
     left_average_direction = -np.mean(left_direction, axis=0, keepdims=True)
     left_average_len = np.linalg.norm(left_average_direction)
@@ -344,13 +343,13 @@ def sort_and_expand_with_direction_v2(pos_list, f_direction, binary_tcl_map):
 
 
 def generate_pivot_list_curved(
-    p_score,
-    p_char_maps,
-    f_direction,
-    score_thresh=0.5,
-    is_expand=True,
-    is_backbone=False,
-    image_id=0,
+        p_score,
+        p_char_maps,
+        f_direction,
+        score_thresh=0.5,
+        is_expand=True,
+        is_backbone=False,
+        image_id=0,
 ):
     """
     return center point and end point of TCL instance; filter with the char maps;
@@ -408,7 +407,7 @@ def generate_pivot_list_curved(
 
 
 def generate_pivot_list_horizontal(
-    p_score, p_char_maps, f_direction, score_thresh=0.5, is_backbone=False, image_id=0
+        p_score, p_char_maps, f_direction, score_thresh=0.5, is_backbone=False, image_id=0
 ):
     """
     return center point and end point of TCL instance; filter with the char maps;
@@ -485,13 +484,13 @@ def generate_pivot_list_horizontal(
 
 
 def generate_pivot_list_slow(
-    p_score,
-    p_char_maps,
-    f_direction,
-    score_thresh=0.5,
-    is_backbone=False,
-    is_curved=True,
-    image_id=0,
+        p_score,
+        p_char_maps,
+        f_direction,
+        score_thresh=0.5,
+        is_backbone=False,
+        is_curved=True,
+        image_id=0,
 ):
     """
     Warp all the function together.
@@ -588,13 +587,13 @@ def sort_by_direction_with_image_id(pos_list, f_direction):
 
 
 def generate_pivot_list_tt_inference(
-    p_score,
-    p_char_maps,
-    f_direction,
-    score_thresh=0.5,
-    is_backbone=False,
-    is_curved=True,
-    image_id=0,
+        p_score,
+        p_char_maps,
+        f_direction,
+        score_thresh=0.5,
+        is_backbone=False,
+        is_curved=True,
+        image_id=0,
 ):
     """
     return center point and end point of TCL instance; filter with the char maps;

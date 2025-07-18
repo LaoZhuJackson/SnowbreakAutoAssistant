@@ -79,7 +79,7 @@ def main(config, device, logger, vdl_writer, seed):
         ]:  # distillation model
             for key in config["Architecture"]["Models"]:
                 if (
-                    config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
+                        config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
                 ):  # for multi head
                     if config["PostProcess"]["name"] == "DistillationSARLabelDecode":
                         char_num = char_num - 2
@@ -89,16 +89,16 @@ def main(config, device, logger, vdl_writer, seed):
                     out_channels_list["CTCLabelDecode"] = char_num
                     # update SARLoss params
                     if (
-                        list(config["Loss"]["loss_config_list"][-1].keys())[0]
-                        == "DistillationSARLoss"
+                            list(config["Loss"]["loss_config_list"][-1].keys())[0]
+                            == "DistillationSARLoss"
                     ):
                         config["Loss"]["loss_config_list"][-1]["DistillationSARLoss"][
                             "ignore_index"
-                        ] = char_num + 1
+                        ] = (char_num + 1)
                         out_channels_list["SARLabelDecode"] = char_num + 2
                     elif any(
-                        "DistillationNRTRLoss" in d
-                        for d in config["Loss"]["loss_config_list"]
+                            "DistillationNRTRLoss" in d
+                            for d in config["Loss"]["loss_config_list"]
                     ):
                         out_channels_list["NRTRLabelDecode"] = char_num + 3
 
@@ -106,9 +106,9 @@ def main(config, device, logger, vdl_writer, seed):
                         "out_channels_list"
                     ] = out_channels_list
                 else:
-                    config["Architecture"]["Models"][key]["Head"]["out_channels"] = (
-                        char_num
-                    )
+                    config["Architecture"]["Models"][key]["Head"][
+                        "out_channels"
+                    ] = char_num
         elif config["Architecture"]["Head"]["name"] == "MultiHead":  # for multi head
             if config["PostProcess"]["name"] == "SARLabelDecode":
                 char_num = char_num - 2
@@ -124,7 +124,7 @@ def main(config, device, logger, vdl_writer, seed):
                     }
                 else:
                     config["Loss"]["loss_config_list"][1]["SARLoss"]["ignore_index"] = (
-                        char_num + 1
+                            char_num + 1
                     )
                 out_channels_list["SARLabelDecode"] = char_num + 2
             elif list(config["Loss"]["loss_config_list"][1].keys())[0] == "NRTRLoss":
@@ -172,7 +172,7 @@ def main(config, device, logger, vdl_writer, seed):
     amp_custom_black_list = config["Global"].get("amp_custom_black_list", [])
     amp_custom_white_list = config["Global"].get("amp_custom_white_list", [])
     if os.path.exists(
-        os.path.join(config["Global"]["save_model_dir"], "train_results.json")
+            os.path.join(config["Global"]["save_model_dir"], "train_results.json")
     ):
         try:
             os.remove(
@@ -254,7 +254,9 @@ def test_reader(config, device, logger):
             if count % 1 == 0:
                 batch_time = time.time() - starttime
                 starttime = time.time()
-                logger.info("ocr: {}, {}, {}".format(count, len(data[0]), batch_time))
+                logger.info(
+                    "ocr: {}, {}, {}".format(count, len(data[0]), batch_time)
+                )
     except Exception as e:
         logger.info(e)
     logger.info("finish ocr: {}, Success!".format(count))

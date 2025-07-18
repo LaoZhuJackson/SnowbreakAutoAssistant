@@ -117,7 +117,7 @@ class MinMaxResize:
 
         coords = cv2.findNonZero(gray)  # Find all non-zero points (text)
         a, b, w, h = cv2.boundingRect(coords)  # Find minimum spanning bounding box
-        rect = data[b : b + h, a : a + w]
+        rect = data[b: b + h, a: a + w]
         im = Image.fromarray(rect).convert("L")
         dims = []
         for x in [w, h]:
@@ -149,8 +149,8 @@ class MinMaxResize:
         img = data["image"]
         h, w = img.shape[:2]
         if (
-            self.min_dimensions[0] <= w <= self.max_dimensions[0]
-            and self.min_dimensions[1] <= h <= self.max_dimensions[1]
+                self.min_dimensions[0] <= w <= self.max_dimensions[0]
+                and self.min_dimensions[1] <= h <= self.max_dimensions[1]
         ):
             return data
         else:

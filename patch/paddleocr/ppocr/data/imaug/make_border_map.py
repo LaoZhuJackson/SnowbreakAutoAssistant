@@ -72,9 +72,9 @@ class MakeBorderMap(object):
         if polygon_shape.area <= 0:
             return
         distance = (
-            polygon_shape.area
-            * (1 - np.power(self.shrink_ratio, 2))
-            / polygon_shape.length
+                polygon_shape.area
+                * (1 - np.power(self.shrink_ratio, 2))
+                / polygon_shape.length
         )
         subject = [tuple(l) for l in polygon]
         padding = pyclipper.PyclipperOffset()
@@ -111,13 +111,13 @@ class MakeBorderMap(object):
         xmax_valid = min(max(0, xmax), canvas.shape[1] - 1)
         ymin_valid = min(max(0, ymin), canvas.shape[0] - 1)
         ymax_valid = min(max(0, ymax), canvas.shape[0] - 1)
-        canvas[ymin_valid : ymax_valid + 1, xmin_valid : xmax_valid + 1] = np.fmax(
+        canvas[ymin_valid: ymax_valid + 1, xmin_valid: xmax_valid + 1] = np.fmax(
             1
             - distance_map[
-                ymin_valid - ymin : ymax_valid - ymax + height,
-                xmin_valid - xmin : xmax_valid - xmax + width,
-            ],
-            canvas[ymin_valid : ymax_valid + 1, xmin_valid : xmax_valid + 1],
+              ymin_valid - ymin: ymax_valid - ymax + height,
+              xmin_valid - xmin: xmax_valid - xmax + width,
+              ],
+            canvas[ymin_valid: ymax_valid + 1, xmin_valid: xmax_valid + 1],
         )
 
     def _distance(self, xs, ys, point_1, point_2):
@@ -135,7 +135,7 @@ class MakeBorderMap(object):
         )
 
         cosin = (square_distance - square_distance_1 - square_distance_2) / (
-            2 * np.sqrt(square_distance_1 * square_distance_2)
+                2 * np.sqrt(square_distance_1 * square_distance_2)
         )
         square_sin = 1 - np.square(cosin)
         square_sin = np.nan_to_num(square_sin)
@@ -145,7 +145,7 @@ class MakeBorderMap(object):
 
         result[cosin < 0] = np.sqrt(np.fmin(square_distance_1, square_distance_2))[
             cosin < 0
-        ]
+            ]
         # self.extend_line(point_1, point_2, result)
         return result
 

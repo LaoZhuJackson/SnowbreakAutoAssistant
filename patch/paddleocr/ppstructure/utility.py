@@ -204,7 +204,7 @@ def draw_structure_result(image, result, font_path):
         )
 
         if region["type"] == "table" or (
-            region["type"] == "equation" and "latex" in region["res"]
+                region["type"] == "equation" and "latex" in region["res"]
         ):
             pass
         else:
@@ -284,8 +284,8 @@ def cal_ocr_word_box(rec_str, box, rec_word_info):
             center_x = (center_idx + 0.5) * cell_width
             cell_x_start = max(int(center_x - avg_char_width / 2), 0) + bbox_x_start
             cell_x_end = (
-                min(int(center_x + avg_char_width / 2), bbox_x_end - bbox_x_start)
-                + bbox_x_start
+                    min(int(center_x + avg_char_width / 2), bbox_x_end - bbox_x_start)
+                    + bbox_x_start
             )
             cell = (
                 (cell_x_start, bbox_y_start),

@@ -73,9 +73,9 @@ class MakeShrinkMap(object):
                 for ratio in possible_ratios:
                     # print(f"Change shrink ratio to {ratio}")
                     distance = (
-                        polygon_shape.area
-                        * (1 - np.power(ratio, 2))
-                        / polygon_shape.length
+                            polygon_shape.area
+                            * (1 - np.power(ratio, 2))
+                            / polygon_shape.length
                     )
                     shrinked = padding.Execute(-distance)
                     if len(shrinked) == 1:
