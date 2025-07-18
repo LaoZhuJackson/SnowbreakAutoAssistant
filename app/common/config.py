@@ -162,7 +162,6 @@ class Config(QConfig):
 
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")
-
     # 钓鱼相关
     CheckBox_is_save_fish = ConfigItem("add_fish", "CheckBox_is_save_fish", False, BoolValidator())
     CheckBox_is_limit_time = ConfigItem("add_fish", "CheckBox_is_limit_time", False, BoolValidator())
