@@ -105,7 +105,7 @@ class PerfectBuild:
             "--include-data-file=AppData/ocr_replacements.json=AppData/ocr_replacements.json",
             "--include-data-file=AppData/version.txt=AppData/version.txt",
             "--include-data-dir=app/resource/images=app/resource/images",
-            "--include-data-file=app/resource/help.md=app/resource/help.md",
+            "--include-data-file=docs/help.md=docs/help.md",
             "--include-data-dir=asset=asset",
             "--include-data-dir=app/resource/easyocr=app/resource/easyocr",
         ]
