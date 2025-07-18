@@ -31,12 +31,14 @@ class Timer:
         if self.started():
             return time.time() - self._current
         else:
-            return 0.
+            return 0.0
 
     def reached(self):
         self._reach_count += 1
         # 返回是否大于时间限制且达到次数是否达标的bool
-        return time.time() - self._current > self.limit and self._reach_count > self.count
+        return (
+            time.time() - self._current > self.limit and self._reach_count > self.count
+        )
 
     def reset(self):
         """重置计时"""
@@ -73,9 +75,10 @@ class Timer:
 
     def show(self):
         from app.common.logger import logger
+
         logger.info(str(self))
 
     def __str__(self):
-        return f'Timer(limit={round(self.current(), 3)}/{self.limit}, count={self._reach_count}/{self.count})'
+        return f"Timer(limit={round(self.current(), 3)}/{self.limit}, count={self._reach_count}/{self.count})"
 
     __repr__ = __str__

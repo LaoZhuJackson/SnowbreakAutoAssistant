@@ -66,10 +66,12 @@ class Screenshot:
             save_dc = mfc_dc.CreateCompatibleDC()
 
             # 强制窗口重绘（关键！）
-            win32gui.RedrawWindow(hwnd, None, None,
-                                  win32con.RDW_INVALIDATE |
-                                  win32con.RDW_UPDATENOW |
-                                  win32con.RDW_ERASE)
+            win32gui.RedrawWindow(
+                hwnd,
+                None,
+                None,
+                win32con.RDW_INVALIDATE | win32con.RDW_UPDATENOW | win32con.RDW_ERASE,
+            )
 
             # 创建兼容位图
             bitmap = win32ui.CreateBitmap()
@@ -82,13 +84,15 @@ class Screenshot:
                 (w, h),  # 拷贝尺寸
                 mfc_dc,  # 源设备上下文
                 (0, 0),  # 源起点
-                win32con.SRCCOPY  # 直接拷贝
+                win32con.SRCCOPY,  # 直接拷贝
             )
 
             # 转换为numpy数组
             bmpinfo = bitmap.GetInfo()
             bmpstr = bitmap.GetBitmapBits(True)
-            img = np.frombuffer(bmpstr, dtype=np.uint8).reshape((bmpinfo['bmHeight'], bmpinfo['bmWidth'], 4))
+            img = np.frombuffer(bmpstr, dtype=np.uint8).reshape(
+                (bmpinfo["bmHeight"], bmpinfo["bmWidth"], 4)
+            )
             # # 取平均颜色
             # color = cv2.mean(img)
             # # 如果是启动器且全黑
@@ -142,7 +146,7 @@ class Screenshot:
             return None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 替换成你的游戏窗口标题
     game_window = "尘白禁区"
     screen = Screenshot(logger=logger)

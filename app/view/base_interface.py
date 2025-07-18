@@ -26,13 +26,17 @@ class BaseInterface:
         except TypeError:
             pass  # 没有连接存在时会抛出TypeError
         # 将新消息信号连接到对应输出位置
-        stdout_stream.message.connect(lambda message: self.__updateDisplay(message, log_widget))
-        stderr_stream.message.connect(lambda message: self.__updateDisplay(message, log_widget))
+        stdout_stream.message.connect(
+            lambda message: self.__updateDisplay(message, log_widget)
+        )
+        stderr_stream.message.connect(
+            lambda message: self.__updateDisplay(message, log_widget)
+        )
 
     def __updateDisplay(self, message, log_widget: QTextBrowser):
         # 将消息添加到 textBrowser，自动识别 HTML
         log_widget.insertHtml(message)
-        log_widget.insertPlainText('\n')  # 为下一行消息留出空间
+        log_widget.insertPlainText("\n")  # 为下一行消息留出空间
         log_widget.ensureCursorVisible()  # 滚动到最新消息
 
     def toggle_button(self, running):

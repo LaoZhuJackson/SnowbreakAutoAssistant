@@ -23,7 +23,7 @@ from .rec_img_aug import resize_norm_img
 
 class SSLRotateResize(object):
     def __init__(
-            self, image_shape, padding=False, select_all=True, mode="train", **kwargs
+        self, image_shape, padding=False, select_all=True, mode="train", **kwargs
     ):
         self.image_shape = image_shape
         self.padding = padding

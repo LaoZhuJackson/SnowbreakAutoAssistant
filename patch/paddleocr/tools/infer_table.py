@@ -78,7 +78,7 @@ def main(config, device, logger, vdl_writer):
 
     model.eval()
     with open(
-            os.path.join(save_res_path, "infer.txt"), mode="w", encoding="utf-8"
+        os.path.join(save_res_path, "infer.txt"), mode="w", encoding="utf-8"
     ) as f_w:
         for file in get_image_file_list(config["Global"]["infer_img"]):
             logger.info("infer_img: {}".format(file))
@@ -97,9 +97,9 @@ def main(config, device, logger, vdl_writer):
             bbox_list = post_result["bbox_batch_list"][0]
             structure_str_list = structure_str_list[0]
             structure_str_list = (
-                    ["<html>", "<body>", "<table>"]
-                    + structure_str_list
-                    + ["</table>", "</body>", "</html>"]
+                ["<html>", "<body>", "<table>"]
+                + structure_str_list
+                + ["</table>", "</body>", "</html>"]
             )
             bbox_list_str = json.dumps(bbox_list.tolist())
 

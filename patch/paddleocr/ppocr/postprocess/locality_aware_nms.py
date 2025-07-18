@@ -151,7 +151,7 @@ def soft_nms(boxes_in, Nt_thres=0.3, threshold=0.8, sigma=0.5, method=2):
                     else:
                         weight = 1
                 elif method == 2:
-                    weight = np.exp(-1.0 * ts_iou_val ** 2 / sigma)
+                    weight = np.exp(-1.0 * ts_iou_val**2 / sigma)
                 else:
                     if ts_iou_val > Nt_thres:
                         weight = 0

@@ -34,25 +34,45 @@ class EnterGameModule:
             # 截图
             self.auto.take_screenshot()
 
-            if self.auto.find_element('游戏运行中', 'text', crop=(0.5, 0.5, 1, 1), is_log=self.is_log):
+            if self.auto.find_element(
+                "游戏运行中", "text", crop=(0.5, 0.5, 1, 1), is_log=self.is_log
+            ):
                 break
             # 对截图内容做对应处理
-            if self.auto.click_element('开始游戏', 'text', crop=(0.5, 0.5, 1, 1), action='move_click',
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                "开始游戏",
+                "text",
+                crop=(0.5, 0.5, 1, 1),
+                action="move_click",
+                is_log=self.is_log,
+            ):
                 # self.logger.info("游戏无需更新或更新完毕")
                 continue
-            if self.auto.find_element('正在更新', 'text', crop=(0.5, 0.5, 1, 1), is_log=self.is_log):
+            if self.auto.find_element(
+                "正在更新", "text", crop=(0.5, 0.5, 1, 1), is_log=self.is_log
+            ):
                 # 还在更新
                 time.sleep(5)
                 timeout.reset()
                 continue
-            if self.auto.click_element('继续更新', 'text', crop=(0.5, 0.5, 1, 1), action='mouse_click',
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                "继续更新",
+                "text",
+                crop=(0.5, 0.5, 1, 1),
+                action="mouse_click",
+                is_log=self.is_log,
+            ):
                 time.sleep(5)
                 timeout.reset()
                 continue
-            if self.auto.click_element('更新', 'text', include=False, crop=(0.5, 0.5, 1, 1), action='mouse_click',
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                "更新",
+                "text",
+                include=False,
+                crop=(0.5, 0.5, 1, 1),
+                action="mouse_click",
+                is_log=self.is_log,
+            ):
                 time.sleep(2)
                 timeout.reset()
                 self.logger.info("需要更新")
@@ -68,30 +88,55 @@ class EnterGameModule:
             # 截图
             self.auto.take_screenshot()
 
-            if self.auto.click_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                "获得道具",
+                "text",
+                crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                is_log=self.is_log,
+            ):
                 break
             # 对不同情况进行处理
-            if self.auto.find_element('基地', 'text', crop=(
-            1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element(
-                    '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+            if self.auto.find_element(
+                "基地", "text", crop=(1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)
+            ) and self.auto.find_element(
+                "任务",
+                "text",
+                crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080),
+                is_log=self.is_log,
+            ):
                 self.logger.info("已进入游戏")
                 break
             # b服登录
-            if self.auto.click_element('登录', 'text', crop=(1198 / 2560, 835 / 1440, 1365 / 2560, 889 / 1440),
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                "登录",
+                "text",
+                crop=(1198 / 2560, 835 / 1440, 1365 / 2560, 889 / 1440),
+                is_log=self.is_log,
+            ):
                 time.sleep(1)
                 continue
 
-            if self.auto.click_element(['游戏', '开始'], 'text', crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080),
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                ["游戏", "开始"],
+                "text",
+                crop=(852 / 1920, 920 / 1080, 1046 / 1920, 981 / 1080),
+                is_log=self.is_log,
+            ):
                 time.sleep(2)
                 continue
-            if self.auto.click_element(['X', 'x'], 'text', crop=(1271 / 1920, 88 / 1080, 1890 / 1920, 367 / 1080),
-                                       is_log=self.is_log):
+            if self.auto.click_element(
+                ["X", "x"],
+                "text",
+                crop=(1271 / 1920, 88 / 1080, 1890 / 1920, 367 / 1080),
+                is_log=self.is_log,
+            ):
                 continue
-            if self.auto.click_element("app/resource/images/start_game/newbird_cancel.png", "image",
-                                       crop=(0.5, 0, 1, 0.5), is_log=self.is_log):
+            if self.auto.click_element(
+                "app/resource/images/start_game/newbird_cancel.png",
+                "image",
+                crop=(0.5, 0, 1, 0.5),
+                is_log=self.is_log,
+            ):
                 continue
 
             if timeout.reached():
@@ -99,5 +144,5 @@ class EnterGameModule:
                 break
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     EnterGameModule().run()

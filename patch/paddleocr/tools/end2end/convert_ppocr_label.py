@@ -64,7 +64,7 @@ def convert_label(label_dir, mode="gt", save_dir="./save_results/"):
                     txt_tag = 0
                 if mode == "gt":
                     gt_label = (
-                            poly_to_string(poly) + "\t" + str(txt_tag) + "\t" + txt + "\n"
+                        poly_to_string(poly) + "\t" + str(txt_tag) + "\t" + txt + "\n"
                     )
                 else:
                     gt_label = poly_to_string(poly) + "\t" + txt + "\n"

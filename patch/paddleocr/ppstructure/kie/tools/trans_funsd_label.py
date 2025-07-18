@@ -101,7 +101,7 @@ def load_funsd_label(image_dir, anno_dir):
             for i in range(len(res) - 1):
                 for j in range(i, 0, -1):
                     if abs(
-                            res[j + 1]["points"][0][1] - res[j]["points"][0][1]
+                        res[j + 1]["points"][0][1] - res[j]["points"][0][1]
                     ) < 20 and (res[j + 1]["points"][0][0] < res[j]["points"][0][0]):
                         tmp = deepcopy(res[j])
                         res[j] = deepcopy(res[j + 1])
@@ -114,8 +114,8 @@ def load_funsd_label(image_dir, anno_dir):
                 for link in r["linking"]:
                     # illegal links will be removed
                     if (
-                            link[0] not in old_id2new_id_map
-                            or link[1] not in old_id2new_id_map
+                        link[0] not in old_id2new_id_map
+                        or link[1] not in old_id2new_id_map
                     ):
                         continue
                     for src in old_id2new_id_map[link[0]]:

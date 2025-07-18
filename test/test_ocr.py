@@ -2,9 +2,9 @@ import time
 
 from app.modules.ocr import ocr
 
-image_path = '../app/resource/images/start_game/age.png'
-image_path_no_text = '../app/resource/images/logo.png'
-image_path_wrong_text = './wrong_text.png'
+image_path = "../app/resource/images/start_game/age.png"
+image_path_no_text = "../app/resource/images/logo.png"
+image_path_wrong_text = "./wrong_text.png"
 
 
 def benchmark(ocr_func, img, runs=100):
@@ -19,7 +19,7 @@ def benchmark(ocr_func, img, runs=100):
     return (time.time() - start) / runs
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # import paddle
     # try:
     #     print(paddle.utils.run_check())

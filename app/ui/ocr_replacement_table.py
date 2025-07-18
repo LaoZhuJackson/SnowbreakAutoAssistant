@@ -43,7 +43,9 @@ class Ui_ocrtable(object):
         self.LineEdit_after = LineEdit(ocrtable)
         self.LineEdit_after.setObjectName("LineEdit_after")
         self.gridLayout.addWidget(self.LineEdit_after, 0, 6, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.gridLayout.addItem(spacerItem, 4, 1, 1, 1)
         self.BodyLabel_tips = BodyLabel(ocrtable)
         self.BodyLabel_tips.setTextFormat(QtCore.Qt.MarkdownText)
@@ -78,4 +80,11 @@ class Ui_ocrtable(object):
         self.PrimaryPushButton_add.setText(_translate("ocrtable", "新增"))
 
 
-from qfluentwidgets import BodyLabel, ComboBox, LineEdit, PrimaryPushButton, PushButton, TableWidget
+from qfluentwidgets import (
+    BodyLabel,
+    ComboBox,
+    LineEdit,
+    PrimaryPushButton,
+    PushButton,
+    TableWidget,
+)

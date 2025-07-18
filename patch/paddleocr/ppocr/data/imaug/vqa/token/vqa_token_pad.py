@@ -17,16 +17,16 @@ import numpy as np
 
 class VQATokenPad(object):
     def __init__(
-            self,
-            max_seq_len=512,
-            pad_to_max_seq_len=True,
-            return_attention_mask=True,
-            return_token_type_ids=True,
-            truncation_strategy="longest_first",
-            return_overflowing_tokens=False,
-            return_special_tokens_mask=False,
-            infer_mode=False,
-            **kwargs,
+        self,
+        max_seq_len=512,
+        pad_to_max_seq_len=True,
+        return_attention_mask=True,
+        return_token_type_ids=True,
+        truncation_strategy="longest_first",
+        return_overflowing_tokens=False,
+        return_special_tokens_mask=False,
+        infer_mode=False,
+        **kwargs,
     ):
         self.max_seq_len = max_seq_len
         self.pad_to_max_seq_len = max_seq_len
@@ -40,7 +40,7 @@ class VQATokenPad(object):
 
     def __call__(self, data):
         needs_to_be_padded = (
-                self.pad_to_max_seq_len and len(data["input_ids"]) < self.max_seq_len
+            self.pad_to_max_seq_len and len(data["input_ids"]) < self.max_seq_len
         )
 
         if needs_to_be_padded:
@@ -59,19 +59,19 @@ class VQATokenPad(object):
                     ] * difference
                 if self.return_token_type_ids:
                     data["token_type_ids"] = (
-                            data["token_type_ids"]
-                            + [tokenizer_params["pad_token_type_id"]] * difference
+                        data["token_type_ids"]
+                        + [tokenizer_params["pad_token_type_id"]] * difference
                     )
                 if self.return_special_tokens_mask:
                     data["special_tokens_mask"] = (
-                            data["special_tokens_mask"] + [1] * difference
+                        data["special_tokens_mask"] + [1] * difference
                     )
                 data["input_ids"] = (
-                        data["input_ids"] + [tokenizer_params["pad_token_id"]] * difference
+                    data["input_ids"] + [tokenizer_params["pad_token_id"]] * difference
                 )
                 if not self.infer_mode:
                     data["labels"] = (
-                            data["labels"] + [self.pad_token_label_id] * difference
+                        data["labels"] + [self.pad_token_label_id] * difference
                     )
                 data["bbox"] = data["bbox"] + [[0, 0, 0, 0]] * difference
             elif tokenizer_params["padding_side"] == "left":
@@ -81,15 +81,15 @@ class VQATokenPad(object):
                     )
                 if self.return_token_type_ids:
                     data["token_type_ids"] = [
-                                                 tokenizer_params["pad_token_type_id"]
-                                             ] * difference + data["token_type_ids"]
+                        tokenizer_params["pad_token_type_id"]
+                    ] * difference + data["token_type_ids"]
                 if self.return_special_tokens_mask:
                     data["special_tokens_mask"] = [1] * difference + data[
                         "special_tokens_mask"
                     ]
                 data["input_ids"] = [
-                                        tokenizer_params["pad_token_id"]
-                                    ] * difference + data["input_ids"]
+                    tokenizer_params["pad_token_id"]
+                ] * difference + data["input_ids"]
                 if not self.infer_mode:
                     data["labels"] = [self.pad_token_label_id] * difference + data[
                         "labels"

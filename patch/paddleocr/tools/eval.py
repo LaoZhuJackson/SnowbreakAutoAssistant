@@ -50,7 +50,7 @@ def main():
         ]:  # distillation model
             for key in config["Architecture"]["Models"]:
                 if (
-                        config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
+                    config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
                 ):  # for multi head
                     out_channels_list = {}
                     if config["PostProcess"]["name"] == "DistillationSARLabelDecode":
@@ -64,9 +64,9 @@ def main():
                         "out_channels_list"
                     ] = out_channels_list
                 else:
-                    config["Architecture"]["Models"][key]["Head"][
-                        "out_channels"
-                    ] = char_num
+                    config["Architecture"]["Models"][key]["Head"]["out_channels"] = (
+                        char_num
+                    )
         elif config["Architecture"]["Head"]["name"] == "MultiHead":  # for multi head
             out_channels_list = {}
             if config["PostProcess"]["name"] == "SARLabelDecode":
@@ -96,9 +96,9 @@ def main():
     if config["Architecture"]["algorithm"] == "Distillation":
         for key in config["Architecture"]["Models"]:
             extra_input = (
-                    extra_input
-                    or config["Architecture"]["Models"][key]["algorithm"]
-                    in extra_input_models
+                extra_input
+                or config["Architecture"]["Models"][key]["algorithm"]
+                in extra_input_models
             )
     else:
         extra_input = config["Architecture"]["algorithm"] in extra_input_models

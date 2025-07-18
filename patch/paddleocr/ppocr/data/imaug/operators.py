@@ -31,7 +31,7 @@ class DecodeImage(object):
     """decode image"""
 
     def __init__(
-            self, img_mode="RGB", channel_first=False, ignore_orientation=False, **kwargs
+        self, img_mode="RGB", channel_first=False, ignore_orientation=False, **kwargs
     ):
         self.img_mode = img_mode
         self.channel_first = channel_first
@@ -40,13 +40,13 @@ class DecodeImage(object):
     def __call__(self, data):
         img = data["image"]
         if six.PY2:
-            assert (
-                    type(img) is str and len(img) > 0
-            ), "invalid input 'img' in DecodeImage"
+            assert type(img) is str and len(img) > 0, (
+                "invalid input 'img' in DecodeImage"
+            )
         else:
-            assert (
-                    type(img) is bytes and len(img) > 0
-            ), "invalid input 'img' in DecodeImage"
+            assert type(img) is bytes and len(img) > 0, (
+                "invalid input 'img' in DecodeImage"
+            )
         img = np.frombuffer(img, dtype="uint8")
         if self.ignore_orientation:
             img = cv2.imdecode(img, cv2.IMREAD_IGNORE_ORIENTATION | cv2.IMREAD_COLOR)
@@ -148,9 +148,9 @@ class Pad(object):
         img_h, img_w = img.shape[0], img.shape[1]
         if self.size:
             resize_h2, resize_w2 = self.size
-            assert (
-                    img_h < resize_h2 and img_w < resize_w2
-            ), "(h, w) of target size should be greater than (img_h, img_w)"
+            assert img_h < resize_h2 and img_w < resize_w2, (
+                "(h, w) of target size should be greater than (img_h, img_w)"
+            )
         else:
             resize_h2 = max(
                 int(math.ceil(img.shape[0] / self.size_div) * self.size_div),
@@ -433,8 +433,9 @@ class KieResize(object):
         max_long_edge = max(scale)
         max_short_edge = min(scale)
         scale_factor = min(max_long_edge / max(h, w), max_short_edge / min(h, w))
-        resize_w, resize_h = int(w * float(scale_factor) + 0.5), int(
-            h * float(scale_factor) + 0.5
+        resize_w, resize_h = (
+            int(w * float(scale_factor) + 0.5),
+            int(h * float(scale_factor) + 0.5),
         )
         max_stride = 32
         resize_h = (resize_h + max_stride - 1) // max_stride * max_stride
@@ -457,15 +458,15 @@ class KieResize(object):
 
 class SRResize(object):
     def __init__(
-            self,
-            imgH=32,
-            imgW=128,
-            down_sample_scale=4,
-            keep_ratio=False,
-            min_ratio=1,
-            mask=False,
-            infer_mode=False,
-            **kwargs,
+        self,
+        imgH=32,
+        imgW=128,
+        down_sample_scale=4,
+        keep_ratio=False,
+        min_ratio=1,
+        mask=False,
+        infer_mode=False,
+        **kwargs,
     ):
         self.imgH = imgH
         self.imgW = imgW

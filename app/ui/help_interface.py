@@ -20,26 +20,28 @@ class Ui_help(object):
         self.gridLayout.setObjectName("gridLayout")
         self.TextEdit_markdown = TextEdit(help)
         self.TextEdit_markdown.setEnabled(True)
-        self.TextEdit_markdown.setStyleSheet("LineEdit, TextEdit, PlainTextEdit {\n"
-"    color: black;\n"
-"    background-color: rgba(255, 255, 255, 0.7);\n"
-"    border-radius: 5px;\n"
-"    /* font: 14px \"Segoe UI\", \"Microsoft YaHei\"; */\n"
-"    padding: 0px 10px;\n"
-"    selection-background-color: #00a7b3;\n"
-"}\n"
-"\n"
-"TextEdit,\n"
-"PlainTextEdit {\n"
-"    padding: 2px 3px 2px 8px;\n"
-"}\n"
-"\n"
-"LineEdit:disabled, TextEdit:disabled,\n"
-"PlainTextEdit:disabled {\n"
-"    color: rgba(0, 0, 0, 150);\n"
-"    background-color: rgba(249, 249, 249, 0.3);\n"
-"}\n"
-"")
+        self.TextEdit_markdown.setStyleSheet(
+            "LineEdit, TextEdit, PlainTextEdit {\n"
+            "    color: black;\n"
+            "    background-color: rgba(255, 255, 255, 0.7);\n"
+            "    border-radius: 5px;\n"
+            '    /* font: 14px "Segoe UI", "Microsoft YaHei"; */\n'
+            "    padding: 0px 10px;\n"
+            "    selection-background-color: #00a7b3;\n"
+            "}\n"
+            "\n"
+            "TextEdit,\n"
+            "PlainTextEdit {\n"
+            "    padding: 2px 3px 2px 8px;\n"
+            "}\n"
+            "\n"
+            "LineEdit:disabled, TextEdit:disabled,\n"
+            "PlainTextEdit:disabled {\n"
+            "    color: rgba(0, 0, 0, 150);\n"
+            "    background-color: rgba(249, 249, 249, 0.3);\n"
+            "}\n"
+            ""
+        )
         self.TextEdit_markdown.setObjectName("TextEdit_markdown")
         self.gridLayout.addWidget(self.TextEdit_markdown, 0, 0, 1, 1)
 
@@ -49,4 +51,6 @@ class Ui_help(object):
     def retranslateUi(self, help):
         _translate = QtCore.QCoreApplication.translate
         help.setWindowTitle(_translate("help", "Frame"))
+
+
 from qfluentwidgets import TextEdit

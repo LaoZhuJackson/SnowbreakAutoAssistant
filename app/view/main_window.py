@@ -11,9 +11,25 @@ import numpy as np
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
 from PyQt5.QtGui import QIcon, QColor, QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QFrame
-from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox, Dialog
-from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
-    BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
+from qfluentwidgets import (
+    FluentIcon as FIF,
+    SystemThemeListener,
+    isDarkTheme,
+    MessageBox,
+    Dialog,
+)
+from qfluentwidgets import (
+    NavigationItemPosition,
+    MSFluentWindow,
+    SplashScreen,
+    MessageBoxBase,
+    SubtitleLabel,
+    BodyLabel,
+    NavigationBarPushButton,
+    FlyoutView,
+    Flyout,
+    setThemeColor,
+)
 
 from .additional_features import Additional
 from .help import Help
@@ -33,7 +49,6 @@ from ..common import resource
 
 
 class InstallOcr(QThread):
-
     def __init__(self, ocr_installer, parent=None):
         super().__init__()
         self.ocr_installer = ocr_installer
@@ -44,7 +59,6 @@ class InstallOcr(QThread):
 
 
 class MainWindow(MSFluentWindow):
-
     def __init__(self):
         super().__init__()
         self.initWindow()
@@ -54,15 +68,17 @@ class MainWindow(MSFluentWindow):
 
         # TODO: create sub interface
         self.displayInterface = DisplayInterface(self)
-        self.homeInterface = Home('Home Interface', self)
-        self.additionalInterface = Additional('Additional Interface', self)
-        self.triggerInterface = Trigger('Trigger Interface', self)
+        self.homeInterface = Home("Home Interface", self)
+        self.additionalInterface = Additional("Additional Interface", self)
+        self.triggerInterface = Trigger("Trigger Interface", self)
 
-        self.helpInterface = Help('Help Interface', self)
-        self.tableInterface = OcrReplacementTable('Table Interface', self)
+        self.helpInterface = Help("Help Interface", self)
+        self.tableInterface = OcrReplacementTable("Table Interface", self)
         self.settingInterface = SettingInterface(self)
 
-        self.support_button = NavigationBarPushButton(FIF.HEART, '赞赏', isSelectable=False)
+        self.support_button = NavigationBarPushButton(
+            FIF.HEART, "赞赏", isSelectable=False
+        )
 
         self.connectSignalToSlot()
 
@@ -92,11 +108,11 @@ class MainWindow(MSFluentWindow):
         starter_path = config.LineEdit_starter_directory.value
         try:
             subprocess.Popen(starter_path)
-            logger.debug(f'打开 {starter_path} 成功')
+            logger.debug(f"打开 {starter_path} 成功")
         except FileNotFoundError:
-            logger.error(f'没有找到对应启动器: {starter_path}')
+            logger.error(f"没有找到对应启动器: {starter_path}")
         except Exception as e:
-            logger.error(f'出现报错: {e}')
+            logger.error(f"出现报错: {e}")
 
     def connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
@@ -109,23 +125,26 @@ class MainWindow(MSFluentWindow):
         # self.navigationInterface.setAcrylicEnabled(True)
 
         # TODO: add navigation items
-        self.addSubInterface(self.displayInterface, FIF.PHOTO, '展示页')
-        self.addSubInterface(self.homeInterface, FIF.HOME, '主页', FIF.HOME_FILL)
-        self.addSubInterface(self.additionalInterface, FIF.APPLICATION, '小工具')
-        self.addSubInterface(self.triggerInterface, FIF.COMPLETED, '触发器')
-        self.addSubInterface(self.tableInterface, FIF.SYNC, '替换表')
+        self.addSubInterface(self.displayInterface, FIF.PHOTO, "展示页")
+        self.addSubInterface(self.homeInterface, FIF.HOME, "主页", FIF.HOME_FILL)
+        self.addSubInterface(self.additionalInterface, FIF.APPLICATION, "小工具")
+        self.addSubInterface(self.triggerInterface, FIF.COMPLETED, "触发器")
+        self.addSubInterface(self.tableInterface, FIF.SYNC, "替换表")
 
         # add custom widget to bottom
         self.navigationInterface.addWidget(
-            'avatar',
-            self.support_button,
-            self.onSupport,
-            NavigationItemPosition.BOTTOM
+            "avatar", self.support_button, self.onSupport, NavigationItemPosition.BOTTOM
         )
-        self.addSubInterface(self.helpInterface, FIF.HELP, '帮助', position=NavigationItemPosition.BOTTOM)
         self.addSubInterface(
-            self.settingInterface, Icon.SETTINGS, self.tr('Settings'), Icon.SETTINGS_FILLED,
-            NavigationItemPosition.BOTTOM)
+            self.helpInterface, FIF.HELP, "帮助", position=NavigationItemPosition.BOTTOM
+        )
+        self.addSubInterface(
+            self.settingInterface,
+            Icon.SETTINGS,
+            self.tr("Settings"),
+            Icon.SETTINGS_FILLED,
+            NavigationItemPosition.BOTTOM,
+        )
 
         self.stackedWidget.setCurrentIndex(config.enter_interface.value)
 
@@ -147,8 +166,8 @@ class MainWindow(MSFluentWindow):
     def initWindow(self):
         self.resize(960, 860)
         self.setMinimumWidth(760)
-        self.setWindowIcon(QIcon(':app/resource/images/logo.png'))
-        self.setWindowTitle('SAA尘白助手')
+        self.setWindowIcon(QIcon(":app/resource/images/logo.png"))
+        self.setWindowTitle("SAA尘白助手")
 
         setThemeColor("#009FAA")
 
@@ -175,7 +194,7 @@ class MainWindow(MSFluentWindow):
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
-        if hasattr(self, 'splashScreen'):
+        if hasattr(self, "splashScreen"):
             self.splashScreen.resize(self.size())
 
     # def update_ring(self, value, speed):
@@ -230,11 +249,17 @@ class MainWindow(MSFluentWindow):
             判断 HTML 内容是否为空
             """
             # 使用正则表达式匹配空的段落 (<p>) 或者换行 (<br />)
-            empty_html_pattern = re.compile(r'<p[^>]*>\s*(<br\s*/?>)?\s*</p>', re.IGNORECASE)
+            empty_html_pattern = re.compile(
+                r"<p[^>]*>\s*(<br\s*/?>)?\s*</p>", re.IGNORECASE
+            )
 
             # 去掉默认的头部信息后，检查是否只剩下空的段落
-            body_content = re.sub(r'<!DOCTYPE[^>]*>|<html[^>]*>|<head[^>]*>.*?</head>|<body[^>]*>|</body>|</html>', '',
-                                  content, flags=re.DOTALL)
+            body_content = re.sub(
+                r"<!DOCTYPE[^>]*>|<html[^>]*>|<head[^>]*>.*?</head>|<body[^>]*>|</body>|</html>",
+                "",
+                content,
+                flags=re.DOTALL,
+            )
             return bool(empty_html_pattern.fullmatch(body_content.strip()))
 
         def save_html(path, content):
@@ -244,14 +269,16 @@ class MainWindow(MSFluentWindow):
                 return
             if content:
                 # "w"模式实现先清空再写入
-                with open(path, "w", encoding='utf-8') as file:
+                with open(path, "w", encoding="utf-8") as file:
                     file.write(content)
 
         def clean_old_logs(log_dir, max_files=30):
             """检查日志文件夹，删除最早的文件以保持最多 `max_files` 个文件"""
             # 获取所有日志文件并按文件创建时间排序
-            all_logs = [f for f in os.listdir(log_dir) if f.endswith('.html')]
-            all_logs.sort(key=lambda x: os.path.getctime(os.path.join(log_dir, x)))  # 按创建时间排序
+            all_logs = [f for f in os.listdir(log_dir) if f.endswith(".html")]
+            all_logs.sort(
+                key=lambda x: os.path.getctime(os.path.join(log_dir, x))
+            )  # 按创建时间排序
 
             # 如果文件数量超过 max_files，则删除最早的文件
             if len(all_logs) >= max_files:
@@ -277,9 +304,15 @@ class MainWindow(MSFluentWindow):
 
         name_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         save_html(os.path.join(home_log_dir, f"home_log_{name_time}.html"), home_log)
-        save_html(os.path.join(fishing_log_dir, f"fishing_log_{name_time}.html"), fishing_log)
-        save_html(os.path.join(action_log_dir, f"action_log_{name_time}.html"), action_log)
-        save_html(os.path.join(jigsaw_log_dir, f"jigsaw_log_{name_time}.html"), jigsaw_log)
+        save_html(
+            os.path.join(fishing_log_dir, f"fishing_log_{name_time}.html"), fishing_log
+        )
+        save_html(
+            os.path.join(action_log_dir, f"action_log_{name_time}.html"), action_log
+        )
+        save_html(
+            os.path.join(jigsaw_log_dir, f"jigsaw_log_{name_time}.html"), jigsaw_log
+        )
 
     def save_position(self):
         # 获取当前窗口的位置和大小
@@ -308,10 +341,13 @@ class MainWindow(MSFluentWindow):
 
         # retry
         if self.isMicaEffectEnabled():
-            QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
+            QTimer.singleShot(
+                100,
+                lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()),
+            )
 
     def check_update(self):
-        # logger.warn('当前测试版还没写更新功能')
+        logger.warn("当前测试版还没写更新功能")
         pass
 
     def showMessageBox(self, title, content):
@@ -331,6 +367,7 @@ class MainWindow(MSFluentWindow):
         :param screenshot:
         :return:
         """
+
         def ndarray_to_qpixmap(ndarray):
             # 确保ndarray是3维的 (height, width, channels)
             if ndarray.ndim == 2:
@@ -343,22 +380,24 @@ class MainWindow(MSFluentWindow):
             ndarray = cv2.cvtColor(ndarray, cv2.COLOR_BGR2RGB)
 
             # 将ndarray转换为QImage
-            qimage = QImage(ndarray.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            qimage = QImage(
+                ndarray.data, width, height, bytes_per_line, QImage.Format_RGB888
+            )
 
             # 将QImage转换为QPixmap
             return QPixmap.fromImage(qimage)
 
         def save_screenshot(ndarray):
             # 检查 temp 目录是否存在，如果不存在则创建
-            if not os.path.exists('temp'):
-                os.makedirs('temp')
+            if not os.path.exists("temp"):
+                os.makedirs("temp")
             # cv2保存是bgr格式
-            cv2.imwrite(f'temp/{time.time()}.png', ndarray)
+            cv2.imwrite(f"temp/{time.time()}.png", ndarray)
 
         save_screenshot(screenshot)
 
         if not isinstance(self.message_window, CustomMessageBox):
-            self.message_window = CustomMessageBox(self, '当前截图', 'image')
+            self.message_window = CustomMessageBox(self, "当前截图", "image")
         screenshot_pixmap = ndarray_to_qpixmap(screenshot)
         # 按比例缩放图像
         scaled_pixmap = screenshot_pixmap.scaled(

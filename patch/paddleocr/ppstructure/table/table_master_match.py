@@ -134,7 +134,7 @@ def cal_iou(bbox1, bbox2):
 def cal_distance(p1, p2):
     delta_x = p1[0] - p2[0]
     delta_y = p1[1] - p2[1]
-    d = math.sqrt((delta_x ** 2) + (delta_y ** 2))
+    d = math.sqrt((delta_x**2) + (delta_y**2))
     return d
 
 
@@ -148,11 +148,11 @@ def is_inside(center_point, corner_point):
     x_flag = False
     y_flag = False
     if (center_point[0] >= corner_point[0][0]) and (
-            center_point[0] <= corner_point[1][0]
+        center_point[0] <= corner_point[1][0]
     ):
         x_flag = True
     if (center_point[1] >= corner_point[0][1]) and (
-            center_point[1] <= corner_point[1][1]
+        center_point[1] <= corner_point[1][1]
     ):
         y_flag = True
     if x_flag and y_flag:
@@ -344,7 +344,7 @@ def center_rule_match(end2end_xywh_bboxes, structure_master_xyxy_bboxes):
 
 
 def iou_rule_match(
-        end2end_xyxy_bboxes, end2end_xyxy_indexes, structure_master_xyxy_bboxes
+    end2end_xyxy_bboxes, end2end_xyxy_indexes, structure_master_xyxy_bboxes
 ):
     """
     Use iou to find matching list.
@@ -356,7 +356,7 @@ def iou_rule_match(
     """
     match_pair_list = []
     for end2end_xyxy_index, end2end_xyxy in zip(
-            end2end_xyxy_indexes, end2end_xyxy_bboxes
+        end2end_xyxy_indexes, end2end_xyxy_bboxes
     ):
         max_iou = 0
         max_match = [None, None]
@@ -499,26 +499,26 @@ def merge_span_token(master_token_list):
         try:
             if master_token_list[pointer] == "<td":
                 if master_token_list[pointer + 1].startswith(
-                        " colspan="
+                    " colspan="
                 ) or master_token_list[pointer + 1].startswith(" rowspan="):
                     """
                     example:
                     pattern <td colspan="3">
                     '<td' + 'colspan=" "' + '>' + '</td>'
                     """
-                    tmp = "".join(master_token_list[pointer: pointer + 3 + 1])
+                    tmp = "".join(master_token_list[pointer : pointer + 3 + 1])
                     pointer += 4
                     new_master_token_list.append(tmp)
 
                 elif master_token_list[pointer + 2].startswith(
-                        " colspan="
+                    " colspan="
                 ) or master_token_list[pointer + 2].startswith(" rowspan="):
                     """
                     example:
                     pattern <td rowspan="2" colspan="3">
                     '<td' + 'rowspan=" "' + 'colspan=" "' + '>' + '</td>'
                     """
-                    tmp = "".join(master_token_list[pointer: pointer + 4 + 1])
+                    tmp = "".join(master_token_list[pointer : pointer + 4 + 1])
                     pointer += 5
                     new_master_token_list.append(tmp)
 
@@ -828,8 +828,8 @@ class Matcher:
                 match_list, len(structure_master_xywh_bboxes), type="master"
             )
             if (
-                    len(centerIou_no_match_master_indexs) > 0
-                    and len(centerIou_no_match_end2end_indexs) > 0
+                len(centerIou_no_match_master_indexs) > 0
+                and len(centerIou_no_match_end2end_indexs) > 0
             ):
                 centerIou_no_match_end2end_xywh = end2end_xywh_bboxes[
                     centerIou_no_match_end2end_indexs

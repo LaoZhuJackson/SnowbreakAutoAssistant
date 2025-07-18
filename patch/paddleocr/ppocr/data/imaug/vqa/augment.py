@@ -24,7 +24,7 @@ def order_by_tbyx(ocr_info):
     for i in range(len(res) - 1):
         for j in range(i, 0, -1):
             if abs(res[j + 1]["bbox"][1] - res[j]["bbox"][1]) < 20 and (
-                    res[j + 1]["bbox"][0] < res[j]["bbox"][0]
+                res[j + 1]["bbox"][0] < res[j]["bbox"][0]
             ):
                 tmp = deepcopy(res[j])
                 res[j] = deepcopy(res[j + 1])

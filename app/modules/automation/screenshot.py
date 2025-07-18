@@ -64,7 +64,7 @@ def auto_crop_image(img):
             break
 
     # =============== 执行精确裁剪 ===============
-    cropped = img[top:bottom + 1, left:right + 1]  # Python切片含头不含尾
+    cropped = img[top : bottom + 1, left : right + 1]  # Python切片含头不含尾
     return cropped
 
 
@@ -126,7 +126,9 @@ class Screenshot:
             bmpinfo = bitmap.GetInfo()
             bmpstr = bitmap.GetBitmapBits(True)
             # img_size = np.frombuffer(bmpstr, dtype=np.uint8).size
-            img = np.frombuffer(bmpstr, dtype=np.uint8).reshape((bmpinfo['bmHeight'], bmpinfo['bmWidth'], 4))
+            img = np.frombuffer(bmpstr, dtype=np.uint8).reshape(
+                (bmpinfo["bmHeight"], bmpinfo["bmWidth"], 4)
+            )
             # # 取平均颜色
             # color = cv2.mean(img)
             # # 如果是启动器且全黑
@@ -180,7 +182,7 @@ class Screenshot:
             return None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 替换成你的游戏窗口标题
     game_window = "尘白禁区"
     screen = Screenshot(logger=logger)

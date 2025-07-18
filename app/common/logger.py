@@ -9,6 +9,7 @@ class Stream(QObject):
     """
     自定义输出流，捕获 print 的输出
     """
+
     message = pyqtSignal(str)
 
     def __init__(self, original_stream):
@@ -28,15 +29,18 @@ class HtmlFormatter(logging.Formatter):
     """
     捕获的输出转换为适合控件显示的html格式
     """
+
     formats = {
         logging.DEBUG: "gray",
         logging.INFO: "green",
         logging.WARNING: "orange",
         logging.ERROR: "red",
-        logging.CRITICAL: "purple"
+        logging.CRITICAL: "purple",
     }
 
-    def __init__(self, fmt="%(asctime)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S"):
+    def __init__(
+        self, fmt="%(asctime)s - %(levelname)s - %(message)s", datefmt="%H:%M:%S"
+    ):
         super().__init__(fmt=fmt, datefmt=datefmt)
 
     def format(self, record):
@@ -106,5 +110,5 @@ class Logger:
     def updateDisplay(self, message):
         # 将消息添加到 QTextEdit，自动识别 HTML
         self.log_widget.insertHtml(message)
-        self.log_widget.insertPlainText('\n')  # 为下一行消息留出空间
+        self.log_widget.insertPlainText("\n")  # 为下一行消息留出空间
         self.log_widget.ensureCursorVisible()  # 滚动到最新消息

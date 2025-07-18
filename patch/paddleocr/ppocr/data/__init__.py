@@ -55,7 +55,7 @@ def term_mp(sig_num, frame):
     """kill all child processes"""
     pid = os.getpid()
     pgid = os.getpgid(os.getpid())
-    print("main proc {} exit, kill process group " "{}".format(pid, pgid))
+    print("main proc {} exit, kill process group {}".format(pid, pgid))
     os.killpg(pgid, signal.SIGKILL)
 
 

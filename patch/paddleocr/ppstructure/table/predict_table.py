@@ -140,7 +140,7 @@ class TableSystem(object):
         for i in range(len(dt_boxes)):
             det_box = dt_boxes[i]
             x0, y0, x1, y1 = expand(2, det_box, img.shape)
-            text_rect = img[int(y0): int(y1), int(x0): int(x1), :]
+            text_rect = img[int(y0) : int(y1), int(x0) : int(x1), :]
             img_crop_list.append(text_rect)
         rec_res, rec_elapse = self.text_recognizer(img_crop_list)
         logger.debug("rec_res num  : {}, elapse : {}".format(len(rec_res), rec_elapse))
@@ -155,7 +155,7 @@ def to_excel(html_table, excel_path):
 
 def main(args):
     image_file_list = get_image_file_list(args.image_dir)
-    image_file_list = image_file_list[args.process_id:: args.total_process_num]
+    image_file_list = image_file_list[args.process_id :: args.total_process_num]
     os.makedirs(args.output, exist_ok=True)
 
     table_sys = TableSystem(args)
@@ -229,9 +229,9 @@ if __name__ == "__main__":
         total_process_num = args.total_process_num
         for process_id in range(total_process_num):
             cmd = (
-                    [sys.executable, "-u"]
-                    + sys.argv
-                    + ["--process_id={}".format(process_id), "--use_mp={}".format(False)]
+                [sys.executable, "-u"]
+                + sys.argv
+                + ["--process_id={}".format(process_id), "--use_mp={}".format(False)]
             )
             p = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stdout)
             p_list.append(p)
