@@ -17,7 +17,7 @@
 
 ## ✨功能介绍
 
-> [!注意]
+> [!Warning]
 > 
 > 2.0版本后所有任务支持窗口被遮挡，鼠标点击采取了一种取巧的方式最小化干扰用户操作，部分不需要鼠标操作的任务可以实现纯后台
 > 只适配16:9的屏幕，支持全屏和窗口化，其他比例可以打开设置里的自动缩放功能，会自动将游戏窗口缩放并放在左上角（必须得贴着左上角）
@@ -79,7 +79,7 @@
 
 ### ⚡使用说明&开发文档
 
-> [!Tip]
+> [!Important]
 >
 > 感谢[vmoranv](https://github.com/vmoranv)提供的文档
 > 
@@ -118,7 +118,8 @@
 [![star趋势](https://starchart.cc/LaoZhuJackson/SnowbreakAutoAssistant.svg?variant=adaptive)](https://starchart.cc/LaoZhuJackson/SnowbreakAutoAssistant)
 
 ## 📝License
-> [!Tip]
+
+> [!Note]
 > 
 > MIT License
 [LICENSE](https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/blob/main/LICENSE)
