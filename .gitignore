@@ -18,3 +18,4 @@
 /AppData/activity_date.json
 .venv
 nuitka-crash-report.xml
+*.pyc
