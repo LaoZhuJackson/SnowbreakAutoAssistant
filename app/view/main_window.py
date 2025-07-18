@@ -223,7 +223,7 @@ class MainWindow(MSFluentWindow):
                 # w.scrollToCard(index)
 
     def save_log(self):
-        """保存所有log到txt中"""
+        """保存所有log到html中"""
 
         def is_empty_html(content):
             """
@@ -238,48 +238,56 @@ class MainWindow(MSFluentWindow):
             return bool(empty_html_pattern.fullmatch(body_content.strip()))
 
         def save_html(path, content):
-            # 使用了 strip() 方法来去掉内容中的空白字符（例如空格、换行符等）
-            # print(is_empty_html(content))
-            if is_empty_html(content):
+            """保存HTML内容，如果是空内容则跳过"""
+            if not content or is_empty_html(content):
                 return
-            if content:
-                # "w"模式实现先清空再写入
-                with open(path, "w", encoding='utf-8') as file:
-                    file.write(content)
+            with open(path, "w", encoding='utf-8') as file:
+                file.write(content)
 
         def clean_old_logs(log_dir, max_files=30):
-            """检查日志文件夹，删除最早的文件以保持最多 `max_files` 个文件"""
-            # 获取所有日志文件并按文件创建时间排序
-            all_logs = [f for f in os.listdir(log_dir) if f.endswith('.html')]
-            all_logs.sort(key=lambda x: os.path.getctime(os.path.join(log_dir, x)))  # 按创建时间排序
-
-            # 如果文件数量超过 max_files，则删除最早的文件
-            if len(all_logs) >= max_files:
-                # 删除最早的文件
-                os.remove(os.path.join(log_dir, all_logs[0]))
-
-        home_log_dir = "./log/home"
-        fishing_log_dir = "./log/fishing"
-        action_log_dir = "./log/action"
-        jigsaw_log_dir = "./log/jigsaw"
-        log_path_list = [home_log_dir, fishing_log_dir, action_log_dir, jigsaw_log_dir]
-        for log_dir in log_path_list:
+            """清理旧日志文件，保留最多max_files个"""
             if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            else:
-                # 清理旧日志文件（如果存在超过 30 个文件）
-                clean_old_logs(log_dir)
+                return
 
-        home_log = self.homeInterface.textBrowser_log.toHtml()
-        fishing_log = self.additionalInterface.textBrowser_log_fishing.toHtml()
-        action_log = self.additionalInterface.textBrowser_log_action.toHtml()
-        jigsaw_log = self.additionalInterface.textBrowser_log_jigsaw.toHtml()
+            all_logs = [
+                f for f in os.listdir(log_dir)
+                if f.endswith('.html') and os.path.isfile(os.path.join(log_dir, f))
+            ]
 
-        name_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        save_html(os.path.join(home_log_dir, f"home_log_{name_time}.html"), home_log)
-        save_html(os.path.join(fishing_log_dir, f"fishing_log_{name_time}.html"), fishing_log)
-        save_html(os.path.join(action_log_dir, f"action_log_{name_time}.html"), action_log)
-        save_html(os.path.join(jigsaw_log_dir, f"jigsaw_log_{name_time}.html"), jigsaw_log)
+            if len(all_logs) <= max_files:
+                return
+
+            # 按创建时间排序并删除最旧的文件
+            all_logs.sort(key=lambda x: os.path.getctime(os.path.join(log_dir, x)))
+            for file_to_remove in all_logs[:len(all_logs) - max_files]:
+                os.remove(os.path.join(log_dir, file_to_remove))
+
+        # 日志配置：目录、UI组件、文件名前缀
+        log_configs = [
+            ("./log/home", self.homeInterface.textBrowser_log, "home"),
+            ("./log/fishing", self.additionalInterface.textBrowser_log_fishing, "fishing"),
+            ("./log/action", self.additionalInterface.textBrowser_log_action, "action"),
+            ("./log/jigsaw", self.additionalInterface.textBrowser_log_jigsaw, "jigsaw"),
+            ("./log/water_bomb", self.additionalInterface.textBrowser_log_water_bomb, "water_bomb"),
+            ("./log/alien_guardian", self.additionalInterface.textBrowser_log_alien_guardian, "alien_guardian"),
+            ("./log/maze", self.additionalInterface.textBrowser_log_maze, "maze"),
+            ("./log/massaging", self.additionalInterface.textBrowser_log_massaging, "massaging"),
+            ("./log/drink", self.additionalInterface.textBrowser_log_drink, "drink")
+        ]
+
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        for log_dir, text_browser, prefix in log_configs:
+            # 确保日志目录存在
+            os.makedirs(log_dir, exist_ok=True)
+
+            # 清理旧日志
+            clean_old_logs(log_dir)
+
+            # 获取并保存日志内容
+            log_content = text_browser.toHtml()
+            filename = f"{prefix}_{timestamp}.html"
+            save_html(os.path.join(log_dir, filename), log_content)
 
     def save_position(self):
         # 获取当前窗口的位置和大小

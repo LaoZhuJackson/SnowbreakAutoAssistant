@@ -1138,7 +1138,7 @@
                                 </widget>
                             </item>
                             <item row="1" column="0">
-                                <widget class="QTextBrowser" name="textBrowser_log_card">
+                                <widget class="QTextBrowser" name="textBrowser_log_drink">
                                     <property name="styleSheet">
                                         <string notr="true"/>
                                     </property>

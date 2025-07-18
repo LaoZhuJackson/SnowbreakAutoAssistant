@@ -108,10 +108,10 @@ Demo video:[【基于图像识别的芬妮舞狮尘白自动化代理助手-哔�
 
 ## ❤️ Related Projects
 
-- OCR文字识别 https://github.com/JaidedAI/EasyOCR
-- 三月七星穹铁道助手 https://github.com/moesnow/March7thAssistant
-- maa明日方舟助手 https://github.com/MaaAssistantArknights/MaaAssistantArknights
-- 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
+- OCR text recognition https://github.com/JaidedAI/EasyOCR
+- Honkai: Star Rail Assistan https://github.com/moesnow/March7thAssistant
+- MAA Arknights Assistant https://github.com/MaaAssistantArknights/MaaAssistantArknights
+- GUI component library https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 
 ## 🚧 SAA Repository Status
 

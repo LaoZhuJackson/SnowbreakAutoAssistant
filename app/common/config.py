@@ -96,7 +96,7 @@ class Config(QConfig):
     item_weapon_2 = ConfigItem("home_interface_shopping_weapon", "item_weapon_2", False, BoolValidator())
     item_weapon_3 = ConfigItem("home_interface_shopping_weapon", "item_weapon_3", False, BoolValidator())
 
-    ComboBox_after_use = OptionsConfigItem("home_interface_after_use", "ComboBox_after_use", -1,
+    ComboBox_after_use = OptionsConfigItem("home_interface_after_use", "ComboBox_after_use", 0,
                                            OptionsValidator([-1, 0, 1, 2, 3]))
     ComboBox_power_day = OptionsConfigItem("home_interface_power", "ComboBox_power_day", -1,
                                            OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
@@ -125,6 +125,8 @@ class Config(QConfig):
                                0.052734375,
                                0.3854166666666667
                            ))
+    # gitee上获取到的更新数据的分辨率尺度
+    resolution_scale = ConfigItem("home_interface_power", "resolution_scale", 2560)
 
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")

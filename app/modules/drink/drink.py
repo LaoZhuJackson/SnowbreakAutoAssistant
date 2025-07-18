@@ -164,6 +164,7 @@ class DrinkModule:
     def play_mode2(self):
         timeout = Timer(600).start()
         select_first = False
+        is_speed_up = config.CheckBox_is_speed_up.value
 
         while True:
             self.auto.take_screenshot()
@@ -196,6 +197,11 @@ class DrinkModule:
             if self.auto.find_element(['指定', '牌'], 'text',
                                       crop=(265 / 2560, 1184 / 1440, 375 / 2560, 1224 / 1440),
                                       is_log=self.is_log):
+                if not is_speed_up:
+                    self.auto.click_element_with_pos((int(1754 / self.auto.scale_x), int(61 / self.auto.scale_y)))
+                    self.auto.click_element_with_pos((int(1754 / self.auto.scale_x), int(61 / self.auto.scale_y)))
+                    is_speed_up = True
+
                 self.auto.press_key('q')
                 time.sleep(0.2)
                 self.auto.press_key('w')
