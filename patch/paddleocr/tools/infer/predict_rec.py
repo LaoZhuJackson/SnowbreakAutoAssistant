@@ -256,7 +256,7 @@ class TextRecognizer(object):
 
         img_np = np.asarray(img_new)
         img_np = cv2.cvtColor(img_np, cv2.COLOR_BGR2GRAY)
-        img_black[:, 0: img_np.shape[1]] = img_np
+        img_black[:, 0 : img_np.shape[1]] = img_np
         img_black = img_black[:, :, np.newaxis]
 
         row, col, c = img_black.shape
@@ -387,7 +387,7 @@ class TextRecognizer(object):
         return resized_image
 
     def resize_norm_img_cppd_padding(
-            self, img, image_shape, padding=True, interpolation=cv2.INTER_LINEAR
+        self, img, image_shape, padding=True, interpolation=cv2.INTER_LINEAR
     ):
         imgC, imgH, imgW = image_shape
         h = img.shape[0]
@@ -472,7 +472,7 @@ class TextRecognizer(object):
 
         coords = cv2.findNonZero(gray)  # Find all non-zero points (text)
         a, b, w, h = cv2.boundingRect(coords)  # Find minimum spanning bounding box
-        rect = data[b: b + h, a: a + w]
+        rect = data[b : b + h, a : a + w]
         im = Image.fromarray(rect).convert("L")
         dims = []
         for x in [w, h]:
@@ -483,10 +483,10 @@ class TextRecognizer(object):
         return padded
 
     def minmax_size_(
-            self,
-            img,
-            max_dimensions,
-            min_dimensions,
+        self,
+        img,
+        max_dimensions,
+        min_dimensions,
     ):
         if max_dimensions is not None:
             ratios = [a / b for a, b in zip(img.size, max_dimensions)]
@@ -518,8 +518,8 @@ class TextRecognizer(object):
 
         im_h, im_w = img.shape[:2]
         if (
-                min_dimensions[0] <= im_w <= max_dimensions[0]
-                and min_dimensions[1] <= im_h <= max_dimensions[1]
+            min_dimensions[0] <= im_w <= max_dimensions[0]
+            and min_dimensions[1] <= im_h <= max_dimensions[1]
         ):
             pass
         else:
@@ -828,7 +828,7 @@ def main(args):
     # logger
     log_file = args.save_log_path
     if os.path.isdir(args.save_log_path) or (
-            not os.path.exists(args.save_log_path) and args.save_log_path.endswith("/")
+        not os.path.exists(args.save_log_path) and args.save_log_path.endswith("/")
     ):
         log_file = os.path.join(log_file, "benchmark_recognition.log")
     logger = get_logger(log_file=log_file)

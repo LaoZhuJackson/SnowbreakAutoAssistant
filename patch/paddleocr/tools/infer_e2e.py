@@ -42,7 +42,7 @@ import math
 
 
 def draw_e2e_res_for_chinese(
-        image, boxes, txts, config, img_name, font_path="./doc/simfang.ttf"
+    image, boxes, txts, config, img_name, font_path="./doc/simfang.ttf"
 ):
     h, w = image.height, image.width
     img_left = image.copy()
@@ -90,7 +90,7 @@ def draw_e2e_res(dt_boxes, strs, config, img, img_name):
                 thickness=1,
             )
         save_det_path = (
-                os.path.dirname(config["Global"]["save_res_path"]) + "/e2e_results/"
+            os.path.dirname(config["Global"]["save_res_path"]) + "/e2e_results/"
         )
         if not os.path.exists(save_det_path):
             os.makedirs(save_det_path)

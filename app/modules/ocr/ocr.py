@@ -17,7 +17,9 @@ class OCR:
         self.instance_ocr()
         try:
             if isinstance(image, str):
-                image = cv2.imread(image, cv2.IMREAD_UNCHANGED)  # 读取图像，保持原始通道
+                image = cv2.imread(
+                    image, cv2.IMREAD_UNCHANGED
+                )  # 读取图像，保持原始通道
                 if image.shape[2] == 4:  # 如果是RGBA图像
                     image = image[:, :, :3]  # 只保留RGB通道
             if extract:
@@ -60,16 +62,18 @@ class OCR:
             bottom = box[2][1]
 
             # 进行错误文本替换
-            for old_text, new_text in self.replacements['direct'].items():
+            for old_text, new_text in self.replacements["direct"].items():
                 text = text.replace(old_text, new_text)
 
             # 条件替换：只有当 new_str 不出现在 item["text"] 中时，才进行替换
-            for old_text, new_text in self.replacements['conditional'].items():
+            for old_text, new_text in self.replacements["conditional"].items():
                 if new_text not in text:
                     text = text.replace(old_text, new_text)
 
             # 格式化输出: [文本, 置信度, 左上和右下坐标]
-            formatted_result.append([text, round(conf, 2), [[left, top], [right, bottom]]])
+            formatted_result.append(
+                [text, round(conf, 2), [[left, top], [right, bottom]]]
+            )
 
         if is_log:
             self.log_result(formatted_result)
@@ -78,7 +82,7 @@ class OCR:
     def log_result(self, results):
         log_content = []
         for result in results:
-            log_content.append(f'{result[0]}:{result[1]}')
+            log_content.append(f"{result[0]}:{result[1]}")
         self.logger.debug(f"OCR识别结果: {log_content}")
 
     def instance_ocr(self):
@@ -90,10 +94,10 @@ class OCR:
                 self.logger.debug("开始初始化OCR...")
                 if config.cpu_support_avx2.value:
                     self.ocr = easyocr.Reader(
-                        ['ch_sim', 'en'],
+                        ["ch_sim", "en"],
                         gpu=config.ocr_use_gpu.value,
-                        model_storage_directory='app/resource/easyocr/model',
-                        user_network_directory='app/resource/easyocr/user_network'
+                        model_storage_directory="app/resource/easyocr/model",
+                        user_network_directory="app/resource/easyocr/user_network",
                     )
                     self.logger.info(f"初始化OCR完成")
                 else:

@@ -52,7 +52,7 @@ def main():
         ]:  # distillation model
             for key in config["Architecture"]["Models"]:
                 if (
-                        config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
+                    config["Architecture"]["Models"][key]["Head"]["name"] == "MultiHead"
                 ):  # multi head
                     out_channels_list = {}
                     if config["PostProcess"]["name"] == "DistillationSARLabelDecode":
@@ -66,9 +66,9 @@ def main():
                         "out_channels_list"
                     ] = out_channels_list
                 else:
-                    config["Architecture"]["Models"][key]["Head"][
-                        "out_channels"
-                    ] = char_num
+                    config["Architecture"]["Models"][key]["Head"]["out_channels"] = (
+                        char_num
+                    )
         elif config["Architecture"]["Head"]["name"] == "MultiHead":  # multi head
             out_channels_list = {}
             char_num = len(getattr(post_process_class, "character"))

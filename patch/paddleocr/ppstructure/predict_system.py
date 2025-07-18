@@ -277,18 +277,18 @@ def save_structure_res(res, save_folder, img_name, img_idx=0):
     res_cp = deepcopy(res)
     # save res
     with open(
-            os.path.join(excel_save_folder, "res_{}.txt".format(img_idx)),
-            "w",
-            encoding="utf8",
+        os.path.join(excel_save_folder, "res_{}.txt".format(img_idx)),
+        "w",
+        encoding="utf8",
     ) as f:
         for region in res_cp:
             roi_img = region.pop("img")
             f.write("{}\n".format(json.dumps(region)))
 
             if (
-                    region["type"].lower() == "table"
-                    and len(region["res"]) > 0
-                    and "html" in region["res"]
+                region["type"].lower() == "table"
+                and len(region["res"]) > 0
+                and "html" in region["res"]
             ):
                 excel_path = os.path.join(
                     excel_save_folder, "{}_{}.xlsx".format(region["bbox"], img_idx)
@@ -304,7 +304,7 @@ def save_structure_res(res, save_folder, img_name, img_idx=0):
 def main(args):
     image_file_list = get_image_file_list(args.image_dir)
     image_file_list = image_file_list
-    image_file_list = image_file_list[args.process_id:: args.total_process_num]
+    image_file_list = image_file_list[args.process_id :: args.total_process_num]
 
     if not args.use_pdf2docx_api:
         structure_sys = StructureSystem(args)
@@ -357,9 +357,9 @@ def main(args):
                     draw_img = draw_ser_results(img, res, font_path=args.vis_font_path)
 
                 with open(
-                        os.path.join(save_folder, img_name, "res_{}_kie.txt".format(index)),
-                        "w",
-                        encoding="utf8",
+                    os.path.join(save_folder, img_name, "res_{}_kie.txt".format(index)),
+                    "w",
+                    encoding="utf8",
                 ) as f:
                     res_str = "{}\t{}\n".format(
                         image_file, json.dumps({"ocr_info": res}, ensure_ascii=False)
@@ -403,9 +403,9 @@ if __name__ == "__main__":
         total_process_num = args.total_process_num
         for process_id in range(total_process_num):
             cmd = (
-                    [sys.executable, "-u"]
-                    + sys.argv
-                    + ["--process_id={}".format(process_id), "--use_mp={}".format(False)]
+                [sys.executable, "-u"]
+                + sys.argv
+                + ["--process_id={}".format(process_id), "--use_mp={}".format(False)]
             )
             p = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stdout)
             p_list.append(p)

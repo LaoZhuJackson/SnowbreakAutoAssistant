@@ -8,6 +8,7 @@
 @License :   (C)Copyright 2022, KmBase
 @Desc    :   使用前需要先安装InnoSetup,应用更新时请不要修改app_id
 """
+
 import glob
 import platform
 import subprocess
@@ -27,6 +28,7 @@ iss_compiler = "D:\\software\\innosetup\\Inno Setup 6\\Compil32.exe"
 # subprocess.call(['pip', 'install', '-U', 'nuitka'])
 # subprocess.call(['pip', 'install', '-r', 'requirements.txt'])
 # subprocess.call(['pip', 'freeze', '>', 'equirements.txt'])
+
 
 def generate_new_id(mode):
     if mode:
@@ -198,14 +200,14 @@ class PerfectBuild:
         )
         file_list.sort()
         portable_file = (
-                self.release_dir
-                / f"{self.app_exec}-{self.app_ver}{self.mode}-Portable-{self.system}-{self.arch}.zip"
+            self.release_dir
+            / f"{self.app_exec}-{self.app_ver}{self.mode}-Portable-{self.system}-{self.arch}.zip"
         )
         print("Creating portable package...")
         with ZipFile(portable_file, "w", compression=ZIP_DEFLATED) as zf:
             for file in file_list:
                 file = Path(file)
-                name_in_zip = f'{self.app_exec}/{"/".join(file.parts[6:])}'
+                name_in_zip = f"{self.app_exec}/{'/'.join(file.parts[6:])}"
                 print(name_in_zip)
                 if file.is_file():
                     zf.write(file, name_in_zip)

@@ -300,9 +300,9 @@ class TextDetector(object):
         dt_boxes = np.zeros((0, 4, 2), dtype=np.float32)
         elapse = 0
         if (
-                img.shape[0] / img.shape[1] > 2
-                and img.shape[0] > self.args.det_limit_side_len
-                and use_slice
+            img.shape[0] / img.shape[1] > 2
+            and img.shape[0] > self.args.det_limit_side_len
+            and use_slice
         ):
             start_h = 0
             end_h = 0
@@ -315,9 +315,9 @@ class TextDetector(object):
                 offset = start_h
                 # To prevent text blocks from being cut off, roll back a certain buffer area.
                 if (
-                        len(sub_dt_boxes) == 0
-                        or img.shape[1] - max([x[-1][1] for x in sub_dt_boxes])
-                        > MIN_BOUND_DISTANCE
+                    len(sub_dt_boxes) == 0
+                    or img.shape[1] - max([x[-1][1] for x in sub_dt_boxes])
+                    > MIN_BOUND_DISTANCE
                 ):
                     start_h = end_h
                 else:
@@ -332,7 +332,7 @@ class TextDetector(object):
                         start_h += bottom_line
                         sub_dt_boxes = sub_dt_boxes[
                             sub_dt_boxes[:, 2, 1] <= bottom_line
-                            ]
+                        ]
                     else:
                         start_h = end_h
                 if len(sub_dt_boxes) > 0:
@@ -348,9 +348,9 @@ class TextDetector(object):
                         )
                 elapse += sub_elapse
         elif (
-                img.shape[1] / img.shape[0] > 3
-                and img.shape[1] > self.args.det_limit_side_len * 3
-                and use_slice
+            img.shape[1] / img.shape[0] > 3
+            and img.shape[1] > self.args.det_limit_side_len * 3
+            and use_slice
         ):
             start_w = 0
             end_w = 0
@@ -362,9 +362,9 @@ class TextDetector(object):
                 sub_dt_boxes, sub_elapse = self.predict(subimg)
                 offset = start_w
                 if (
-                        len(sub_dt_boxes) == 0
-                        or img.shape[0] - max([x[-1][0] for x in sub_dt_boxes])
-                        > MIN_BOUND_DISTANCE
+                    len(sub_dt_boxes) == 0
+                    or img.shape[0] - max([x[-1][0] for x in sub_dt_boxes])
+                    > MIN_BOUND_DISTANCE
                 ):
                     start_w = end_w
                 else:
@@ -407,7 +407,7 @@ if __name__ == "__main__":
     # logger
     log_file = args.save_log_path
     if os.path.isdir(args.save_log_path) or (
-            not os.path.exists(args.save_log_path) and args.save_log_path.endswith("/")
+        not os.path.exists(args.save_log_path) and args.save_log_path.endswith("/")
     ):
         log_file = os.path.join(log_file, "benchmark_detection.log")
     logger = get_logger(log_file=log_file)
@@ -442,19 +442,19 @@ if __name__ == "__main__":
             total_time += elapse
             if len(imgs) > 1:
                 save_pred = (
-                        os.path.basename(image_file)
-                        + "_"
-                        + str(index)
-                        + "\t"
-                        + str(json.dumps([x.tolist() for x in dt_boxes]))
-                        + "\n"
+                    os.path.basename(image_file)
+                    + "_"
+                    + str(index)
+                    + "\t"
+                    + str(json.dumps([x.tolist() for x in dt_boxes]))
+                    + "\n"
                 )
             else:
                 save_pred = (
-                        os.path.basename(image_file)
-                        + "\t"
-                        + str(json.dumps([x.tolist() for x in dt_boxes]))
-                        + "\n"
+                    os.path.basename(image_file)
+                    + "\t"
+                    + str(json.dumps([x.tolist() for x in dt_boxes]))
+                    + "\n"
                 )
             save_results.append(save_pred)
             logger.info(save_pred)

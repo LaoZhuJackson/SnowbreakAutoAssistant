@@ -5,7 +5,7 @@
         尘白禁区自动化助手
     </h1>
     <h2>Snowbreak Auto Assistant</h2>
-    <br/>
+<br/>
 
 ![Static Badge](https://img.shields.io/badge/platfrom-Windows-%2329F1FF)
 ![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant?color=%2329F1FF)
@@ -15,73 +15,81 @@
 简体中文 | <a href="docs/README_en.md">English</a>
 </div>
 
-## 目前已实现自动化的部分（日常操作已经全部完成）
+## ✨功能介绍
+> [!Tip]
+> 
+> 2.0版本后所有任务支持窗口被遮挡，鼠标点击采取了一种取巧的方式最小化干扰用户操作，部分不需要鼠标操作的任务可以实现纯后台
+> 只适配16:9的屏幕，支持全屏和窗口化，其他比例不一定适配（维护成本过高）
 
-`2.0版本后所有任务支持窗口被遮挡，鼠标点击采取了一种取巧的方式最小化干扰用户操作，部分不需要鼠标操作的任务可以实现纯后台`
-`只适配16:9的屏幕，支持全屏和窗口化，其他比例不一定适配（维护成本过高）`
+### ✨功能列表
+<details><summary>点击查看画大饼进度</summary>
+- [x]登录游戏
+- [ ]从启动器自动登录
+- [x]领取每日物资：邮件，好友体力，供应站体力，鱼饵，宿舍拼图
+- [x]商店购买
+- [x]刷取活动材料
+- [x]每日角色碎片
+- [x]精神拟境扫荡
+- [x]完成日常后领取奖励
+- [x]自动钓鱼
+- [x]信源解析
+- [x]周常20关
+- [x]心动水弹
+- [x]验证战场（新迷宫）
+- [x]异星守护（无尽和闯关）
+- [x]猜心对局
+- [x]按摩
+- [ ]体力恢复通知
+- [ ]增加其他体力使用方式
+- [ ]公屏发芬妮舞狮
+- [ ]自动抽卡
+- [ ]最速日常
+- [ ]购买活动商店
+- [ ]语言适配
+- [ ]自选鱼饵类型
+- [ ]自动兑换兑换码
+- [ ]自动采集触发器
+- [ ]妮塔E技能自动qte
+- [ ]深浅色适配
+</details>
 
-- 登录游戏：目前取消支持从启动器自动登录，改为从游戏账号登录成功页面开始
-- 领取每日物资：邮件，好友体力，供应站体力，鱼饵，宿舍拼图
-- 商店购买
-- 打活动材料本
-- 每日角色碎片
-- 自动精神拟境
-- 完成日常后领取奖励
-- 自动钓鱼——`选完鱼饵后纯后台`
-- 自动信源解析
-- 自动周常20关
-- 自动心动水弹
-- 自动验证战场（新迷宫）
-- 自动异星守护（无尽和闯关）
-- 自动猜心对局
-![2.png](asset%2F2.png)
-![3.png](asset%2F3.png)
-![4.png](asset%2F4.png)
-## 使用说明
+### ⚡使用说明
+
+> [!Tip]
+> 
+> SAA文档站:https://saadocs.netlify.app/
+
 演示视频:[【基于图像识别的芬妮舞狮尘白自动化代理助手-哔哩哔哩】](https://b23.tv/W9OA85k)
 
-目前2.0还在测试版，github就不频繁上传安装包了，需要的加群：996710620
+### ✨ 运行
 
-### **以下为2.0版本后的使用说明，普通用户不懂代码的直接下载release中的安装包进行安装，不需要下载源码**
+<details><summary>👉 点击展开多张运行截图 👈</summary>
 
-- 确保游戏窗口是16:9，全屏或者窗口化都支持，如果是窗口化把窗口`贴在左上角`，`不要露出窗口标题`，如下图所示
-- 下载release中的安装包并选择位置安装，路径`最好不要有中文`
-- 安装完成后`取消“运行SAA”的勾选`，去安装目录`手动启动`
-- 运行`SAA.exe`程序
-- 在设置中选好自己账号所在的服
-- 勾选需要使用的功能并做好对应的设置
-- 点击开始按钮
-  ![正确窗口化放法](asset%2Fcurrect.png)
-  ![错误窗口化放法](asset%2Fwrong.png)
+</details>
 
-### 如何使用gpu运行
+### 📌下载
 
-- 目前还没支持a卡，n卡的用户可以使用gpu运行ocr，这样可以避免cpu占用过高，使用教程如下图
-- 目前群友测试过1050显卡也可以调用gpu
-  ![使用gpu](asset%2Fuse_gpu.png)
+- [Github Release](https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/releases)
 
-## 开发者文档
-
-~~不是？真有人看开发者文档啊~~
-
-由于作者是条咸鱼，更新不一定及时，且当前项目已经趋于稳定，**万一**有人想为SAA写新功能呢？或者单纯感兴趣想看看项目结构，故写一个开发文档供需要者查看
-
-优先加开发者群，方便交流：1057098243
-
-<a href="docs/developer.md">开发者文档</a>
-## 相关项目
+## ❤️相关项目
 - OCR文字识别 https://github.com/JaidedAI/EasyOCR
 - 三月七星穹铁道助手 https://github.com/moesnow/March7thAssistant
 - maa明日方舟助手 https://github.com/MaaAssistantArknights/MaaAssistantArknights
 - 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 
-## SAA仓库状态
+## 🚧SAA仓库状态
 
 ![Alt](https://repobeats.axiom.co/api/embed/0ceb9f68a219c51ebc15ebeb8be43535880464c7.svg "Repobeats analytics image")
 
-### Star 趋势
+## 🌟Star 趋势
 
 [![star趋势](https://starchart.cc/LaoZhuJackson/SnowbreakAutoAssistant.svg?variant=adaptive)](https://starchart.cc/LaoZhuJackson/SnowbreakAutoAssistant)
+
+## 📝License
+> [!Tip]
+> 
+> MIT License
+[LICENSE](https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/blob/main/LICENSE)
 
 ## 赞助
 

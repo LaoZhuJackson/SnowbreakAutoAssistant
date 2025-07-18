@@ -25,13 +25,22 @@ class NitaAutoEModule(BaseTask):
         self.is_log = config.isLog.value
         while True:
             self.auto.take_screenshot()
-            if self.auto.find_element("12", "text", is_log=self.is_log,
-                                      crop=(1100 / 2560, 931 / 1440, 1458 / 2560, 1044 / 1440)):
+            if self.auto.find_element(
+                "12",
+                "text",
+                is_log=self.is_log,
+                crop=(1100 / 2560, 931 / 1440, 1458 / 2560, 1044 / 1440),
+            ):
                 # 进一步裁剪图片
                 crop_image = self.auto.get_crop_form_first_screenshot(
-                    crop=(1130 / 2560, 1003 / 1440, 1428 / 2560, 1025 / 1440))
-                blue_blocks = count_color_blocks(crop_image, self.lower_blue, self.upper_blue, False)
-                green_blocks = count_color_blocks(crop_image, self.lower_green, self.upper_green, False)
+                    crop=(1130 / 2560, 1003 / 1440, 1428 / 2560, 1025 / 1440)
+                )
+                blue_blocks = count_color_blocks(
+                    crop_image, self.lower_blue, self.upper_blue, False
+                )
+                green_blocks = count_color_blocks(
+                    crop_image, self.lower_green, self.upper_green, False
+                )
                 # print(f"当前green_block:{green_blocks}")
                 if blue_blocks > 1 or green_blocks > 1:
                     self.auto.press_key("e")

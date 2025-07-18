@@ -63,7 +63,7 @@ def graph_propagation(edges, scores, text_comps, edge_len_thr=50.0):
                 scores[i] = 0
         if (edge[0], edge[1]) in score_dict:
             score_dict[edge[0], edge[1]] = 0.5 * (
-                    score_dict[edge[0], edge[1]] + scores[i]
+                score_dict[edge[0], edge[1]] + scores[i]
             )
         else:
             score_dict[edge[0], edge[1]] = scores[i]
@@ -328,8 +328,8 @@ class DRRGPostprocess(object):
             scores.append(b[-1])
             b = (
                 (
-                        np.array(b[: sz - 1])
-                        * (np.tile(scale_factor[:2], int((sz - 1) / 2)).reshape(1, sz - 1))
+                    np.array(b[: sz - 1])
+                    * (np.tile(scale_factor[:2], int((sz - 1) / 2)).reshape(1, sz - 1))
                 )
                 .flatten()
                 .tolist()

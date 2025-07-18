@@ -19,7 +19,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def draw_ser_results(
-        image, ocr_results, font_path="doc/fonts/simfang.ttf", font_size=14
+    image, ocr_results, font_path="doc/fonts/simfang.ttf", font_size=14
 ):
     np.random.seed(2021)
     color = (
