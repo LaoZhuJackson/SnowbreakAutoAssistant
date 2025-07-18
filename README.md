@@ -16,45 +16,72 @@
 </div>
 
 ## ✨功能介绍
-> [!Tip]
+
+> [!注意]
 > 
 > 2.0版本后所有任务支持窗口被遮挡，鼠标点击采取了一种取巧的方式最小化干扰用户操作，部分不需要鼠标操作的任务可以实现纯后台
-> 只适配16:9的屏幕，支持全屏和窗口化，其他比例不一定适配（维护成本过高）
+> 只适配16:9的屏幕，支持全屏和窗口化，其他比例可以打开设置里的自动缩放功能，会自动将游戏窗口缩放并放在左上角（必须得贴着左上角）
 
 ### ✨功能列表
+<details><summary>点击查看画大饼进度</summary>
 
-- [x] 登录游戏
-- [ ] 从启动器自动登录
-- [x] 领取每日物资：邮件，好友体力，供应站体力，鱼饵，宿舍拼图
-- [x] 商店购买
-- [x] 刷取活动材料
-- [x] 每日角色碎片
-- [x] 精神拟境扫荡
-- [x] 完成日常后领取奖励
-- [x] 自动钓鱼
-- [x] 信源解析
-- [x] 周常20关
-- [x] 心动水弹
-- [x] 验证战场（新迷宫）
-- [x] 异星守护（无尽和闯关）
-- [x] 猜心对局
-- [x] 按摩
-- [ ] 体力恢复通知
-- [ ] 增加其他体力使用方式
-- [ ] 公屏发芬妮舞狮
-- [ ] 自动抽卡
-- [ ] 最速日常
-- [ ] 购买活动商店
-- [ ] 语言适配
-- [ ] 自选鱼饵类型
-- [ ] 自动兑换兑换码
-- [ ] 自动采集触发器
-- [ ] 妮塔E技能自动qte
-- [x] 深浅色适配
+✅ 登录游戏
 
-### ⚡使用说明
+✅ 领取每日物资：邮件，好友体力，供应站体力，鱼饵，宿舍拼图
+
+✅ 商店购买
+
+✅ 刷取活动材料
+
+✅ 每日角色碎片
+
+✅ 精神拟境扫荡
+
+✅ 完成日常后领取奖励
+
+✅ 自动钓鱼（纯后台）
+
+✅ 信源解析方案计算
+
+✅ 周常20关
+
+✅ 心动水弹
+
+✅ 验证战场（新迷宫）
+
+✅ 异星守护（无尽和闯关）
+
+✅ 猜心对局
+
+✅ 妮塔E技能自动qte
+
+✅ 深浅色适配
+
+✅ 自动采集触发器
+
+✅ 运行自动缩放比例
+
+✅ 自动更新版本坐标和日程提醒
+
+☑️ 按摩
+
+☑️ 直接启动游戏
+
+☑️ 开机自启
+
+☑️ 体力恢复通知
+
+☑️ 自动抽卡
+
+☑️ 自动兑换兑换码
+
+</details>
+
+### ⚡使用说明&开发文档
 
 > [!Tip]
+>
+> 感谢[vmoranv](https://github.com/vmoranv)提供的文档
 > 
 > SAA文档站:https://saadocs.netlify.app/
 
@@ -62,8 +89,14 @@
 
 ### ✨ 运行
 
-<details><summary>👉 点击展开多张运行截图 👈</summary>
-
+<details>
+<summary>👉 点击展开多张运行截图 👈</summary>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+  <img src="./asset/1.png" style="width: 45%; max-width: 300px; object-fit: contain;" />
+  <img src="./asset/2.png" style="width: 45%; max-width: 300px; object-fit: contain;" />
+  <img src="./asset/3.png" style="width: 45%; max-width: 300px; object-fit: contain;" />
+  <img src="./asset/4.png" style="width: 45%; max-width: 300px; object-fit: contain;" />
+</div>
 </details>
 
 ### 📌下载
@@ -90,7 +123,7 @@
 > MIT License
 [LICENSE](https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/blob/main/LICENSE)
 
-## 赞助
+## 👍赞助
 
 - 微信
 

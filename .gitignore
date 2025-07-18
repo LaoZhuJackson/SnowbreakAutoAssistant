@@ -19,3 +19,4 @@
 __pycache__/
 nuitka-crash-report.xml
 .venv/
+*.pyc
