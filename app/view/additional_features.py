@@ -518,7 +518,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
     def on_drink_button_click(self):
         """酒馆开始按键的信号处理"""
         if not self.is_running_drink:
-            self.redirectOutput(self.textBrowser_log_card)
+            self.redirectOutput(self.textBrowser_log_drink)
             self.drink_task = SubTask(DrinkModule)
             self.drink_task.is_running.connect(self.handle_drink)
             self.drink_task.start()
