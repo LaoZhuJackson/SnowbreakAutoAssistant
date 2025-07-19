@@ -11,6 +11,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/LaoZhuJackson/SnowbreakAutoAssistant?color=%2329F1FF)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/LaoZhuJackson/SnowbreakAutoAssistant/total?color=%2329F1FF)
 [![Static Badge](https://img.shields.io/badge/QQ_Group-996710620-%2329F1FF)](https://qm.qq.com/q/CIvpwI3qVy)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/LaoZhuJackson/SnowbreakAutoAssistant)
 
 简体中文 | <a href="docs/README_en.md">English</a>
 </div>
