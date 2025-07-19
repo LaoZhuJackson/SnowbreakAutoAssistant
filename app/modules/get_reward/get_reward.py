@@ -24,7 +24,7 @@ class GetRewardModule:
         while True:
             self.auto.take_screenshot()
 
-            if self.auto.find_element(['定期', '周常'], 'text', crop=(
+            if self.auto.find_element(['定', '期', '周', '常'], 'text', crop=(
                     988 / 1920, 238 / 1080, 1083 / 1920, 288 / 1080),
                                       is_log=self.is_log) and not self.auto.click_element('键领取', 'text', crop=(
                     24 / 1920, 959 / 1080, 231 / 1920, 1032 / 1080), is_log=self.is_log):
@@ -97,15 +97,17 @@ class GetRewardModule:
                     first_finish_flag = True
                     continue
                 if not first_finish_flag:
-                    self.auto.click_element('每日任务', 'text', threshold=0.3,
-                                            crop=(1233 / 1920, 985 / 1080, 1342 / 1920, 1047 / 1080),
-                                            is_log=self.is_log)
-                    time.sleep(0.3)
+                    if self.auto.find_element(['凭证', '时装'], 'text',
+                                              crop=(2045 / 2560, 1050 / 1440, 2191 / 2560, 1109 / 1440),
+                                              is_log=self.is_log):
+                        self.auto.click_element_with_pos((int(1286 / self.auto.scale_x), int(1005 / self.auto.scale_y)))
+                        time.sleep(0.3)
+                        continue
                     if not self.auto.click_element('键领取', 'text', crop=(0, 950 / 1080, 295 / 1920, 1),
                                                    take_screenshot=True, is_log=self.is_log):
                         first_finish_flag = True
                 else:
-                    if self.auto.click_element('奖励', 'text', crop=(912 / 1920, 994 / 1080, 1067 / 1920, 1),
+                    if self.auto.click_element(['奖', '励'], 'text', crop=(912 / 1920, 994 / 1080, 1067 / 1920, 1),
                                                is_log=self.is_log):
                         continue
 

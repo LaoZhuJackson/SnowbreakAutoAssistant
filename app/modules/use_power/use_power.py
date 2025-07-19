@@ -29,16 +29,20 @@ class UsePowerModule:
         :param name: "stuff" or "chasm"
         :return: (x,y)
         """
+        # gitee上获取到的更新数据的分辨率尺度
+        resolution_scale = config.resolution_scale.value
+        rate_x = resolution_scale / 1920
+        rate_y = resolution_scale / 1080
         if name == "stuff":
-            x1 = int(config.LineEdit_stuff_x1.value)
-            y1 = int(config.LineEdit_stuff_y1.value)
-            x2 = int(config.LineEdit_stuff_x2.value)
-            y2 = int(config.LineEdit_stuff_y2.value)
+            x1 = int(config.LineEdit_stuff_x1.value / rate_x)
+            y1 = int(config.LineEdit_stuff_y1.value / rate_y)
+            x2 = int(config.LineEdit_stuff_x2.value / rate_x)
+            y2 = int(config.LineEdit_stuff_y2.value / rate_y)
         else:
-            x1 = int(config.LineEdit_chasm_x1.value)
-            y1 = int(config.LineEdit_chasm_y1.value)
-            x2 = int(config.LineEdit_chasm_x2.value)
-            y2 = int(config.LineEdit_chasm_y2.value)
+            x1 = int(config.LineEdit_chasm_x1.value / rate_x)
+            y1 = int(config.LineEdit_chasm_y1.value / rate_y)
+            x2 = int(config.LineEdit_chasm_x2.value / rate_x)
+            y2 = int(config.LineEdit_chasm_y2.value / rate_y)
         return random_rectangle_point(((x1, y1), (x2, y2)), n=n)
 
     def check_power(self):
@@ -105,7 +109,7 @@ class UsePowerModule:
             if not confirm_flag and not enter_power_select:
                 # if self.auto.click_element('app/resource/images/use_power/stamina.png', 'image',
                 #                            crop=(833 / 1920, 0, 917 / 1920, 68 / 1080)):
-                self.auto.click_element_with_pos(pos=(int(880 / self.auto.scale_x), int(32 / self.auto.scale_y)))
+                self.auto.click_element_with_pos(pos=(int(910 / self.auto.scale_x), int(35 / self.auto.scale_y)))
                 time.sleep(0.5)
                 continue
             if timeout.reached():
@@ -139,9 +143,8 @@ class UsePowerModule:
                     time.sleep(0.7)
                     enter_maneuver_flag = True
                     continue
-                if self.auto.click_element('材料', 'text', crop=stuff_pos, n=50,
-                                           is_log=self.is_log) or self.auto.click_element(
-                    'app/resource/images/use_power/stuff.png', 'image', crop=stuff_pos, is_log=self.is_log):
+                # 在区域内找材料，没找到就固定点击
+                if self.auto.click_element(['材料', '材', '料'], 'text', crop=stuff_pos, n=50, is_log=self.is_log):
                     time.sleep(0.3)
                     continue
                 else:
@@ -156,9 +159,8 @@ class UsePowerModule:
                         pos = self.get_click_pos("stuff")
                         self.auto.click_element_with_pos(pos)
                         time.sleep(0.3)
-                if self.auto.click_element('深渊', 'text', crop=chasm_pos,
-                                           is_log=self.is_log) or self.auto.click_element(
-                        'app/resource/images/use_power/chasm.png', 'image', crop=chasm_pos, is_log=self.is_log):
+                if self.auto.click_element(['深渊', '深', '渊'], 'text', crop=chasm_pos,
+                                           is_log=self.is_log):
 
                     time.sleep(1)
                     continue

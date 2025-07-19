@@ -251,17 +251,17 @@ class Automation:
         return None, None, None
 
     @atoms
-    def perform_ocr(self, extract: list = None, image=None, allowlist=None, is_log=False):
+    def perform_ocr(self, extract: list = None, image=None, is_log=False):
         """执行OCR识别，并更新OCR结果列表。如果未识别到文字，保留ocr_result为一个空列表。"""
         try:
             # image=None时
             if image is None:
                 # ImageUtils.show_ndarray(self.current_screenshot)
-                self.ocr_result = ocr.run(self.current_screenshot, extract, is_log=is_log, allowlist=allowlist)
+                self.ocr_result = ocr.run(self.current_screenshot, extract, is_log=is_log)
             # 传入特定的图片进行ocr识别
             else:
                 # ImageUtils.show_ndarray(image)
-                self.ocr_result = ocr.run(image, extract, is_log=is_log, allowlist=allowlist)
+                self.ocr_result = ocr.run(image, extract, is_log=is_log)
             if not self.ocr_result:
                 # self.logger.info(f"未识别出任何文字")
                 self.ocr_result = []
@@ -517,11 +517,10 @@ class Automation:
         return crop_image
 
     @atoms
-    def read_text_from_crop(self, crop=(0, 0, 1, 1), extract=None, is_screenshot=False, allowlist=None, is_log=False):
+    def read_text_from_crop(self, crop=(0, 0, 1, 1), extract=None, is_screenshot=False, is_log=False):
         """
         通过crop找对应的文本内容
         :param is_log:
-        :param allowlist: 限制 OCR 模型识别的字符集
         :param crop: 查找区域
         :param extract: 指定提取背景
         :param is_screenshot: 是否截图
@@ -531,7 +530,7 @@ class Automation:
             self.take_screenshot()
         crop_image, _ = ImageUtils.crop_image(self.first_screenshot, crop, self.hwnd)
         # ImageUtils.show_ndarray(crop_image)
-        self.perform_ocr(image=crop_image, extract=extract, allowlist=allowlist, is_log=is_log)
+        self.perform_ocr(image=crop_image, extract=extract, is_log=is_log)
         return self.ocr_result
 
     # @atoms

@@ -1,9 +1,12 @@
+import traceback
+
 import cv2
-import easyocr
+# import easyocr
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils
 from app.common.utils import cpu_support_avx2
+from app.modules.onnxocr.onnx_paddleocr import ONNXPaddleOcr
 
 
 class OCR:
@@ -13,7 +16,7 @@ class OCR:
         self.logger = logger
         self.replacements = replacements
 
-    def run(self, image, extract: list = None, is_log=False, allowlist=None):
+    def run(self, image, extract: list = None, is_log=False):
         self.instance_ocr()
         try:
             if isinstance(image, str):
@@ -26,8 +29,7 @@ class OCR:
                 image = ImageUtils.extract_letters(image, letter, threshold)
             # ImageUtils.show_ndarray(image)
             # 调用 easyocr 进行 OCR
-            original_result = self.ocr.readtext(image, allowlist=allowlist)
-
+            original_result = self.ocr.ocr(image)[0]
             if original_result:  # 检查是否识别到文字
                 return self.format_and_replace(original_result, is_log)
             else:
@@ -35,7 +37,8 @@ class OCR:
                     self.logger.debug(f"OCR未识别出任何文字")
                 return None
         except Exception as e:
-            self.logger.error(e)
+            self.logger.error(f"执行ocr出错：{e}")
+            traceback.print_exc()
             return None
 
     def format_and_replace(self, result, is_log=False):
@@ -49,8 +52,8 @@ class OCR:
 
         # 遍历每个识别框
         for item in result:
-            text = item[1]  # OCR 提取的文本
-            conf = item[2]  # 识别置信度
+            text = item[1][0]  # OCR 提取的文本
+            conf = item[1][1]  # 识别置信度
             box = item[0]  # 识别框的坐标
 
             # 获取坐标
@@ -89,12 +92,13 @@ class OCR:
             try:
                 self.logger.debug("开始初始化OCR...")
                 if config.cpu_support_avx2.value:
-                    self.ocr = easyocr.Reader(
-                        ['ch_sim', 'en'],
-                        gpu=config.ocr_use_gpu.value,
-                        model_storage_directory='app/resource/easyocr/model',
-                        user_network_directory='app/resource/easyocr/user_network'
-                    )
+                    # self.ocr = easyocr.Reader(
+                    #     ['ch_sim', 'en'],
+                    #     gpu=config.ocr_use_gpu.value,
+                    #     model_storage_directory='app/resource/easyocr/model',
+                    #     user_network_directory='app/resource/easyocr/user_network'
+                    # )
+                    self.ocr = ONNXPaddleOcr(use_angle_cls=True, use_gpu=True)
                     self.logger.info(f"初始化OCR完成")
                 else:
                     self.logger.error(f"初始化OCR失败：此cpu不支持AVX2指令集")

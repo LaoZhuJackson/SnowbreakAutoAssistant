@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 import re
 import json
 
+from requests import Timeout, RequestException
+
 from app.common.config import config
 
 
@@ -279,23 +281,29 @@ def get_gitee_text(text_path: str):
             失败: None
     """
     url = f"https://gitee.com/laozhu520/auto_chenbai/raw/main/{text_path}"
+    # url = f"https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/blob/main/{text_path}"
     headers = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
     }
-    response = requests.get(url, headers=headers)
 
-    if response.status_code != 200:
-        print(f"请求失败，状态码: {response.status_code}")
-        return None
     try:
+        response = requests.get(url, headers=headers, timeout=3)
+        if response.status_code != 200:
+            print(f"请求失败，状态码: {response.status_code}")
+            return None
         # 处理可能的编码问题
         response.encoding = response.apparent_encoding  # 自动检测编码
         # 按行分割文本
         lines = response.text.splitlines()
         return lines
+    except Timeout:
+        print(f"⚠️ 连接超时，请检查网络是否能连接{url}")
+        return None
+    except RequestException as e:
+        print(f"🔌 网络请求{url}失败: {e}")
+        return None
     except Exception as e:
-        print(f"发生错误: {str(e)}")
-        traceback.print_exc()
+        print(f"❌ 请求{url}发生未知错误: {e}")
         return None
 
 

@@ -1,45 +1,7 @@
-import time
+result_all = [[[[[100.0, 32.0], [167.0, 34.0], [166.0, 62.0], [99.0, 60.0]], ('供应站', 0.9999923706054688)],
+               [[[241.0, 39.0], [313.0, 43.0], [312.0, 64.0], [240.0, 61.0]], ('真理凭证', 0.9998558759689331)],
+               [[[169.0, 104.0], [217.0, 104.0], [217.0, 134.0], [169.0, 134.0]], ('活动', 0.9998730421066284)]]]
 
-from app.modules.ocr import ocr
-
-image_path = '../app/resource/images/start_game/age.png'
-image_path_no_text = '../app/resource/images/logo.png'
-image_path_wrong_text = './wrong_text.png'
-
-
-def benchmark(ocr_func, img, runs=100):
-    # 预热
-    for _ in range(10):
-        ocr_func(img)
-
-    # 正式测试
-    start = time.time()
-    for _ in range(runs):
-        ocr_func(img)
-    return (time.time() - start) / runs
-
-
-if __name__ == '__main__':
-    # import paddle
-    # try:
-    #     print(paddle.utils.run_check())
-    # except Exception as e:
-    #     print(e)
-    result = ocr.run(image_path, [(34, 34, 34), 128])
-    print(f"{result=}")
-
-    # result = ([array([[10., 23.],
-    #                   [75., 23.],
-    #                   [75., 58.],
-    #                   [10., 58.]], dtype=float32), array([[12., 70.],
-    #                                                       [69., 70.],
-    #                                                       [69., 87.],
-    #                                                       [12., 87.]], dtype=float32), array([[7., 90.],
-    #                                                                                           [76., 93.],
-    #                                                                                           [75., 106.],
-    #                                                                                           [6., 106.]],
-    #                                                                                          dtype=float32)],
-    #           [('16 +', 0.9349133968353271), ('CADPA', 0.9933081865310669), ('适龄提示', 0.9997501373291016)],
-    #           {'det': 0.1181640625, 'rec': 0.18414640426635742, 'cls': 0, 'all': 0.30330681800842285})
-
-    # print(f"单次识别耗时：{benchmark(ocr.run, image_path):.2f}秒")
+result_0 = [[[[100.0, 32.0], [167.0, 34.0], [166.0, 62.0], [99.0, 60.0]], ('供应站', 0.9999923706054688)],
+            [[[241.0, 39.0], [313.0, 43.0], [312.0, 64.0], [240.0, 61.0]], ('真理凭证', 0.9998558759689331)],
+            [[[169.0, 104.0], [217.0, 104.0], [217.0, 134.0], [169.0, 134.0]], ('活动', 0.9998730421066284)]]

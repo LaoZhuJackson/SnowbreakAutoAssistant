@@ -110,8 +110,7 @@ class CollectSuppliesModule:
             if self.auto.find_element('获得道具', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
                                       is_log=self.is_log):
                 break
-            if self.auto.find_element('app/resource/images/reward/home.png', 'image',
-                                      crop=(1635 / 1920, 18 / 1080, 1701 / 1920, 74 / 1080), is_log=self.is_log):
+            else:
                 if click_flag:
                     break
             if self.auto.click_element('批量领取', 'text', crop=(303 / 1920, 982 / 1080, 462 / 1920, 1028 / 1080),
@@ -171,6 +170,7 @@ class CollectSuppliesModule:
         self.auto.back_to_home()
 
     def receive_dormitory(self):
+        """领取宿舍碎片"""
         timeout = Timer(30).start()
         finish_flag = False
         while True:
@@ -208,7 +208,8 @@ class CollectSuppliesModule:
                 time.sleep(3)
                 continue
             if self.auto.find_element('Esc', 'text', crop=(57 / 2560, 117 / 1440, 127 / 2560, 157 / 1440),
-                                      is_log=self.is_log):
+                                      is_log=self.is_log) or self.auto.find_element('Enter', 'text', crop=(
+            9 / 2560, 1377 / 1440, 130 / 2560, 1431 / 1440), is_log=self.is_log):
                 self.auto.press_key('esc')
                 continue
             if self.auto.click_element(['剩', '剩余'], 'text',

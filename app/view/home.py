@@ -453,13 +453,14 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.is_running = False
             self.set_checkbox_enable(True)
             self.PushButton_start.setText("开始")
+            text = "助手会自动缩放窗口至1920*1080" if config.autoScaling.value else "然后手动缩放窗口到16:9并贴在屏幕左上角"
             InfoBar.error(
                 title='未成功初始化auto',
-                content="先打开游戏（不是启动器），并且确保游戏窗口比例是16:9，然后再点击开始",
+                content=f"打开游戏（不是启动器），{text}，然后再点击开始",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
-                duration=-1,
+                duration=2000,
                 parent=self
             )
 

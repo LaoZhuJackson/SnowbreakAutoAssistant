@@ -41,7 +41,7 @@ class BaseTask:
         target_ratio = 16 / 9
 
         # 允许1%的容差范围
-        tolerance = 0.01
+        tolerance = 0.05
         is_16_9 = abs(actual_ratio - target_ratio) <= (target_ratio * tolerance)
 
         # 记录结果
