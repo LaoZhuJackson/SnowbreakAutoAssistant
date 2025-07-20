@@ -54,33 +54,35 @@ class BaseTask:
         if config.autoScaling.value:
             # 排除缩放干扰
             ctypes.windll.user32.SetProcessDPIAware()
+            # 获取原始窗口矩形
+            original_rect = win32gui.GetWindowRect(hwnd)
+            config.set(config.is_resize, original_rect)
             # 若不符合比例则进行窗口调整
             if not is_16_9:
-                # 获取原始窗口矩形
-                original_rect = win32gui.GetWindowRect(hwnd)
-                config.set(config.is_resize, original_rect)
-
                 # 获取窗口边框尺寸
                 window_rect = win32gui.GetWindowRect(hwnd)
                 border_width = (window_rect[2] - window_rect[0] - client_width) // 2
                 title_height = (window_rect[3] - window_rect[1] - client_height) - border_width
 
                 # 计算所需的总窗口尺寸
-                target_client_width = 1940
-                target_client_height = 1135
+                target_client_width = 1937
+                target_client_height = 1128
+
+
 
                 # 设置窗口位置和大小
                 win32gui.SetWindowPos(
                     hwnd,
                     win32con.HWND_TOP,
-                    -10,  # 左上角X坐标
+                    -11,  # 左上角X坐标
                     -48,  # 左上角Y坐标
-                    target_client_width,
-                    target_client_height,
+                    target_client_width + 2,
+                    target_client_height + 10,
                     win32con.SWP_NOZORDER | win32con.SWP_NOACTIVATE
                 )
 
                 self.logger.warn(f"已调整窗口到 {target_client_width}x{target_client_height} 并贴齐左上角")
+                is_16_9 = True
             else:
                 # 获取主显示器分辨率
                 screen_width = win32api.GetSystemMetrics(0)
@@ -88,22 +90,30 @@ class BaseTask:
                 if client_width < screen_width:
                     # 获取原始窗口矩形
                     original_rect = win32gui.GetWindowRect(hwnd)
-                    config.set(config.is_resize, original_rect)
+                    # 提取原始窗口尺寸(包括标题)
+                    original_width = original_rect[2] - original_rect[0]  # right - left
+                    original_height = original_rect[3] - original_rect[1]  # bottom - top
+                    # 更新scale的值
+                    self.auto.scale_x = 1920 / client_width
+                    self.auto.scale_y = 1080 / client_height
                     # 设置窗口位置和大小
                     win32gui.SetWindowPos(
                         hwnd,
                         win32con.HWND_TOP,
-                        -10,  # 左上角X坐标
+                        -11,  # 左上角X坐标
                         -48,  # 左上角Y坐标
-                        client_width,
-                        client_height,
+                        original_width + 2,
+                        original_height + 10,
                         win32con.SWP_NOZORDER | win32con.SWP_NOACTIVATE
                     )
                     self.logger.warn(f"已调整窗口贴齐左上角")
+            return is_16_9
         else:
-            self.logger.warn(f"设置中未开启自动缩放，请手动调整窗口大小并将窗口贴在左上角或在设置中开启自动缩放")
+            if not is_16_9:
+                self.logger.warn(f"设置中未开启自动缩放，请手动调整窗口大小并将窗口贴在左上角或在设置中开启自动缩放")
+            return is_16_9
 
-        return is_16_9
+
 
     def init_auto(self, name):
         if config.server_interface.value != 2:

@@ -14,9 +14,9 @@ def app_dir():
 
 
 class Config:
-    app_ver = "2.0.1-official-gpu-"
+    app_ver = "2.0.2-official"
     app_name = "SAA"
-    app_exec = "main"
+    app_exec = "SAA"
     app_publisher = "laozhu"
     app_url = "https://github.com/LaoZhuJackson/SnowbreakAutoAssistant"
     app_icon = "app/resource/images/logo.ico"
