@@ -68,8 +68,6 @@ class BaseTask:
                 target_client_width = 1937
                 target_client_height = 1128
 
-
-
                 # 设置窗口位置和大小
                 win32gui.SetWindowPos(
                     hwnd,
@@ -112,8 +110,6 @@ class BaseTask:
             if not is_16_9:
                 self.logger.warn(f"设置中未开启自动缩放，请手动调整窗口大小并将窗口贴在左上角或在设置中开启自动缩放")
             return is_16_9
-
-
 
     def init_auto(self, name):
         if config.server_interface.value != 2:

@@ -134,7 +134,7 @@ class ImageUtils:
         """
         按crop裁剪screenshot
         """
-        left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+        left, top, right, bottom = win32gui.GetClientRect(hwnd)
         # print(left, top, right, bottom)
         h, w, c = screenshot.shape
         # 计算裁剪区域裁剪图像
@@ -143,13 +143,17 @@ class ImageUtils:
         crop_right = int(crop[2] * w)
         crop_bottom = int(crop[3] * h)
         img_cropped = screenshot[crop_top:crop_bottom, crop_left:crop_right]
+        # print(f"left:{crop_left}")
+        # print(f"top:{crop_top}")
+        # print(f"right:{crop_right}")
+        # print(f"bottom:{crop_bottom}")
 
         if not is_fullscreen(hwnd):
             relative_pos = (
-                crop_left + left + 7,
-                crop_top + top + 40,
-                crop_right + left + 7,
-                crop_bottom + top + 40
+                crop_left + left,
+                crop_top + top,
+                crop_right + left,
+                crop_bottom + top
             )
         else:
             relative_pos = (
@@ -158,7 +162,7 @@ class ImageUtils:
                 crop_right,
                 crop_bottom
             )
-        # print(relative_pos)
+        # print(f"relative_pos:{relative_pos}")
         return img_cropped, relative_pos
 
     @staticmethod

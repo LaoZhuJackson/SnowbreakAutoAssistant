@@ -333,11 +333,12 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """
-        file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
-                                                   "Executable Files (*.exe);;All Files (*)")
-        if not file_path or config.LineEdit_starter_directory.value == file_path:
+        # file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
+        #                                            "Executable Files (*.exe);;All Files (*)")
+        folder = QFileDialog.getExistingDirectory(self, '选择游戏文件夹', "./")
+        if not folder or config.LineEdit_starter_directory.value == folder:
             return
-        self.LineEdit_starter_directory.setText(file_path)
+        self.LineEdit_starter_directory.setText(folder)
         self.LineEdit_starter_directory.editingFinished.emit()
 
     def on_update_click(self, button_type):

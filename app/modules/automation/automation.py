@@ -137,7 +137,7 @@ class Automation:
                                                                                        self.hwnd)
                 else:
                     self.current_screenshot = self.first_screenshot
-                # self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
+                self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
                 return result
             else:
                 # 为none的时候已经在screenshot中log了，此处无需再log
