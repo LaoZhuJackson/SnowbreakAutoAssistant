@@ -274,11 +274,12 @@ class Home(QFrame, Ui_home, BaseInterface):
     def update_online(self):
         """通过gitee在线更新"""
         text = get_gitee_text("update_data.txt")
+        # 返回字典说明必定出现报错了
+        if isinstance(text, dict):
+            logger.error(text["error"])
+            return
         if config.isLog.value:
             logger.info(f'获取到更新信息：{text}')
-        if not text:
-            logger.error(f'在线获取更新信息失败')
-            return
         screen_width, screen_height = pyautogui.size()
         data = text[0].split("_")
         if screen_width == data[0]:
@@ -567,7 +568,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             config.set(config.LineEdit_link, url)
         tips_dic = get_date(config.LineEdit_link.value)
         if "error" in tips_dic.keys():
-            logger.error("获取活动时间失败：" + tips_dic["error"])
+            logger.error(tips_dic["error"])
             return
         for key, value in tips_dic.items():
             tips_dic[key] = self.get_time_difference(value)
