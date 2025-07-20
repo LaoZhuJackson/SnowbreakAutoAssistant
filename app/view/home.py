@@ -279,57 +279,58 @@ class Home(QFrame, Ui_home, BaseInterface):
             logger.error(text["error"])
             return
         if config.isLog.value:
-            logger.info(f'获取到更新信息：{text}')
-        screen_width, screen_height = pyautogui.size()
+            logger.info(f'获取到更新信息：{text[0]}')
+        config.set(config.update_data, text[0])
+        # screen_width, screen_height = pyautogui.size()
         data = text[0].split("_")
-        if screen_width == data[0]:
-            stuff_x1 = data[1]
-            stuff_y1 = data[2]
-            stuff_x2 = data[3]
-            stuff_y2 = data[4]
-            chasm_x1 = data[5]
-            chasm_y1 = data[6]
-            chasm_x2 = data[7]
-            chasm_y2 = data[8]
-        else:
-            scale = screen_width / float(data[0])
-            # print(scale)
-            stuff_x1 = str(int(float(data[1]) * scale))
-            stuff_y1 = str(int(float(data[2]) * scale))
-            stuff_x2 = str(int(float(data[3]) * scale))
-            stuff_y2 = str(int(float(data[4]) * scale))
-            chasm_x1 = str(int(float(data[5]) * scale))
-            chasm_y1 = str(int(float(data[6]) * scale))
-            chasm_x2 = str(int(float(data[7]) * scale))
-            chasm_y2 = str(int(float(data[8]) * scale))
-        is_update = False
-        config_list = ["LineEdit_task_name",
-                       "LineEdit_stuff_x1", "LineEdit_stuff_y1",
-                       "LineEdit_stuff_x2", "LineEdit_stuff_y2",
-                       "LineEdit_chasm_x1", "LineEdit_chasm_y1",
-                       "LineEdit_chasm_x2", "LineEdit_chasm_y2"]
-        new_data_list = [data[9],
-                         stuff_x1, stuff_y1,
-                         stuff_x2, stuff_y2,
-                         chasm_x1, chasm_y1,
-                         chasm_x2, chasm_y2]
-        for i in range(9):
-            config_item = getattr(config, config_list[i], None)
-            if str(config_item.value) != new_data_list[i]:
-                # 存在一个改变了都为true
-                is_update = True
-                widget = self.page_2.findChild(LineEdit, config_list[i])
-                widget.setText(new_data_list[i])
-                widget.editingFinished.emit()
+        # if screen_width == data[0]:
+        #     stuff_x1 = data[1]
+        #     stuff_y1 = data[2]
+        #     stuff_x2 = data[3]
+        #     stuff_y2 = data[4]
+        #     chasm_x1 = data[5]
+        #     chasm_y1 = data[6]
+        #     chasm_x2 = data[7]
+        #     chasm_y2 = data[8]
+        # else:
+        #     scale = screen_width / float(data[0])
+        #     # print(scale)
+        #     stuff_x1 = str(int(float(data[1]) * scale))
+        #     stuff_y1 = str(int(float(data[2]) * scale))
+        #     stuff_x2 = str(int(float(data[3]) * scale))
+        #     stuff_y2 = str(int(float(data[4]) * scale))
+        #     chasm_x1 = str(int(float(data[5]) * scale))
+        #     chasm_y1 = str(int(float(data[6]) * scale))
+        #     chasm_x2 = str(int(float(data[7]) * scale))
+        #     chasm_y2 = str(int(float(data[8]) * scale))
+        # is_update = False
+        # config_list = ["LineEdit_task_name",
+        #                "LineEdit_stuff_x1", "LineEdit_stuff_y1",
+        #                "LineEdit_stuff_x2", "LineEdit_stuff_y2",
+        #                "LineEdit_chasm_x1", "LineEdit_chasm_y1",
+        #                "LineEdit_chasm_x2", "LineEdit_chasm_y2"]
+        # new_data_list = [data[9],
+        #                  stuff_x1, stuff_y1,
+        #                  stuff_x2, stuff_y2,
+        #                  chasm_x1, chasm_y1,
+        #                  chasm_x2, chasm_y2]
+        # for i in range(9):
+        #     config_item = getattr(config, config_list[i], None)
+        #     if str(config_item.value) != new_data_list[i]:
+        #         # 存在一个改变了都为true
+        #         is_update = True
+        #         widget = self.page_2.findChild(LineEdit, config_list[i])
+        #         widget.setText(new_data_list[i])
+        #         widget.editingFinished.emit()
 
         # 更新链接
         url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={data[10]}&id={data[11]}"
         self.LineEdit_link.setText(url)
         self.get_tips(url=url)
 
-        if is_update:
-            self.on_update_click('stuff')
-            self.on_update_click('chasm')
+        # if is_update:
+        #     self.on_update_click('stuff')
+        #     self.on_update_click('chasm')
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """

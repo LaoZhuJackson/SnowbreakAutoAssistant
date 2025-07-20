@@ -125,8 +125,6 @@ class Config(QConfig):
                                0.052734375,
                                0.3854166666666667
                            ))
-    # gitee上获取到的更新数据的分辨率尺度
-    resolution_scale = ConfigItem("home_interface_power", "resolution_scale", 2560)
 
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
@@ -148,6 +146,7 @@ class Config(QConfig):
     dpiScale = OptionsConfigItem(
         "MainWindow", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     position = ConfigItem("MainWindow", "position", None)
+    update_data = ConfigItem("MainWindow", "update_data", "2560_209_850_270_883_1713_476_1838_528_理念求索_7131_282")
 
     # 设置相关
     enter_interface = OptionsConfigItem("setting_personal", "enter_interface", 0, OptionsValidator([0, 1, 2]))

@@ -39,7 +39,8 @@ class PersonModule:
         while True:
             self.auto.take_screenshot()
             # 已进入
-            if self.auto.find_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080), is_log=self.is_log):
+            if self.auto.find_element("故事", "text", crop=(786 / 1920, 985 / 1080, 1022 / 1920, 1069 / 1080),
+                                      is_log=self.is_log):
                 break
             if self.auto.click_element("个人故事", "text", crop=(673 / 1920, 806 / 1080, 953 / 1920, 889 / 1080),
                                        is_log=self.is_log):
@@ -50,9 +51,9 @@ class PersonModule:
                 time.sleep(0.3)
                 continue
 
-            if timeout.reached():
-                self.logger.error("进入任务碎片界面超时")
-                break
+            # if timeout.reached():
+            #     self.logger.error("进入任务碎片界面超时")
+            #     break
 
     def find_person_and_quick_fight(self, person_name):
         timeout = Timer(50).start()
@@ -81,7 +82,8 @@ class PersonModule:
                         break
                 else:
                     self.update_power_times()
-                    if self.auto.find_element("故事", "text", crop=(0, 0, 212 / 1920, 61 / 1080)) and (
+                    if self.auto.find_element("故事", "text", crop=(786 / 1920, 985 / 1080, 1022 / 1920, 1069 / 1080),
+                                              is_log=self.is_log) and (
                             self.power_times == 0 or self.power_times == 6):
                         break
                 continue
@@ -120,7 +122,7 @@ class PersonModule:
                     break
             else:
                 self.scroll_page()
-                time.sleep(0.5)
+                time.sleep(0.7)
 
     def find_quick_fight(self, name_pos, person_name):
         """
@@ -174,9 +176,10 @@ class PersonModule:
                     self.auto.press_key('esc')
                     time.sleep(1)
                     return True
-            # 用偏移的方式点添加嵌片
-            if self.auto.click_element("故事", "text", crop=(110 / 1920, 17 / 1080, 212 / 1920, 61 / 1080), n=30,
-                                       offset=(1400 / self.auto.scale_x, 21 / self.auto.scale_y), is_log=self.is_log):
+            # 点添加嵌片
+            if self.auto.find_element("故事", "text", crop=(786 / 1920, 985 / 1080, 1022 / 1920, 1069 / 1080),
+                                      is_log=self.is_log):
+                self.auto.click_element_with_pos(pos=(int(1574 / self.auto.scale_x), int(50 / self.auto.scale_y)))
                 time.sleep(0.5)
                 continue
             if timeout.reached():
@@ -197,8 +200,8 @@ class PersonModule:
 
     def update_power_times(self):
         """更新嵌片数量"""
-        # result=[['12/12', 1.0, [[58.0, 16.0], [112.0, 40.0]]]]
-        result = self.auto.read_text_from_crop(crop=(1421 / 1920, 27 / 1080, 1538 / 1920, 76 / 1080))
+        # 格式化后的，并非ocr原生结果：result=[['12/12', 1.0, [[58.0, 16.0], [112.0, 40.0]]]]
+        result = self.auto.read_text_from_crop(crop=(1430 / 1920, 15 / 1080, 1554 / 1920, 104 / 1080))
         # 取出文字送去正则匹配
         times = self.detect_times(result[0][0])
         if times is not None:

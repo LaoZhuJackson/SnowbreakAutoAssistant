@@ -209,7 +209,7 @@ class CollectSuppliesModule:
                 continue
             if self.auto.find_element('Esc', 'text', crop=(57 / 2560, 117 / 1440, 127 / 2560, 157 / 1440),
                                       is_log=self.is_log) or self.auto.find_element('Enter', 'text', crop=(
-            9 / 2560, 1377 / 1440, 130 / 2560, 1431 / 1440), is_log=self.is_log):
+                    9 / 2560, 1377 / 1440, 130 / 2560, 1431 / 1440), is_log=self.is_log):
                 self.auto.press_key('esc')
                 continue
             if self.auto.click_element(['剩', '剩余'], 'text',
@@ -221,4 +221,4 @@ class CollectSuppliesModule:
                 self.logger.error("领取宿舍拼图超时")
                 break
 
-            self.auto.back_to_home()
+        self.auto.back_to_home()

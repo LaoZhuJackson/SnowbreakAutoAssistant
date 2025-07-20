@@ -1,5 +1,7 @@
 import time
 
+import win32gui
+
 from app.common.config import config
 from app.common.utils import random_rectangle_point
 from app.modules.automation.timer import Timer
@@ -29,20 +31,25 @@ class UsePowerModule:
         :param name: "stuff" or "chasm"
         :return: (x,y)
         """
-        # gitee上获取到的更新数据的分辨率尺度
-        resolution_scale = config.resolution_scale.value
-        rate_x = resolution_scale / 1920
-        rate_y = resolution_scale / 1080
+        update_data = config.update_data.value
+        data = update_data.split("_")
+        online_width = float(data[0])  # 2560
+        online_height = float(data[0]) * 9 / 16  # 1440
+        client_rect = win32gui.GetClientRect(self.auto.hwnd)
+        client_width = client_rect[2] - client_rect[0]  # 1920
+        client_height = client_rect[3] - client_rect[1]  # 1080
+        scale_x = client_width / online_width
+        scale_y = client_height / online_height
         if name == "stuff":
-            x1 = int(config.LineEdit_stuff_x1.value / rate_x)
-            y1 = int(config.LineEdit_stuff_y1.value / rate_y)
-            x2 = int(config.LineEdit_stuff_x2.value / rate_x)
-            y2 = int(config.LineEdit_stuff_y2.value / rate_y)
+            x1 = int(float(data[1]) * scale_x)
+            y1 = int(float(data[2]) * scale_y)
+            x2 = int(float(data[3]) * scale_x)
+            y2 = int(float(data[4]) * scale_y)
         else:
-            x1 = int(config.LineEdit_chasm_x1.value / rate_x)
-            y1 = int(config.LineEdit_chasm_y1.value / rate_y)
-            x2 = int(config.LineEdit_chasm_x2.value / rate_x)
-            y2 = int(config.LineEdit_chasm_y2.value / rate_y)
+            x1 = int(float(data[5]) * scale_x)
+            y1 = int(float(data[6]) * scale_y)
+            x2 = int(float(data[7]) * scale_x)
+            y2 = int(float(data[8]) * scale_y)
         return random_rectangle_point(((x1, y1), (x2, y2)), n=n)
 
     def check_power(self):
@@ -123,8 +130,17 @@ class UsePowerModule:
         finish_flag = False  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
-        stuff_pos = config.stuff_pos.value
-        chasm_pos = config.chasm_pos.value
+
+        update_data = config.update_data.value
+        print(update_data)
+        data = update_data.split("_")
+        online_width = float(data[0])
+        online_height = float(data[0]) * 9 / 16
+
+        stuff_pos = (float(data[1]) / online_width, float(data[2]) / online_height, float(data[3]) / online_width,
+                     float(data[4]) / online_height)
+        chasm_pos = (float(data[5]) / online_width, float(data[6]) / online_height, float(data[7]) / online_width,
+                     float(data[8]) / online_height)
         while True:
             self.auto.take_screenshot()
 
@@ -156,7 +172,7 @@ class UsePowerModule:
                                                                                                                   327 / 1080,
                                                                                                                   1529 / 1920,
                                                                                                                   376 / 1080))):
-                        pos = self.get_click_pos("stuff")
+                        pos = self.get_click_pos("stuff")  # 获取点击位置
                         self.auto.click_element_with_pos(pos)
                         time.sleep(0.3)
                 if self.auto.click_element(['深渊', '深', '渊'], 'text', crop=chasm_pos,
