@@ -137,7 +137,7 @@ class Automation:
                                                                                        self.hwnd)
                 else:
                     self.current_screenshot = self.first_screenshot
-                self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
+                # self.logger.debug(f"缩放比例为：({self.scale_x},{self.scale_y})")
                 return result
             else:
                 # 为none的时候已经在screenshot中log了，此处无需再log
@@ -363,7 +363,7 @@ class Automation:
             # 不截图的时候做相应的裁切，使外部可以不写参数
             if self.current_screenshot is not None:
                 # 更新当前裁切后的截图和相对位置坐标
-                # ImageUtils.show_ndarray(self.current_screenshot, 'before_current')
+                # ImageUtils.show_ndarray(self.first_screenshot, 'before_current')
                 self.current_screenshot, self.relative_pos = ImageUtils.crop_image(self.first_screenshot, crop,
                                                                                    self.hwnd)
                 # ImageUtils.show_ndarray(self.current_screenshot, 'after_current')

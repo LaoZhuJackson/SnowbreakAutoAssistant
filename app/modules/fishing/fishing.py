@@ -94,8 +94,8 @@ class FishingModule:
                         continue
 
                 # 甩杆后
-                if self.auto.find_element('钩', 'text', crop=(787 / 1920, 234 / 1080, 1109 / 1920, 420 / 1080),
-                                          threshold=0, is_log=self.is_log):
+                if self.auto.find_element('上钩', 'text', crop=(787 / 1920, 234 / 1080, 1109 / 1920, 420 / 1080),
+                                          is_log=self.is_log):
                     self.auto.press_key(self.press_key)
                     self.bite_time = time.time()
                     time.sleep(0.2)
@@ -124,7 +124,7 @@ class FishingModule:
             self.auto.take_screenshot()
 
             if self.auto.find_element(lure_type_list[lure_type_index], 'text',
-                                      crop=(1663 / 1920, 788 / 1080, 1830 / 1920, 825 / 1080), is_log=self.is_log):
+                                      crop=(1650 / 1920, 780 / 1080, 1850 / 1920, 837 / 1080), is_log=self.is_log):
                 return True
             if self.auto.find_element('饵', 'text',
                                       crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080), is_log=self.is_log):
@@ -134,12 +134,12 @@ class FishingModule:
                 self.auto.click_element('app/resource/images/fishing/select_lure.png', 'image',
                                         crop=(1563 / 1920, 787 / 1080, 1598 / 1920, 823 / 1080), is_log=self.is_log,
                                         match_method=cv2.TM_CCOEFF_NORMED)
-                time.sleep(0.5)
+                time.sleep(0.3)
                 continue
             else:
                 self.auto.click_element(lure_type_list[lure_type_index], 'text',
                                         crop=(1663 / 1920, 604 / 1080, 1898 / 1920, 773 / 1080), is_log=self.is_log)
-                time.sleep(0.5)
+                time.sleep(0.3)
 
             if timeout.reached():
                 self.logger.error("选择鱼饵超时超时")
@@ -169,6 +169,7 @@ class FishingModule:
                     blocks_num = count_color_blocks(self.auto.current_screenshot, self.lower_yellow, self.upper_yellow)
                     # 连续两次都是0才返回false,避免误判
                     if blocks_num == 0:
+                        # print("退出")
                         break
                 else:
                     if self.is_use_time_judge:
@@ -189,18 +190,17 @@ class FishingModule:
                 break
 
     def after_fish(self):
-        timeout = Timer(20).start()
+        timeout = Timer(10).start()
         save_flag = False
         while True:
             self.auto.take_screenshot()
-
-            if save_flag:
-                if self.auto.find_element("新纪录", "text") or self.auto.find_element(
-                        "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
-                        crop=(1245 / 1920, 500 / 1080, 1366 / 1920, 578 / 1080), is_log=self.is_log):
-                    self.save_picture()
-                break
-            if self.auto.find_element('本次获得', 'text', crop=(832 / 1920, 290 / 1080, 1078 / 1920, 374 / 1080),
+            # if save_flag:
+            #     if self.auto.find_element("新纪录", "text") or self.auto.find_element(
+            #             "app/resource/images/fishing/new_record.png", "image", threshold=0.5,
+            #             crop=(1245 / 1920, 500 / 1080, 1366 / 1920, 578 / 1080), is_log=self.is_log):
+            #         self.save_picture()
+            #     break
+            if self.auto.find_element('本次获得', 'text', crop=(835 / 1920, 288 / 1080, 1076 / 1920, 377 / 1080),
                                       is_log=self.is_log):
                 self.logger.info("钓鱼佬永不空军！")
                 if config.CheckBox_is_save_fish.value:

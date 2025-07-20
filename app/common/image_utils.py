@@ -142,6 +142,7 @@ class ImageUtils:
         crop_top = int(crop[1] * h)
         crop_right = int(crop[2] * w)
         crop_bottom = int(crop[3] * h)
+
         img_cropped = screenshot[crop_top:crop_bottom, crop_left:crop_right]
         # print(f"left:{crop_left}")
         # print(f"top:{crop_top}")

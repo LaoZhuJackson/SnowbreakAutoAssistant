@@ -52,6 +52,10 @@ class DrinkModule:
         # self.again()
 
     def enter_drink(self):
+        """
+        进入并开始喝酒
+        :return:
+        """
         timeout = Timer(30).start()
         enter_select = False
         while True:
@@ -129,7 +133,6 @@ class DrinkModule:
 
     def play_mode1(self):
         timeout = Timer(600).start()
-
         while True:
             self.auto.take_screenshot()
 

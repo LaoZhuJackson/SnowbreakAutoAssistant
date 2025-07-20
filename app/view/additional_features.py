@@ -74,7 +74,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.SegmentedWidget.setCurrentItem(self.page_fishing.objectName())
         self.stackedWidget.setCurrentIndex(0)
         self.ComboBox_fishing_mode.addItems(
-            ["高性能（cpu性能足够时使用，准确率高）", "低性能（检测频率较低时使用，准确率较低）"])
+            ["高性能（消耗性能高速判断，准确率高）", "低性能（超时自动拉杆，准确率较低）"])
         self.BodyLabel_tip_fish.setText(
             "### 提示\n* 为实现纯后台，现已不支持鼠标侧键\n* 钓鱼角色选择分析员，否则无法正常工作\n* 根据游戏右下角手动设置好抛竿按键、钓鱼次数和鱼饵类型后再点开始\n* 珍奇钓鱼点每天最多钓25次\n* 稀有钓鱼点每天最多钓50次\n* 普通钓鱼点无次数限制\n* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次\n* 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域\n")
         self.BodyLabel_tip_action.setText(

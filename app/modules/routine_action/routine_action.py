@@ -45,15 +45,15 @@ class ActionModule:
                                                crop=(2303 / 2560, 1309 / 1440, 2492 / 2560, 1383 / 1440),
                                                is_log=self.is_log):
                         continue
-                    if self.auto.click_element('支援技', 'text', crop=(161 / 2560, 609 / 1440, 347 / 2560, 700 / 1440),
+                    if self.auto.click_element('支援技', 'text', crop=(106 / 1920, 455 / 1080, 305 / 1920, 536 / 1080),
                                                is_log=self.is_log):
                         time.sleep(0.5)
                         continue
                 else:
                     if not is_move:
-                        if self.auto.find_element(['技', '援技', '支援技'], 'text',
-                                                  crop=(174 / 2560, 231 / 1440, 280 / 2560, 285 / 1440),
-                                                  is_log=self.is_log, threshold=0.1):
+                        if self.auto.find_element(['技', '援技', '支援技', '黄色', '区域'], 'text',
+                                                  crop=(40 / 1920, 63 / 1080, 380 / 1920, 400 / 1080),
+                                                  is_log=self.is_log):
                             self.auto.key_down("w")
                             is_move = True
                             continue
@@ -88,7 +88,7 @@ class ActionModule:
         while True:
             self.auto.take_screenshot()
 
-            if self.auto.click_element('支援技', 'text', crop=(161 / 2560, 609 / 1440, 347 / 2560, 700 / 1440),
+            if self.auto.click_element('支援技', 'text', crop=(106 / 1920, 455 / 1080, 305 / 1920, 536 / 1080),
                                        is_log=self.is_log):
                 break
             if self.auto.find_element('行动', 'text', crop=(480 / 2560, 1340 / 1440, 625 / 2560, 1400 / 1440),
@@ -110,5 +110,5 @@ class ActionModule:
                     continue
 
             if timeout.reached():
-                self.logger.error("进入常规行动")
+                self.logger.error("进入常规行动超时")
                 break

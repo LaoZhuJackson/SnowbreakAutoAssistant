@@ -140,10 +140,10 @@ class Screenshot:
             # OpenCV 处理
             img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
             if not is_fullscreen(hwnd):
-                img = img[40:, :, :]
-                h -= 40
                 # ImageUtils.show_ndarray(img)
-                img = auto_crop_image(img)
+                img = img[40:-9, 9:-9, :]
+                # ImageUtils.show_ndarray(img)
+                # img = auto_crop_image(img)
             img_crop, relative_pos = ImageUtils.crop_image(img, crop, hwnd)
 
             # 缩放图像以自适应分辨率图像识别
