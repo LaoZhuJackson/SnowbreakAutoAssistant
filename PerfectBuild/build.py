@@ -62,7 +62,7 @@ class PerfectBuild:
         if not self.build_dir.exists():
             self.build_dir.mkdir()
         self.release_dir = Path.joinpath(
-            self.app_dir, "release", f"{self.app_ver}{self.mode}"
+            self.app_dir, "release", f"{self.app_ver}-{self.mode}"
         )
         if not self.release_dir.exists():
             if not self.release_dir.parent.exists():
@@ -107,7 +107,7 @@ class PerfectBuild:
             "--include-data-dir=app/resource/images=app/resource/images",
             "--include-data-file=docs/help.md=docs/help.md",
             "--include-data-dir=asset=asset",
-            "--include-data-dir=app/resource/easyocr=app/resource/easyocr",
+            "--include-data-dir=app/modules/onnxocr/models=app/modules/onnxocr/models",
         ]
         if platform.system() == "Windows":
             cmd_args.extend((f"--windows-icon-from-ico={self.app_icon}",))
@@ -199,7 +199,7 @@ class PerfectBuild:
         file_list.sort()
         portable_file = (
                 self.release_dir
-                / f"{self.app_exec}-{self.app_ver}{self.mode}-Portable-{self.system}-{self.arch}.zip"
+                / f"{self.app_exec}-{self.app_ver}- {self.mode}-Portable-{self.system}-{self.arch}.zip"
         )
         print("Creating portable package...")
         with ZipFile(portable_file, "w", compression=ZIP_DEFLATED) as zf:

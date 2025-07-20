@@ -113,32 +113,70 @@ def get_hwnd(window_title, window_class):
     return None
 
 
+def fetch_url(url: str, timeout: float = None, encoding: str = None):
+    """
+    通用网络请求函数
+
+    参数:
+        url: 请求的URL
+        timeout: 超时时间（秒）
+        encoding: 手动指定的编码格式
+
+    返回:
+        成功: requests.Response 对象
+        失败: 包含错误信息的字典
+    """
+    headers = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/134.0.0.0 Safari/537.36"
+    }
+    port = config.update_proxies.value  # 假设config是已定义的配置对象
+    proxies = {
+        "http": f"http://127.0.0.1:{port}",
+        "https": f"http://127.0.0.1:{port}"
+    } if port else None
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=timeout,
+            proxies=proxies
+        )
+        if encoding:
+            response.encoding = encoding
+        return response
+    except Timeout:
+        return {"error": f"⚠️ 连接超时，请检查网络是否能连接 {url}"}
+    except RequestException as e:
+        return {"error": f"🔌 网络请求 {url} 失败: {e}"}
+    except Exception as e:
+        return {"error": f"❌ 请求 {url} 发生未知错误: {e}"}
+
 def get_date(url=None):
+    """获取具体的活动日期"""
     def format_date(date_str):
         """格式化日期字符串为 MM.DD 格式"""
         parts = date_str.split('月')
         month = parts[0].zfill(2)
         day = parts[1].replace('日', '').zfill(2)
         return f"{month}.{day}"
-    # url = 'https://www.cbjq.com/p/zt/2023/04/13/index/news.html?catid=7131&infoid=247'
-    API_URL = "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=282"
+
+    # url = 'https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=282'
     API_URL = url
-    headers = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-    }
-    response = requests.get(API_URL, headers=headers)
-    response.encoding = 'utf-8'  # 或其他合适的编码
-    # print(response.status_code)
-    # print(response.text)  # 查看原始响应内容
+    response = fetch_url(API_URL, timeout=3, encoding='utf-8')
+
+    if isinstance(response, dict):  # 错误处理
+        return response
     if response.status_code != 200:
         return {"error": f"请求失败，状态码: {response.status_code}"}
 
     try:
         data = response.json()
-        content_html = data["data"][0]["content"]  # 获取活动内容HTML
-    except Exception as e:
-        # print(traceback.print_exc())
-        return {"error": f"数据解析失败: {str(e)}"}
+        content_html = data["data"][0]["content"]
+    except (KeyError, IndexError, ValueError) as e:
+        return {"error": f"❌ 解析JSON数据失败: {e}"}
 
     soup = BeautifulSoup(content_html, 'html.parser')
     paragraphs = soup.find_all('p')
@@ -281,30 +319,17 @@ def get_gitee_text(text_path: str):
             失败: None
     """
     url = f"https://gitee.com/laozhu520/auto_chenbai/raw/main/{text_path}"
-    # url = f"https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/blob/main/{text_path}"
-    headers = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-    }
+    response = fetch_url(url, timeout=3)
 
-    try:
-        response = requests.get(url, headers=headers, timeout=3)
-        if response.status_code != 200:
-            print(f"请求失败，状态码: {response.status_code}")
-            return None
-        # 处理可能的编码问题
-        response.encoding = response.apparent_encoding  # 自动检测编码
-        # 按行分割文本
-        lines = response.text.splitlines()
-        return lines
-    except Timeout:
-        print(f"⚠️ 连接超时，请检查网络是否能连接{url}")
+    if isinstance(response, dict):  # 错误处理
+        return response
+    if response.status_code != 200:
+        print(f"请求失败，状态码: {response.status_code}")
         return None
-    except RequestException as e:
-        print(f"🔌 网络请求{url}失败: {e}")
-        return None
-    except Exception as e:
-        print(f"❌ 请求{url}发生未知错误: {e}")
-        return None
+
+    # 自动检测编码并处理文本
+    response.encoding = response.apparent_encoding
+    return response.text.splitlines()
 
 
 if __name__ == "__main__":
