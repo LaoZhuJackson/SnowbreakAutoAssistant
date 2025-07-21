@@ -1,6 +1,4 @@
 import time
-
-import cv2
 import numpy as np
 
 from app.common.config import config

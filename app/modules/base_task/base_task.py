@@ -1,5 +1,4 @@
 import ctypes
-import time
 
 import win32api
 import win32con
@@ -9,7 +8,6 @@ from app.common.config import config
 from app.common.logger import logger
 from app.common.signal_bus import signalBus
 from app.modules.automation.automation import Automation
-from app.modules.automation.timer import Timer
 
 
 class BaseTask:

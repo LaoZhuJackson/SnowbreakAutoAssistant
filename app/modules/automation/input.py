@@ -1,16 +1,15 @@
 import ctypes
 import string
-import traceback
-from ctypes import windll, byref
-from ctypes.wintypes import HWND, POINT
 import time
+from ctypes import windll
 
 import win32api
 import win32con
-import win32gui
-# from pynput import mouse
 
 from app.common.logger import logger
+
+
+# from pynput import mouse
 
 
 class Input:

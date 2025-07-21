@@ -7,11 +7,9 @@ import numpy as np
 from fuzzywuzzy import process
 
 from app.common.config import config
-from app.common.image_utils import ImageUtils
 from app.common.signal_bus import signalBus
 from app.common.utils import count_color_blocks
 from app.modules.automation.timer import Timer
-from app.modules.base_task.base_task import BaseTask
 
 
 class FishingModule:

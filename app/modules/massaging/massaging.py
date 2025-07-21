@@ -1,10 +1,5 @@
-import time
-
-import cv2
-
 from app.common.config import config
 from app.modules.automation.timer import Timer
-from app.modules.base_task.base_task import BaseTask
 
 
 class MassagingModule:
@@ -38,7 +33,7 @@ class MassagingModule:
                                       is_log=self.is_log):
                 wife_num = config.ComboBox_wife.value
                 click_pos = (
-                int((wife_pos[0] + 370 * wife_num) / self.auto.scale_x), int(wife_pos[1] / self.auto.scale_y))
+                    int((wife_pos[0] + 370 * wife_num) / self.auto.scale_x), int(wife_pos[1] / self.auto.scale_y))
                 self.auto.click_element_with_pos(click_pos)
                 continue
 

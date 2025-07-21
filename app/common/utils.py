@@ -1,18 +1,15 @@
 import os
-import traceback
+import re
 from pathlib import Path
 
 import cpufeature
 import cv2
 import numpy as np
+import requests
 import win32api
 import win32con
 import win32gui
-import requests
 from bs4 import BeautifulSoup
-import re
-import json
-
 from requests import Timeout, RequestException
 
 from app.common.config import config

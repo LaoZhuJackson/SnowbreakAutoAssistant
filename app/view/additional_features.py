@@ -8,7 +8,7 @@ from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QPainter, QColor, QPixmap
 from PyQt5.QtWidgets import QFrame, QWidget, QLabel
 from fuzzywuzzy import process
-from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit, InfoBar, Slider, BodyLabel
+from qfluentwidgets import SpinBox, CheckBox, ComboBox, LineEdit, Slider
 
 from app.common.config import config
 from app.common.logger import original_stdout, original_stderr

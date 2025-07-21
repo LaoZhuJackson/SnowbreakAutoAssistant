@@ -2,28 +2,22 @@
 import os.path
 import subprocess
 import sys
-import time
-import traceback
 from functools import partial
 
-from qfluentwidgets import (SwitchSettingCard, FolderListSettingCard,
-                            OptionsSettingCard, PushSettingCard,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
-                            setTheme, setThemeColor, isDarkTheme, setFont, MessageBox, ProgressBar)
-from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import SettingCardGroup as CardGroup
-from qfluentwidgets import InfoBar
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths, QThread
+from PyQt5.QtCore import Qt, QUrl, QThread
 from PyQt5.QtGui import QDesktopServices, QFont
-from PyQt5.QtWidgets import QWidget, QLabel, QFileDialog, QProgressBar
+from PyQt5.QtWidgets import QWidget, QLabel
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import InfoBar
+from qfluentwidgets import SettingCardGroup as CardGroup
+from qfluentwidgets import (SwitchSettingCard, PrimaryPushSettingCard, ScrollArea,
+                            ComboBoxSettingCard, ExpandLayout, setTheme, setFont, MessageBox, ProgressBar)
 
-# from updater import Updater
-from ..repackage.text_edit_card import TextEditCard
 from ..common.config import config, isWin11
-from ..common.setting import HELP_URL, FEEDBACK_URL, AUTHOR, YEAR, QQ, VERSION
+from ..common.setting import FEEDBACK_URL, QQ
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
+from ..repackage.text_edit_card import TextEditCard
 
 
 class UpdatingThread(QThread):
@@ -178,7 +172,7 @@ class SettingInterface(ScrollArea):
             self.tr('Check update'),
             "app/resource/images/logo.png",
             self.tr('About'),
-            "本助手免费开源，当前版本：" + VERSION,
+            "本助手免费开源，当前版本：" + config.version.value,
             self.aboutGroup
         )
 

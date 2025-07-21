@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 from app.common.config import config
 from app.modules.automation.timer import Timer
-from app.modules.base_task.base_task import BaseTask
 
 
 class ChasmModule:

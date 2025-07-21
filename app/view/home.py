@@ -3,26 +3,22 @@ import os
 import re
 import subprocess
 import sys
-import threading
-import time
 from datetime import datetime
 from functools import partial
 
-import pyautogui
 import win32con
 import win32gui
 from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
 from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
-    BodyLabel, ProgressBar, FlyoutView, Flyout, PushButton
+    BodyLabel, ProgressBar, FlyoutView, Flyout
 
 from app.common.config import config
 from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
-from app.common.utils import get_all_children, get_hwnd, get_date_from_api, get_gitee_text, get_start_arguments, \
+from app.common.utils import get_all_children, get_date_from_api, get_gitee_text, get_start_arguments, \
     is_exist_snowbreak
-from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule

@@ -1,10 +1,6 @@
-import threading
-import time
-
 from PyQt5.QtWidgets import QFrame
-from qfluentwidgets import InfoBar, SwitchButton
+from qfluentwidgets import InfoBar
 
-from app.modules.base_task.base_task import BaseTask
 from app.modules.trigger.auto_f import AutoFModule
 from app.modules.trigger.nita_auto_e import NitaAutoEModule
 from app.ui.trigger_interface import Ui_trigger

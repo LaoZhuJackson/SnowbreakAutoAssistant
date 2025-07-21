@@ -1,9 +1,7 @@
 import copy
 
 from app.common.config import config
-from app.common.logger import logger
 from app.common.signal_bus import signalBus
-from app.modules.base_task.base_task import BaseTask
 
 boards = {
     "1": [[0, 0, 0, 0, 0, -1],

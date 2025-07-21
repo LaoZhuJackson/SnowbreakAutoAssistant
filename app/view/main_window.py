@@ -9,11 +9,11 @@ import time
 import cv2
 import numpy as np
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
-from PyQt5.QtGui import QIcon, QColor, QImage, QPixmap
+from PyQt5.QtGui import QIcon, QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QFrame
-from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox, Dialog
-from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, MessageBoxBase, SubtitleLabel, \
-    BodyLabel, NavigationBarPushButton, FlyoutView, Flyout, setThemeColor
+from qfluentwidgets import FluentIcon as FIF, SystemThemeListener, isDarkTheme, MessageBox
+from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, NavigationBarPushButton, FlyoutView, \
+    Flyout, setThemeColor
 
 from .additional_features import Additional
 from .help import Help
@@ -26,7 +26,7 @@ from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.matcher import matcher
 from ..common.signal_bus import signalBus
-from ..common.utils import get_start_arguments
+from ..common.utils import get_start_arguments, get_gitee_text
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
@@ -86,8 +86,9 @@ class MainWindow(MSFluentWindow):
         if config.checkUpdateAtStartUp.value:
             # QTimer.singleShot(100, lambda: self.check_update())
             # 当采用其他线程调用时，需要保证messageBox是主线程调用的，使用信号槽机制在主线程调用 QMessageBox
-            update_thread = threading.Thread(target=self.check_update)
-            update_thread.start()
+            # update_thread = threading.Thread(target=self.check_update)
+            # update_thread.start()
+            self.check_update()
 
     def open_game_directly(self):
         """直接启动游戏"""
@@ -332,7 +333,18 @@ class MainWindow(MSFluentWindow):
 
     def check_update(self):
         # logger.warn('当前测试版还没写更新功能')
-        pass
+        text = get_gitee_text("update_data.txt")
+        # 返回字典说明必定出现报错了
+        if isinstance(text, dict):
+            logger.error(text["error"])
+            return
+        version = text[1]
+        saa_current_version = config.version.value
+        if not saa_current_version or saa_current_version != version:
+            config.set(config.version, version)
+            logger.info(f"出现版本更新{saa_current_version}→{version}，可以前往github或者q群下载新版安装包")
+        else:
+            logger.debug(f"无需版本更新，当前版本：{saa_current_version}")
 
     def showMessageBox(self, title, content):
         massage = MessageBox(title, content, self)
@@ -351,6 +363,7 @@ class MainWindow(MSFluentWindow):
         :param screenshot:
         :return:
         """
+
         def ndarray_to_qpixmap(ndarray):
             # 确保ndarray是3维的 (height, width, channels)
             if ndarray.ndim == 2:

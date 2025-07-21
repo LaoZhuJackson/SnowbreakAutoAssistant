@@ -1,7 +1,6 @@
 import traceback
 
 import cv2
-# import easyocr
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils

@@ -1,12 +1,8 @@
-import random
 import time
-
-import cv2
 
 from app.common.config import config
 from app.common.utils import random_rectangle_point
 from app.modules.automation.timer import Timer
-from app.modules.base_task.base_task import BaseTask
 
 
 class DrinkModule:

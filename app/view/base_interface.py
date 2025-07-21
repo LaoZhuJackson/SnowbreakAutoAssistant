@@ -1,12 +1,8 @@
 import sys
 
-import win32gui
 from PyQt5.QtWidgets import QTextBrowser
 
-from app.common.config import config
 from app.common.logger import logger, stdout_stream, stderr_stream
-from app.modules.automation.automation import Automation
-from app.modules.automation.timer import Timer
 
 
 class BaseInterface:
