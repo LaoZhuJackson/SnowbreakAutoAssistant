@@ -252,7 +252,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         """查找启动器路径教程，记得添加进build路径"""
         view = FlyoutView(
             title="如何查找对应游戏路径",
-            content="不管你是哪个渠道服的玩家，第一步都应该先去设置里选服，国际服选完服之后就不需要往下看了\n官服和b服的玩家打开尘白启动器，新版或者旧版启动器都找到启动器里对应的设置\n在下面的路径选择中找到并选择刚才你看到的路径",
+            content='不管你是哪个渠道服的玩家，第一步都应该先去设置里选服\n国际服选完服之后选择类似"E:\SteamLibrary\steamapps\common\SNOWBREAK"的路径\n官服和b服的玩家打开尘白启动器，新版或者旧版启动器都找到启动器里对应的设置\n在下面的路径选择中找到并选择刚才你看到的路径',
             image="asset/path_tutorial.png",
             isClosable=True,
         )
