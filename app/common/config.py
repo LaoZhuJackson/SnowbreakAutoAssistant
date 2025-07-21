@@ -36,21 +36,8 @@ class Config(QConfig):
     """ Config of application """
 
     # 主页面
-    date_tip = ConfigItem("home_interface_enter", "date_tip", [
-        ["活动", "2025-1-23", "2025-3-6"],
-        ["辰星卡池", "2025-1-23", "2025-3-6"],
-        ["肴卡池", "2025-2-6", "2025-3-6"],
-        ["异星守护", "2025-2-13", "2025-3-5"],
-        ["悖论迷宫", "2025-2-6", "2025-2-27"],
-        ["钓鱼大赛", "2025-1-23", "2025-3-6"],
-        ["噬神斗场", "2025-1-23", "2025-2-20"],
-        ["古宅异变", "2025-2-10", "2025-2-24"],
-        ["绝地防线", "2025-2-17", "2025-3-3"],
-        ["勇者游戏", "2025-1-25", "2025-2-8"],
-    ])
+    date_tip = ConfigItem("home_interface_enter", "date_tip", None)
     LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
-    LineEdit_link = ConfigItem("home_interface_enter", "LineEdit_link",
-                               "https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid=7131&id=270")
     CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
                                             BoolValidator())
 
@@ -103,28 +90,8 @@ class Config(QConfig):
     ComboBox_power_usage = OptionsConfigItem("home_interface_power", "ComboBox_power_usage", -1,
                                              OptionsValidator([-1, 0, 1, 2, 3, 4, 5]))
     CheckBox_is_use_power = ConfigItem("home_interface_power", "CheckBox_is_use_power", False, BoolValidator())
-    LineEdit_task_name = ConfigItem("home_interface_power", "LineEdit_task_name", "")
-    LineEdit_stuff_x1 = ConfigItem("home_interface_power", "LineEdit_stuff_x1", 156)
-    LineEdit_stuff_y1 = ConfigItem("home_interface_power", "LineEdit_stuff_y1", 744)
-    LineEdit_stuff_x2 = ConfigItem("home_interface_power", "LineEdit_stuff_x2", 223)
-    LineEdit_stuff_y2 = ConfigItem("home_interface_power", "LineEdit_stuff_y2", 787)
-    LineEdit_chasm_x1 = ConfigItem("home_interface_power", "LineEdit_chasm_x1", 1940)
-    LineEdit_chasm_y1 = ConfigItem("home_interface_power", "LineEdit_chasm_y1", 540)
-    LineEdit_chasm_x2 = ConfigItem("home_interface_power", "LineEdit_chasm_x2", 2053)
-    LineEdit_chasm_y2 = ConfigItem("home_interface_power", "LineEdit_chasm_y2", 595)
-    chasm_pos = ConfigItem("home_interface_power", "chasm_pos", (
-        0.53203125,
-        0.3819444444444444,
-        0.5625,
-        0.41388888888888886
-    ))
-    stuff_pos = ConfigItem("home_interface_power", "stuff_pos",
-                           (
-                               0.0265625,
-                               0.36666666666666664,
-                               0.052734375,
-                               0.3854166666666667
-                           ))
+    update_data = ConfigItem("home_interface_power", "update_data", None)
+    task_name = ConfigItem("home_interface_power", "task_name", "")
 
     LineEdit_c1 = ConfigItem("home_interface_person", "LineEdit_c1", "")
     LineEdit_c2 = ConfigItem("home_interface_person", "LineEdit_c2", "")
@@ -146,7 +113,6 @@ class Config(QConfig):
     dpiScale = OptionsConfigItem(
         "MainWindow", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     position = ConfigItem("MainWindow", "position", None)
-    update_data = ConfigItem("MainWindow", "update_data", "2560_209_850_270_883_1713_476_1838_528_理念求索_7131_282")
 
     # 设置相关
     enter_interface = OptionsConfigItem("setting_personal", "enter_interface", 0, OptionsValidator([0, 1, 2]))

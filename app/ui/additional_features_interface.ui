@@ -29,7 +29,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-         <number>7</number>
+         <number>0</number>
      </property>
      <widget class="QWidget" name="page_fishing">
       <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0" columnstretch="2,1">
@@ -298,29 +298,6 @@
        <item row="1" column="0">
         <widget class="SimpleCardWidget" name="SimpleCardWidget_action">
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="2" column="0" colspan="2">
-           <widget class="BodyLabel" name="BodyLabel_tip_action">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::MarkdownText</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="0" column="0">
            <widget class="BodyLabel" name="BodyLabel_4">
             <property name="text">
@@ -335,6 +312,19 @@
             </property>
            </widget>
           </item>
+             <item row="3" column="0" colspan="2">
+                 <widget class="BodyLabel" name="BodyLabel_tip_action">
+                     <property name="text">
+                         <string/>
+                     </property>
+                     <property name="textFormat">
+                         <enum>Qt::MarkdownText</enum>
+                     </property>
+                 </widget>
+             </item>
+             <item row="1" column="1">
+                 <widget class="ComboBox" name="ComboBox_run"/>
+          </item>
           <item row="1" column="0">
            <widget class="BodyLabel" name="BodyLabel_22">
             <property name="text">
@@ -342,8 +332,18 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="ComboBox" name="ComboBox_run"/>
+             <item row="2" column="0">
+                 <spacer name="verticalSpacer_3">
+                     <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                         <size>
+                             <width>20</width>
+                             <height>40</height>
+                         </size>
+                     </property>
+                 </spacer>
           </item>
          </layout>
         </widget>
@@ -393,8 +393,40 @@
        <item row="0" column="0">
         <widget class="SimpleCardWidget" name="SimpleCardWidget_jigsaw">
             <layout class="QGridLayout" name="gridLayout_10" columnstretch="4,0,0">
-                <item row="9" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_8"/>
+                <item row="3" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_11">
+            <property name="text">
+                <string>2号碎片</string>
+            </property>
+           </widget>
+          </item>
+                <item row="6" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_14">
+                        <property name="text">
+                            <string>5号碎片</string>
+            </property>
+           </widget>
+          </item>
+                <item row="11" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_19">
+            <property name="text">
+                <string>10号碎片</string>
+            </property>
+           </widget>
+          </item>
+                <item row="7" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_15">
+            <property name="text">
+                <string>6号碎片</string>
+            </property>
+           </widget>
+          </item>
+                <item row="5" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_13">
+                        <property name="text">
+                            <string>4号碎片</string>
+            </property>
+           </widget>
           </item>
                 <item row="12" column="1">
                     <widget class="BodyLabel" name="BodyLabel_20">
@@ -403,65 +435,15 @@
             </property>
            </widget>
           </item>
-                <item row="3" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_11">
-                        <property name="text">
-                            <string>2号碎片</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="BodyLabel" name="BodyLabel_3">
+                <item row="10" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_18">
             <property name="text">
-             <string>寻找最大方案数：</string>
+                <string>9号碎片</string>
             </property>
            </widget>
-          </item>
-                <item row="2" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_10">
-            <property name="text">
-                <string>1号碎片</string>
-            </property>
-           </widget>
-          </item>
-                <item row="2" column="0" rowspan="11">
-                    <widget class="PixmapLabel" name="PixmapLabel_best_solution">
-                        <property name="minimumSize">
-                            <size>
-                                <width>250</width>
-                                <height>200</height>
-                            </size>
-            </property>
-           </widget>
-          </item>
-                <item row="10" column="2">
-           <widget class="LineEdit" name="LineEdit_jigsaw_piece_9"/>
-          </item>
-                <item row="2" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_1"/>
                 </item>
-                <item row="1" column="0">
-                    <widget class="BodyLabel" name="BodyLabel_8">
-            <property name="text">
-                <string>当前寻找到的最优方案：</string>
-            </property>
-           </widget>
-          </item>
-                <item row="8" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_7"/>
-                </item>
-                <item row="13" column="0" colspan="3">
-                    <widget class="BodyLabel" name="BodyLabel_tip_jigsaw">
-            <property name="text">
-                <string>Body label</string>
-            </property>
-                        <property name="textFormat">
-                            <enum>Qt::MarkdownText</enum>
-                        </property>
-                        <property name="wordWrap">
-                            <bool>true</bool>
-            </property>
-           </widget>
+                <item row="3" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_2"/>
           </item>
                 <item row="8" column="1">
                     <widget class="BodyLabel" name="BodyLabel_16">
@@ -470,45 +452,37 @@
             </property>
            </widget>
           </item>
-                <item row="4" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_3"/>
+                <item row="7" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_6"/>
                 </item>
-                <item row="14" column="0">
-           <spacer name="verticalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
+                <item row="2" column="0" rowspan="11">
+                    <widget class="PixmapLabel" name="PixmapLabel_best_solution">
+                        <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>40</height>
+                 <width>250</width>
+                 <height>200</height>
              </size>
             </property>
-           </spacer>
+           </widget>
           </item>
-                <item row="10" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_18">
+                <item row="8" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_7"/>
+                </item>
+                <item row="9" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_8"/>
+                </item>
+                <item row="4" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_12">
             <property name="text">
-                <string>9号碎片</string>
+                <string>3号碎片</string>
             </property>
            </widget>
           </item>
-                <item row="6" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_14">
-            <property name="text">
-                <string>5号碎片</string>
-            </property>
-           </widget>
+                <item row="6" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_5"/>
           </item>
-                <item row="12" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_11"/>
-          </item>
-                <item row="11" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_19">
-            <property name="text">
-                <string>10号碎片</string>
-            </property>
-           </widget>
+                <item row="5" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_4"/>
           </item>
                 <item row="0" column="1" colspan="2">
                     <widget class="SpinBox" name="SpinBox_max_solutions">
@@ -523,55 +497,81 @@
                         </property>
                     </widget>
           </item>
-                <item row="6" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_5"/>
-          </item>
-                <item row="7" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_15">
-            <property name="text">
-                <string>6号碎片</string>
-            </property>
-           </widget>
-                </item>
-                <item row="7" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_6"/>
-          </item>
-          <item row="9" column="1">
-              <widget class="BodyLabel" name="BodyLabel_17">
+                <item row="9" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_17">
             <property name="text">
                 <string>8号碎片</string>
             </property>
            </widget>
-          </item>
-                <item row="3" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_2"/>
                 </item>
+                <item row="4" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_3"/>
+          </item>
+                <item row="1" column="1" colspan="2">
+                    <widget class="BodyLabel" name="BodyLabel_9">
+            <property name="text">
+                <string>当前用户碎片数量：</string>
+            </property>
+           </widget>
+          </item>
                 <item row="11" column="2">
                     <widget class="LineEdit" name="LineEdit_jigsaw_piece_10"/>
                 </item>
-                <item row="5" column="2">
-                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_4"/>
+                <item row="1" column="0">
+                    <widget class="BodyLabel" name="BodyLabel_8">
+                        <property name="text">
+                            <string>当前寻找到的最优方案：</string>
+                        </property>
+                    </widget>
                 </item>
-                <item row="5" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_13">
+                <item row="12" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_11"/>
+                </item>
+                <item row="2" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_1"/>
+                </item>
+                <item row="10" column="2">
+                    <widget class="LineEdit" name="LineEdit_jigsaw_piece_9"/>
+                </item>
+                <item row="0" column="0">
+                    <widget class="BodyLabel" name="BodyLabel_3">
             <property name="text">
-                <string>4号碎片</string>
+                <string>寻找最大方案数：</string>
             </property>
            </widget>
           </item>
-                <item row="4" column="1">
-                    <widget class="BodyLabel" name="BodyLabel_12">
+                <item row="2" column="1">
+                    <widget class="BodyLabel" name="BodyLabel_10">
             <property name="text">
-                <string>3号碎片</string>
+                <string>1号碎片</string>
             </property>
            </widget>
           </item>
-                <item row="1" column="1" colspan="2">
-           <widget class="BodyLabel" name="BodyLabel_9">
+                <item row="14" column="0" colspan="3">
+                    <widget class="BodyLabel" name="BodyLabel_tip_jigsaw">
             <property name="text">
-             <string>当前用户碎片数量：</string>
+                <string>Body label</string>
+            </property>
+                        <property name="textFormat">
+                            <enum>Qt::MarkdownText</enum>
+                        </property>
+                        <property name="wordWrap">
+                            <bool>true</bool>
             </property>
            </widget>
+                </item>
+                <item row="13" column="0">
+                    <spacer name="verticalSpacer_5">
+                        <property name="orientation">
+                            <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                            <size>
+                                <width>20</width>
+                                <height>40</height>
+                            </size>
+                        </property>
+                    </spacer>
           </item>
          </layout>
         </widget>

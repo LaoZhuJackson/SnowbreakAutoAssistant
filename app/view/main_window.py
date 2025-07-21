@@ -212,7 +212,7 @@ class MainWindow(MSFluentWindow):
         view = FlyoutView(
             title="赞助作者",
             content="如果这个助手帮助到你，可以考虑赞助作者一杯奶茶(>ω･* )ﾉ",
-            image="app/resource/images/support.jpg",
+            image="asset/support.jpg",
             isClosable=True,
         )
         view.widgetLayout.insertSpacing(1, 5)

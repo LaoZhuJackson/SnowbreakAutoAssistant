@@ -164,7 +164,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
-            "### 提示\n* 目前不支持从启动器开始，出现游戏窗口后再点助手的开始\n* 如果不是官服，先去设置那选服\n* 遇到版本更新，先更新活动公告链接，然后再去“刷体力”设置那更新“材料”和“深渊”位置后再运行")
+            "### 提示\n* 一定要先去设置里选好你是哪个服的\n* 如果想要自动登录建议勾选“自动打开游戏”，勾选后根据教程选择好对应的路径\n* 勾选并设置好路径后每次启动SAA均会绕过启动器直接打开游戏")
         self.BodyLabel_person_tip.setText(
             "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
@@ -187,13 +187,10 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def _connect_to_slot(self):
         self.PushButton_start.clicked.connect(self.on_start_button_click)
+        self.PrimaryPushButton_path_tutorial.clicked.connect(self.on_path_tutorial_click)
         self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
         self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
         self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
-        # 版本适配更新
-        self.PrimaryPushButton_tutor.clicked.connect(self.on_update_tutor_click)
-        self.PushButton_update_stuff.clicked.connect(lambda: self.on_update_click('stuff'))
-        self.PushButton_update_chasm.clicked.connect(lambda: self.on_update_click('chasm'))
 
         self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
         self.ToolButton_collect.clicked.connect(lambda: self.set_current_index(1))
@@ -251,24 +248,19 @@ class Home(QFrame, Ui_home, BaseInterface):
     def set_hwnd(self, hwnd):
         self.game_hwnd = hwnd
 
-    def on_update_tutor_click(self):
-        """显示版本适配教程"""
+    def on_path_tutorial_click(self):
+        """查找启动器路径教程，记得添加进build路径"""
         view = FlyoutView(
-            title="如何适配新版本UI",
-            content="如果在设置中勾选了“软件启动时检测更新”，则每次运行SAA这里都会联网更新数据\n如果需要手动更新，先填入新版本任务名，然后通过任意截图工具获取如图所示的坐标值，最后点击底部两个按钮更新。\n或者可以尝试点击下面的按钮联网在线更新",
-            image="app/resource/images/update_tutor.png",
+            title="如何查找对应游戏路径",
+            content="不管你是哪个渠道服的玩家，第一步都应该先去设置里选服，国际服选完服之后就不需要往下看了\n官服和b服的玩家打开尘白启动器，新版或者旧版启动器都找到启动器里对应的设置\n在下面的路径选择中找到并选择刚才你看到的路径",
+            image="asset/path_tutorial.png",
             isClosable=True,
         )
-        # 添加按钮
-        button = PushButton('更新')
-        button.clicked.connect(self.update_online)
-        button.setFixedWidth(120)
-        view.addWidget(button, align=Qt.AlignRight)
         # 调整布局
         view.widgetLayout.insertSpacing(1, 5)
         view.widgetLayout.addSpacing(5)
 
-        w = Flyout.make(view, self.PrimaryPushButton_tutor, self)
+        w = Flyout.make(view, self.PrimaryPushButton_path_tutorial, self)
         view.closed.connect(w.close)
 
     def update_online(self):
@@ -278,59 +270,23 @@ class Home(QFrame, Ui_home, BaseInterface):
         if isinstance(text, dict):
             logger.error(text["error"])
             return
-        if config.isLog.value:
-            logger.info(f'获取到更新信息：{text[0]}')
-        config.set(config.update_data, text[0])
-        # screen_width, screen_height = pyautogui.size()
-        data = text[0].split("_")
-        # if screen_width == data[0]:
-        #     stuff_x1 = data[1]
-        #     stuff_y1 = data[2]
-        #     stuff_x2 = data[3]
-        #     stuff_y2 = data[4]
-        #     chasm_x1 = data[5]
-        #     chasm_y1 = data[6]
-        #     chasm_x2 = data[7]
-        #     chasm_y2 = data[8]
-        # else:
-        #     scale = screen_width / float(data[0])
-        #     # print(scale)
-        #     stuff_x1 = str(int(float(data[1]) * scale))
-        #     stuff_y1 = str(int(float(data[2]) * scale))
-        #     stuff_x2 = str(int(float(data[3]) * scale))
-        #     stuff_y2 = str(int(float(data[4]) * scale))
-        #     chasm_x1 = str(int(float(data[5]) * scale))
-        #     chasm_y1 = str(int(float(data[6]) * scale))
-        #     chasm_x2 = str(int(float(data[7]) * scale))
-        #     chasm_y2 = str(int(float(data[8]) * scale))
-        # is_update = False
-        # config_list = ["LineEdit_task_name",
-        #                "LineEdit_stuff_x1", "LineEdit_stuff_y1",
-        #                "LineEdit_stuff_x2", "LineEdit_stuff_y2",
-        #                "LineEdit_chasm_x1", "LineEdit_chasm_y1",
-        #                "LineEdit_chasm_x2", "LineEdit_chasm_y2"]
-        # new_data_list = [data[9],
-        #                  stuff_x1, stuff_y1,
-        #                  stuff_x2, stuff_y2,
-        #                  chasm_x1, chasm_y1,
-        #                  chasm_x2, chasm_y2]
-        # for i in range(9):
-        #     config_item = getattr(config, config_list[i], None)
-        #     if str(config_item.value) != new_data_list[i]:
-        #         # 存在一个改变了都为true
-        #         is_update = True
-        #         widget = self.page_2.findChild(LineEdit, config_list[i])
-        #         widget.setText(new_data_list[i])
-        #         widget.editingFinished.emit()
+        # 只有在获得新内容的时候才做更新动作,text[0]为第一行：坐标等数据
+        if text[0] != config.update_data.value:
+            if config.isLog.value:
+                logger.info(f'获取到更新信息：{text[0]}')
+            # 更新配置
+            config.set(config.update_data, text[0])
 
-        # 更新链接
-        url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={data[10]}&id={data[11]}"
-        self.LineEdit_link.setText(url)
-        self.get_tips(url=url)
-
-        # if is_update:
-        #     self.on_update_click('stuff')
-        #     self.on_update_click('chasm')
+            data = text[0].split("_")
+            # 设置任务名
+            config.set(config.task_name, data[9])
+            # 更新链活动提醒
+            url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={data[10]}&id={data[11]}"
+            self.get_tips(url=url)
+            # 更新材料和深渊位置在use_power.py
+        else:
+            #
+            self.get_tips()
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """
@@ -341,73 +297,6 @@ class Home(QFrame, Ui_home, BaseInterface):
             return
         self.LineEdit_starter_directory.setText(folder)
         self.LineEdit_starter_directory.editingFinished.emit()
-
-    def on_update_click(self, button_type):
-        """
-        版本更新适配
-        :param button_type: 'stuff', 'chasm'
-        :return:
-        """
-        if button_type == "stuff":
-            x1 = config.LineEdit_stuff_x1.value
-            y1 = config.LineEdit_stuff_y1.value
-            x2 = config.LineEdit_stuff_x2.value
-            y2 = config.LineEdit_stuff_y2.value
-        else:
-            x1 = config.LineEdit_chasm_x1.value
-            y1 = config.LineEdit_chasm_y1.value
-            x2 = config.LineEdit_chasm_x2.value
-            y2 = config.LineEdit_chasm_y2.value
-        if x2 < 0 or y2 < 0 or x1 < 0 or y1 < 0:
-            InfoBar.error(
-                title='更新位置出错',
-                content="坐标位置需要大于等于0",
-                orient=Qt.Horizontal,
-                isClosable=True,  # disable close button
-                position=InfoBarPosition.TOP_RIGHT,
-                duration=2000,
-                parent=self
-            )
-            return
-        if x2 <= x1 or y2 <= y1:
-            InfoBar.error(
-                title='更新位置出错',
-                content="右下角坐标数值需要大于左上角坐标数值",
-                orient=Qt.Horizontal,
-                isClosable=True,  # disable close button
-                position=InfoBarPosition.TOP_RIGHT,
-                duration=2000,
-                parent=self
-            )
-            return
-        # 获取屏幕分辨率
-        screen_width, screen_height = pyautogui.size()
-        if x1 > screen_width or x2 > screen_width or y1 > screen_height or y2 > screen_height:
-            InfoBar.error(
-                title='更新位置出错',
-                content="坐标位置不能大于屏幕分辨率",
-                orient=Qt.Horizontal,
-                isClosable=True,  # disable close button
-                position=InfoBarPosition.TOP_RIGHT,
-                duration=2000,
-                parent=self
-            )
-            return
-        if button_type == "stuff":
-            config.set(config.stuff_pos, (x1 / screen_width, y1 / screen_height, x2 / screen_width, y2 / screen_height))
-        else:
-            config.set(config.chasm_pos, (x1 / screen_width, y1 / screen_height, x2 / screen_width, y2 / screen_height))
-        text = "材料" if button_type == "stuff" else "深渊"
-        pos = config.stuff_pos.value if button_type == "stuff" else config.chasm_pos.value
-        InfoBar.info(
-            title=f'更新{text}位置成功',
-            content=f"坐标更新为{pos}",
-            orient=Qt.Horizontal,
-            isClosable=True,  # disable close button
-            position=InfoBarPosition.TOP_RIGHT,
-            duration=2000,
-            parent=self
-        )
 
     def on_start_button_click(self):
         checkbox_dic = {}
@@ -528,8 +417,6 @@ class Home(QFrame, Ui_home, BaseInterface):
                 config.set(getattr(config, widget.objectName(), None), int(widget.text()))
             else:
                 config.set(getattr(config, widget.objectName(), None), widget.text())
-            if widget.objectName() == 'LineEdit_link':
-                self.get_tips()
 
     def save_item_changed(self, index, check_state):
         # print(index, check_state)
@@ -567,11 +454,24 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def get_tips(self, url=None):
         if url:
-            config.set(config.LineEdit_link, url)
-        tips_dic = get_date(config.LineEdit_link.value)
-        if "error" in tips_dic.keys():
-            logger.error(tips_dic["error"])
-            return
+            tips_dic = get_date(url)
+            if "error" in tips_dic.keys():
+                logger.error(tips_dic["error"])
+                return
+            config.set(config.date_tip, tips_dic)
+        else:
+            if not config.date_tip.value:
+                InfoBar.error(
+                    title='活动日程更新失败',
+                    content=f"本地没有存储信息且未获取到url",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP_RIGHT,
+                    duration=2000,
+                    parent=self
+                )
+                return
+            tips_dic = config.date_tip.value
         for key, value in tips_dic.items():
             tips_dic[key] = self.get_time_difference(value)
 
@@ -607,10 +507,20 @@ class Home(QFrame, Ui_home, BaseInterface):
             for i in range(len(items_list)):
                 self.gridLayout_tips.addWidget(items_list[i][0], i + 1, 0, 1, 1)
                 self.gridLayout_tips.addWidget(items_list[i][1], i + 1, 1, 1, 1)
+            # 传入url时说明是新数据，此时才需要提醒
+            if url:
+                InfoBar.info(
+                    title='活动日程更新成功',
+                    content=f"获取到新的活动信息，已更新至“提醒”",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP_RIGHT,
+                    duration=2000,
+                    parent=self
+                )
 
         except Exception as e:
             logger.error(f"更新控件出错：{e}")
-            # self.logger.error(e)
 
     def closeEvent(self, event):
         # 恢复原始标准输出
