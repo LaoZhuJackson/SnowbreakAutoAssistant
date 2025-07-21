@@ -1,13 +1,17 @@
 import copy
+import os
 import re
+import subprocess
 import sys
+import threading
+import time
 from datetime import datetime
 from functools import partial
 
 import pyautogui
 import win32con
 import win32gui
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
 from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
     BodyLabel, ProgressBar, FlyoutView, Flyout, PushButton
@@ -16,7 +20,9 @@ from app.common.config import config
 from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
-from app.common.utils import get_all_children, get_hwnd, get_date, get_gitee_text
+from app.common.utils import get_all_children, get_hwnd, get_date_from_api, get_gitee_text, get_start_arguments, \
+    is_exist_snowbreak
+from app.modules.automation.timer import Timer
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
@@ -143,6 +149,10 @@ class Home(QFrame, Ui_home, BaseInterface):
         self._connect_to_slot()
         self.redirectOutput(self.textBrowser_log)
 
+        self.check_game_window_timer = QTimer()
+        self.check_game_window_timer.timeout.connect(self.check_game_open)
+        self.checkbox_dic = None
+
         # self.get_tips()
         if config.checkUpdateAtStartUp.value:
             self.update_online()
@@ -164,7 +174,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_c4.setPlaceholderText("未输入")
 
         self.BodyLabel_enter_tip.setText(
-            "### 提示\n* 一定要先去设置里选好你是哪个服的\n* 如果想要自动登录建议勾选“自动打开游戏”，勾选后根据教程选择好对应的路径\n* 勾选并设置好路径后每次启动SAA均会绕过启动器直接打开游戏")
+            "### 提示\n* 去设置里选择你的区服\n* 建议勾选“自动打开游戏”，勾选后根据上方教程选择好对应的路径\n* 点击“开始”按钮会自动打开游戏")
         self.BodyLabel_person_tip.setText(
             "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
@@ -197,6 +207,8 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.ToolButton_shop.clicked.connect(lambda: self.set_current_index(2))
         self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(3))
         self.ToolButton_person.clicked.connect(lambda: self.set_current_index(4))
+
+        self.CheckBox_auto_open_starter.stateChanged.connect(self.change_auto_open)
 
         signalBus.sendHwnd.connect(self.set_hwnd)
 
@@ -271,7 +283,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             logger.error(text["error"])
             return
         # 只有在获得新内容的时候才做更新动作,text[0]为第一行：坐标等数据
-        if text[0] != config.update_data.value:
+        if text[0] != config.update_data.value or not config.date_tip.value:
             if config.isLog.value:
                 logger.info(f'获取到更新信息：{text[0]}')
             # 更新配置
@@ -298,13 +310,81 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_starter_directory.setText(folder)
         self.LineEdit_starter_directory.editingFinished.emit()
 
+    def change_auto_open(self, state):
+        if state == 2:
+            InfoBar.success(
+                title='已开启',
+                content=f"启动SAA时将自动启动游戏",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
+        else:
+            InfoBar.success(
+                title='已关闭',
+                content=f"启动SAA时不会打开游戏",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
+
+    def open_game_directly(self):
+        """直接启动游戏"""
+        # 用户提供的能在启动器找到的路径
+        start_path = config.LineEdit_starter_directory.value
+        start_path = start_path.replace("/", "\\")
+        game_channel = config.server_interface.value
+        exe_path = os.path.join(start_path, r'game\Game\Binaries\Win64\Game.exe')
+        try:
+            # 检查游戏主程序是否存在
+            if not os.path.exists(exe_path):
+                logger.error(f'游戏主程序不存在: {exe_path}')
+                return
+            launch_args = get_start_arguments(start_path, game_channel)
+            if not launch_args:
+                logger.error(f"游戏启动失败未找到对应参数，start_path：{start_path}，game_channel:{game_channel}")
+                return
+            else:
+                if not is_exist_snowbreak():
+                    # 尝试以管理员权限运行
+                    subprocess.Popen([exe_path] + launch_args)
+                    logger.debug(f'正在启动 {exe_path} {launch_args}')
+                else:
+                    logger.info(f"游戏窗口已存在")
+                self.check_game_window_timer.start(500)
+        except FileNotFoundError:
+            logger.error(f'没有找到对应文件: {exe_path}')
+        except Exception as e:
+            logger.error(f'出现报错: {e}')
+
+    def check_game_open(self):
+        hwnd = is_exist_snowbreak()
+        if hwnd:
+            self.check_game_window_timer.stop()
+            logger.info(f'已检测到游戏窗口：{hwnd}')
+            self.after_start_button_click(self.checkbox_dic)
+
     def on_start_button_click(self):
+        """点击开始按钮后的逻辑"""
         checkbox_dic = {}
         for checkbox in self.SimpleCardWidget_option.findChildren(CheckBox):
             if checkbox.isChecked():
                 checkbox_dic[checkbox.objectName()] = True
             else:
                 checkbox_dic[checkbox.objectName()] = False
+
+        # 开启游戏
+        if config.CheckBox_auto_open_starter.value:
+            self.checkbox_dic = checkbox_dic
+            self.open_game_directly()
+        else:
+            self.after_start_button_click(checkbox_dic)
+
+    def after_start_button_click(self, checkbox_dic):
         if any(checkbox_dic.values()):
             if not self.is_running:
                 # 对字典进行排序
@@ -318,15 +398,16 @@ class Home(QFrame, Ui_home, BaseInterface):
             else:
                 self.start_thread.stop()
         else:
-            InfoBar.error(
-                title='未勾选工作',
-                content="需要至少勾选一项工作才能开始",
-                orient=Qt.Horizontal,
-                isClosable=False,  # disable close button
-                position=InfoBarPosition.TOP_RIGHT,
-                duration=2000,
-                parent=self
-            )
+            logger.error("需要至少勾选一项任务才能开始")
+            # InfoBar.error(
+            #     title='未勾选工作',
+            #     content="需要至少勾选一项工作才能开始",
+            #     orient=Qt.Horizontal,
+            #     isClosable=False,  # disable close button
+            #     position=InfoBarPosition.TOP_RIGHT,
+            #     duration=2000,
+            #     parent=self
+            # )
 
     def handle_start(self, str_flag):
         """设置按钮"""
@@ -454,7 +535,7 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def get_tips(self, url=None):
         if url:
-            tips_dic = get_date(url)
+            tips_dic = get_date_from_api(url)
             if "error" in tips_dic.keys():
                 logger.error(tips_dic["error"])
                 return
@@ -471,7 +552,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                     parent=self
                 )
                 return
-            tips_dic = config.date_tip.value
+            tips_dic = copy.deepcopy(config.date_tip.value)
         for key, value in tips_dic.items():
             tips_dic[key] = self.get_time_difference(value)
 
@@ -509,7 +590,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                 self.gridLayout_tips.addWidget(items_list[i][1], i + 1, 1, 1, 1)
             # 传入url时说明是新数据，此时才需要提醒
             if url:
-                InfoBar.info(
+                InfoBar.success(
                     title='活动日程更新成功',
                     content=f"获取到新的活动信息，已更新至“提醒”",
                     orient=Qt.Horizontal,

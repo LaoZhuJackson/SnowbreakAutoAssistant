@@ -63,7 +63,7 @@ class EnterGameModule:
 
     def handle_game(self):
         """处理游戏窗口部分"""
-        timeout = Timer(30).start()
+        timeout = Timer(60).start()
         while True:
             # 截图
             self.auto.take_screenshot()

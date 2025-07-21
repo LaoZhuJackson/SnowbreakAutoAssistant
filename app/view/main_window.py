@@ -81,8 +81,8 @@ class MainWindow(MSFluentWindow):
         ocr_thread = threading.Thread(target=self.init_ocr)
         ocr_thread.daemon = True
         ocr_thread.start()
-        if config.CheckBox_auto_open_starter.value:
-            self.open_game_directly()
+        # if config.CheckBox_auto_open_starter.value:
+        #     self.open_game_directly()
         if config.checkUpdateAtStartUp.value:
             # QTimer.singleShot(100, lambda: self.check_update())
             # 当采用其他线程调用时，需要保证messageBox是主线程调用的，使用信号槽机制在主线程调用 QMessageBox

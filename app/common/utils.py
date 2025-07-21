@@ -157,8 +157,12 @@ def fetch_url(url: str, timeout: float = None, encoding: str = None):
         return {"error": f"❌ 请求 {url} 发生未知错误: {e}"}
 
 
-def get_date(url=None):
-    """获取具体的活动日期"""
+def get_date_from_api(url=None):
+    """
+    获取具体的活动日期
+    :param url: 尘白官网的内容api接口链接
+    :return: {'爆爆菜园': '07.17-08.21', '噬神斗场': '07.10-08.07', '禁区协议': '07.28-08.11', '激战智域': '08.04-08.18', '勇者游戏': '08.07-08.21', '青之迷狂': '07.10-08.21', '奇迹诺言': '07.24-08.21', '铭心指任': '07.10-08.21', '风行影随': '07.31-08.21'}
+    """
 
     def format_date(date_str):
         """格式化日期字符串为 MM.DD 格式"""
@@ -256,8 +260,6 @@ def get_date(url=None):
         current_index += 1
 
     if len(result_dict) != 0:
-        with open('Appdata/activity_date.json', 'w') as f:
-            json.dump(result_dict, f, indent=4)
         return result_dict
     else:
         return {"error": f"未匹配到任何活动。检查 {url} 是否正确"}
@@ -400,6 +402,16 @@ def has_folder_in_path(path, dir_name):
     except Exception as e:
         print(f"检查子文件夹出错:{e}")
         return False
+
+
+def is_exist_snowbreak():
+    if config.server_interface.value != 2:
+        game_name = '尘白禁区'
+        game_class = 'UnrealWindow'
+    else:
+        game_name = 'Snowbreak: Containment Zone'  # 国际服
+        game_class = 'UnrealWindow'
+    return get_hwnd(game_name, game_class)
 
 
 if __name__ == "__main__":
