@@ -29,9 +29,15 @@ class ActionModule:
 
         while True:
             self.auto.take_screenshot()
+
             if not is_finish:
                 if not is_enter:
                     # 防止上一次没退出
+                    if self.auto.find_element(['技', '援技', '支援技', '黄色', '区域'], 'text',
+                                              crop=(40 / 1920, 63 / 1080, 380 / 1920, 400 / 1080),
+                                              is_log=self.is_log):
+                        is_enter = True
+                        continue
                     if self.auto.click_element("退出", 'text', crop=(903 / 1920, 938 / 1080, 1017 / 1920, 1004 / 1080),
                                                is_log=self.is_log):
                         continue
@@ -62,7 +68,7 @@ class ActionModule:
                             self.auto.press_key("shift")
                             time.sleep(6)
                         else:
-                            for i in range(5):
+                            for i in range(10):
                                 self.auto.press_key("shift", press_time=1)
                                 time.sleep(0.3)
                         self.auto.key_up("w")
@@ -71,6 +77,7 @@ class ActionModule:
             else:
                 if self.auto.click_element("退出", 'text', crop=(903 / 1920, 938 / 1080, 1017 / 1920, 1004 / 1080),
                                            is_log=self.is_log):
+                    time.sleep(3)
                     break
                 if self.auto.find_element('设置', 'text', crop=(1211 / 2560, 778 / 1440, 1340 / 2560, 842 / 1440),
                                           is_log=self.is_log):

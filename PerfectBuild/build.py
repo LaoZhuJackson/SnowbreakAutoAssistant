@@ -116,7 +116,7 @@ class PerfectBuild:
         print(cmd_args)
         process = subprocess.run(cmd_args, shell=True)
         if process.returncode != 0:
-            print(traceback.format_exc())
+            # print(traceback.format_exc())
             raise ChildProcessError("Nuitka building failed.")
         print("Nuitka Building done.")
 

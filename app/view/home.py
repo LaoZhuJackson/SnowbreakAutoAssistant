@@ -377,8 +377,8 @@ class Home(QFrame, Ui_home, BaseInterface):
             else:
                 checkbox_dic[checkbox.objectName()] = False
 
-        # 开启游戏
-        if config.CheckBox_auto_open_starter.value:
+        # 开启游戏:勾选且游戏窗口未打开时启用
+        if config.CheckBox_auto_open_starter.value and not is_exist_snowbreak():
             self.checkbox_dic = checkbox_dic
             self.open_game_directly()
         else:

@@ -138,7 +138,7 @@ class SettingInterface(ScrollArea):
         self.showScreenshotCard = SwitchSettingCard(
             FIF.PHOTO,
             self.tr('展示运行时的窗口截图'),
-            '用于在查错时查看是否正确截取了游戏对应位置的画面',
+            '用于在查错时查看是否正确截取了游戏对应位置的画面，截取的所有画面会保存在SAA/temp下，需要手动删除',
             configItem=config.showScreenshot,
             parent=self.aboutSoftwareGroup
         )
