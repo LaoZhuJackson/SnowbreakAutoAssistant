@@ -26,6 +26,7 @@ from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.matcher import matcher
 from ..common.signal_bus import signalBus
+from ..common.utils import get_start_arguments
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
@@ -81,20 +82,31 @@ class MainWindow(MSFluentWindow):
         ocr_thread.daemon = True
         ocr_thread.start()
         if config.CheckBox_auto_open_starter.value:
-            self.open_starter()
+            self.open_game_directly()
         if config.checkUpdateAtStartUp.value:
             # QTimer.singleShot(100, lambda: self.check_update())
             # 当采用其他线程调用时，需要保证messageBox是主线程调用的，使用信号槽机制在主线程调用 QMessageBox
             update_thread = threading.Thread(target=self.check_update)
             update_thread.start()
 
-    def open_starter(self):
-        starter_path = config.LineEdit_starter_directory.value
+    def open_game_directly(self):
+        """直接启动游戏"""
+        # 用户提供的能在启动器找到的路径
+        start_path = config.LineEdit_starter_directory.value
+        start_path = start_path.replace("/", "\\")
+        game_channel = config.server_interface.value
+        exe_path = os.path.join(start_path, r'game\Game\Binaries\Win64\Game.exe')
         try:
-            subprocess.Popen(starter_path)
-            logger.debug(f'打开 {starter_path} 成功')
+            launch_args = get_start_arguments(start_path, game_channel)
+            if not launch_args:
+                logger.error(f"游戏启动失败未找到对应参数，start_path：{start_path}，game_channel:{game_channel}")
+                return
+            else:
+                # 尝试以管理员权限运行
+                subprocess.Popen([exe_path] + launch_args)
+                logger.debug(f'正在启动 {exe_path} {launch_args}')
         except FileNotFoundError:
-            logger.error(f'没有找到对应启动器: {starter_path}')
+            logger.error(f'没有找到对应文件: {exe_path}')
         except Exception as e:
             logger.error(f'出现报错: {e}')
 

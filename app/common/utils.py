@@ -1,4 +1,6 @@
+import os
 import traceback
+from pathlib import Path
 
 import cpufeature
 import cv2
@@ -154,8 +156,10 @@ def fetch_url(url: str, timeout: float = None, encoding: str = None):
     except Exception as e:
         return {"error": f"❌ 请求 {url} 发生未知错误: {e}"}
 
+
 def get_date(url=None):
     """获取具体的活动日期"""
+
     def format_date(date_str):
         """格式化日期字符串为 MM.DD 格式"""
         parts = date_str.split('月')
@@ -330,6 +334,72 @@ def get_gitee_text(text_path: str):
     # 自动检测编码并处理文本
     response.encoding = response.apparent_encoding
     return response.text.splitlines()
+
+
+def get_start_arguments(start_path, start_model):
+    """
+    自动判断是什么服，什么启动器，返回对应的启动参数
+    :param start_path: 启动路径，由用户提供，可以在启动器查看
+    :param start_model: 由用户设置，在SAA设置中选服
+    :return:
+    """
+    # 统一进入game文件夹
+    user_dir = os.path.join(start_path, 'game').replace('\\', '/')
+    arg = None
+    # 国服新版启动命令
+    if start_model == 0:
+        if has_folder_in_path(start_path, "Temp"):
+            arg = [
+                "-FeatureLevelES31",
+                "-ChannelID=jinshan",
+                '-userdir=' + user_dir,
+                '--launcher-language="en"',
+                '--launcher-channel="CBJQos"',
+                '--launcher-gamecode="cbjq"'
+            ]
+        else:
+            # 国服旧版启动命令
+            # self.start_path = D:\Game\尘白禁区\Snow\data
+            arg = [
+                "-FeatureLevelES31",
+                "-ChannelID=jinshan",
+                '-userdir=' + user_dir
+            ]
+    # b服启动命令
+    # self.start_path = E:\Snow\data
+    elif start_model == 1:
+        arg = [
+            "-FeatureLevelES31",
+            "-ChannelID=bilibili",
+            '-userdir=' + user_dir
+        ]
+    # 国际服启动命令
+    # E:\SteamLibrary\steamapps\common\SNOWBREAK
+    elif start_model == 2:
+        arg = [
+            "-FeatureLevelES31",
+            "-channelid=seasun",
+            "steamapps"
+        ]
+    return arg
+
+
+def has_folder_in_path(path, dir_name):
+    """
+    判断指定路径是否包含名为 dir_name 的文件夹（区分大小写）
+    :param path: 要检查的路径
+    :param dir_name: 要检查的文件夹名字
+    :return: bool: 如果包含 dir_name 文件夹返回 True，否则返回 False
+    """
+    try:
+        path = Path(path)
+        for item in path.iterdir():
+            if item.is_dir() and item.name == dir_name:
+                return True
+        return False
+    except Exception as e:
+        print(f"检查子文件夹出错:{e}")
+        return False
 
 
 if __name__ == "__main__":
