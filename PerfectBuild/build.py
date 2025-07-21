@@ -103,7 +103,6 @@ class PerfectBuild:
             "--include-data-file=patch/scipy.libs/.load-order-scipy-1.10.1=scipy.libs/.load-order-scipy-1.10.1",
             "--include-data-file=patch/shapely.libs/.load-order-shapely-2.0.7=shapely.libs/.load-order-shapely-2.0.7",
             "--include-data-file=AppData/ocr_replacements.json=AppData/ocr_replacements.json",
-            "--include-data-file=AppData/version.txt=AppData/version.txt",
             "--include-data-dir=app/resource/images=app/resource/images",
             "--include-data-file=docs/help.md=docs/help.md",
             "--include-data-dir=asset=asset",
