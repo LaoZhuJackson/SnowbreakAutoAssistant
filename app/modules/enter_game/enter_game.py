@@ -87,6 +87,13 @@ class EnterGameModule:
                                        is_log=self.is_log):
                 time.sleep(2)
                 continue
+            # 看到尘白禁区但是没看到开始游戏可以直接点尘白禁区跳过账号登录等待的那几秒
+            if self.auto.click_element(['尘白禁区', '尘白', '禁区'], 'text',
+                                       crop=(812 / 1920, 814 / 1080, 1196 / 1920, 923 / 1080),
+                                       is_log=self.is_log):
+                time.sleep(1)
+                continue
+
             if self.auto.click_element(['X', 'x'], 'text', crop=(1271 / 1920, 88 / 1080, 1890 / 1920, 367 / 1080),
                                        is_log=self.is_log):
                 continue
