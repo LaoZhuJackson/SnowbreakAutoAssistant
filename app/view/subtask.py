@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from PyQt5.QtCore import QThread, pyqtSignal
-
+import win32gui
 from app.common.config import config
 from app.common.logger import logger
 from app.modules.base_task.base_task import BaseTask

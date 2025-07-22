@@ -35,7 +35,7 @@ LicenseFile={#MyProjectDir}\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir={#MyReleaseDir}
-OutputBaseFilename={#MyAppName}-{#MyAppVersion}{#MyAppMode}-Setup-Windows-{#MyArch}
+OutputBaseFilename={#MyAppName}-{#MyAppVersion}-{#MyAppMode}-Setup-Windows-{#MyArch}
 SetupIconFile={#MyBuildDir}\\{#MySystem}-{#MyArch}\\{#MyDist}\\{#MyAppIcon}
 Compression=lzma
 SolidCompression=yes

@@ -5,6 +5,7 @@ from ctypes import windll
 
 import win32api
 import win32con
+import win32gui  # 不能删
 
 from app.common.logger import logger
 

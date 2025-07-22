@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import win32gui
 import win32ui
+import win32con
 
 from app.common.image_utils import ImageUtils
 from app.common.logger import logger

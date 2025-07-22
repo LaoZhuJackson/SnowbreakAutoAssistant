@@ -198,7 +198,7 @@ class PerfectBuild:
         file_list.sort()
         portable_file = (
                 self.release_dir
-                / f"{self.app_exec}-{self.app_ver}- {self.mode}-Portable-{self.system}-{self.arch}.zip"
+                / f"{self.app_exec}-{self.app_ver}-{self.mode}-Portable-{self.system}-{self.arch}.zip"
         )
         print("Creating portable package...")
         with ZipFile(portable_file, "w", compression=ZIP_DEFLATED) as zf:
