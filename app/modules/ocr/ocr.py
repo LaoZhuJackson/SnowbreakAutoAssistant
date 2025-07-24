@@ -90,14 +90,9 @@ class OCR:
                 cpu_support_avx2()
             try:
                 self.logger.debug("开始初始化OCR...")
-                if config.cpu_support_avx2.value:
-                    # self.ocr = easyocr.Reader(
-                    #     ['ch_sim', 'en'],
-                    #     gpu=config.ocr_use_gpu.value,
-                    #     model_storage_directory='app/resource/easyocr/model',
-                    #     user_network_directory='app/resource/easyocr/user_network'
-                    # )
-                    self.ocr = ONNXPaddleOcr(use_angle_cls=True, use_gpu=True)
+                #
+                if config.cpu_support_avx2.value or config.ocr_use_gpu.value:
+                    self.ocr = ONNXPaddleOcr(use_angle_cls=True, use_gpu=config.ocr_use_gpu.value)
                     self.logger.info(f"初始化OCR完成")
                 else:
                     self.logger.error(f"初始化OCR失败：此cpu不支持AVX2指令集")

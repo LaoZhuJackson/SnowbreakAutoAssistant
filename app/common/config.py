@@ -37,9 +37,9 @@ class Config(QConfig):
 
     # 主页面
     date_tip = ConfigItem("home_interface_enter", "date_tip", None)
-    LineEdit_starter_directory = ConfigItem("home_interface_enter", "LineEdit_starter_directory", "./")
-    CheckBox_auto_open_starter = ConfigItem("home_interface_enter", "CheckBox_auto_open_starter", False,
-                                            BoolValidator())
+    LineEdit_game_directory = ConfigItem("home_interface_enter", "LineEdit_game_directory", "./")
+    CheckBox_open_game_directly = ConfigItem("home_interface_enter", "CheckBox_open_game_directly", False,
+                                             BoolValidator())
 
     CheckBox_entry_1 = ConfigItem("home_interface_option", "CheckBox_entry", False, BoolValidator())
     CheckBox_stamina_2 = ConfigItem("home_interface_option", "CheckBox_stamina", False, BoolValidator())

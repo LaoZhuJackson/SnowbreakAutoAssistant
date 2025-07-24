@@ -430,14 +430,14 @@
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
-           <widget class="CheckBox" name="CheckBox_auto_open_starter">
+              <widget class="CheckBox" name="CheckBox_open_game_directly">
             <property name="text">
                 <string>自动打开游戏</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="3">
-           <widget class="LineEdit" name="LineEdit_starter_directory">
+              <widget class="LineEdit" name="LineEdit_game_directory">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -533,8 +533,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-                  <width>283</width>
-                  <height>499</height>
+                  <width>142</width>
+                  <height>503</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1260,8 +1260,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-              <width>283</width>
-              <height>194</height>
+              <width>285</width>
+              <height>190</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_tips"/>

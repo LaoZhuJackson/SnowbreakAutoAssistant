@@ -124,7 +124,7 @@ class SettingInterface(ScrollArea):
         )
         self.isLogCard = SwitchSettingCard(
             FIF.DEVELOPER_TOOLS,
-            self.tr('展示ocr识别结果'),
+            self.tr('展示OCR识别结果'),
             '打开将在日志中显示ocr识别结果，获得更详细的日志信息',
             configItem=config.isLog,
             parent=self.aboutSoftwareGroup

@@ -165,7 +165,7 @@ automation.py：在实现了上述两个模块后搭出来的常用组合操作�
 
 ## 如何进行统一的日志管理？
 
-那就要异步至`app/common/logger.py`了，注意点如下：
+那就要移步至`app/common/logger.py`了，注意点如下：
 
 * 全局单例使用一个logger
 * log的显示与关闭可控

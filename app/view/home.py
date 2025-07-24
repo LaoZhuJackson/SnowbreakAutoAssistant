@@ -184,7 +184,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self._load_config()
         # 和其他控件有相关状态判断的，要放在load_config后
         self.ComboBox_power_day.setEnabled(self.CheckBox_is_use_power.isChecked())
-        self.PushButton_select_directory.setEnabled(self.CheckBox_auto_open_starter.isChecked())
+        self.PushButton_select_directory.setEnabled(self.CheckBox_open_game_directly.isChecked())
 
         StyleSheet.HOME_INTERFACE.apply(self)
         # 使背景透明，适应主题
@@ -204,7 +204,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.ToolButton_use_power.clicked.connect(lambda: self.set_current_index(3))
         self.ToolButton_person.clicked.connect(lambda: self.set_current_index(4))
 
-        self.CheckBox_auto_open_starter.stateChanged.connect(self.change_auto_open)
+        self.CheckBox_open_game_directly.stateChanged.connect(self.change_auto_open)
 
         signalBus.sendHwnd.connect(self.set_hwnd)
 
@@ -298,19 +298,19 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """
-        # file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_starter_directory.value,
+        # file_path, _ = QFileDialog.getOpenFileName(self, "选择启动器", config.LineEdit_game_directory.value,
         #                                            "Executable Files (*.exe);;All Files (*)")
         folder = QFileDialog.getExistingDirectory(self, '选择游戏文件夹', "./")
-        if not folder or config.LineEdit_starter_directory.value == folder:
+        if not folder or config.LineEdit_game_directory.value == folder:
             return
-        self.LineEdit_starter_directory.setText(folder)
-        self.LineEdit_starter_directory.editingFinished.emit()
+        self.LineEdit_game_directory.setText(folder)
+        self.LineEdit_game_directory.editingFinished.emit()
 
     def change_auto_open(self, state):
         if state == 2:
             InfoBar.success(
                 title='已开启',
-                content=f"启动SAA时将自动启动游戏",
+                content=f"点击“开始”按钮时将自动启动游戏",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
@@ -320,7 +320,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         else:
             InfoBar.success(
                 title='已关闭',
-                content=f"启动SAA时不会打开游戏",
+                content=f"点击“开始”按钮时不会自动启动游戏",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
@@ -331,7 +331,7 @@ class Home(QFrame, Ui_home, BaseInterface):
     def open_game_directly(self):
         """直接启动游戏"""
         # 用户提供的能在启动器找到的路径
-        start_path = config.LineEdit_starter_directory.value
+        start_path = config.LineEdit_game_directory.value
         start_path = start_path.replace("/", "\\")
         game_channel = config.server_interface.value
         exe_path = os.path.join(start_path, r'game\Game\Binaries\Win64\Game.exe')
@@ -374,7 +374,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                 checkbox_dic[checkbox.objectName()] = False
 
         # 开启游戏:勾选且游戏窗口未打开时启用
-        if config.CheckBox_auto_open_starter.value and not is_exist_snowbreak():
+        if config.CheckBox_open_game_directly.value and not is_exist_snowbreak():
             self.checkbox_dic = checkbox_dic
             self.open_game_directly()
         else:
@@ -484,7 +484,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             config.set(getattr(config, widget.objectName(), None), widget.isChecked())
             if widget.objectName() == 'CheckBox_is_use_power':
                 self.ComboBox_power_day.setEnabled(widget.isChecked())
-            elif widget.objectName() == 'CheckBox_auto_open_starter':
+            elif widget.objectName() == 'CheckBox_open_game_directly':
                 self.PushButton_select_directory.setEnabled(widget.isChecked())
         elif isinstance(widget, ComboBox):
             config.set(getattr(config, widget.objectName(), None), widget.currentIndex())

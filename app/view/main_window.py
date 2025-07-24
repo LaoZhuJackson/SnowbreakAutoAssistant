@@ -81,7 +81,7 @@ class MainWindow(MSFluentWindow):
         ocr_thread = threading.Thread(target=self.init_ocr)
         ocr_thread.daemon = True
         ocr_thread.start()
-        # if config.CheckBox_auto_open_starter.value:
+        # if config.CheckBox_open_game_directly.value:
         #     self.open_game_directly()
         if config.checkUpdateAtStartUp.value:
             # QTimer.singleShot(100, lambda: self.check_update())
@@ -93,7 +93,7 @@ class MainWindow(MSFluentWindow):
     def open_game_directly(self):
         """直接启动游戏"""
         # 用户提供的能在启动器找到的路径
-        start_path = config.LineEdit_starter_directory.value
+        start_path = config.LineEdit_game_directory.value
         start_path = start_path.replace("/", "\\")
         game_channel = config.server_interface.value
         exe_path = os.path.join(start_path, r'game\Game\Binaries\Win64\Game.exe')

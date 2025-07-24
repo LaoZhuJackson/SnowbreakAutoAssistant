@@ -88,9 +88,8 @@
 
 > [!Important]
 >
-> 感谢[vmoranv](https://github.com/vmoranv)提供的文档
-> 
-> SAA文档站:https://saadocs.netlify.app/
+>
+> SAA文档站:开发中
 
 演示视频:[【基于图像识别的芬妮舞狮尘白自动化代理助手-哔哩哔哩】](https://b23.tv/W9OA85k)
 
