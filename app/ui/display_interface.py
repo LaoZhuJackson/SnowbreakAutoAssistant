@@ -15,6 +15,7 @@ from qfluentwidgets import ScrollArea, FluentIcon
 from app.common.config import config
 from app.common.setting import REPO_URL, GITHUB_FEEDBACK_URL
 from app.common.style_sheet import StyleSheet
+from app.common.utils import get_local_version
 
 from app.repackage.link_card import LinkCardView
 from app.repackage.samplecardview import SampleCardView
@@ -30,7 +31,7 @@ class BannerWidget(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         # 大标题
         self.galleryLabel = QLabel(
-            f'尘白自动化助手 {config.version.value}\nSnowbreak Auto Assistant', self
+            f'尘白自动化助手 {get_local_version()}\nSnowbreak Auto Assistant', self
         )
         self.galleryLabel.setStyleSheet(
             "color: #ECF9F8;font-size: 30px; font-weight: 600;"

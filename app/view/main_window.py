@@ -26,7 +26,7 @@ from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.matcher import matcher
 from ..common.signal_bus import signalBus
-from ..common.utils import get_start_arguments, get_gitee_text
+from ..common.utils import get_start_arguments, get_gitee_text, get_local_version
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
@@ -333,15 +333,14 @@ class MainWindow(MSFluentWindow):
 
     def check_update(self):
         # logger.warn('当前测试版还没写更新功能')
-        text = get_gitee_text("update_data.txt")
+        version_online = get_gitee_text("update_data.txt")
+        saa_current_version = get_local_version()
         # 返回字典说明必定出现报错了
-        if isinstance(text, dict):
-            logger.error(text["error"])
+        if isinstance(version_online, dict):
+            logger.error(version_online["error"])
             return
-        version = text[1]
-        saa_current_version = config.version.value
+        version = version_online[1]
         if not saa_current_version or saa_current_version != version:
-            config.set(config.version, version)
             logger.info(f"出现版本更新{saa_current_version}→{version}，可以前往github或者q群下载新版安装包")
         else:
             logger.debug(f"无需版本更新，当前版本：{saa_current_version}")

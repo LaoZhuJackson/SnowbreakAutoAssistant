@@ -17,6 +17,7 @@ from ..common.config import config, isWin11
 from ..common.setting import FEEDBACK_URL, QQ
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
+from ..common.utils import get_local_version
 from ..repackage.text_edit_card import TextEditCard
 
 
@@ -172,7 +173,7 @@ class SettingInterface(ScrollArea):
             self.tr('Check update'),
             "app/resource/images/logo.png",
             self.tr('About'),
-            "本助手免费开源，当前版本：" + config.version.value,
+            "本助手免费开源，当前版本：" + get_local_version(),
             self.aboutGroup
         )
 

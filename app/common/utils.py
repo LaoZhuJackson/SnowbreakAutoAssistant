@@ -411,6 +411,35 @@ def is_exist_snowbreak():
     return get_hwnd(game_name, game_class)
 
 
+def get_local_version(file_path="update_data.txt"):
+    """
+        从txt文件中读取第二行的版本信息
+
+        参数:
+            file_path (str): txt文件路径
+
+        返回:
+            str: 版本信息字符串
+        """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            # 读取所有行
+            lines = file.readlines()
+            # 检查是否有至少两行
+            if len(lines) >= 2:
+                # 返回第二行并去除前后空白字符
+                return lines[1].strip()
+            else:
+                print("文件行数不足，没有版本信息")
+                return None
+    except FileNotFoundError:
+        print(f"{file_path}文件未找到")
+        return None
+    except Exception as e:
+        print(f"读取文件时出错: {str(e)}")
+        return None
+
+
 if __name__ == "__main__":
     get_hsv((124, 174, 235))
     get_hsv((112, 165, 238))
