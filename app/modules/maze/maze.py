@@ -40,12 +40,14 @@ class MazeModule:
                     self.auto.press_key('w', 1.5)
                     need_move_forward = False
                 continue
-
+            # 未选增益时的确认
             if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440),
                                        is_log=self.is_log):
                 continue
-            if self.auto.click_element(['丢', '弃', '丢弃'], 'text', crop=(170 / 2560, 1160 / 1440, 720 / 2560, 1),
-                                       is_log=self.is_log):
+
+            if self.auto.click_element(['丢', '弃', '丢弃'], 'text',
+                                       crop=(260 / 1920, 953 / 1080, 374 / 1920, 1023 / 1080),
+                                       is_log=self.is_log, threshold=0.5):
                 time.sleep(0.3)
                 continue
             if self.auto.find_element('选择增益', 'text', crop=(842 / 1920, 36 / 1080, 1073 / 1920, 115 / 1080),
@@ -53,7 +55,7 @@ class MazeModule:
                 if self.auto.find_element('请选择一个', 'text',
                                           crop=(1131 / 2560, 690 / 1440, 1438 / 2560, 750 / 1440), is_log=self.is_log):
                     select_flag = False
-                if self.auto.click_element('单体', 'text', crop=(126 / 1920, 258 / 1080, 1571 / 1920, 328 / 1080),
+                if self.auto.click_element('单体', 'text', crop=(100 / 1920, 250 / 1080, 1571 / 1920, 328 / 1080),
                                            is_log=self.is_log):
                     select_flag = True
                 if not select_flag:
@@ -62,6 +64,7 @@ class MazeModule:
                 if self.auto.click_element('确认', 'text', crop=(910 / 1920, 980 / 1080, 1050 / 1920, 1050 / 1080),
                                            is_log=self.is_log):
                     select_flag = False
+                    time.sleep(0.3)  # 停一下等动画
                 continue
             if self.auto.click_element('退出', 'text', crop=(896 / 1920, 946 / 1080, 985 / 1920, 1011 / 1080),
                                        is_log=self.is_log):
