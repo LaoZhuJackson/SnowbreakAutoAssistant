@@ -44,7 +44,7 @@ class MazeModule:
             if self.auto.click_element('确定', 'text', crop=(1888 / 2560, 980 / 1440, 2020 / 2560, 1059 / 1440),
                                        is_log=self.is_log):
                 continue
-            if self.auto.click_element('丢弃', 'text', crop=(187 / 2560, 1180 / 1440, 703 / 2560, 1),
+            if self.auto.click_element(['丢', '弃', '丢弃'], 'text', crop=(170 / 2560, 1160 / 1440, 720 / 2560, 1),
                                        is_log=self.is_log):
                 time.sleep(0.3)
                 continue
@@ -69,9 +69,13 @@ class MazeModule:
                     break
                 time.sleep(1)
                 continue
+            if self.auto.click_element('确认', 'text', crop=(1343 / 1920, 718 / 1080, 1536 / 1920, 818 / 1080),
+                                       is_log=self.is_log):
+                need_move_forward = False
+                continue
             if self.auto.click_element('开始作战', 'text', crop=(1731 / 1920, 976 / 1080, 1881 / 1920, 1024 / 1080),
                                        is_log=self.is_log):
-                time.sleep(3)
+                # time.sleep(3)
                 timeout.reset()
                 need_move_forward = True
                 continue

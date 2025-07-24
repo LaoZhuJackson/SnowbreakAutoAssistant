@@ -65,7 +65,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_water_bomb))
         self.SegmentedWidget.addItem(self.page_alien_guardian.objectName(), '异星守护',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_alien_guardian))
-        self.SegmentedWidget.addItem(self.page_maze.objectName(), '迷宫',
+        self.SegmentedWidget.addItem(self.page_maze.objectName(), '验证战场',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_maze))
         self.SegmentedWidget.addItem(self.page_massaging.objectName(), '按摩',
                                      onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_massaging))
