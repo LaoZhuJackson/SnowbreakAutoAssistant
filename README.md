@@ -109,7 +109,8 @@
 - [Github Release](https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/releases)
 
 ## ❤️相关项目
-- OCR文字识别 https://github.com/JaidedAI/EasyOCR
+
+- OCR文字识别 https://github.com/jingsongliujing/OnnxOCR
 - 三月七星穹铁道助手 https://github.com/moesnow/March7thAssistant
 - maa明日方舟助手 https://github.com/MaaAssistantArknights/MaaAssistantArknights
 - 图形界面组件库 https://github.com/zhiyiYo/PyQt-Fluent-Widgets

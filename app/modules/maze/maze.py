@@ -86,6 +86,12 @@ class MazeModule:
                 self.auto.press_key('esc')
                 time.sleep(0.5)
                 continue
+            # 添加固定点击，避免选不到难度
+            if self.auto.click_element(['难度', '选择'], 'text',
+                                       crop=(0, 0, 330 / 1920, 90 / 1080), is_log=self.is_log):
+                self.auto.click_element_with_pos((int(1536 / self.auto.scale_x), int(486 / self.auto.scale_y)))
+                time.sleep(1.5)
+                continue
             if self.auto.click_element(['增益', '厄险'], 'text',
                                        crop=(1430 / 1920, 240 / 1080, 1650 / 1920, 320 / 1080), is_log=self.is_log):
                 time.sleep(1.5)
