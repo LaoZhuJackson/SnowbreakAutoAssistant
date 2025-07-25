@@ -90,7 +90,7 @@
 >
 > SAA文档站:https://saadocs.netlify.app/
 
-演示视频:[【基于图像识别的芬妮舞狮尘白自动化代理助手-哔哩哔哩】](https://b23.tv/W9OA85k)
+演示视频：[芬妮舞狮](https://space.bilibili.com/3546763489184642?spm_id_from=333.337.search-card.all.click)
 
 ### ✨ 运行
 

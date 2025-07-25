@@ -87,7 +87,7 @@ class MazeModule:
                 time.sleep(0.5)
                 continue
             if self.auto.click_element(['增益', '厄险'], 'text',
-                                       crop=(1455 / 1920, 257 / 1080, 1630 / 1920, 300 / 1080), is_log=self.is_log):
+                                       crop=(1430 / 1920, 240 / 1080, 1650 / 1920, 320 / 1080), is_log=self.is_log):
                 time.sleep(1.5)
                 continue
 
