@@ -5,6 +5,7 @@ import re
 import subprocess
 import threading
 import time
+import sys
 
 import cv2
 import numpy as np
@@ -89,6 +90,9 @@ class MainWindow(MSFluentWindow):
             # update_thread = threading.Thread(target=self.check_update)
             # update_thread.start()
             self.check_update()
+
+        if '--auto' in sys.argv:
+            self.homeInterface.on_start_button_click()
 
     def open_game_directly(self):
         """直接启动游戏"""
