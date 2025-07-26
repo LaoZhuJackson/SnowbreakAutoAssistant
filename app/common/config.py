@@ -112,6 +112,7 @@ class Config(QConfig):
     is_ocr = ConfigItem("MainWindow", "is_ocr", False, BoolValidator())
     dpiScale = OptionsConfigItem(
         "MainWindow", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
+    # saa窗口左上角位置
     position = ConfigItem("MainWindow", "position", None)
 
     # 设置相关
@@ -124,8 +125,10 @@ class Config(QConfig):
     autoScaling = ConfigItem("setting_personal", "autoScaling", True, BoolValidator())
     update_proxies = ConfigItem("Update", "update_proxies", '')
     cpu_support_avx2 = ConfigItem("about", "cpu_support_avx2", None)
-    ocr_use_gpu = ConfigItem("setting_personal", "ocr_use_gpu", True)
+    ocr_use_gpu = ConfigItem("setting_personal", "ocr_use_gpu", True, BoolValidator())
     is_resize = ConfigItem("setting_personal", "is_resize", None)
+    auto_start_task = ConfigItem("setting_personal", "auto_start_task", False, BoolValidator())
+    auto_boot_startup = ConfigItem("setting_personal", "auto_boot_startup", False, BoolValidator())
 
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")

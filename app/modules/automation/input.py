@@ -278,10 +278,10 @@ class Input:
             self.key_down(key)
             time.sleep(press_time)
             self.key_up(key)
-            self.logger.debug(f"键盘按下{key}")
+            # self.logger.debug(f"键盘按下{key}")
         except Exception as e:
             # print(traceback.format_exc())
-            self.logger.error(f"键盘按下{key}出错：{repr(e)}")
+            self.logger.error(f"键盘模拟{key}出错：{repr(e)}")
 
     def key_down(self, key):
         """
@@ -295,6 +295,7 @@ class Input:
         wparam = vk_code
         lparam = (scan_code << 16) | 1
         win32gui.PostMessage(self.hwnd, self.WmCode["key_down"], wparam, lparam)
+        self.logger.debug(f"键盘按下{key}")
 
     def key_up(self, key):
         """
@@ -308,6 +309,7 @@ class Input:
         wparam = vk_code
         lparam = (scan_code << 16) | 1
         win32gui.PostMessage(self.hwnd, self.WmCode["key_up"], wparam, lparam)
+        self.logger.debug(f"键盘松开{key}")
 
 
 if __name__ == '__main__':

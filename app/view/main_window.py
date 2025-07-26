@@ -3,10 +3,9 @@ import datetime
 import os.path
 import re
 import subprocess
+import sys
 import threading
 import time
-import sys
-
 import cv2
 import numpy as np
 from PyQt5.QtCore import QSize, QTimer, QThread, Qt
@@ -31,7 +30,7 @@ from ..common.utils import get_start_arguments, get_gitee_text, get_local_versio
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
-from ..common import resource
+from ..common import resource  # don't delete
 
 
 class InstallOcr(QThread):
@@ -85,14 +84,18 @@ class MainWindow(MSFluentWindow):
         # if config.CheckBox_open_game_directly.value:
         #     self.open_game_directly()
         if config.checkUpdateAtStartUp.value:
-            # QTimer.singleShot(100, lambda: self.check_update())
-            # 当采用其他线程调用时，需要保证messageBox是主线程调用的，使用信号槽机制在主线程调用 QMessageBox
-            # update_thread = threading.Thread(target=self.check_update)
-            # update_thread.start()
             self.check_update()
 
-        if '--auto' in sys.argv:
-            self.homeInterface.on_start_button_click()
+        # 如果勾选了自动打开游戏并且自动开始任务
+        if config.auto_start_task.value or '--auto' in sys.argv:
+            if self.homeInterface.CheckBox_open_game_directly.isChecked():
+                if config.LineEdit_game_directory.value == './':
+                    logger.warn(f"未配置游戏路径，请先根据教程配置路径")
+                else:
+                    logger.info(f"开始自动运行日常")
+                    self.homeInterface.on_start_button_click()
+            else:
+                logger.warn(f'未勾选"自动打开游戏"')
 
     def open_game_directly(self):
         """直接启动游戏"""

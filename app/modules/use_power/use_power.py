@@ -231,9 +231,14 @@ class UsePowerModule:
                         self.auto.press_key('esc')
                         time.sleep(0.5)
                         continue
+                    if self.auto.click_element(['开始', '作战'], 'text',
+                                               crop=(848 / 1920, 800 / 1080, 1066 / 1920, 885 / 1080),
+                                               is_log=self.is_log):
+                        time.sleep(0.5)
+                        continue
                     if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
                                                is_log=self.is_log):
-                        time.sleep(0.7)
+                        time.sleep(1)
                         continue
                     if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
                                                is_log=self.is_log):
@@ -244,11 +249,6 @@ class UsePowerModule:
                     if self.auto.click_element('最大', 'text', crop=(1221 / 1920, 679 / 1080, 1354 / 1920, 756 / 1080),
                                                is_log=self.is_log):
                         pass
-                    if self.auto.click_element('开始作战', 'text',
-                                               crop=(868 / 1920, 808 / 1080, 1046 / 1920, 865 / 1080),
-                                               is_log=self.is_log):
-                        time.sleep(0.5)
-                        continue
 
             if timeout.reached():
                 self.logger.error("使用体力超时")

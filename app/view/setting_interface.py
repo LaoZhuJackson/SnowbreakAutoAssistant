@@ -50,6 +50,15 @@ class SettingInterface(ScrollArea):
         self.progressBar = ProgressBar(self)
         self.progressBar.setVisible(False)
 
+        self.app_name = "SAA"
+        # 获取当前应用路径
+        if getattr(sys, 'frozen', False):
+            # 打包后的可执行文件
+            self.app_path = sys.executable
+        else:
+            # 脚本运行模式
+            self.app_path = sys.argv[0]
+
         # setting label
         self.settingLabel = QLabel(self.tr("Settings"), self)
 
@@ -151,6 +160,20 @@ class SettingInterface(ScrollArea):
             configItem=config.autoScaling,
             parent=self.aboutSoftwareGroup
         )
+        self.autoStartTask = SwitchSettingCard(
+            FIF.PLAY,
+            self.tr('自动开始任务'),
+            '打开SAA自动开始运行日常，必须先勾选并配置好自动打开游戏',
+            configItem=config.auto_start_task,
+            parent=self.aboutSoftwareGroup
+        )
+        self.autoBootStartup = SwitchSettingCard(
+            FIF.POWER_BUTTON,
+            self.tr('开机自启'),
+            '开机时自动打开SAA',
+            configItem=config.auto_boot_startup,
+            parent=self.aboutSoftwareGroup
+        )
 
         # application
         self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
@@ -217,6 +240,8 @@ class SettingInterface(ScrollArea):
         self.aboutSoftwareGroup.addSettingCard(self.showScreenshotCard)
         self.aboutSoftwareGroup.addSettingCard(self.saveScaleCacheCard)
         self.aboutSoftwareGroup.addSettingCard(self.autoScaling)
+        self.aboutSoftwareGroup.addSettingCard(self.autoStartTask)
+        self.aboutSoftwareGroup.addSettingCard(self.autoBootStartup)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)
@@ -245,6 +270,7 @@ class SettingInterface(ScrollArea):
         # personalization
         config.themeChanged.connect(setTheme)
         self.micaCard.checkedChanged.connect(signalBus.micaEnableChanged)
+        self.autoBootStartup.checkedChanged.connect(self.set_windows_start)
 
         # check update
         self.aboutCard.clicked.connect(self.check_update)
@@ -252,6 +278,86 @@ class SettingInterface(ScrollArea):
         # about
         self.feedbackCard.clicked.connect(
             lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
+
+    def set_windows_start(self, is_checked):
+        if is_checked:
+            self._enable_windows()
+        else:
+            self._disable_windows()
+
+    def _enable_windows(self):
+        """Windows 启用自启"""
+        import winreg as reg
+
+        # 创建启动命令
+        command = f'"{self.app_path}"'
+        print(command)
+
+        # 注册表路径
+        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+
+        try:
+            key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_SET_VALUE)
+            reg.SetValueEx(key, self.app_name, 0, reg.REG_SZ, command)
+            reg.CloseKey(key)
+            InfoBar.success(
+                '添加自启成功',
+                f'已将{command}加入自启',
+                isClosable=True,
+                duration=2000,
+                parent=self
+            )
+        except Exception as e:
+            # 如果权限不足，尝试使用任务计划程序
+            InfoBar.error(
+                '添加自启失败',
+                f"权限不足：{e}",
+                isClosable=True,
+                duration=2000,
+                parent=self
+            )
+
+    def _disable_windows(self):
+        """Windows 禁用自启"""
+        import winreg as reg
+
+        # 尝试删除注册表项
+        try:
+            key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+            key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_SET_VALUE)
+            try:
+                reg.DeleteValue(key, self.app_name)
+                InfoBar.success(
+                    '删除自启成功',
+                    f'已关闭开机自启',
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
+                )
+            except WindowsError:
+                InfoBar.error(
+                    '删除自启失败',
+                    f"键不存在",
+                    isClosable=True,
+                    duration=2000,
+                    parent=self
+                )
+            reg.CloseKey(key)
+        except Exception as e:
+            InfoBar.error(
+                '删除自启失败',
+                f"{e}",
+                isClosable=True,
+                duration=2000,
+                parent=self
+            )
+
+        # 尝试删除任务计划
+        # try:
+        #     subprocess.run(['schtasks', '/delete', '/tn', self.app_name, '/f'],
+        #                    shell=True, check=True)
+        # except subprocess.CalledProcessError:
+        #     pass  # 任务不存在
 
     def check_update(self):
         pass

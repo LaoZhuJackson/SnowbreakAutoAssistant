@@ -533,38 +533,6 @@ class Automation:
         self.perform_ocr(image=crop_image, extract=extract, is_log=is_log)
         return self.ocr_result
 
-    # @atoms
-    # def find_image_and_count(self, target, template, threshold=0.6, extract=None):
-    #     """在屏幕截图中查找与目标图片相似的图片，并计算匹配数量。
-    #
-    #     参数:
-    #     - target: 背景图片。
-    #     - template: 模板图片。
-    #     - threshold: 匹配阈值。
-    #     - extract: 是否提取目标颜色，[(对应的rgb颜色),threshold数值]
-    #
-    #     返回:
-    #     - 匹配的数量，或在出错时返回 None。
-    #     """
-    #     try:
-    #         if isinstance(target, str):
-    #             target = cv2.imread(target)
-    #         if isinstance(template, str):
-    #             template = cv2.imread(template)
-    #         # 将图片从BGR格式转换为RGB格式
-    #         target_rgb = cv2.cvtColor(target, cv2.COLOR_BGR2RGB)
-    #         template_rgb = cv2.cvtColor(template, cv2.COLOR_BGR2RGB)
-    #         if extract is not None:
-    #             rbg = extract[0]
-    #             thr = extract[1]
-    #             target_rgb = ImageUtils.extract_letters(target_rgb, rbg, thr)
-    #             template_rgb = ImageUtils.extract_letters(template, rbg, thr)
-    #
-    #         return ImageUtils.count_template_matches(target_rgb, template_rgb, threshold)
-    #     except Exception as e:
-    #         # print(traceback.format_exc())
-    #         self.logger.error(f"寻找图片并计数出错：{e}")
-    #         return None
     @atoms
     def find_image_and_count(self, target, template: str, threshold=0.6, extract=None, is_show=False, is_log=False):
         """在屏幕截图中查找与目标图片相似的图片，并计算匹配数量。

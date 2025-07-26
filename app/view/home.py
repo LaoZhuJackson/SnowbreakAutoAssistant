@@ -417,7 +417,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.PushButton_start.setText("开始")
             # 后处理
             self.after_finish()
-            self.resize_window()
+            self.resize_window()  # 把窗口还原成原本位置
         elif str_flag == 'no_auto':
             self.is_running = False
             self.set_checkbox_enable(True)

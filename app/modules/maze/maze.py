@@ -87,7 +87,7 @@ class MazeModule:
                 time.sleep(0.5)
                 continue
             # 添加固定点击，避免选不到难度
-            if self.auto.click_element(['难度', '选择'], 'text',
+            if self.auto.find_element(['难度', '选择'], 'text',
                                        crop=(0, 0, 330 / 1920, 90 / 1080), is_log=self.is_log):
                 self.auto.click_element_with_pos((int(1536 / self.auto.scale_x), int(486 / self.auto.scale_y)))
                 time.sleep(1.5)

@@ -52,7 +52,7 @@ class BaseTask:
         if config.autoScaling.value:
             # 排除缩放干扰
             ctypes.windll.user32.SetProcessDPIAware()
-            # 获取原始窗口矩形
+            # 保存原始窗口矩形位置
             original_rect = win32gui.GetWindowRect(hwnd)
             config.set(config.is_resize, original_rect)
             # 若不符合比例则进行窗口调整
