@@ -501,6 +501,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+             <widget class="CheckBox" name="CheckBox_redeem_code">
+                <property name="text">
+                 <string>自动兑换兑换码</string>
+                </property>
+             </widget>
+            </item>
          </layout>
         </widget>
         <widget class="QWidget" name="page_shop">

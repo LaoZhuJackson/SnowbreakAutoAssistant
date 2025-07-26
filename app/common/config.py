@@ -104,6 +104,7 @@ class Config(QConfig):
     CheckBox_mail = ConfigItem("home_interface_reward", "CheckBox_mail", False, BoolValidator())
     CheckBox_fish_bait = ConfigItem("home_interface_reward", "CheckBox_fish_bait", False, BoolValidator())
     CheckBox_dormitory = ConfigItem("home_interface_reward", "CheckBox_dormitory", False, BoolValidator())
+    CheckBox_redeem_code = ConfigItem("home_interface_reward", "CheckBox_redeem_code", False, BoolValidator())
 
     # main window
     micaEnabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())

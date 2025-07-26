@@ -5,6 +5,8 @@ import time
 
 import cv2
 import win32gui
+import win32clipboard
+import win32con
 
 from app.common.config import config
 from app.common.image_utils import ImageUtils
@@ -87,6 +89,29 @@ class Automation:
         self.press_key = self.input_handler.press_key
         self.key_down = self.input_handler.key_down
         self.key_up = self.input_handler.key_up
+
+    def type_string(self, text):
+        win32clipboard.OpenClipboard()
+
+        try:
+            # 设置剪贴板内容
+            win32clipboard.EmptyClipboard()
+            win32clipboard.SetClipboardText(text, win32con.CF_UNICODETEXT)
+
+            time.sleep(0.3)
+
+            # 激活目标窗口
+            # win32gui.SetForegroundWindow(self.hwnd)
+
+            # 发送粘贴命令 (Shift+Insert)
+            win32gui.PostMessage(self.hwnd, win32con.WM_KEYDOWN, win32con.VK_SHIFT, 0)
+            win32gui.PostMessage(self.hwnd, win32con.WM_KEYDOWN, win32con.VK_INSERT, 0)
+            win32gui.PostMessage(self.hwnd, win32con.WM_KEYUP, win32con.VK_INSERT, 0)
+            win32gui.PostMessage(self.hwnd, win32con.WM_KEYUP, win32con.VK_SHIFT, 0)
+        finally:
+            # 关闭剪贴板
+            win32clipboard.CloseClipboard()
+
 
     def get_hwnd(self):
         """根据传入的窗口名和类型确定可操作的句柄"""
