@@ -22,6 +22,8 @@ class CollectSuppliesModule:
             self.receive_fish_bait()
         if config.CheckBox_dormitory.value:
             self.receive_dormitory()
+        if config.CheckBox_redeem_code.value:
+            self.redeem_code()
 
         self.friends_power()
         self.station_power()
@@ -221,3 +223,65 @@ class CollectSuppliesModule:
                 break
 
         self.auto.back_to_home()
+
+    def redeem_code(self):
+        # 测试数据，实际情况 codes 应当从 gitee 上获取？
+        codes = '蛋挞\n炒饭'.split('\n')
+
+        if not codes or len(codes) == 0:
+            self.logger.info("没有需要兑换的码")
+            return
+
+        index = 0
+        timeout = Timer(30).start()
+        self.auto.back_to_home()
+        while True:
+            self.auto.take_screenshot()
+
+            # TODO： 这里要点击掉兑换成功出现的框的确定
+
+            if self.auto.find_element('前往兑换', 'text', crop=(1938 / 2560, 684 / 1440, 2495 / 2560, 843 / 1440), is_log=self.is_log):
+                if index >= len(codes):
+                    self.logger.info("兑换码已全部兑换")
+                    self.auto.back_to_home()
+                    break
+                self.logger.info("开始兑换 " + codes[index])
+                # 点击 前往兑换
+                self.auto.click_element_with_pos((int(1675 / self.auto.scale_x), int(582 / self.auto.scale_y)))
+                time.sleep(0.3)
+                # 点击 文本框
+                self.auto.click_element_with_pos((int(960 / self.auto.scale_x), int(506 / self.auto.scale_y)))
+                time.sleep(0.3)
+                # 输入兑换码
+                self.auto.type_string(codes[index])
+                time.sleep(0.3)
+                # 确定
+                self.auto.click_element_with_pos((int(1417 / self.auto.scale_x), int(765 / self.auto.scale_y)))
+                index += 1
+                time.sleep(3)
+                continue
+
+            if self.auto.find_element('其他设置', 'text', crop=(456 / 2560, 70 / 1440, 682 / 2560, 134 / 1440),
+                                      is_log=self.is_log):
+                self.logger.info("找到 其他设置，开始批量兑换兑换码")
+                time.sleep(0.3)
+                continue
+
+            if self.auto.find_element('游戏性设置', 'text', crop=(464 /2560, 75 / 1440, 734 / 2560, 131 / 1440),
+                                      is_log=self.is_log):
+                self.auto.click_element_with_pos((int(159 / self.auto.scale_x), int(760 / self.auto.scale_y)))
+                time.sleep(0.3)
+                continue
+
+            if self.auto.find_element('基地', 'text', crop=(
+                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
+                '任务', 'text', crop=(
+                        1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+                # 点击右上角齿轮
+                self.auto.click_element_with_pos((int(1864 / self.auto.scale_x), int(33 / self.auto.scale_y)))
+                time.sleep(0.3)
+                continue
+
+            if timeout.reached():
+                self.logger.error("兑换兑换码超时")
+                break
