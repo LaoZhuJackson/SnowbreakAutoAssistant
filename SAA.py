@@ -1,6 +1,9 @@
 # coding:utf-8
 import os
 import sys
+import time
+
+from win11toast import toast
 
 from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtGui import QFont
@@ -9,6 +12,14 @@ from qfluentwidgets import FluentTranslator
 
 from app.common.config import config
 from app.view.main_window import MainWindow
+
+if '--toast-only' in sys.argv:
+    toast(
+        'SAA 尘白助手', '体力即将完全恢复，注意使用',
+        icon=r'C:\Users\undownding\IdeaProjects\SnowbreakAutoAssistant\app\resource\images\logo.ico',
+    )
+    time.sleep(5)
+    quit()
 
 # enable dpi scale
 if config.get(config.dpiScale) != "Auto":
