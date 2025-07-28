@@ -91,6 +91,11 @@ class Automation:
         self.key_up = self.input_handler.key_up
 
     def type_string(self, text):
+        """
+        向句柄窗口粘贴文本内容
+        :param text: 需要粘贴的字符串
+        :return:
+        """
         win32clipboard.OpenClipboard()
 
         try:

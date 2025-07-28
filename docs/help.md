@@ -1,7 +1,9 @@
 # 帮助文档
 
 SAA文档站：[https://saadocs.netlify.app](https://saadocs.netlify.app)
-使用教程：[https://saadocs.netlify.app/feature/presetting](https://saadocs.netlify.app/feature/presetting)
+
+使用教程：[https://saadocs.netlify.app/start/presetting](https://saadocs.netlify.app/start/presetting)
+
 常见问题汇总：[https://saadocs.netlify.app/issue/Q&A](https://saadocs.netlify.app/feature/presetting)
 
 # 前置设置
@@ -9,7 +11,7 @@ SAA文档站：[https://saadocs.netlify.app](https://saadocs.netlify.app)
 ## 游戏设置
 
 * 如果你的屏幕是`16:9`，不论你是1080p，2k，4k，一律在游戏中设置`无边框全屏`
-* 如果你的屏幕是`曲面屏`或者是`带鱼屏`，窗口化游戏，游戏内选择1920*1080，如果还是用不了，无解
+* 如果你的屏幕是`曲面屏`或者是`带鱼屏`，需要详细看上面的使用教程然后进行对应的分辨率设置
 
 ## SAA软件设置
 

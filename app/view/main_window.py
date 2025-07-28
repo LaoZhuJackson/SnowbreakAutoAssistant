@@ -26,7 +26,7 @@ from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.matcher import matcher
 from ..common.signal_bus import signalBus
-from ..common.utils import get_start_arguments, get_gitee_text, get_local_version
+from ..common.utils import get_start_arguments, get_gitee_text, get_local_version, get_cloudflare_data
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
@@ -339,14 +339,13 @@ class MainWindow(MSFluentWindow):
             QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
 
     def check_update(self):
-        # logger.warn('当前测试版还没写更新功能')
-        version_online = get_gitee_text("update_data.txt")
+        online_data = get_cloudflare_data()
         saa_current_version = get_local_version()
         # 返回字典说明必定出现报错了
-        if isinstance(version_online, dict):
-            logger.error(version_online["error"])
+        if 'error' in online_data:
+            logger.error(f"检查版本更新出错：{online_data['error']}")
             return
-        version = version_online[1]
+        version = online_data["data"]["version"]
         if not saa_current_version or saa_current_version != version:
             logger.info(f"出现版本更新{saa_current_version}→{version}，可以前往github或者q群下载新版安装包")
         else:

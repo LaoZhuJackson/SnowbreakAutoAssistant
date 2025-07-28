@@ -16,7 +16,7 @@ from app.view.main_window import MainWindow
 if '--toast-only' in sys.argv:
     toast(
         'SAA 尘白助手', '体力即将完全恢复，注意使用',
-        icon=r'C:\Users\undownding\IdeaProjects\SnowbreakAutoAssistant\app\resource\images\logo.ico',
+        icon=os.path.abspath("app/resource/images/logo.ico"),
     )
     time.sleep(5)
     quit()

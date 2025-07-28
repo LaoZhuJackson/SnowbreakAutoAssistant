@@ -18,7 +18,7 @@ from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.utils import get_all_children, get_date_from_api, get_gitee_text, get_start_arguments, \
-    is_exist_snowbreak
+    is_exist_snowbreak, get_cloudflare_data
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
@@ -28,6 +28,7 @@ from app.modules.ocr import ocr
 from app.modules.person.person import PersonModule
 from app.modules.shopping.shopping import ShoppingModule
 from app.modules.use_power.use_power import UsePowerModule
+from app.repackage.custom_message_box import CustomMessageBox
 from app.repackage.tree import TreeFrame_person, TreeFrame_weapon
 from app.ui.home_interface import Ui_home
 from app.view.base_interface import BaseInterface
@@ -151,7 +152,8 @@ class Home(QFrame, Ui_home, BaseInterface):
 
         # self.get_tips()
         if config.checkUpdateAtStartUp.value:
-            self.update_online()
+            # self.update_online()
+            self.update_online_cloudflare()
 
     def _initWidget(self):
         for tool_button in self.SimpleCardWidget_option.findChildren(ToolButton):
@@ -173,6 +175,8 @@ class Home(QFrame, Ui_home, BaseInterface):
             "### 提示\n* 去设置里选择你的区服\n* 建议勾选“自动打开游戏”，勾选后根据上方教程选择好对应的路径\n* 点击“开始”按钮会自动打开游戏")
         self.BodyLabel_person_tip.setText(
             "### 提示\n* 输入代号而非全名，比如想要刷“凯茜娅-朝翼”，就输入“朝翼”")
+        self.BodyLabel_collect_supplies.setText(
+            "### 提示\n* 勾选“领取兑换码”会自动拉取在线兑换码进行兑换\n* 在线兑换码由开发者维护，更新不一定及时\n* 导入txt文本文件可以批量使用用户兑换码，txt需要一行一个兑换码")
         self.PopUpAniStackedWidget.setCurrentIndex(0)
         self.TitleLabel_setting.setText("设置-" + self.setting_name_list[self.PopUpAniStackedWidget.currentIndex()])
         self.PushButton_start.setShortcut("F1")
@@ -197,6 +201,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
         self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
         self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
+        self.PushButton_import_code.clicked.connect(self.on_import_codes_click)
 
         self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
         self.ToolButton_collect.clicked.connect(lambda: self.set_current_index(1))
@@ -293,8 +298,52 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.get_tips(url=url)
             # 更新材料和深渊位置在use_power.py
         else:
-            #
+            # 获取本地保存的信息
             self.get_tips()
+
+    def update_online_cloudflare(self):
+        """通过cloudflare在线更新"""
+        data = get_cloudflare_data()
+        if 'error' in data:
+            logger.error(f'通过cloudflare在线更新出错:{data["error"]}')
+            # 获取本地保存的信息
+            self.get_tips()
+            return
+        online_data = data["data"]
+        local_data = config.update_data.value["data"]
+        if online_data != local_data:
+            content = ''
+            # 出现了兑换码数据的更新
+            if online_data['redeemCodes'] != local_data['redeemCodes']:
+                new_used_codes = []
+                old_used_codes = config.used_codes.value
+                for code in online_data['redeemCodes']:
+                    if code['code'] in old_used_codes:
+                        new_used_codes.append(code['code'])
+                config.set(config.used_codes, new_used_codes)  # 更新以用兑换码的列表
+                content += ' 兑换码 '
+            if online_data['updateData'] != local_data['updateData']:
+                content += ' 活动信息 '
+            if config.isLog.value:
+                logger.info(f'获取到更新信息：{online_data}')
+            config.set(config.update_data, data)
+            config.set(config.task_name, online_data["updateData"]["questName"])
+            # 更新链活动提醒
+            catId = online_data["updateData"]["linkCatId"]
+            linkId = online_data["updateData"]["linkId"]
+            url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={catId}&id={linkId}"
+            self.get_tips(url=url)
+            InfoBar.success(
+                title='获取更新成功',
+                content=f"检测到新的{content}",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=10000,
+                parent=self
+            )
+        else:
+            self.get_tips()  # 获取本地保存的信息
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """
@@ -305,6 +354,37 @@ class Home(QFrame, Ui_home, BaseInterface):
             return
         self.LineEdit_game_directory.setText(folder)
         self.LineEdit_game_directory.editingFinished.emit()
+
+    def on_import_codes_click(self):
+        """点击了导入兑换码按钮"""
+
+        def filter_codes(text):
+            lines = text.splitlines()
+            result = []
+            for line in lines:
+                # 去除行首尾空白字符
+                stripped_line = line.strip()
+                # 检查是否以"卡号："开头
+                if ':' in stripped_line:
+                    code = stripped_line.split(':')[-1]
+                    result.append(code)
+                elif '：' in stripped_line:
+                    code = stripped_line.split('：')[-1]
+                    result.append(code)
+                else:
+                    # 如果没有冒号
+                    result.append(stripped_line)
+            # 将结果重新组合成每行一个的字符串
+            return "\n".join(result)
+
+        w = CustomMessageBox(self, "导入兑换码", "text_edit")
+        w.content.setEnabled(True)
+        w.content.setPlaceholderText("一行一个兑换码")
+        if w.exec():
+            raw_codes = w.content.toPlainText()
+            codes = filter_codes(raw_codes)
+            self.textBrowser_import_codes.setText(codes)
+            config.set(config.import_codes, codes)
 
     def change_auto_open(self, state):
         if state == 2:
@@ -373,8 +453,8 @@ class Home(QFrame, Ui_home, BaseInterface):
             else:
                 checkbox_dic[checkbox.objectName()] = False
 
-        # 开启游戏:勾选且游戏窗口未打开时启用
-        if config.CheckBox_open_game_directly.value and not is_exist_snowbreak():
+        # 开启游戏:勾选了自动登录、游戏窗口未打开且勾选了自动登录游戏
+        if config.CheckBox_open_game_directly.value and not is_exist_snowbreak() and config.CheckBox_entry_1.value:
             self.checkbox_dic = checkbox_dic
             self.open_game_directly()
         else:
@@ -394,16 +474,16 @@ class Home(QFrame, Ui_home, BaseInterface):
             else:
                 self.start_thread.stop()
         else:
-            logger.error("需要至少勾选一项任务才能开始")
-            # InfoBar.error(
-            #     title='未勾选工作',
-            #     content="需要至少勾选一项工作才能开始",
-            #     orient=Qt.Horizontal,
-            #     isClosable=False,  # disable close button
-            #     position=InfoBarPosition.TOP_RIGHT,
-            #     duration=2000,
-            #     parent=self
-            # )
+            # logger.error("需要至少勾选一项任务才能开始")
+            InfoBar.error(
+                title='未勾选工作',
+                content="需要至少勾选一项工作才能开始",
+                orient=Qt.Horizontal,
+                isClosable=False,  # disable close button
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
 
     def handle_start(self, str_flag):
         """设置按钮"""
@@ -425,11 +505,11 @@ class Home(QFrame, Ui_home, BaseInterface):
             text = "助手会自动缩放窗口至1920*1080" if config.autoScaling.value else "然后手动缩放窗口到16:9并贴在屏幕左上角"
             InfoBar.error(
                 title='未成功初始化auto',
-                content=f"打开游戏（不是启动器），{text}，然后再点击开始",
+                content=f"未打开游戏，{text}，然后再点击开始",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
-                duration=2000,
+                duration=5000,
                 parent=self
             )
 
@@ -549,6 +629,8 @@ class Home(QFrame, Ui_home, BaseInterface):
                 )
                 return
             tips_dic = copy.deepcopy(config.date_tip.value)
+        if config.isLog.value:
+            logger.info("采用本地数据获取活动日程")
         for key, value in tips_dic.items():
             tips_dic[key] = self.get_time_difference(value)
 
@@ -584,17 +666,6 @@ class Home(QFrame, Ui_home, BaseInterface):
             for i in range(len(items_list)):
                 self.gridLayout_tips.addWidget(items_list[i][0], i + 1, 0, 1, 1)
                 self.gridLayout_tips.addWidget(items_list[i][1], i + 1, 1, 1, 1)
-            # 传入url时说明是新数据，此时才需要提醒
-            if url:
-                InfoBar.success(
-                    title='活动日程更新成功',
-                    content=f"获取到新的活动信息，已更新至“提醒”",
-                    orient=Qt.Horizontal,
-                    isClosable=True,
-                    position=InfoBarPosition.TOP_RIGHT,
-                    duration=2000,
-                    parent=self
-                )
 
         except Exception as e:
             logger.error(f"更新控件出错：{e}")

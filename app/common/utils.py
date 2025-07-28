@@ -335,6 +335,17 @@ def get_gitee_text(text_path: str):
     return response.text.splitlines()
 
 
+def get_cloudflare_data():
+    """从cloudflare上获取数据"""
+    url = "https://saa.undownding.dev/api/config"
+    response = fetch_url(url)
+    if isinstance(response, dict):
+        return response
+    if response.status_code != 200:
+        print(f"请求失败，状态码: {response.status_code}")
+        return None
+    return response.json()
+
 def get_start_arguments(start_path, start_model):
     """
     自动判断是什么服，什么启动器，返回对应的启动参数
@@ -441,7 +452,8 @@ def get_local_version(file_path="update_data.txt"):
 
 
 if __name__ == "__main__":
-    get_hsv((124, 174, 235))
-    get_hsv((112, 165, 238))
+    # get_hsv((124, 174, 235))
+    # get_hsv((112, 165, 238))
     # get_hsv((205, 202, 95))
     # get_hsv((209,207, 96))
+    get_cloudflare_data()

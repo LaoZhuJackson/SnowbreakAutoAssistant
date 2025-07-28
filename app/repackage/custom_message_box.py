@@ -2,10 +2,10 @@ import sys
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QTextBrowser
 
 from qfluentwidgets import MessageBoxBase, SubtitleLabel, LineEdit, PushButton, CaptionLabel, setTheme, Theme, \
-    PixmapLabel, BodyLabel
+    PixmapLabel, BodyLabel, TextEdit
 
 
 class CustomMessageBox(MessageBoxBase):
@@ -25,20 +25,24 @@ class CustomMessageBox(MessageBoxBase):
         # change the text of button
         self.yesButton.setText('确定')
         self.cancelButton.setText('关闭')
-        self.hideCancelButton()
         self.setClosableOnMaskClicked(True)
 
         # self.widget.setMinimumWidth(50)
         # self.widget.setMinimumHeight(50)
 
     def init_content(self):
-        widget = None
         if self.content_type == 'image':
             widget = PixmapLabel(self)
-            widget.setObjectName("content")
+            # 隐藏取消按钮
+            self.hideCancelButton()
         elif self.content_type == 'markdown':
             widget = BodyLabel(self)
             widget.setTextFormat(QtCore.Qt.MarkdownText)
             widget.setWordWrap(True)
-            widget.setObjectName("content")
+        elif self.content_type == 'text_edit':
+            widget = TextEdit(self)
+        else:
+            widget = BodyLabel(self)
+            widget.setText("content")
+        widget.setObjectName("content")
         return widget
