@@ -34,6 +34,22 @@ from app.ui.home_interface import Ui_home
 from app.view.base_interface import BaseInterface
 
 
+class CloudflareUpdateThread(QThread):
+    """异步获取Cloudflare数据的线程"""
+    update_finished = pyqtSignal(dict)  # 成功获取数据
+    update_failed = pyqtSignal(str)     # 获取失败
+
+    def run(self):
+        try:
+            data = get_cloudflare_data()
+            if 'error' in data:
+                self.update_failed.emit(data["error"])
+            else:
+                self.update_finished.emit(data)
+        except Exception as e:
+            self.update_failed.emit(f"网络请求异常: {str(e)}")
+
+
 class StartThread(QThread, BaseTask):
     is_running_signal = pyqtSignal(str)
     stop_signal = pyqtSignal()  # 添加停止信号
@@ -302,38 +318,56 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.get_tips()
 
     def update_online_cloudflare(self):
-        """通过cloudflare在线更新"""
-        data = get_cloudflare_data()
-        if 'error' in data:
-            logger.error(f'通过cloudflare在线更新出错:{data["error"]}')
-            # 获取本地保存的信息
-            self.get_tips()
-            return
+        """通过cloudflare在线更新（异步）"""
+        # 创建异步网络请求线程
+        self.cloudflare_thread = CloudflareUpdateThread()
+        self.cloudflare_thread.update_finished.connect(self._handle_cloudflare_success)
+        self.cloudflare_thread.update_failed.connect(self._handle_cloudflare_error)
+        self.cloudflare_thread.start()
 
-        # 检查数据结构是否正确
-        if 'data' not in data:
-            logger.error('通过cloudflare在线更新出错: 返回数据格式不正确')
-            self.get_tips()
-            return
-
-        online_data = data["data"]
-
-        # 检查必要的字段是否存在
-        required_fields = ['updateData', 'redeemCodes']
-        update_data_fields = ['linkCatId', 'linkId', 'questName']
-
-        for field in required_fields:
-            if field not in online_data:
-                logger.error(f'通过cloudflare在线更新出错: 缺少必要字段 {field}')
+    def _handle_cloudflare_success(self, data):
+        """处理Cloudflare数据获取成功"""
+        try:
+            # 检查数据结构是否正确
+            if 'data' not in data:
+                logger.error('通过cloudflare在线更新出错: 返回数据格式不正确')
                 self.get_tips()
                 return
 
-        if 'updateData' in online_data:
-            for field in update_data_fields:
-                if field not in online_data['updateData']:
-                    logger.error(f'通过cloudflare在线更新出错: updateData缺少必要字段 {field}')
+            online_data = data["data"]
+
+            # 检查必要的字段是否存在
+            required_fields = ['updateData', 'redeemCodes']
+            update_data_fields = ['linkCatId', 'linkId', 'questName']
+
+            for field in required_fields:
+                if field not in online_data:
+                    logger.error(f'通过cloudflare在线更新出错: 缺少必要字段 {field}')
                     self.get_tips()
                     return
+
+            if 'updateData' in online_data:
+                for field in update_data_fields:
+                    if field not in online_data['updateData']:
+                        logger.error(f'通过cloudflare在线更新出错: updateData缺少必要字段 {field}')
+                        self.get_tips()
+                        return
+
+            # 处理数据更新逻辑
+            self._process_update_data(data, online_data)
+
+        except Exception as e:
+            logger.error(f'处理Cloudflare数据时出错: {str(e)}')
+            self.get_tips()
+
+    def _handle_cloudflare_error(self, error_msg):
+        """处理Cloudflare数据获取失败"""
+        logger.error(f'通过cloudflare在线更新出错: {error_msg}')
+        # 获取本地保存的信息
+        self.get_tips()
+
+    def _process_update_data(self, data, online_data):
+        """处理更新数据的业务逻辑"""
         if not config.update_data.value:
             config.set(config.update_data, data)
             if config.isLog.value:
