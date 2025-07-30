@@ -310,24 +310,10 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.get_tips()
             return
         online_data = data["data"]
-        local_data = config.update_data.value["data"]
-        if online_data != local_data:
-            content = ''
-            # 出现了兑换码数据的更新
-            if online_data['redeemCodes'] != local_data['redeemCodes']:
-                new_used_codes = []
-                old_used_codes = config.used_codes.value
-                for code in online_data['redeemCodes']:
-                    if code['code'] in old_used_codes:
-                        new_used_codes.append(code['code'])
-                config.set(config.used_codes, new_used_codes)  # 更新以用兑换码的列表
-                content += ' 兑换码 '
-            if online_data['updateData'] != local_data['updateData']:
-                content += ' 活动信息 '
+        if not config.update_data.value:
+            config.set(config.update_data, data)
             if config.isLog.value:
                 logger.info(f'获取到更新信息：{online_data}')
-            config.set(config.update_data, data)
-            config.set(config.task_name, online_data["updateData"]["questName"])
             # 更新链活动提醒
             catId = online_data["updateData"]["linkCatId"]
             linkId = online_data["updateData"]["linkId"]
@@ -335,7 +321,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.get_tips(url=url)
             InfoBar.success(
                 title='获取更新成功',
-                content=f"检测到新的{content}",
+                content=f"检测到新的 兑换码 活动信息",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.TOP_RIGHT,
@@ -343,7 +329,40 @@ class Home(QFrame, Ui_home, BaseInterface):
                 parent=self
             )
         else:
-            self.get_tips()  # 获取本地保存的信息
+            local_data = config.update_data.value["data"]
+            if online_data != local_data:
+                content = ''
+                # 出现了兑换码数据的更新
+                if online_data['redeemCodes'] != local_data['redeemCodes']:
+                    new_used_codes = []
+                    old_used_codes = config.used_codes.value
+                    for code in online_data['redeemCodes']:
+                        if code['code'] in old_used_codes:
+                            new_used_codes.append(code['code'])
+                    config.set(config.used_codes, new_used_codes)  # 更新以用兑换码的列表
+                    content += ' 兑换码 '
+                if online_data['updateData'] != local_data['updateData']:
+                    content += ' 活动信息 '
+                if config.isLog.value:
+                    logger.info(f'获取到更新信息：{online_data}')
+                config.set(config.update_data, data)
+                config.set(config.task_name, online_data["updateData"]["questName"])
+                # 更新链活动提醒
+                catId = online_data["updateData"]["linkCatId"]
+                linkId = online_data["updateData"]["linkId"]
+                url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={catId}&id={linkId}"
+                self.get_tips(url=url)
+                InfoBar.success(
+                    title='获取更新成功',
+                    content=f"检测到新的{content}",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP_RIGHT,
+                    duration=10000,
+                    parent=self
+                )
+            else:
+                self.get_tips()  # 获取本地保存的信息
 
     def on_select_directory_click(self):
         """ 选择启动器路径 """
@@ -630,7 +649,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                 return
             tips_dic = copy.deepcopy(config.date_tip.value)
         if config.isLog.value:
-            logger.info("采用本地数据获取活动日程")
+            logger.info("获取活动日程成功")
         for key, value in tips_dic.items():
             tips_dic[key] = self.get_time_difference(value)
 

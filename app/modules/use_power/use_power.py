@@ -32,6 +32,7 @@ class UsePowerModule:
         :return: (x,y)
         """
         data = config.update_data.value["data"]["updateData"]
+        print(data)
         # data = update_data.split("_")
         online_width = float(data["onlineWidth"])  # 2560
         online_height = online_width * 9 / 16  # 1440
@@ -131,7 +132,7 @@ class UsePowerModule:
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
 
-        data = config.update_data.value
+        data = config.update_data.value["data"]["updateData"]
         if not data:
             self.logger.error("版本坐标数据为空")
             return
@@ -160,7 +161,7 @@ class UsePowerModule:
                     continue
                 if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
                                            is_log=self.is_log):
-                    time.sleep(0.7)
+                    time.sleep(1)
                     enter_maneuver_flag = True
                     continue
                 # 在区域内找材料，没找到就固定点击
@@ -235,11 +236,15 @@ class UsePowerModule:
                         self.auto.press_key('esc')
                         time.sleep(0.5)
                         continue
-                    if self.auto.click_element(['开始', '作战'], 'text',
-                                               crop=(848 / 1920, 800 / 1080, 1066 / 1920, 885 / 1080),
-                                               is_log=self.is_log):
+
+                    if self.auto.find_element(["快速", "作战"], 'text',
+                                              crop=(854 / 1920, 214 / 1080, 1054 / 1920, 286 / 1080)):
+                        time.sleep(0.3)
+                        self.auto.click_element_with_pos((int(1260 / self.auto.scale_x), int(680 / self.auto.scale_y)))
+                        self.auto.click_element_with_pos((int(970 / self.auto.scale_x), int(794 / self.auto.scale_y)))
                         time.sleep(0.5)
                         continue
+
                     if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
                                                is_log=self.is_log):
                         time.sleep(1)
@@ -250,9 +255,6 @@ class UsePowerModule:
                     if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
                                                is_log=self.is_log):
                         continue
-                    if self.auto.click_element('最大', 'text', crop=(1221 / 1920, 679 / 1080, 1354 / 1920, 756 / 1080),
-                                               is_log=self.is_log):
-                        pass
 
             if timeout.reached():
                 self.logger.error("使用体力超时")
