@@ -3,7 +3,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import partial
 from typing import Dict, Any
 
@@ -13,6 +13,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
 from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
     BodyLabel, ProgressBar, FlyoutView, Flyout
+from win11toast import toast
 
 from app.common.config import config
 from app.common.data_models import Coordinates, UpdateData, RedeemCode, ApiData, ApiResponse, parse_config_update_data
@@ -98,9 +99,57 @@ class StartThread(QThread, BaseTask):
                 else:
                     # 如果value为false则进行下一个任务的判断
                     continue
+            if 1 == 2: # TODO: 判断条件改为"体力恢复提醒"设置项已打开
+                # 创建计划任务在1分钟后提醒体力恢复
+                try:
+                    # 在这里加 try 是因为不希望因为创建计划任务失败而导致后续的代码无法执行
+                    # 或者判定为运行过程意外结束
+
+                    # 获取当前程序的执行路径
+                    exe_path = sys.executable if getattr(sys, 'frozen', False) else sys.argv[0]
+
+                    # 计算1分钟后的时间
+                    # TODO: 将1分钟改为体力需要完全恢复的分钟数
+                    future_time = datetime.now() + timedelta(minutes=1)
+                    time_str = future_time.strftime("%H:%M")
+                    date_str = future_time.strftime("%Y-%m-%d")
+
+                    # 构建schtasks命令
+                    task_name = "SAA体力恢复通知"
+                    task_command = f'"{exe_path}" --toast-only'
+
+                    cmd = [
+                        "schtasks", "/create",
+                        "/tn", task_name,
+                        "/tr", task_command,
+                        "/sc", "once",
+                        "/st", time_str,
+                        "/sd", date_str,
+                        "/f"
+                    ]
+
+                    # 执行命令创建计划任务
+                    result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+                    if result.returncode == 0:
+                        logger.info(f"成功创建体力恢复提醒任务，将在 {time_str} 执行")
+                    else:
+                        logger.error(f"创建计划任务失败: {result.stderr}")
+
+                except Exception as e:
+                    logger.error(f"创建体力恢复提醒任务时出错: {str(e)}")
+            if 1 == 2: # TODO: 判断条件改为"完成时提醒"设置项已打开
+                toast(
+                    'SAA 尘白助手', '任务已正常运行完成',
+                    icon=os.path.abspath("app/resource/images/logo.ico"),
+                )
         except Exception as e:
             ocr.stop_ocr()
             self.logger.warn(e)
+            # 我觉得出错的时候应当每次都提醒
+            toast(
+                'SAA 尘白助手', '运行过程意外结束，请查看日志',
+                icon=os.path.abspath("app/resource/images/logo.ico"),
+            )
             # traceback.print_exc()
         finally:
             # 运行完成
