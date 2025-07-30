@@ -3,6 +3,7 @@ import time
 import win32gui
 
 from app.common.config import config
+from app.common.data_models import parse_config_update_data
 from app.common.utils import random_rectangle_point
 from app.modules.automation.timer import Timer
 
@@ -31,10 +32,15 @@ class UsePowerModule:
         :param name: "stuff" or "chasm"
         :return: (x,y)
         """
-        data = config.update_data.value["data"]["updateData"]
-        print(data)
-        # data = update_data.split("_")
-        online_width = float(data["onlineWidth"])  # 2560
+        config_data = parse_config_update_data(config.update_data.value)
+        if not config_data:
+            self.logger.error("配置数据为空或格式不正确")
+            return None, None
+
+        update_data = config_data.data.updateData
+        print(update_data.dict())
+
+        online_width = float(update_data.onlineWidth)  # 2560
         online_height = online_width * 9 / 16  # 1440
         client_rect = win32gui.GetClientRect(self.auto.hwnd)
         client_width = client_rect[2] - client_rect[0]  # 1920
@@ -42,15 +48,14 @@ class UsePowerModule:
         scale_x = client_width / online_width
         scale_y = client_height / online_height
         if name == "stuff":
-            x1 = int(float(data["stuff"]["x1"]) * scale_x)
-            y1 = int(float(data["stuff"]["y1"]) * scale_y)
-            x2 = int(float(data["stuff"]["x2"]) * scale_x)
-            y2 = int(float(data["stuff"]["y2"]) * scale_y)
+            coords = update_data.stuff
         else:
-            x1 = int(float(data["chasm"]["x1"]) * scale_x)
-            y1 = int(float(data["chasm"]["y1"]) * scale_y)
-            x2 = int(float(data["chasm"]["x2"]) * scale_x)
-            y2 = int(float(data["chasm"]["y2"]) * scale_y)
+            coords = update_data.chasm
+
+        x1 = int(float(coords.x1) * scale_x)
+        y1 = int(float(coords.y1) * scale_y)
+        x2 = int(float(coords.x2) * scale_x)
+        y2 = int(float(coords.y2) * scale_y)
         return random_rectangle_point(((x1, y1), (x2, y2)), n=n)
 
     def check_power(self):
@@ -132,20 +137,21 @@ class UsePowerModule:
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
 
-        data = config.update_data.value["data"]["updateData"]
-        if not data:
-            self.logger.error("版本坐标数据为空")
+        config_data = parse_config_update_data(config.update_data.value)
+        if not config_data:
+            self.logger.error("配置数据为空或格式不正确")
             return
-        # data = update_data.split("_")
-        online_width = float(data["onlineWidth"])
+
+        update_data = config_data.data.updateData
+        online_width = float(update_data.onlineWidth)
         online_height = online_width * 9 / 16
 
-        stuff_pos = (float(data["stuff"]["x1"]) / online_width, float(data["stuff"]["y1"]) / online_height,
-                     float(data["stuff"]["x2"]) / online_width,
-                     float(data["stuff"]["y2"]) / online_height)
-        chasm_pos = (float(data["chasm"]["x1"]) / online_width, float(data["chasm"]["y1"]) / online_height,
-                     float(data["chasm"]["x2"]) / online_width,
-                     float(data["chasm"]["y2"]) / online_height)
+        stuff_pos = (float(update_data.stuff.x1) / online_width, float(update_data.stuff.y1) / online_height,
+                     float(update_data.stuff.x2) / online_width,
+                     float(update_data.stuff.y2) / online_height)
+        chasm_pos = (float(update_data.chasm.x1) / online_width, float(update_data.chasm.y1) / online_height,
+                     float(update_data.chasm.x2) / online_width,
+                     float(update_data.chasm.y2) / online_height)
         while True:
             self.auto.take_screenshot()
 

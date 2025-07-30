@@ -2,6 +2,7 @@ import time
 from datetime import datetime
 
 from app.common.config import config
+from app.common.data_models import parse_config_update_data
 from app.common.utils import get_cloudflare_data
 from app.modules.automation.timer import Timer
 
@@ -234,29 +235,17 @@ class CollectSuppliesModule:
             active_codes = []
 
             # 检查配置数据是否存在且格式正确
-            if not config.update_data.value:
-                self.logger.warning("配置数据为空，无法获取兑换码")
+            config_data = parse_config_update_data(config.update_data.value)
+            if not config_data:
+                self.logger.warning("配置数据为空或格式不正确，无法获取兑换码")
                 return active_codes
 
-            if not isinstance(config.update_data.value, dict) or 'data' not in config.update_data.value:
-                self.logger.warning("配置数据格式不正确，无法获取兑换码")
-                return active_codes
-
-            data = config.update_data.value["data"]
-            if 'redeemCodes' not in data:
-                self.logger.warning("配置数据中没有兑换码信息")
-                return active_codes
-
-            raw_data = data["redeemCodes"]
             used_codes = config.used_codes.value or []  # 确保不为None
 
-            for code_info in raw_data:
-                # 检查code_info结构
-                if isinstance(code_info, dict) and "code" in code_info:
-                    # 如果没被使用过才加入兑换
-                    if code_info["code"] not in used_codes:
-                        active_codes.append(code_info["code"])
-
+            for code in config_data.data.redeemCodes:
+                # 如果没被使用过才加入兑换
+                if code.code not in used_codes:
+                    active_codes.append(code.code)
             import_codes = config.import_codes.value or []  # 确保不为None
             # 加入用户导入
             for code in import_codes:

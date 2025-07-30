@@ -5,6 +5,7 @@ import subprocess
 import sys
 from datetime import datetime
 from functools import partial
+from typing import Dict, Any
 
 import win32con
 import win32gui
@@ -14,6 +15,7 @@ from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox
     BodyLabel, ProgressBar, FlyoutView, Flyout
 
 from app.common.config import config
+from app.common.data_models import Coordinates, UpdateData, RedeemCode, ApiData, ApiResponse, parse_config_update_data
 from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
@@ -353,8 +355,18 @@ class Home(QFrame, Ui_home, BaseInterface):
                         self.get_tips()
                         return
 
-            # 处理数据更新逻辑
-            self._process_update_data(data, online_data)
+            # 解析为结构化数据对象
+            try:
+                # 直接用Pydantic解析整个响应
+                response = ApiResponse(**data)
+
+                # 处理更新逻辑
+                self._handle_update_logic(data, online_data, response)
+
+            except Exception as e:
+                logger.error(f'解析API响应数据时出错: {str(e)}')
+                # 如果解析失败，回退到原始处理方式
+                self._handle_update_logic_fallback(data, online_data)
 
         except Exception as e:
             logger.error(f'处理Cloudflare数据时出错: {str(e)}')
@@ -366,8 +378,66 @@ class Home(QFrame, Ui_home, BaseInterface):
         # 获取本地保存的信息
         self.get_tips()
 
-    def _process_update_data(self, data, online_data):
+    def _handle_update_logic(self, raw_data: Dict[str, Any], online_data: Dict[str, Any], response: ApiResponse):
         """处理更新数据的业务逻辑"""
+        local_config_data = parse_config_update_data(config.update_data.value)
+
+        if not local_config_data:
+            # 首次获取数据或本地数据格式不正确
+            config.set(config.update_data, raw_data)
+            if config.isLog.value:
+                logger.info(f'获取到更新信息：{online_data}')
+            # 更新链活动提醒
+            url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={response.data.updateData.linkCatId}&id={response.data.updateData.linkId}"
+            self.get_tips(url=url)
+            InfoBar.success(
+                title='获取更新成功',
+                content=f"检测到新的 兑换码 活动信息",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=10000,
+                parent=self
+            )
+        else:
+            # 比较在线数据和本地数据
+            if online_data != local_config_data.data.model_dump():
+                content = ''
+                # 出现了兑换码数据的更新
+                local_redeem_codes = [code.model_dump() for code in local_config_data.data.redeemCodes]
+                if online_data['redeemCodes'] != local_redeem_codes:
+                    new_used_codes = []
+                    old_used_codes = config.used_codes.value
+                    for code in response.data.redeemCodes:
+                        if code.code in old_used_codes:
+                            new_used_codes.append(code.code)
+                    config.set(config.used_codes, new_used_codes)  # 更新以用兑换码的列表
+                    content += ' 兑换码 '
+
+                if online_data['updateData'] != local_config_data.data.updateData.model_dump():
+                    content += ' 活动信息 '
+
+                if config.isLog.value:
+                    logger.info(f'获取到更新信息：{online_data}')
+                config.set(config.update_data, raw_data)
+                config.set(config.task_name, response.data.updateData.questName)
+                # 更新链活动提醒
+                url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={response.data.updateData.linkCatId}&id={response.data.updateData.linkId}"
+                self.get_tips(url=url)
+                InfoBar.success(
+                    title='获取更新成功',
+                    content=f"检测到新的{content}",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP_RIGHT,
+                    duration=10000,
+                    parent=self
+                )
+            else:
+                self.get_tips()  # 获取本地保存的信息
+
+    def _handle_update_logic_fallback(self, data, online_data):
+        """原始的数据处理逻辑（回退方案）"""
         if not config.update_data.value:
             config.set(config.update_data, data)
             if config.isLog.value:
