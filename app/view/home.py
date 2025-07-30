@@ -309,7 +309,31 @@ class Home(QFrame, Ui_home, BaseInterface):
             # 获取本地保存的信息
             self.get_tips()
             return
+
+        # 检查数据结构是否正确
+        if 'data' not in data:
+            logger.error('通过cloudflare在线更新出错: 返回数据格式不正确')
+            self.get_tips()
+            return
+
         online_data = data["data"]
+
+        # 检查必要的字段是否存在
+        required_fields = ['updateData', 'redeemCodes']
+        update_data_fields = ['linkCatId', 'linkId', 'questName']
+
+        for field in required_fields:
+            if field not in online_data:
+                logger.error(f'通过cloudflare在线更新出错: 缺少必要字段 {field}')
+                self.get_tips()
+                return
+
+        if 'updateData' in online_data:
+            for field in update_data_fields:
+                if field not in online_data['updateData']:
+                    logger.error(f'通过cloudflare在线更新出错: updateData缺少必要字段 {field}')
+                    self.get_tips()
+                    return
         if not config.update_data.value:
             config.set(config.update_data, data)
             if config.isLog.value:
@@ -329,6 +353,17 @@ class Home(QFrame, Ui_home, BaseInterface):
                 parent=self
             )
         else:
+            # 检查本地数据结构是否正确
+            if not isinstance(config.update_data.value, dict) or 'data' not in config.update_data.value:
+                logger.error('本地配置数据格式不正确，使用在线数据')
+                config.set(config.update_data, data)
+                config.set(config.task_name, online_data["updateData"]["questName"])
+                catId = online_data["updateData"]["linkCatId"]
+                linkId = online_data["updateData"]["linkId"]
+                url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={catId}&id={linkId}"
+                self.get_tips(url=url)
+                return
+
             local_data = config.update_data.value["data"]
             if online_data != local_data:
                 content = ''

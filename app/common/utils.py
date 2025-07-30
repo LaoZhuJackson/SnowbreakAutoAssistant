@@ -342,9 +342,11 @@ def get_cloudflare_data():
     if isinstance(response, dict):
         return response
     if response.status_code != 200:
-        print(f"请求失败，状态码: {response.status_code}")
-        return None
-    return response.json()
+        return {"error": f"请求失败，状态码: {response.status_code}"}
+    try:
+        return response.json()
+    except Exception as e:
+        return {"error": f"解析JSON失败: {e}"}
 
 def get_start_arguments(start_path, start_model):
     """

@@ -345,6 +345,12 @@ class MainWindow(MSFluentWindow):
         if 'error' in online_data:
             logger.error(f"检查版本更新出错：{online_data['error']}")
             return
+
+        # 检查数据结构是否正确
+        if 'data' not in online_data or 'version' not in online_data.get('data', {}):
+            logger.error('检查版本更新出错: 返回数据格式不正确')
+            return
+
         version = online_data["data"]["version"]
         if not saa_current_version or saa_current_version != version:
             logger.info(f"出现版本更新{saa_current_version}→{version}，可以前往github或者q群下载新版安装包")

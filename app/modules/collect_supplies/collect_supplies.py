@@ -232,13 +232,32 @@ class CollectSuppliesModule:
         def get_codes():
             """提取还在有效期内的兑换码"""
             active_codes = []
-            raw_data = config.update_data.value["data"]["redeemCodes"]
-            used_codes = config.used_codes.value
+
+            # 检查配置数据是否存在且格式正确
+            if not config.update_data.value:
+                self.logger.warning("配置数据为空，无法获取兑换码")
+                return active_codes
+
+            if not isinstance(config.update_data.value, dict) or 'data' not in config.update_data.value:
+                self.logger.warning("配置数据格式不正确，无法获取兑换码")
+                return active_codes
+
+            data = config.update_data.value["data"]
+            if 'redeemCodes' not in data:
+                self.logger.warning("配置数据中没有兑换码信息")
+                return active_codes
+
+            raw_data = data["redeemCodes"]
+            used_codes = config.used_codes.value or []  # 确保不为None
+
             for code_info in raw_data:
-                # 如果没被使用过才加入兑换
-                if code_info["code"] not in used_codes:
-                    active_codes.append(code_info["code"])
-            import_codes = config.import_codes.value
+                # 检查code_info结构
+                if isinstance(code_info, dict) and "code" in code_info:
+                    # 如果没被使用过才加入兑换
+                    if code_info["code"] not in used_codes:
+                        active_codes.append(code_info["code"])
+
+            import_codes = config.import_codes.value or []  # 确保不为None
             # 加入用户导入
             for code in import_codes:
                 if code not in used_codes:
@@ -271,9 +290,11 @@ class CollectSuppliesModule:
                 self.auto.type_string(codes[index])
                 # 确定
                 self.auto.click_element_with_pos((int(1417 / self.auto.scale_x), int(765 / self.auto.scale_y)))
-                # 加入
-                old_used_codes = config.used_codes.value
-                config.set(config.used_codes, old_used_codes.append(codes[index]))
+                # 加入已使用的兑换码列表
+                old_used_codes = config.used_codes.value or []
+                new_used_codes = old_used_codes.copy()
+                new_used_codes.append(codes[index])
+                config.set(config.used_codes, new_used_codes)
                 index += 1
                 time.sleep(3)
                 continue
