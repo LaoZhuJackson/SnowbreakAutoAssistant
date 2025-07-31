@@ -229,7 +229,6 @@ class CollectSuppliesModule:
 
     def redeem_code(self):
         """领取兑换码"""
-
         def get_codes():
             """提取还在有效期内的兑换码"""
             active_codes = []
@@ -267,11 +266,8 @@ class CollectSuppliesModule:
             # if self.auto.find_element("成功",'text',crop=(733/1920,473/1080,1182/1920,570/1080)):
             #     pass
 
-            if self.auto.find_element('礼品兑换', 'text', crop=(823 / 1920, 294 / 1080, 1105 / 1920, 409 / 1080),
+            if self.auto.find_element(['礼品', '兑换'], 'text', crop=(823 / 1920, 294 / 1080, 1105 / 1920, 409 / 1080),
                                       is_log=self.is_log):
-                if index >= len(codes):
-                    self.logger.info("兑换码已全部兑换")
-                    break
                 self.logger.info("开始兑换 " + codes[index])
                 # 点击 文本框
                 self.auto.click_element_with_pos((int(960 / self.auto.scale_x), int(506 / self.auto.scale_y)))
@@ -288,7 +284,12 @@ class CollectSuppliesModule:
                 time.sleep(3)
                 continue
 
-            if self.auto.click_element('前往兑换', 'text', crop=(1573 / 1920, 568 / 1080, 1793 / 1920, 660 / 1080),
+            if index >= len(codes):
+                self.logger.info("兑换码已全部兑换")
+                self.auto.press_key('esc')
+                break
+            if self.auto.click_element(['前往', '兑换'], 'text',
+                                       crop=(1573 / 1920, 568 / 1080, 1793 / 1920, 660 / 1080),
                                        is_log=self.is_log):
                 time.sleep(0.7)
                 continue
