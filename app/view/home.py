@@ -13,6 +13,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import QFrame, QWidget, QTreeWidgetItemIterator, QFileDialog
 from qfluentwidgets import FluentIcon as FIF, InfoBar, InfoBarPosition, CheckBox, ComboBox, ToolButton, LineEdit, \
     BodyLabel, ProgressBar, FlyoutView, Flyout
+from win11toast import toast
 
 from app.common.config import config
 from app.common.data_models import Coordinates, UpdateData, RedeemCode, ApiData, ApiResponse, parse_config_update_data
@@ -98,6 +99,20 @@ class StartThread(QThread, BaseTask):
                 else:
                     # 如果value为false则进行下一个任务的判断
                     continue
+            # 体力通知
+            if config.inform_message.value or '--toast-only' in sys.argv:
+                def empty_func(args):
+                    pass
+
+                full_time = self.auto.calculate_power_time()
+                if full_time:
+                    content = f'体力将在 {full_time} 完全恢复'
+                else:
+                    content = f"体力计算出错"
+                toast(
+                    '已完成勾选任务', content, on_dismissed=empty_func,
+                    icon=os.path.abspath("app/resource/images/logo.ico"),
+                )
         except Exception as e:
             ocr.stop_ocr()
             self.logger.warn(e)

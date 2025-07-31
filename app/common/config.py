@@ -132,6 +132,7 @@ class Config(QConfig):
     is_resize = ConfigItem("setting_personal", "is_resize", None)
     auto_start_task = ConfigItem("setting_personal", "auto_start_task", False, BoolValidator())
     auto_boot_startup = ConfigItem("setting_personal", "auto_boot_startup", False, BoolValidator())
+    inform_message = ConfigItem("setting_personal", "inform_message", True, BoolValidator())
 
     # 自动化相关
     game_title_name = ConfigItem("automation", "game_title_name", "尘白禁区")

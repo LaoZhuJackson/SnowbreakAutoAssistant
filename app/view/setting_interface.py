@@ -174,6 +174,13 @@ class SettingInterface(ScrollArea):
             configItem=config.auto_boot_startup,
             parent=self.aboutSoftwareGroup
         )
+        self.informMessage = SwitchSettingCard(
+            FIF.HISTORY,
+            self.tr('消息通知'),
+            '是否打开体力恢复通知',
+            configItem=config.inform_message,
+            parent=self.aboutSoftwareGroup
+        )
 
         # application
         self.aboutGroup = SettingCardGroup(self.tr('About'), self.scrollWidget)
@@ -242,6 +249,7 @@ class SettingInterface(ScrollArea):
         self.aboutSoftwareGroup.addSettingCard(self.autoScaling)
         self.aboutSoftwareGroup.addSettingCard(self.autoStartTask)
         self.aboutSoftwareGroup.addSettingCard(self.autoBootStartup)
+        self.aboutSoftwareGroup.addSettingCard(self.informMessage)
 
         self.aboutGroup.addSettingCard(self.feedbackCard)
         self.aboutGroup.addSettingCard(self.proxyCard)

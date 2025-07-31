@@ -13,14 +13,6 @@ from qfluentwidgets import FluentTranslator
 from app.common.config import config
 from app.view.main_window import MainWindow
 
-if '--toast-only' in sys.argv:
-    toast(
-        'SAA 尘白助手', '体力即将完全恢复，注意使用',
-        icon=os.path.abspath("app/resource/images/logo.ico"),
-    )
-    time.sleep(5)
-    quit()
-
 # enable dpi scale
 if config.get(config.dpiScale) != "Auto":
     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"

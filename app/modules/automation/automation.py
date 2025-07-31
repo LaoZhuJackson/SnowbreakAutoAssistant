@@ -2,6 +2,7 @@ import functools
 import math
 import threading
 import time
+from datetime import datetime, timedelta
 
 import cv2
 import win32gui
@@ -116,7 +117,6 @@ class Automation:
         finally:
             # 关闭剪贴板
             win32clipboard.CloseClipboard()
-
 
     def get_hwnd(self):
         """根据传入的窗口名和类型确定可操作的句柄"""
@@ -609,6 +609,36 @@ class Automation:
         except Exception as e:
             # print(traceback.format_exc())
             self.logger.error(f"寻找图片并计数出错：{e}")
+            return None
+
+    def calculate_power_time(self):
+        """
+        识别并计算当前体力值，然后计算出恢复时间
+        :return: 返回体力回满的时间字符串
+        """
+        ocr_result = self.read_text_from_crop(crop=(900 / 1920, 0, 1076 / 1920, 70 / 1080))
+        try:
+            text = ocr_result[0][0]
+            if "/" in text:
+                num = int(text.split("/")[0])
+                # 获取当前时间
+                now = datetime.now()
+                if num >= 240:
+                    return now.strftime('%m-%d %H:%M')
+                # 计算要增加的分钟数
+                minutes_to_add = 6 * (240 - num)
+
+                # 计算未来时间
+                future_time = now + timedelta(minutes=minutes_to_add)
+                # 格式化为 '月-日 时:分' 的字符串
+                formatted_time = future_time.strftime('%m-%d %H:%M')
+
+                return formatted_time
+            else:
+                self.logger.error(f"识别结果出错：{text}")
+                return None
+        except Exception as e:
+            self.logger.error(f"未识别出体力：{e}")
             return None
 
 

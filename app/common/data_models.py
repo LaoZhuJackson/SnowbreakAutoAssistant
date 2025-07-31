@@ -50,7 +50,7 @@ def parse_config_update_data(config_value) -> Optional[ApiResponse]:
     """
     安全地解析配置中的update_data
     :param config_value: config.update_data.value
-    :return: 解析后的ApiResponse对象，如果解析失败则返回None
+    :return: Optional->解析后的ApiResponse对象，如果解析失败则返回None
     """
     if not config_value:
         return None
