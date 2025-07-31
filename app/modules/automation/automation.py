@@ -626,7 +626,7 @@ class Automation:
                 if num >= 240:
                     return now.strftime('%m-%d %H:%M')
                 # 计算要增加的分钟数
-                minutes_to_add = 6 * (240 - num)
+                minutes_to_add = max(0, 6 * (240 - num))
 
                 # 计算未来时间
                 future_time = now + timedelta(minutes=minutes_to_add)

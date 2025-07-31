@@ -40,7 +40,7 @@ from app.view.base_interface import BaseInterface
 class CloudflareUpdateThread(QThread):
     """异步获取Cloudflare数据的线程"""
     update_finished = pyqtSignal(dict)  # 成功获取数据
-    update_failed = pyqtSignal(str)     # 获取失败
+    update_failed = pyqtSignal(str)  # 获取失败
 
     def run(self):
         try:
@@ -420,7 +420,7 @@ class Home(QFrame, Ui_home, BaseInterface):
                 content = ''
                 # 出现了兑换码数据的更新
                 local_redeem_codes = [code.model_dump() for code in local_config_data.data.redeemCodes]
-                if online_data['redeemCodes'] != local_redeem_codes:
+                if online_data['redeemCodes'] != [] and online_data['redeemCodes'] != local_redeem_codes:
                     new_used_codes = []
                     old_used_codes = config.used_codes.value
                     for code in response.data.redeemCodes:
