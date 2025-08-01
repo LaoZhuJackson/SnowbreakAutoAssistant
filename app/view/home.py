@@ -21,7 +21,7 @@ from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.utils import get_all_children, get_date_from_api, get_gitee_text, get_start_arguments, \
-    is_exist_snowbreak, get_cloudflare_data
+    is_exist_snowbreak, get_cloudflare_data, get_local_version
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
@@ -310,7 +310,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         view.closed.connect(w.close)
 
     def update_online(self):
-        """通过gitee在线更新"""
+        """通过gitee在线更新(停用)"""
         text = get_gitee_text("update_data.txt")
         # 返回字典说明必定出现报错了
         if isinstance(text, dict):
@@ -335,7 +335,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             self.get_tips()
 
     def update_online_cloudflare(self):
-        """通过cloudflare在线更新（异步）"""
+        """通过cloudflare在线更新（异步）更新内容包括版本号，版本坐标，兑换码"""
         # 创建异步网络请求线程
         self.cloudflare_thread = CloudflareUpdateThread()
         self.cloudflare_thread.update_finished.connect(self._handle_cloudflare_success)
@@ -354,7 +354,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             online_data = data["data"]
 
             # 检查必要的字段是否存在
-            required_fields = ['updateData', 'redeemCodes']
+            required_fields = ['updateData', 'redeemCodes', 'version']
             update_data_fields = ['linkCatId', 'linkId', 'questName']
 
             for field in required_fields:
@@ -396,6 +396,15 @@ class Home(QFrame, Ui_home, BaseInterface):
     def _handle_update_logic(self, raw_data: Dict[str, Any], online_data: Dict[str, Any], response: ApiResponse):
         """处理更新数据的业务逻辑"""
         local_config_data = parse_config_update_data(config.update_data.value)
+
+        # 不管本地有没有数据，都应该进行版本更新检查
+        online_version = response.data.version
+        local_version = get_local_version()
+
+        if local_version != online_version:
+            self.logger.info(f"出现版本更新{local_version}→{online_version}，可以前往github或者q群下载新版安装包")
+        else:
+            pass
 
         if not local_config_data:
             # 首次获取数据或本地数据格式不正确
