@@ -81,13 +81,6 @@ class MainWindow(MSFluentWindow):
         ocr_thread = threading.Thread(target=self.init_ocr)
         ocr_thread.daemon = True
         ocr_thread.start()
-        # if config.CheckBox_open_game_directly.value:
-        #     self.open_game_directly()
-        # if config.checkUpdateAtStartUp.value:
-        #     # 开新线程检查更新
-        #     update_thread = threading.Thread(target=self.check_update)
-        #     update_thread.start()
-        #     # self.check_update()
 
         # 如果勾选了自动打开游戏并且自动开始任务
         if config.auto_start_task.value or '--auto' in sys.argv:
@@ -340,25 +333,6 @@ class MainWindow(MSFluentWindow):
         # retry
         if self.isMicaEffectEnabled():
             QTimer.singleShot(100, lambda: self.windowEffect.setMicaEffect(self.winId(), isDarkTheme()))
-
-    # def check_update(self):
-    #     online_data = get_cloudflare_data()
-    #     saa_current_version = get_local_version()
-    #     # 返回字典说明必定出现报错了
-    #     if 'error' in online_data:
-    #         logger.error(f"检查版本更新出错：{online_data['error']}")
-    #         return
-    #
-    #     # 检查数据结构是否正确
-    #     if 'data' not in online_data or 'version' not in online_data.get('data', {}):
-    #         logger.error('检查版本更新出错: 返回数据格式不正确')
-    #         return
-    #
-    #     version = online_data["data"]["version"]
-    #     if not saa_current_version or saa_current_version != version:
-    #         logger.info(f"出现版本更新{saa_current_version}→{version}，可以前往github或者q群下载新版安装包")
-    #     else:
-    #         logger.debug(f"无需版本更新，当前版本：{saa_current_version}")
 
     def showMessageBox(self, title, content):
         massage = MessageBox(title, content, self)
