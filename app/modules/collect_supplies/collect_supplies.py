@@ -245,11 +245,21 @@ class CollectSuppliesModule:
                 # 如果没被使用过才加入兑换
                 if code.code not in used_codes:
                     active_codes.append(code.code)
-            import_codes = config.import_codes.value or []  # 确保不为None
+
             # 加入用户导入
-            for code in import_codes:
-                if code not in used_codes:
+            import_codes = config.import_codes.value
+
+            if not import_codes:
+                self.logger.warning("导入的兑换码列表为空")
+                return active_codes
+
+            if isinstance(import_codes, str):
+                import_codes = import_codes.splitlines()              
+    
+            for code in import_codes:                
+                if code := code.strip():
                     active_codes.append(code)
+
             return active_codes
 
         codes = get_codes()
