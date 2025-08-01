@@ -5,14 +5,13 @@ from app.common.config import config
 from app.common.data_models import parse_config_update_data
 from app.common.utils import get_cloudflare_data
 from app.modules.automation.timer import Timer
+from app.modules.base.base_module import BaseModule
 
 
-class CollectSuppliesModule:
+class CollectSuppliesModule(BaseModule):
     def __init__(self, auto, logger):
-        self.auto = auto
-        self.logger = logger
+        super().__init__(auto, logger)
         self.is_log = False
-        super().__init__()
 
     def run(self):
         self.is_log = config.isLog.value
@@ -53,10 +52,7 @@ class CollectSuppliesModule:
             # if self.auto.click_element("app/resource/images/collect_supplies/friends.png", "image",
             #                            crop=(259 / 1920, 448 / 1080, 364 / 1920, 515 / 1080), is_log=self.is_log):
             #     continue
-            if self.auto.find_element('基地', 'text', crop=(
-                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
-                '任务', 'text', crop=(
-                        1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+            if self.at_home:
                 self.auto.click_element_with_pos((int(330 / self.auto.scale_x), int(486 / self.auto.scale_y)))
                 time.sleep(0.3)
                 continue
@@ -124,10 +120,7 @@ class CollectSuppliesModule:
             # if self.auto.click_element('app/resource/images/collect_supplies/mail.png', 'image',
             #                            crop=(76 / 1920, 437 / 1080, 151 / 1920, 491 / 1080), is_log=self.is_log):
             #     continue
-            if self.auto.find_element('基地', 'text', crop=(
-                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
-                '任务', 'text', crop=(
-                        1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+            if self.at_home:
                 self.auto.click_element_with_pos((int(115 / self.auto.scale_x), int(468 / self.auto.scale_y)))
                 time.sleep(0.3)
                 continue
@@ -301,10 +294,7 @@ class CollectSuppliesModule:
                 time.sleep(0.3)
                 continue
 
-            if self.auto.find_element('基地', 'text', crop=(
-                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
-                '任务', 'text', crop=(
-                        1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+            if self.at_home:
                 # 点击右上角齿轮
                 self.auto.click_element_with_pos((int(1864 / self.auto.scale_x), int(33 / self.auto.scale_y)))
                 time.sleep(0.3)

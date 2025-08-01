@@ -2,12 +2,13 @@ import time
 
 from app.common.config import config
 from app.modules.automation.timer import Timer
+from app.modules.base.base_module import BaseModule
 
 
-class EnterGameModule:
+class EnterGameModule(BaseModule):
+
     def __init__(self, auto, logger):
-        self.auto = auto
-        self.logger = logger
+        super().__init__(auto, logger)
         self.enter_game_flag = False
         self.is_log = True
 
@@ -72,9 +73,7 @@ class EnterGameModule:
                                        is_log=self.is_log):
                 break
             # 对不同情况进行处理
-            if self.auto.find_element('基地', 'text', crop=(
-                    1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element(
-                '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+            if self.at_home:
                 self.logger.info("已进入游戏")
                 break
 

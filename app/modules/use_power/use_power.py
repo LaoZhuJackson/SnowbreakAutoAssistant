@@ -6,12 +6,12 @@ from app.common.config import config
 from app.common.data_models import parse_config_update_data
 from app.common.utils import random_rectangle_point
 from app.modules.automation.timer import Timer
+from app.modules.base.base_module import BaseModule
 
 
-class UsePowerModule:
+class UsePowerModule(BaseModule):
     def __init__(self, auto, logger):
-        self.auto = auto
-        self.logger = logger
+        super().__init__(auto, logger)
         self.day_num = 0
         self.is_log = False
 
@@ -175,14 +175,7 @@ class UsePowerModule:
                     time.sleep(0.3)
                     continue
                 else:
-                    if not (self.auto.find_element('基地', 'text', crop=(
-                            1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element('任务',
-                                                                                                          'text',
-                                                                                                          crop=(
-                                                                                                                  1452 / 1920,
-                                                                                                                  327 / 1080,
-                                                                                                                  1529 / 1920,
-                                                                                                                  376 / 1080))):
+                    if not self.at_home:
                         pos = self.get_click_pos("stuff")  # 获取点击位置
                         self.auto.click_element_with_pos(pos)
                         time.sleep(0.3)
@@ -192,14 +185,7 @@ class UsePowerModule:
                     time.sleep(1)
                     continue
                 else:
-                    if not (self.auto.find_element('基地', 'text', crop=(
-                            1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080)) and self.auto.find_element('任务',
-                                                                                                          'text',
-                                                                                                          crop=(
-                                                                                                                  1452 / 1920,
-                                                                                                                  327 / 1080,
-                                                                                                                  1529 / 1920,
-                                                                                                                  376 / 1080))):
+                    if not self.at_home:
                         pos = self.get_click_pos("chasm")
                         self.auto.click_element_with_pos(pos)
                         time.sleep(1)
