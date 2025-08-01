@@ -12,7 +12,10 @@ import win32con
 from app.common.config import config
 from app.common.image_utils import ImageUtils
 from app.common.matcher import matcher
-from app.common.signal_bus import signalBus
+try:
+    from app.common.signal_bus import signalBus
+except ImportError:
+    from app.common.qt_emulator.signal_bus import signalBus
 from app.common.utils import random_rectangle_point, get_hwnd
 from app.modules.automation.input import Input
 from app.modules.automation.screenshot import Screenshot

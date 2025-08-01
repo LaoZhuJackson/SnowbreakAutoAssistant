@@ -1,8 +1,12 @@
 import logging
 import sys
 
-from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5.QtWidgets import QTextBrowser
+try:
+    from PyQt5.QtCore import QObject, pyqtSignal
+    from PyQt5.QtWidgets import QTextBrowser
+except ImportError:
+    from .qt_emulator.QtCore import QObject, pyqtSignal
+    from .qt_emulator.QtWidgets import QTextBrowser
 
 
 class Stream(QObject):
