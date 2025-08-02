@@ -295,29 +295,50 @@ class SettingInterface(ScrollArea):
 
     def _enable_windows(self):
         """Windows 启用自启"""
-        import winreg as reg
-
-        # 创建启动命令
-        command = f'"{self.app_path}"'
-        # 注册表路径
-        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
-
         try:
-            key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_SET_VALUE)
-            reg.SetValueEx(key, self.app_name, 0, reg.REG_SZ, command)
-            reg.CloseKey(key)
+            # 获取应用程序所在目录
+            app_dir = os.path.dirname(self.app_path)
+            cmd_file_path = os.path.join(app_dir, "saa.cmd")
+
+            # 创建 cmd 文件内容
+            cmd_content = f'@echo off\ncd "{app_dir}"\nstart "" "{self.app_path}"'
+
+            # 写入 cmd 文件
+            with open(cmd_file_path, 'w', encoding='utf-8') as f:
+                f.write(cmd_content)
+
+            # 创建计划任务
+            task_command = [
+                'schtasks', '/create',
+                '/tn', f"{self.app_name} 开机自启",  # 任务名称
+                '/tr', f'cmd.exe /c "{cmd_file_path}"',  # 要执行的命令
+                '/sc', 'onlogon',  # 触发条件：用户登录时
+                '/rl', 'highest',  # 使用最高权限
+                '/f'  # 强制创建（如果已存在则覆盖）
+            ]
+
+            result = subprocess.run(task_command, shell=True, check=True,
+                                  capture_output=True, text=True)
+
             InfoBar.success(
                 '添加自启成功',
-                f'已将{command}加入自启',
+                f'已通过计划任务创建开机自启',
+                isClosable=True,
+                duration=2000,
+                parent=self
+            )
+        except subprocess.CalledProcessError as e:
+            InfoBar.error(
+                '添加自启失败',
+                f"创建计划任务失败：{e.stderr}",
                 isClosable=True,
                 duration=2000,
                 parent=self
             )
         except Exception as e:
-            # 如果权限不足，尝试使用任务计划程序
             InfoBar.error(
                 '添加自启失败',
-                f"权限不足：{e}",
+                f"创建启动文件失败：{e}",
                 isClosable=True,
                 duration=2000,
                 parent=self
@@ -325,30 +346,41 @@ class SettingInterface(ScrollArea):
 
     def _disable_windows(self):
         """Windows 禁用自启"""
-        import winreg as reg
-
-        # 尝试删除注册表项
         try:
-            key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
-            key = reg.OpenKey(reg.HKEY_CURRENT_USER, key_path, 0, reg.KEY_SET_VALUE)
-            try:
-                reg.DeleteValue(key, self.app_name)
-                InfoBar.success(
-                    '删除自启成功',
-                    f'已关闭开机自启',
+            # 删除计划任务
+            result = subprocess.run(['schtasks', '/delete', '/tn', f"{self.app_name} 开机自启", '/f'],
+                                  shell=True, check=True, capture_output=True, text=True)
+
+            # 删除 cmd 文件
+            app_dir = os.path.dirname(self.app_path)
+            cmd_file_path = os.path.join(app_dir, "saa.cmd")
+            if os.path.exists(cmd_file_path):
+                os.remove(cmd_file_path)
+
+            InfoBar.success(
+                '删除自启成功',
+                f'已关闭开机自启',
+                isClosable=True,
+                duration=2000,
+                parent=self
+            )
+        except subprocess.CalledProcessError as e:
+            if "找不到系统指定的" in e.stderr or "cannot find" in e.stderr.lower():
+                InfoBar.warning(
+                    '任务不存在',
+                    f'计划任务可能已被删除',
                     isClosable=True,
                     duration=2000,
                     parent=self
                 )
-            except WindowsError:
+            else:
                 InfoBar.error(
                     '删除自启失败',
-                    f"键不存在",
+                    f"删除计划任务失败：{e.stderr}",
                     isClosable=True,
                     duration=2000,
                     parent=self
                 )
-            reg.CloseKey(key)
         except Exception as e:
             InfoBar.error(
                 '删除自启失败',
@@ -357,13 +389,6 @@ class SettingInterface(ScrollArea):
                 duration=2000,
                 parent=self
             )
-
-        # 尝试删除任务计划
-        # try:
-        #     subprocess.run(['schtasks', '/delete', '/tn', self.app_name, '/f'],
-        #                    shell=True, check=True)
-        # except subprocess.CalledProcessError:
-        #     pass  # 任务不存在
 
     def check_update(self):
         pass
