@@ -126,8 +126,8 @@
 ## 📝License
 
 > [!Note]
-> 
-> MIT License
+>
+> GPLv3 License
 [LICENSE](https://github.com/LaoZhuJackson/SnowbreakAutoAssistant/blob/main/LICENSE)
 
 ## 👍赞助
