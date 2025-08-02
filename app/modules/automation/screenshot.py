@@ -174,7 +174,7 @@ if __name__ == '__main__':
 
     if result is not None:
         img_resized, scale_x, scale_y, screenshot_pos = result
-        print(scale_x, scale_y, screenshot_pos)
+        # print(scale_x, scale_y, screenshot_pos)
         img_resized = auto_crop_image(img_resized)
         cv2.imshow("Game Screenshot", img_resized)
         cv2.waitKey(0)

@@ -565,7 +565,6 @@ class Home(QFrame, Ui_home, BaseInterface):
         """点击了导入兑换码按钮"""
         def filter_codes(text):
             lines = text.splitlines()
-            print(lines)
             result = []
             for line in lines:
                 # 去除行首尾空白字符

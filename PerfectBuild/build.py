@@ -113,7 +113,6 @@ class PerfectBuild:
             cmd_args.extend((f"--windows-icon-from-ico={self.app_icon}",))
         # '--windows-console-mode=disable',
         cmd_args.append(f"{self.app_dir}/{self.app_exec}.py")
-        print(cmd_args)
         process = subprocess.run(cmd_args, shell=True)
         if process.returncode != 0:
             # print(traceback.format_exc())

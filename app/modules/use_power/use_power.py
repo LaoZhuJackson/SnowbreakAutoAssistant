@@ -38,7 +38,7 @@ class UsePowerModule:
             return None, None
 
         update_data = config_data.data.updateData
-        print(update_data.dict())
+        # print(update_data.dict())
 
         online_width = float(update_data.onlineWidth)  # 2560
         online_height = online_width * 9 / 16  # 1440
