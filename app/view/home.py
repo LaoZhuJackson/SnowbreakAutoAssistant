@@ -234,7 +234,8 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.PushButton_select_all.clicked.connect(lambda: select_all(self.SimpleCardWidget_option))
         self.PushButton_no_select.clicked.connect(lambda: no_select(self.SimpleCardWidget_option))
         self.PushButton_select_directory.clicked.connect(self.on_select_directory_click)
-        self.PushButton_import_code.clicked.connect(self.on_import_codes_click)
+        self.PrimaryPushButton_import_codes.clicked.connect(self.on_import_codes_click)
+        self.PushButton_reset_codes.clicked.connect(self.on_reset_codes_click)
 
         self.ToolButton_entry.clicked.connect(lambda: self.set_current_index(0))
         self.ToolButton_collect.clicked.connect(lambda: self.set_current_index(1))
@@ -537,11 +538,34 @@ class Home(QFrame, Ui_home, BaseInterface):
         self.LineEdit_game_directory.setText(folder)
         self.LineEdit_game_directory.editingFinished.emit()
 
+    def on_reset_codes_click(self):
+        content = ''
+        if self.textBrowser_import_codes.toPlainText():
+            self.textBrowser_import_codes.setText("")
+        # 重置导入
+        if config.import_codes.value:
+            config.set(config.import_codes, [])
+            content += ' 导入 '
+        # 重置已使用
+        if config.used_codes.value:
+            config.set(config.used_codes, [])
+            content += ' 已使用 '
+
+        InfoBar.success(
+            title='重置成功',
+            content=f"已重置 导入展示 {content}",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP_RIGHT,
+            duration=2000,
+            parent=self
+        )
+
     def on_import_codes_click(self):
         """点击了导入兑换码按钮"""
-
         def filter_codes(text):
             lines = text.splitlines()
+            print(lines)
             result = []
             for line in lines:
                 # 去除行首尾空白字符
@@ -556,8 +580,10 @@ class Home(QFrame, Ui_home, BaseInterface):
                 else:
                     # 如果没有冒号
                     result.append(stripped_line)
-            # 将结果重新组合成每行一个的字符串
-            return "\n".join(result)
+            # 将结果重新组合成每行一个的字符串并设置显示
+            self.textBrowser_import_codes.setText("\n".join(result))
+            # 返回列表
+            return result
 
         w = CustomMessageBox(self, "导入兑换码", "text_edit")
         w.content.setEnabled(True)
@@ -565,7 +591,6 @@ class Home(QFrame, Ui_home, BaseInterface):
         if w.exec():
             raw_codes = w.content.toPlainText()
             codes = filter_codes(raw_codes)
-            self.textBrowser_import_codes.setText(codes)
             config.set(config.import_codes, codes)
 
     def change_auto_open(self, state):

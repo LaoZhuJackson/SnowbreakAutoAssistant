@@ -130,7 +130,7 @@ def fetch_url(url: str, timeout: float = None, encoding: str = None):
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/134.0.0.0 Safari/537.36"
     }
-    port = config.update_proxies.value  # 假设config是已定义的配置对象
+    port = config.update_proxies.value
     proxies = {
         "http": f"http://127.0.0.1:{port}",
         "https": f"http://127.0.0.1:{port}"

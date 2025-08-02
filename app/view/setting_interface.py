@@ -299,8 +299,6 @@ class SettingInterface(ScrollArea):
 
         # 创建启动命令
         command = f'"{self.app_path}"'
-        print(command)
-
         # 注册表路径
         key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 

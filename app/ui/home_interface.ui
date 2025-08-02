@@ -466,15 +466,18 @@
             </layout>
         </widget>
            <widget class="QWidget" name="page_3">
-               <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,0">
-                   <item row="3" column="1">
-                       <widget class="PushButton" name="PushButton_import_code">
-            <property name="text">
-                <string>导入</string>
+               <layout class="QGridLayout" name="gridLayout_10" columnstretch="2,1,1">
+                   <item row="4" column="0" colspan="3">
+                       <widget class="QTextBrowser" name="textBrowser_import_codes">
+                           <property name="verticalScrollBarPolicy">
+                               <enum>Qt::ScrollBarAlwaysOff</enum>
+                           </property>
+                           <property name="horizontalScrollBarPolicy">
+                               <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
            </widget>
           </item>
-                   <item row="0" column="0" colspan="2">
+                   <item row="0" column="0" colspan="3">
                        <widget class="CheckBox" name="CheckBox_mail">
                            <property name="text">
                                <string>领取邮件</string>
@@ -488,21 +491,7 @@
                            </property>
                        </widget>
                    </item>
-                   <item row="2" column="0" colspan="2">
-                       <widget class="CheckBox" name="CheckBox_dormitory">
-                           <property name="text">
-                               <string>宿舍碎片</string>
-                           </property>
-                       </widget>
-                   </item>
-                   <item row="1" column="0" colspan="2">
-                       <widget class="CheckBox" name="CheckBox_fish_bait">
-            <property name="text">
-                <string>领取鱼饵</string>
-            </property>
-           </widget>
-          </item>
-                   <item row="5" column="0" colspan="2">
+                   <item row="5" column="0" colspan="3">
            <spacer name="verticalSpacer_7">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -515,7 +504,7 @@
             </property>
            </spacer>
           </item>
-                   <item row="6" column="0" colspan="2">
+                   <item row="6" column="0" colspan="3">
                        <widget class="BodyLabel" name="BodyLabel_collect_supplies">
             <property name="text">
                 <string>Body label</string>
@@ -528,13 +517,31 @@
             </property>
            </widget>
           </item>
-                   <item row="4" column="0" colspan="2">
-                       <widget class="QTextBrowser" name="textBrowser_import_codes">
-                           <property name="verticalScrollBarPolicy">
-                               <enum>Qt::ScrollBarAlwaysOff</enum>
+                   <item row="2" column="0" colspan="3">
+                       <widget class="CheckBox" name="CheckBox_dormitory">
+                           <property name="text">
+                               <string>宿舍碎片</string>
             </property>
-                           <property name="horizontalScrollBarPolicy">
-                               <enum>Qt::ScrollBarAlwaysOff</enum>
+                       </widget>
+                   </item>
+                   <item row="1" column="0" colspan="3">
+                       <widget class="CheckBox" name="CheckBox_fish_bait">
+                           <property name="text">
+                               <string>领取鱼饵</string>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="3" column="2">
+                       <widget class="PushButton" name="PushButton_reset_codes">
+                           <property name="text">
+                               <string>重置</string>
+                           </property>
+                       </widget>
+                   </item>
+                   <item row="3" column="1">
+                       <widget class="PrimaryPushButton" name="PrimaryPushButton_import_codes">
+                           <property name="text">
+                               <string>导入</string>
                            </property>
                        </widget>
                    </item>
@@ -570,7 +577,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-                  <width>285</width>
+                  <width>142</width>
                   <height>503</height>
               </rect>
              </property>
