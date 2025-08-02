@@ -298,7 +298,7 @@ class SettingInterface(ScrollArea):
         try:
             # 获取应用程序所在目录
             app_dir = os.path.dirname(self.app_path)
-            cmd_file_path = os.path.join(app_dir, "saa.cmd")
+            cmd_file_path = os.path.join(app_dir, "saa_startup.cmd")
 
             # 创建 cmd 文件内容
             cmd_content = f'@echo off\ncd "{app_dir}"\nstart "" "{self.app_path}"'
@@ -353,7 +353,7 @@ class SettingInterface(ScrollArea):
 
             # 删除 cmd 文件
             app_dir = os.path.dirname(self.app_path)
-            cmd_file_path = os.path.join(app_dir, "saa.cmd")
+            cmd_file_path = os.path.join(app_dir, "saa_startup.cmd")
             if os.path.exists(cmd_file_path):
                 os.remove(cmd_file_path)
 
