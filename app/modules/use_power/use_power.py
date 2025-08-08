@@ -246,7 +246,7 @@ class UsePowerModule:
                     if self.auto.find_element(["快速", "作战"], 'text',
                                               crop=(854 / 1920, 214 / 1080, 1054 / 1920, 286 / 1080)):
                         time.sleep(0.3)
-                        self.auto.click_element_with_pos((int(1289 / self.auto.scale_x), int(728 / self.auto.scale_y)))
+                        self.auto.click_element_with_pos((int(1289 / self.auto.scale_x), int(732 / self.auto.scale_y)))
                         time.sleep(0.2)
                         self.auto.click_element_with_pos((int(980 / self.auto.scale_x), int(851 / self.auto.scale_y)))
                         time.sleep(0.5)

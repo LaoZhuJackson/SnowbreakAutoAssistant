@@ -97,7 +97,8 @@ class ShoppingModule:
             if text:
                 if not is_selected:  # 当前没有选择任何商品
                     # 如果当前还有售罄动画存在
-                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080),
+                    if self.auto.find_element(['售', '罄'], 'text',
+                                              crop=(850 / 1920, 500 / 1080, 1070 / 1920, 900 / 1080),
                                               is_log=self.is_log):
                         continue
                     if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1), is_log=self.is_log):
@@ -139,7 +140,8 @@ class ShoppingModule:
                         continue
                 else:  # 没选择成功或者售罄
                     is_selected = False
-                    if self.auto.find_element('售罄', 'text', crop=(866 / 1920, 513 / 1080, 1048 / 1920, 880 / 1080),
+                    if self.auto.find_element(['售', '罄'], 'text',
+                                              crop=(850 / 1920, 500 / 1080, 1070 / 1920, 900 / 1080),
                                               is_log=self.is_log):
                         finish_list.append(text)
                         # 更新text
