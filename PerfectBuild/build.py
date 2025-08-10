@@ -108,6 +108,7 @@ class PerfectBuild:
             "--include-data-file=update_data.txt=update_data.txt",
             "--include-data-dir=asset=asset",
             "--include-data-dir=app/modules/onnxocr/models=app/modules/onnxocr/models",
+            "--nofollow-import-to=scipy.stats",
         ]
         if platform.system() == "Windows":
             cmd_args.extend((f"--windows-icon-from-ico={self.app_icon}",))
