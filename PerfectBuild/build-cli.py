@@ -112,6 +112,7 @@ class PerfectBuild:
             "--nofollow-import-to=PyQt5",
             "--nofollow-import-to=beautifulsoup4",
             "--nofollow-import-to=pyinstaller",
+            "--nofollow-import-to=scipy.stats",
             # 多线程
             "--jobs=32",
         ]
