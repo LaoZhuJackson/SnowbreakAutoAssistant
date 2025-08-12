@@ -2,9 +2,18 @@
 import sys
 from enum import Enum
 
-from PyQt5.QtCore import QLocale
-from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
-                            OptionsValidator, Theme, ConfigSerializer)
+# 导入兼容性处理
+try:
+    from PyQt5.QtCore import QLocale
+except ImportError:
+    from .qt_emulator.QtCore import QLocale
+
+try:
+    from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
+                                OptionsValidator, Theme, ConfigSerializer)
+except ImportError:
+    from .qt_emulator.qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
+                                              OptionsValidator, Theme, ConfigSerializer)
 
 from .setting import CONFIG_FILE
 

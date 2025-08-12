@@ -45,8 +45,8 @@ class PerfectBuild:
     app_publisher = Config.app_publisher
     app_url = Config.app_url
     app_icon = Config.app_icon
-    app_exec = Config.app_exec
-    app_dir = Config.app_dir
+    app_exec = "SAA_cli" # Config.app_exec
+    app_dir = "." # Config.app_dir
 
     def __init__(self, app_id, mode="--p"):
         """
@@ -95,12 +95,9 @@ class PerfectBuild:
             "--show-progress",
             "--show-memory",
             "--standalone",
-            "--plugin-enable=pyqt5",
             f"--output-dir={output_dir}",
             "--windows-uac-admin",
-            "--windows-console-mode=disable",
-            # 排除 qt_emulator 模块
-            "--nofollow-import-to=app.common.qt_emulator",
+            # "--windows-console-mode=disable",
             # 添加文件
             "--include-data-file=patch/scipy.libs/.load-order-scipy-1.10.1=scipy.libs/.load-order-scipy-1.10.1",
             "--include-data-file=patch/shapely.libs/.load-order-shapely-2.0.7=shapely.libs/.load-order-shapely-2.0.7",
@@ -110,12 +107,20 @@ class PerfectBuild:
             "--include-data-file=update_data.txt=update_data.txt",
             "--include-data-dir=asset=asset",
             "--include-data-dir=app/modules/onnxocr/models=app/modules/onnxocr/models",
+            # 排除模块
+            "--nofollow-import-to=qfluentwidgets",
+            "--nofollow-import-to=PyQt5",
+            "--nofollow-import-to=beautifulsoup4",
+            "--nofollow-import-to=pyinstaller",
             "--nofollow-import-to=scipy.stats",
+            # 多线程
+            "--jobs=32",
         ]
         if platform.system() == "Windows":
             cmd_args.extend((f"--windows-icon-from-ico={self.app_icon}",))
         # '--windows-console-mode=disable',
         cmd_args.append(f"{self.app_dir}/{self.app_exec}.py")
+        print(cmd_args)
         process = subprocess.run(cmd_args, shell=True)
         if process.returncode != 0:
             # print(traceback.format_exc())
@@ -137,8 +142,6 @@ class PerfectBuild:
             f"--distpath={dist_dir}",
             f"--workpath={build_dir}",
             "--contents-directory=.",
-            # 排除 qt_emulator 模块
-            "--exclude-module=app.common.qt_emulator",
         ]
         if platform.system() == "Windows":
             cmd_args.extend((f"-i{self.app_icon}",))
