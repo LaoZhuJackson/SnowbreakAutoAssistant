@@ -46,7 +46,7 @@ class ChasmModule:
                                               is_log=self.is_log):
                     first_finish_flag = True
             if first_finish_flag and self.is_after_wednesday_4am() and not enter_second:
-                if self.auto.click_element("稳定值", "text", crop=(260 / 2560, 431 / 1440, 410 / 2560, 460 / 1440),
+                if self.auto.click_element("稳定值", "text", crop=(220 / 2560, 410 / 1440, 430 / 2560, 480 / 1440),
                                            is_log=self.is_log,
                                            extract=[(176, 175, 179), 128]):
                     enter_second = True

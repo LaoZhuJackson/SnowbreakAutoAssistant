@@ -329,6 +329,7 @@ class Home(QFrame, Ui_home, BaseInterface):
             config.set(config.task_name, data[9])
             # 更新链活动提醒
             url = f"https://www.cbjq.com/api.php?op=search_api&action=get_article_detail&catid={data[10]}&id={data[11]}"
+
             self.get_tips(url=url)
             # 更新材料和深渊位置在use_power.py
         else:

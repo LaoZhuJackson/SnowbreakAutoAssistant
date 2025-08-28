@@ -207,15 +207,34 @@ class UsePowerModule:
                 if self.auto.click_element("任务", "text", crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080),
                                            offset=(-34 / self.auto.scale_x, 140 / self.auto.scale_y),
                                            is_log=self.is_log):
-                    time.sleep(1.5)
+                    # 等待动画过渡
+                    task_name = config.task_name.value
+                    if task_name:
+                        timeout_animation = Timer(10).start()
+                        while True:
+                            self.auto.take_screenshot()
+                            if self.auto.find_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                      is_log=self.is_log):
+                                break
+                            if self.auto.find_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1), is_log=self.is_log):
+                                break
+                            time.sleep(0.5)
+
+                            if timeout.reached() or timeout_animation.reached():
+                                self.logger.error("进入活动页面超时")
+                                break
+                    else:
+                        time.sleep(1.5)
                     continue
             else:
                 if finish_flag:
                     if self.auto.find_element(['剩余', '刷新', '天'], 'text',
-                                              crop=(682 / 2560, 272 / 1440, 956 / 2560, 550 / 1440),
+                                              crop=(826 / 2560, 239 / 1440, 1393 / 2560, 1188 / 1440),
                                               is_log=self.is_log) or self.auto.find_element('领取', 'text', crop=(
                             0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
                         enter_task = True
+                        # 等动画
+                        time.sleep(0.5)
                     if enter_task:
                         if self.auto.click_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
                                                    is_log=self.is_log):
@@ -264,6 +283,6 @@ class UsePowerModule:
                         continue
 
             if timeout.reached():
-                self.logger.error("使用体力超时")
+                self.logger.error("刷活动体力超时")
                 break
         self.auto.back_to_home()

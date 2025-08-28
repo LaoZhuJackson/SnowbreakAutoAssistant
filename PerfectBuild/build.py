@@ -107,7 +107,7 @@ class PerfectBuild:
             "--include-data-file=docs/help.md=docs/help.md",
             "--include-data-file=update_data.txt=update_data.txt",
             "--include-data-dir=asset=asset",
-            "--include-data-dir=app/modules/onnxocr/models=app/modules/onnxocr/models",
+            "--include-data-dir=app/modules/onnxocr/models/ppocrv5=app/modules/onnxocr/models/ppocrv5",
             "--nofollow-import-to=scipy.stats",
         ]
         if platform.system() == "Windows":

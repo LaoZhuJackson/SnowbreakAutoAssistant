@@ -337,7 +337,7 @@ def get_gitee_text(text_path: str):
 
 def get_cloudflare_data():
     """从cloudflare上获取数据"""
-    url = "https://saa.undownding.dev/api/config"
+    url = "https://saapanel.netlify.app/api/config"
     response = fetch_url(url)
     if isinstance(response, dict):
         return response

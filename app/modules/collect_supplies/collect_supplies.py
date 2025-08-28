@@ -164,7 +164,7 @@ class CollectSuppliesModule:
                 time.sleep(0.3)
                 continue
             if self.auto.click_element("战斗", "text", crop=(1510 / 1920, 450 / 1080, 1650 / 1920, 530 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, extract=[(39, 39, 56), 128]):
                 time.sleep(0.3)
                 continue
 

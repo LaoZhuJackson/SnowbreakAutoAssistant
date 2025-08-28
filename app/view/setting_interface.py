@@ -282,6 +282,7 @@ class SettingInterface(ScrollArea):
 
         # check update
         self.aboutCard.clicked.connect(self.check_update)
+        # self.aboutCard.button.setEnabled(False)
 
         # about
         self.feedbackCard.clicked.connect(
@@ -392,50 +393,6 @@ class SettingInterface(ScrollArea):
 
     def check_update(self):
         pass
-        # try:
-        #     updater = Updater()
-        #     current_version = VERSION
-        #     latest_version = updater.latest_version
-        #     if latest_version != current_version and latest_version:
-        #         title = '发现新版本'
-        #         content = f'检测到新版本：{current_version} -> {latest_version}，是否更新？'
-        #         massage_box = MessageBox(title, content, self.window())
-        #         if massage_box.exec():
-        #             self.start_download(updater)
-        #         else:
-        #             pass
-        #     elif latest_version is None:
-        #         title = '未获取到最新版本信息'
-        #         if config.update_proxies.value:
-        #             content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-        #         else:
-        #             content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-        #         massage_box = MessageBox(title, content, self.window())
-        #         if massage_box.exec():
-        #             pass
-        #         else:
-        #             pass
-        #     else:
-        #         title = '没有发现新版本'
-        #         content = f'当前版本{current_version}已是最新版本'
-        #         massage_box = MessageBox(title, content, self.window())
-        #         if massage_box.exec():
-        #             pass
-        #         else:
-        #             pass
-        # except Exception as e:
-        #     title = '网络错误'
-        #     if config.update_proxies.value:
-        #         content = f'端口{config.update_proxies.value}无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-        #     else:
-        #         content = '无法连接至github/gitee，请检查你的网络，确保你的代理设置正确或关闭代理并设置端口为空值'
-        #     massage_box = MessageBox(title, content, self.window())
-        #     if massage_box.exec():
-        #         pass
-        #     else:
-        #         pass
-        #     print(e)
-        #     # traceback.print_exc()
 
     def start_download(self, updater):
         self.progressBar.setValue(0)

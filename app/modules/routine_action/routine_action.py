@@ -106,8 +106,8 @@ class ActionModule:
                 else:
                     break
             else:
-                if self.auto.click_element('战斗', 'text', crop=(1536 / 1920, 470 / 1080, 1632 / 1920, 516 / 1080),
-                                           is_log=self.is_log):
+                if self.auto.click_element("战斗", "text", crop=(1510 / 1920, 450 / 1080, 1650 / 1920, 530 / 1080),
+                                           is_log=self.is_log, extract=[(39, 39, 56), 128]):
                     time.sleep(1)
                     continue
                 if self.auto.click_element('行动', 'text', crop=(2085 / 2560, 716 / 1440, 2542 / 2560, 853 / 1440),

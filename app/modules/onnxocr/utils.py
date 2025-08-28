@@ -346,7 +346,7 @@ def infer_args():
     parser.add_argument(
         "--cls_model_dir",
         type=str,
-        default=str(module_dir / "models/ppocrv4/cls/cls.onnx"),
+        default=str(module_dir / "models/ppocrv5/cls/cls.onnx"),
     )
     parser.add_argument("--cls_image_shape", type=str, default="3, 48, 192")
     parser.add_argument("--label_list", type=list, default=["0", "180"])

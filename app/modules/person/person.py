@@ -46,7 +46,7 @@ class PersonModule:
                 time.sleep(0.3)
                 continue
             if self.auto.click_element("战斗", "text", crop=(1510 / 1920, 450 / 1080, 1650 / 1920, 530 / 1080),
-                                       is_log=self.is_log):
+                                       is_log=self.is_log, extract=[(39, 39, 56), 128]):
                 time.sleep(0.3)
                 continue
 
@@ -197,17 +197,52 @@ class PersonModule:
         direction = -1 if direction >= 0 else 1
         self.auto.mouse_scroll(int(904 / self.auto.scale_x), int(538 / self.auto.scale_y), 7000 * direction * page)
 
+    # def update_power_times(self):
+    #     """更新嵌片数量"""
+    #     # 格式化后的，并非ocr原生结果：result=[['12/12', 1.0, [[58.0, 16.0], [112.0, 40.0]]]]
+    #     result = self.auto.read_text_from_crop(crop=(1430 / 1920, 15 / 1080, 1554 / 1920, 104 / 1080))
+    #     # 取出文字送去正则匹配
+    #     times = self.detect_times(result[0][0])
+    #     if times is not None:
+    #         self.logger.info(f"记忆嵌片更新成功：{times}")
+    #     else:
+    #         self.logger.info(f"记忆嵌片更新失败：{result}")
+    #     self.power_times = times
     def update_power_times(self):
-        """更新嵌片数量"""
-        # 格式化后的，并非ocr原生结果：result=[['12/12', 1.0, [[58.0, 16.0], [112.0, 40.0]]]]
-        result = self.auto.read_text_from_crop(crop=(1430 / 1920, 15 / 1080, 1554 / 1920, 104 / 1080))
-        # 取出文字送去正则匹配
-        times = self.detect_times(result[0][0])
-        if times is not None:
-            self.logger.info(f"记忆嵌片更新成功：{times}")
-        else:
-            self.logger.info(f"记忆嵌片更新失败：{result}")
-        self.power_times = times
+        """更新嵌片数量（健壮版）"""
+        try:
+            result = self.auto.read_text_from_crop(
+                crop=(1430 / 1920, 15 / 1080, 1554 / 1920, 104 / 1080)
+            )
+
+            # 结构/空值防御
+            text = ""
+            if isinstance(result, list) and result:
+                first = result[0]
+                if isinstance(first, (list, tuple)) and first:
+                    text = first[0] if isinstance(first[0], str) else ""
+
+            if not text:
+                self.logger.warning(f"OCR结果为空或结构异常: {result}")
+                self.power_times = None
+                return
+
+            # 归一化再匹配
+            norm = (
+                str(text)
+                .replace("／", "/")  # 全角斜杠
+                .replace(" ", "")  # 去空格
+            )
+            times = self.detect_times(norm)
+            if times is not None:
+                self.logger.info(f"记忆嵌片更新成功：{times}")
+            else:
+                self.logger.info(f"记忆嵌片更新失败：{norm}")
+            self.power_times = times
+
+        except Exception as e:
+            self.logger.exception(f"更新嵌片次数失败: {e}")
+            self.power_times = None
 
     @staticmethod
     def detect_times(text: str):
