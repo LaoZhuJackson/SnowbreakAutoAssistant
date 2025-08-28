@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+import traceback
 from datetime import datetime
 from functools import partial
 from typing import Dict, Any
@@ -382,6 +383,7 @@ class Home(QFrame, Ui_home, BaseInterface):
 
             except Exception as e:
                 logger.error(f'解析API响应数据时出错: {str(e)}')
+                traceback.print_exc()
                 # 如果解析失败，回退到原始处理方式
                 self._handle_update_logic_fallback(data, online_data)
 
@@ -404,7 +406,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         local_version = get_local_version()
 
         if local_version != online_version:
-            self.logger.info(f"出现版本更新{local_version}→{online_version}，可以前往github或者q群下载新版安装包")
+            logger.info(f"出现版本更新{local_version}→{online_version}，可以前往github或者q群下载新版安装包")
         else:
             pass
 
