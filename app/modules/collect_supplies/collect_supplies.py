@@ -275,13 +275,20 @@ class CollectSuppliesModule:
                 self.auto.type_string(codes[index])
                 # 确定
                 self.auto.click_element_with_pos((int(1417 / self.auto.scale_x), int(765 / self.auto.scale_y)))
+                # 判断是否触发频繁操作，触发就退出
+                time.sleep(2)
+                self.auto.take_screenshot()
+                if self.auto.click_element(['频繁'], 'text',
+                                           crop=(982 / 2560, 664 / 1440, 1593 / 2560, 768 / 1440),
+                                           is_log=self.is_log):
+                    break
                 # 加入已使用的兑换码列表
                 old_used_codes = config.used_codes.value or []
                 new_used_codes = old_used_codes.copy()
                 new_used_codes.append(codes[index])
                 config.set(config.used_codes, new_used_codes)
                 index += 1
-                time.sleep(3)
+                time.sleep(1)
                 continue
 
             if index >= len(codes):
