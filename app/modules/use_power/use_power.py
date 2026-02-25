@@ -24,6 +24,8 @@ class UsePowerModule:
             self.check_power()
         if config.ComboBox_power_usage.value == 0:
             self.by_maneuver()
+        elif config.ComboBox_power_usage.value == 1:
+            self.by_routine_logistics()
 
     def get_click_pos(self, name: str, n=3):
         """
@@ -277,6 +279,7 @@ class UsePowerModule:
                         continue
                     if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
                                                is_log=self.is_log):
+                        finish_flag = True
                         continue
                     if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
                                                is_log=self.is_log):
@@ -284,5 +287,107 @@ class UsePowerModule:
 
             if timeout.reached():
                 self.logger.error("刷活动体力超时")
+                break
+        self.auto.back_to_home()
+
+    def by_routine_logistics(self):
+        """通过常规后勤使用体力"""
+        timeout = Timer(50).start()
+        enter_routine = False
+        enter_battle = False
+        enter_chasm = False
+        finish_flag = False
+
+        while True:
+            self.auto.take_screenshot()
+
+            if not enter_routine:
+                # 进入常规行动
+                if self.auto.find_element('行动', 'text', crop=(480 / 2560, 1340 / 1440, 625 / 2560, 1400 / 1440),
+                                          is_log=self.is_log):
+                    enter_routine = True
+                    continue
+                else:
+                    if self.auto.click_element("战斗", "text", crop=(1510 / 1920, 450 / 1080, 1650 / 1920, 530 / 1080),
+                                               is_log=self.is_log, extract=[(39, 39, 56), 128]):
+                        time.sleep(1)
+                        continue
+                    if self.auto.click_element('行动', 'text', crop=(2085 / 2560, 716 / 1440, 2542 / 2560, 853 / 1440),
+                                               is_log=self.is_log):
+                        time.sleep(0.5)
+                        continue
+            elif not enter_battle:
+                # 找浴火之战
+                if self.auto.click_element('浴火之战', 'text', is_log=self.is_log):
+                    time.sleep(1)
+                    enter_battle = True
+                    continue
+                else:
+                    # 左滑
+                    self.auto.mouse_scroll(int(1280 / self.auto.scale_x), int(720 / self.auto.scale_y), -8500)
+                    time.sleep(0.5)
+            elif not enter_chasm:
+                # 找深渊
+                if self.auto.click_element(['深渊', '深', '渊'], 'text', is_log=self.is_log):
+                    time.sleep(1)
+                    enter_chasm = True
+                    continue
+                else:
+                    # 左滑屏幕到顶
+                    self.auto.mouse_scroll(int(1280 / self.auto.scale_x), int(720 / self.auto.scale_y), -8500)
+                    time.sleep(0.5)
+            elif not finish_flag:
+                # 找速战
+                if self.auto.find_element("恢复感知", "text",
+                                          crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
+                                          is_log=self.is_log):
+                    self.auto.press_key('esc')
+                    time.sleep(0.5)
+                    for _ in range(3):
+                        self.auto.take_screenshot()
+                        if self.auto.click_element('接收', 'text', crop=(982 / 1920, 964 / 1080, 1038 / 1920, 998 / 1080),
+                                                is_log=self.is_log):
+                            time.sleep(0.5)
+                            self.auto.press_key('esc')
+                            time.sleep(0.3)
+                    finish_flag = True
+                    time.sleep(0.3)
+                    self.auto.press_key('esc')
+                    time.sleep(0.5)
+                    continue
+
+                if self.auto.find_element(["快速", "作战"], 'text',
+                                          crop=(854 / 1920, 214 / 1080, 1054 / 1920, 286 / 1080)):
+                    time.sleep(0.3)
+                    self.auto.click_element_with_pos((int(1289 / self.auto.scale_x), int(732 / self.auto.scale_y)))
+                    time.sleep(0.2)
+                    self.auto.click_element_with_pos((int(980 / self.auto.scale_x), int(851 / self.auto.scale_y)))
+                    time.sleep(0.5)
+                    continue
+
+                if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
+                                           is_log=self.is_log):
+                    time.sleep(1)
+                    continue
+                if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                           is_log=self.is_log):
+                    time.sleep(0.5)
+                    for _ in range(3):
+                        self.auto.take_screenshot()
+                        if self.auto.click_element('接收', 'text', crop=(982 / 1920, 964 / 1080, 1038 / 1920, 998 / 1080),
+                                                is_log=self.is_log):
+                            time.sleep(0.5)
+                            self.auto.press_key('esc')
+                            time.sleep(0.5)
+                    finish_flag = True
+                    continue
+                if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                                           is_log=self.is_log):
+                    continue
+            else:
+                break
+
+            if timeout.reached():
+                self.logger.error("刷常规后勤超时")
                 break
         self.auto.back_to_home()
