@@ -26,6 +26,7 @@ class UsePowerModule:
             self.by_maneuver()
         elif config.ComboBox_power_usage.value == 1:
             self.by_routine_logistics()
+            self.by_maneuver(only_collect=True)
 
     def get_click_pos(self, name: str, n=3):
         """
@@ -132,10 +133,10 @@ class UsePowerModule:
                 break
         self.auto.back_to_home()
 
-    def by_maneuver(self):
-        """通过活动使用体力"""
+    def by_maneuver(self, only_collect=False):
+        """通过活动使用体力；only_collect=True 时仅进入活动页领取物资"""
         timeout = Timer(50).start()
-        finish_flag = False  # 是否完成体力刷取
+        finish_flag = only_collect  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
 
@@ -158,6 +159,43 @@ class UsePowerModule:
             self.auto.take_screenshot()
 
             if not enter_maneuver_flag:
+                if only_collect:
+                    # 仅领取活动物资时，直接进入活动任务页，不再点击材料本/深渊
+                    if self.auto.find_element(['剩余', '刷新', '天'], 'text',
+                                              crop=(826 / 2560, 239 / 1440, 1393 / 2560, 1188 / 1440),
+                                              is_log=self.is_log) or self.auto.find_element('领取', 'text', crop=(
+                            0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
+                        enter_maneuver_flag = True
+                        continue
+
+                    if self.auto.click_element("任务", "text", crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080),
+                                               offset=(-34 / self.auto.scale_x, 140 / self.auto.scale_y),
+                                               is_log=self.is_log):
+                        task_name = config.task_name.value
+                        if task_name:
+                            timeout_animation = Timer(10).start()
+                            while True:
+                                self.auto.take_screenshot()
+                                if self.auto.find_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                          is_log=self.is_log):
+                                    break
+                                if self.auto.find_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                          is_log=self.is_log):
+                                    break
+                                if self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
+                                                          is_log=self.is_log):
+                                    break
+                                time.sleep(0.5)
+
+                                if timeout.reached() or timeout_animation.reached():
+                                    self.logger.error("进入活动页面超时")
+                                    break
+                        else:
+                            time.sleep(1.5)
+
+                        enter_maneuver_flag = True
+                        continue
+
                 # 关卡未解锁
                 if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080),
                                           is_log=self.is_log):
@@ -286,7 +324,10 @@ class UsePowerModule:
                         continue
 
             if timeout.reached():
-                self.logger.error("刷活动体力超时")
+                if only_collect:
+                    self.logger.error("领取活动物资超时")
+                else:
+                    self.logger.error("刷活动体力超时")
                 break
         self.auto.back_to_home()
 
