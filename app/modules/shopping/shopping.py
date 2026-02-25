@@ -64,6 +64,10 @@ class ShoppingModule:
 
             if self.auto.find_element("常规物资", "text", crop=(89 / 1920, 140 / 1080, 220 / 1920, 191 / 1080),
                                       is_log=self.is_log):
+                self.auto.click_element("常规物资", "text", crop=(89 / 1920, 140 / 1080, 220 / 1920, 191 / 1080),
+                                        is_log=self.is_log)
+                time.sleep(0.3)
+                self.focus_store_list()
                 break
             if self.auto.click_element("商店", "text", crop=(1759 / 1920, 1002 / 1080, 1843 / 1920, 1050 / 1080),
                                        is_log=self.is_log):
@@ -86,7 +90,7 @@ class ShoppingModule:
         else:
             text = ""
 
-        self.scroll_to_bottom()
+        self.scroll_to_bottom(scroll_times=4)
         while True:
             # 所有商品处理完毕
             if len(buy_list) == len(finish_list):
@@ -101,7 +105,7 @@ class ShoppingModule:
                                               crop=(850 / 1920, 500 / 1080, 1070 / 1920, 900 / 1080),
                                               is_log=self.is_log):
                         continue
-                    if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1), is_log=self.is_log):
+                    if self.try_select_item(text):
                         time.sleep(0.3)
                         is_selected = True
                         continue
@@ -185,6 +189,29 @@ class ShoppingModule:
                 result_list.append(self.name_dic[key])
         return result_list
 
-    def scroll_to_bottom(self):
-        for _ in range(3):
-            self.auto.mouse_scroll(int(1552 / self.auto.scale_x), int(537 / self.auto.scale_y), -1200)
+    def focus_store_list(self):
+        self.auto.click_element_with_pos(
+            (int(520 / self.auto.scale_x), int(540 / self.auto.scale_y))
+        )
+        time.sleep(0.1)
+
+    def try_select_item(self, text, max_attempts=4):
+        for attempt in range(max_attempts):
+            if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1), is_log=self.is_log):
+                return True
+            if attempt < max_attempts - 1:
+                self.logger.info(f'未找到{text}，尝试滑动商店后重试({attempt + 1}/{max_attempts - 1})')
+                self.scroll_to_bottom(scroll_times=2)
+        return False
+
+    def scroll_to_bottom(self, scroll_times=3):
+        fallback_points = [
+            (1552, 537),
+            (960, 540),
+            (520, 540),
+        ]
+        for _ in range(scroll_times):
+            self.focus_store_list()
+            for x, y in fallback_points:
+                self.auto.mouse_scroll(int(x / self.auto.scale_x), int(y / self.auto.scale_y), -1200)
+                time.sleep(0.05)
