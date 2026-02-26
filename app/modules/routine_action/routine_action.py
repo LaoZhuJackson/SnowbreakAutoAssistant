@@ -90,6 +90,7 @@ class ActionModule:
 
     def enter_train(self):
         timeout = Timer(20).start()
+        scroll_no_progress_count = 0
 
         while True:
             self.auto.take_screenshot()
@@ -102,8 +103,14 @@ class ActionModule:
                 if not self.auto.click_element('实战训练', 'text',
                                                crop=(2168 / 2560, 1060 / 1440, 2400 / 2560, 1132 / 1440),
                                                is_log=self.is_log):
-                    self.auto.mouse_scroll(int(619 / self.auto.scale_x), int(866 / self.auto.scale_y), -8500)
+                    self.auto.mouse_scroll(int(619 / self.auto.scale_x), int(866 / self.auto.scale_y), -8500,
+                                           time_out=1.2)
+                    scroll_no_progress_count += 1
+                    if scroll_no_progress_count >= 6:
+                        self.logger.error("进入常规行动时连续滚轮无进展，已停止以避免后台卡死")
+                        break
                 else:
+                    scroll_no_progress_count = 0
                     break
             else:
                 if self.auto.click_element("战斗", "text", crop=(1510 / 1920, 450 / 1080, 1650 / 1920, 530 / 1080),
