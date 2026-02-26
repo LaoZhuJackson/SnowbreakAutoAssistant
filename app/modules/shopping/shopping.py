@@ -211,7 +211,6 @@ class ShoppingModule:
             (520, 540),
         ]
         for _ in range(scroll_times):
-            self.focus_store_list()
             for x, y in fallback_points:
                 self.auto.mouse_scroll(int(x / self.auto.scale_x), int(y / self.auto.scale_y), -1200)
                 time.sleep(0.05)
