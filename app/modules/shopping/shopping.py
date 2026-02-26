@@ -50,6 +50,12 @@ class ShoppingModule:
             "item_weapon_2": "草莓蛋糕",
             "item_weapon_3": "深海呼唤",
         }
+        self.scroll_fallback_points = [
+            (960, 540),
+            (1552, 537),
+            (520, 540),
+        ]
+        self.scroll_point_index = 0
 
     def run(self):
         self.is_log = config.isLog.value
@@ -66,8 +72,7 @@ class ShoppingModule:
                                       is_log=self.is_log):
                 self.auto.click_element("常规物资", "text", crop=(89 / 1920, 140 / 1080, 220 / 1920, 191 / 1080),
                                         is_log=self.is_log)
-                time.sleep(0.3)
-                self.focus_store_list()
+                time.sleep(0.5)
                 break
             if self.auto.click_element("商店", "text", crop=(1759 / 1920, 1002 / 1080, 1843 / 1920, 1050 / 1080),
                                        is_log=self.is_log):
@@ -90,7 +95,8 @@ class ShoppingModule:
         else:
             text = ""
 
-        self.scroll_to_bottom(scroll_times=4)
+        # 开局轻滚一次，避免大量预滚动导致鼠标闪烁
+        self.scroll_to_bottom(scroll_times=1)
         while True:
             # 所有商品处理完毕
             if len(buy_list) == len(finish_list):
@@ -189,28 +195,30 @@ class ShoppingModule:
                 result_list.append(self.name_dic[key])
         return result_list
 
-    def focus_store_list(self):
-        self.auto.click_element_with_pos(
-            (int(520 / self.auto.scale_x), int(540 / self.auto.scale_y))
-        )
-        time.sleep(0.1)
-
     def try_select_item(self, text, max_attempts=4):
         for attempt in range(max_attempts):
             if self.auto.click_element(text, 'text', crop=(302 / 1920, 194 / 1080, 1, 1), is_log=self.is_log):
                 return True
             if attempt < max_attempts - 1:
                 self.logger.info(f'未找到{text}，尝试滑动商店后重试({attempt + 1}/{max_attempts - 1})')
-                self.scroll_to_bottom(scroll_times=2)
+                self.scroll_to_bottom(scroll_times=1)
         return False
 
     def scroll_to_bottom(self, scroll_times=3):
-        fallback_points = [
-            (1552, 537),
-            (960, 540),
-            (520, 540),
-        ]
         for _ in range(scroll_times):
-            for x, y in fallback_points:
-                self.auto.mouse_scroll(int(x / self.auto.scale_x), int(y / self.auto.scale_y), -1200)
-                time.sleep(0.05)
+            if not self.scroll_once():
+                self.logger.warn("商店滚动失败：本轮所有滚轮点位均未生效")
+
+    def scroll_once(self):
+        total = len(self.scroll_fallback_points)
+        for offset in range(total):
+            idx = (self.scroll_point_index + offset) % total
+            x, y = self.scroll_fallback_points[idx]
+            sx = int(x / self.auto.scale_x)
+            sy = int(y / self.auto.scale_y)
+            self.auto.move_to(sx, sy)
+            if self.auto.mouse_scroll(sx, sy, -1200, time_out=0.8):
+                self.scroll_point_index = (idx + 1) % total
+                time.sleep(0.03)
+                return True
+        return False
