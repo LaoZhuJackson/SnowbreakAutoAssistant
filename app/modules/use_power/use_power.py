@@ -24,6 +24,9 @@ class UsePowerModule:
             self.check_power()
         if config.ComboBox_power_usage.value == 0:
             self.by_maneuver()
+        elif config.ComboBox_power_usage.value == 1:
+            self.by_routine_logistics()
+            self.by_maneuver(only_collect=True)
 
     def get_click_pos(self, name: str, n=3):
         """
@@ -57,6 +60,12 @@ class UsePowerModule:
         x2 = int(float(coords.x2) * scale_x)
         y2 = int(float(coords.y2) * scale_y)
         return random_rectangle_point(((x1, y1), (x2, y2)), n=n)
+
+    def is_in_home(self):
+        """是否位于主页面"""
+        return self.auto.find_element('基地', 'text', crop=(
+                1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
+                '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log)
 
     def check_power(self):
         timeout = Timer(50).start()
@@ -120,22 +129,113 @@ class UsePowerModule:
                         confirm_flag = False
                         continue
             if not confirm_flag and not enter_power_select:
-                # if self.auto.click_element('app/resource/images/use_power/stamina.png', 'image',
-                #                            crop=(833 / 1920, 0, 917 / 1920, 68 / 1080)):
-                self.auto.click_element_with_pos(pos=(int(910 / self.auto.scale_x), int(35 / self.auto.scale_y)))
-                time.sleep(0.5)
-                continue
+                if self.auto.click_element('app/resource/images/use_power/stamina.png', 'image',
+                                           crop=(833 / 1920, 0, 917 / 1920, 68 / 1080),
+                                           threshold=0.7,
+                                           is_log=self.is_log):
+                    time.sleep(0.5)
+                    continue
+                # 兜底固定坐标仅在主页面可见时使用，避免误触顶部其它按钮
+                if self.auto.find_element('基地', 'text', crop=(
+                        1598 / 1920, 678 / 1080, 1661 / 1920, 736 / 1080), is_log=self.is_log) and self.auto.find_element(
+                        '任务', 'text', crop=(1452 / 1920, 327 / 1080, 1529 / 1920, 376 / 1080), is_log=self.is_log):
+                    self.auto.click_element_with_pos(pos=(int(910 / self.auto.scale_x), int(35 / self.auto.scale_y)))
+                    time.sleep(0.5)
+                    continue
             if timeout.reached():
                 self.logger.error("检查体力超时")
                 break
         self.auto.back_to_home()
 
-    def by_maneuver(self):
-        """通过活动使用体力"""
+    def wait_activity_task_tab(self, timeout_seconds=10):
+        """等待活动页面任务入口稳定显示"""
+        timeout_animation = Timer(timeout_seconds).start()
+        task_name = config.task_name.value
+        while True:
+            self.auto.take_screenshot()
+            if task_name and self.auto.find_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                    is_log=self.is_log):
+                return True
+            if self.auto.find_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1), is_log=self.is_log):
+                return True
+            if timeout_animation.reached():
+                return False
+            time.sleep(0.5)
+
+    def wait_activity_reward_page(self, timeout_seconds=8):
+        """等待活动任务奖励页面加载完成"""
+        timeout_reward = Timer(timeout_seconds).start()
+        while True:
+            self.auto.take_screenshot()
+            if self.auto.find_element(['剩余', '刷新', '天'], 'text',
+                                      crop=(826 / 2560, 239 / 1440, 1393 / 2560, 1188 / 1440),
+                                      is_log=self.is_log) or self.auto.find_element('领取', 'text', crop=(
+                    0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
+                return True
+            if timeout_reward.reached():
+                return False
+            time.sleep(0.3)
+
+    def open_activity_reward_page(self, max_attempts=3):
+        """打开活动任务奖励页面并确认进入，失败时自动重试"""
+        task_name = config.task_name.value
+        for attempt in range(1, max_attempts + 1):
+            self.auto.take_screenshot()
+            in_home = self.is_in_home()
+            if not in_home and self.wait_activity_reward_page(timeout_seconds=1):
+                has_reward = self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
+                                                    is_log=self.is_log)
+                if has_reward:
+                    self.logger.info("已进入活动奖励页面，检测到可领取奖励")
+                else:
+                    self.logger.info("已进入活动奖励页面，当前无可领取奖励")
+                return True
+
+            # 在活动页内，优先点任务标签/活动名
+            clicked_task = self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                   is_log=self.is_log)
+            if not clicked_task and task_name:
+                clicked_task = self.auto.click_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                       is_log=self.is_log)
+
+            # 若仍在主页面，再执行从主页跳活动页
+            if not clicked_task and in_home:
+                if self.auto.click_element("任务", "text", crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080),
+                                           offset=(-34 / self.auto.scale_x, 140 / self.auto.scale_y),
+                                           is_log=self.is_log):
+                    if not self.wait_activity_task_tab(timeout_seconds=8):
+                        self.logger.warn(f"第{attempt}次进入活动页面失败，准备重试")
+                        continue
+                    clicked_task = self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                           is_log=self.is_log)
+                    if not clicked_task and task_name:
+                        clicked_task = self.auto.click_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                               is_log=self.is_log)
+
+            if not clicked_task:
+                self.logger.warn(f"第{attempt}次未找到活动任务入口，准备重试")
+                continue
+
+            if self.wait_activity_reward_page(timeout_seconds=8):
+                has_reward = self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
+                                                    is_log=self.is_log)
+                if has_reward:
+                    self.logger.info("已打开活动奖励页面，检测到可领取奖励")
+                else:
+                    self.logger.info("已打开活动奖励页面，当前无可领取奖励")
+                return True
+
+            self.logger.warn(f"第{attempt}次活动奖励页面未打开，准备重试")
+
+        return False
+
+    def by_maneuver(self, only_collect=False):
+        """通过活动使用体力；only_collect=True 时仅进入活动页领取物资"""
         timeout = Timer(50).start()
-        finish_flag = False  # 是否完成体力刷取
+        finish_flag = only_collect  # 是否完成体力刷取
         enter_task = False  # 是否进入任务界面
         enter_maneuver_flag = False  # 是否进入活动页面
+        reward_status_logged = False
 
         config_data = parse_config_update_data(config.update_data.value)
         if not config_data:
@@ -156,6 +256,20 @@ class UsePowerModule:
             self.auto.take_screenshot()
 
             if not enter_maneuver_flag:
+                if only_collect:
+                    # 仅领取活动物资时，直接进入活动任务页，不再点击材料本/深渊
+                    if self.wait_activity_reward_page(timeout_seconds=2):
+                        enter_maneuver_flag = True
+                        continue
+
+                    if self.open_activity_reward_page(max_attempts=3):
+                        enter_maneuver_flag = True
+                        continue
+                    else:
+                        self.logger.warn("活动奖励页面未成功打开，继续重试")
+                        time.sleep(0.5)
+                        continue
+
                 # 关卡未解锁
                 if self.auto.find_element('解锁', 'text', crop=(717 / 1920, 441 / 1080, 1211 / 1920, 621 / 1080),
                                           is_log=self.is_log):
@@ -207,24 +321,8 @@ class UsePowerModule:
                 if self.auto.click_element("任务", "text", crop=(1445 / 1920, 321 / 1080, 1552 / 1920, 398 / 1080),
                                            offset=(-34 / self.auto.scale_x, 140 / self.auto.scale_y),
                                            is_log=self.is_log):
-                    # 等待动画过渡
-                    task_name = config.task_name.value
-                    if task_name:
-                        timeout_animation = Timer(10).start()
-                        while True:
-                            self.auto.take_screenshot()
-                            if self.auto.find_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
-                                                      is_log=self.is_log):
-                                break
-                            if self.auto.find_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1), is_log=self.is_log):
-                                break
-                            time.sleep(0.5)
-
-                            if timeout.reached() or timeout_animation.reached():
-                                self.logger.error("进入活动页面超时")
-                                break
-                    else:
-                        time.sleep(1.5)
+                    if not self.wait_activity_task_tab(timeout_seconds=10):
+                        self.logger.error("进入活动页面超时")
                     continue
             else:
                 if finish_flag:
@@ -233,8 +331,14 @@ class UsePowerModule:
                                               is_log=self.is_log) or self.auto.find_element('领取', 'text', crop=(
                             0, 937 / 1080, 266 / 1920, 1), is_log=self.is_log):
                         enter_task = True
-                        # 等动画
-                        time.sleep(0.5)
+                        if not reward_status_logged:
+                            has_reward = self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
+                                                                is_log=self.is_log)
+                            if has_reward:
+                                self.logger.info("活动奖励页面已就绪，检测到可领取奖励")
+                            else:
+                                self.logger.info("活动奖励页面已就绪，当前无可领取奖励")
+                            reward_status_logged = True
                     if enter_task:
                         if self.auto.click_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
                                                    is_log=self.is_log):
@@ -242,15 +346,18 @@ class UsePowerModule:
                         if not self.auto.find_element('领取', 'text', crop=(0, 937 / 1080, 266 / 1920, 1),
                                                       is_log=self.is_log):
                             break
-                    if self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1),
-                                               is_log=self.is_log):
-                        time.sleep(0.2)
+                    task_name = config.task_name.value
+                    clicked_task = self.auto.click_element('任务', 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                          is_log=self.is_log)
+                    if not clicked_task and task_name:
+                        clicked_task = self.auto.click_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1),
+                                                              is_log=self.is_log)
+                    if clicked_task:
+                        if self.wait_activity_reward_page(timeout_seconds=8):
+                            enter_task = True
+                        else:
+                            self.logger.warn("等待活动任务奖励页面超时，重试打开任务")
                         continue
-                    else:
-                        task_name = config.task_name.value
-                        if task_name:
-                            self.auto.click_element(task_name, 'text', crop=(0, 1280 / 1440, 1, 1), is_log=self.is_log)
-                            time.sleep(0.2)
                 else:
                     if self.auto.find_element("恢复感知", "text",
                                               crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
@@ -277,12 +384,133 @@ class UsePowerModule:
                         continue
                     if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
                                                is_log=self.is_log):
+                        finish_flag = True
                         continue
                     if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
                                                is_log=self.is_log):
                         continue
 
             if timeout.reached():
-                self.logger.error("刷活动体力超时")
+                if only_collect:
+                    self.logger.error("领取活动物资超时")
+                else:
+                    self.logger.error("刷活动体力超时")
                 break
         self.auto.back_to_home()
+
+    def by_routine_logistics(self):
+        """通过常规后勤使用体力"""
+        timeout = Timer(50).start()
+        enter_routine = False
+        enter_battle = False
+        enter_chasm = False
+        finish_flag = False
+        scroll_no_progress_count = 0
+
+        while True:
+            self.auto.take_screenshot()
+
+            if not enter_routine:
+                # 进入常规行动
+                if self.auto.find_element('行动', 'text', crop=(480 / 2560, 1340 / 1440, 625 / 2560, 1400 / 1440),
+                                          is_log=self.is_log):
+                    enter_routine = True
+                    continue
+                else:
+                    if self.auto.click_element("战斗", "text", crop=(1510 / 1920, 450 / 1080, 1650 / 1920, 530 / 1080),
+                                               is_log=self.is_log, extract=[(39, 39, 56), 128]):
+                        time.sleep(1)
+                        continue
+                    if self.auto.click_element('行动', 'text', crop=(2085 / 2560, 716 / 1440, 2542 / 2560, 853 / 1440),
+                                               is_log=self.is_log):
+                        time.sleep(0.5)
+                        continue
+            elif not enter_battle:
+                # 找浴火之战
+                if self.auto.click_element('浴火之战', 'text', is_log=self.is_log):
+                    time.sleep(1)
+                    enter_battle = True
+                    scroll_no_progress_count = 0
+                    continue
+                else:
+                    # 左滑
+                    self.auto.mouse_scroll(int(1280 / self.auto.scale_x), int(720 / self.auto.scale_y), -8500,
+                                           time_out=1.2)
+                    scroll_no_progress_count += 1
+                    if scroll_no_progress_count >= 6:
+                        self.logger.error("查找“浴火之战”连续滚轮无进展，已停止以避免后台卡死")
+                        break
+                    time.sleep(0.5)
+            elif not enter_chasm:
+                # 找深渊
+                if self.auto.click_element(['深渊', '深', '渊'], 'text', is_log=self.is_log):
+                    time.sleep(1)
+                    enter_chasm = True
+                    scroll_no_progress_count = 0
+                    continue
+                else:
+                    # 左滑屏幕到顶
+                    self.auto.mouse_scroll(int(1280 / self.auto.scale_x), int(720 / self.auto.scale_y), -8500,
+                                           time_out=1.2)
+                    scroll_no_progress_count += 1
+                    if scroll_no_progress_count >= 6:
+                        self.logger.error("查找“深渊”连续滚轮无进展，已停止以避免后台卡死")
+                        break
+                    time.sleep(0.5)
+            elif not finish_flag:
+                # 找速战
+                if self.auto.find_element("恢复感知", "text",
+                                          crop=(1044 / 1920, 295 / 1080, 1487 / 1920, 402 / 1080),
+                                          is_log=self.is_log):
+                    self.auto.press_key('esc')
+                    time.sleep(0.5)
+                    for _ in range(3):
+                        self.auto.take_screenshot()
+                        if self.auto.click_element('接收', 'text', crop=(982 / 1920, 964 / 1080, 1038 / 1920, 998 / 1080),
+                                                is_log=self.is_log):
+                            time.sleep(0.5)
+                            self.auto.press_key('esc')
+                            time.sleep(0.3)
+                    finish_flag = True
+                    time.sleep(0.3)
+                    self.auto.press_key('esc')
+                    time.sleep(0.5)
+                    continue
+
+                if self.auto.find_element(["快速", "作战"], 'text',
+                                          crop=(854 / 1920, 214 / 1080, 1054 / 1920, 286 / 1080)):
+                    time.sleep(0.3)
+                    self.auto.click_element_with_pos((int(1289 / self.auto.scale_x), int(732 / self.auto.scale_y)))
+                    time.sleep(0.2)
+                    self.auto.click_element_with_pos((int(980 / self.auto.scale_x), int(851 / self.auto.scale_y)))
+                    time.sleep(0.5)
+                    continue
+
+                if self.auto.click_element('速战', 'text', crop=(1368 / 1920, 963 / 1080, 1592 / 1920, 1),
+                                           is_log=self.is_log):
+                    time.sleep(1)
+                    continue
+                if self.auto.click_element('完成', 'text', crop=(880 / 1920, 968 / 1080, 1033 / 1920, 1024 / 1080),
+                                           is_log=self.is_log):
+                    time.sleep(0.5)
+                    for _ in range(3):
+                        self.auto.take_screenshot()
+                        if self.auto.click_element('接收', 'text', crop=(982 / 1920, 964 / 1080, 1038 / 1920, 998 / 1080),
+                                                is_log=self.is_log):
+                            time.sleep(0.5)
+                            self.auto.press_key('esc')
+                            time.sleep(0.5)
+                    finish_flag = True
+                    continue
+                if self.auto.click_element('等级提升', 'text', crop=(824 / 1920, 0, 1089 / 1920, 129 / 1080),
+                                           is_log=self.is_log):
+                    continue
+            else:
+                break
+
+            if timeout.reached():
+                self.logger.error("刷常规后勤超时")
+                break
+        self.auto.take_screenshot()
+        if not self.is_in_home():
+            self.auto.back_to_home()

@@ -196,7 +196,7 @@ class Home(QFrame, Ui_home, BaseInterface):
         # 设置combobox选项
         after_use_items = ['无动作', '退出游戏和代理', '退出代理', '退出游戏']
         power_day_items = ['1', '2', '3', '4', '5', '6']
-        power_usage_items = ['活动材料本', '其他待开发']
+        power_usage_items = ['活动材料本', '刷常规后勤']
         self.ComboBox_after_use.addItems(after_use_items)
         self.ComboBox_power_day.addItems(power_day_items)
         self.ComboBox_power_usage.addItems(power_usage_items)
