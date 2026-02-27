@@ -571,6 +571,154 @@ class Ui_additional_features(object):
         self.gridLayout_25.setColumnStretch(0, 2)
         self.gridLayout_25.setColumnStretch(1, 1)
         self.stackedWidget.addWidget(self.page_card)
+                # =========================
+        # page_capture_pals（抓帕鲁）
+        # =========================
+        self.page_capture_pals = QtWidgets.QWidget()
+        self.page_capture_pals.setObjectName("page_capture_pals")
+        self.gridLayout_capture_pals = QtWidgets.QGridLayout(self.page_capture_pals)
+        self.gridLayout_capture_pals.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_capture_pals.setSpacing(2)
+        self.gridLayout_capture_pals.setObjectName("gridLayout_capture_pals")
+
+        # 左侧：参数卡
+        self.SimpleCardWidget_capture_pals = SimpleCardWidget(self.page_capture_pals)
+        self.SimpleCardWidget_capture_pals.setObjectName("SimpleCardWidget_capture_pals")
+        self.gridLayout_capture_pals_card = QtWidgets.QGridLayout(self.SimpleCardWidget_capture_pals)
+        self.gridLayout_capture_pals_card.setObjectName("gridLayout_capture_pals_card")
+
+        # 伙伴岛模式
+        self.BodyLabel_capture_pals_partner_mode = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_partner_mode.setObjectName("BodyLabel_capture_pals_partner_mode")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_partner_mode, 0, 0, 1, 1)
+        self.ComboBox_capture_pals_partner_mode = ComboBox(self.SimpleCardWidget_capture_pals)
+        self.ComboBox_capture_pals_partner_mode.setObjectName("ComboBox_capture_pals_partner_mode")
+        self.gridLayout_capture_pals_card.addWidget(self.ComboBox_capture_pals_partner_mode, 0, 1, 1, 2)
+
+        # 探险岛模式
+        self.BodyLabel_capture_pals_adventure_mode = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_adventure_mode.setObjectName("BodyLabel_capture_pals_adventure_mode")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_adventure_mode, 1, 0, 1, 1)
+        self.ComboBox_capture_pals_adventure_mode = ComboBox(self.SimpleCardWidget_capture_pals)
+        self.ComboBox_capture_pals_adventure_mode.setObjectName("ComboBox_capture_pals_adventure_mode")
+        self.gridLayout_capture_pals_card.addWidget(self.ComboBox_capture_pals_adventure_mode, 1, 1, 1, 2)
+
+        # 选择岛
+        self.StrongBodyLabel_capture_pals_island = StrongBodyLabel(self.SimpleCardWidget_capture_pals)
+        self.StrongBodyLabel_capture_pals_island.setObjectName("StrongBodyLabel_capture_pals_island")
+        self.gridLayout_capture_pals_card.addWidget(self.StrongBodyLabel_capture_pals_island, 2, 0, 1, 3)
+
+        self.CheckBox_capture_pals_partner = CheckBox(self.SimpleCardWidget_capture_pals)
+        self.CheckBox_capture_pals_partner.setObjectName("CheckBox_capture_pals_partner")
+        self.gridLayout_capture_pals_card.addWidget(self.CheckBox_capture_pals_partner, 3, 0, 1, 3)
+
+        self.CheckBox_capture_pals_adventure = CheckBox(self.SimpleCardWidget_capture_pals)
+        self.CheckBox_capture_pals_adventure.setObjectName("CheckBox_capture_pals_adventure")
+        self.gridLayout_capture_pals_card.addWidget(self.CheckBox_capture_pals_adventure, 4, 0, 1, 3)
+
+        # 同步抓帕鲁（仅双岛勾选时有效）
+        self.CheckBox_capture_pals_sync = CheckBox(self.SimpleCardWidget_capture_pals)
+        self.CheckBox_capture_pals_sync.setObjectName("CheckBox_capture_pals_sync")
+        self.gridLayout_capture_pals_card.addWidget(self.CheckBox_capture_pals_sync, 5, 0, 1, 3)
+
+        self.BodyLabel_capture_pals_sync_every = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_sync_every.setObjectName("BodyLabel_capture_pals_sync_every")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_sync_every, 6, 0, 1, 1)
+
+
+        # 伙伴岛间隔
+        self.StrongBodyLabel_capture_pals_partner = StrongBodyLabel(self.SimpleCardWidget_capture_pals)
+        self.StrongBodyLabel_capture_pals_partner.setObjectName("StrongBodyLabel_capture_pals_partner")
+        self.gridLayout_capture_pals_card.addWidget(self.StrongBodyLabel_capture_pals_partner, 7, 0, 1, 3)
+
+        self.BodyLabel_capture_pals_partner_fixed = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_partner_fixed.setObjectName("BodyLabel_capture_pals_partner_fixed")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_partner_fixed, 8, 0, 1, 1)
+
+        self.SpinBox_capture_pals_partner_fixed_interval = SpinBox(self.SimpleCardWidget_capture_pals)
+        self.SpinBox_capture_pals_partner_fixed_interval.setMinimum(1)
+        self.SpinBox_capture_pals_partner_fixed_interval.setMaximum(999999)
+        self.SpinBox_capture_pals_partner_fixed_interval.setObjectName("SpinBox_capture_pals_partner_fixed_interval")
+        self.gridLayout_capture_pals_card.addWidget(self.SpinBox_capture_pals_partner_fixed_interval, 8, 1, 1, 2)
+
+        self.BodyLabel_capture_pals_partner_patrol = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_partner_patrol.setObjectName("BodyLabel_capture_pals_partner_patrol")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_partner_patrol, 9, 0, 1, 1)
+
+        self.SpinBox_capture_pals_partner_patrol_interval = SpinBox(self.SimpleCardWidget_capture_pals)
+        self.SpinBox_capture_pals_partner_patrol_interval.setMinimum(1)
+        self.SpinBox_capture_pals_partner_patrol_interval.setMaximum(999999)
+        self.SpinBox_capture_pals_partner_patrol_interval.setObjectName("SpinBox_capture_pals_partner_patrol_interval")
+        self.gridLayout_capture_pals_card.addWidget(self.SpinBox_capture_pals_partner_patrol_interval, 9, 1, 1, 2)
+
+        # 探险岛间隔
+        self.StrongBodyLabel_capture_pals_adventure = StrongBodyLabel(self.SimpleCardWidget_capture_pals)
+        self.StrongBodyLabel_capture_pals_adventure.setObjectName("StrongBodyLabel_capture_pals_adventure")
+        self.gridLayout_capture_pals_card.addWidget(self.StrongBodyLabel_capture_pals_adventure, 10, 0, 1, 3)
+
+        self.BodyLabel_capture_pals_adventure_fixed = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_adventure_fixed.setObjectName("BodyLabel_capture_pals_adventure_fixed")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_adventure_fixed, 11, 0, 1, 1)
+
+        self.SpinBox_capture_pals_adventure_fixed_interval = SpinBox(self.SimpleCardWidget_capture_pals)
+        self.SpinBox_capture_pals_adventure_fixed_interval.setMinimum(1)
+        self.SpinBox_capture_pals_adventure_fixed_interval.setMaximum(999999)
+        self.SpinBox_capture_pals_adventure_fixed_interval.setObjectName("SpinBox_capture_pals_adventure_fixed_interval")
+        self.gridLayout_capture_pals_card.addWidget(self.SpinBox_capture_pals_adventure_fixed_interval, 11, 1, 1, 2)
+
+        self.BodyLabel_capture_pals_adventure_patrol = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_capture_pals_adventure_patrol.setObjectName("BodyLabel_capture_pals_adventure_patrol")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_capture_pals_adventure_patrol, 12, 0, 1, 1)
+
+        self.SpinBox_capture_pals_adventure_patrol_interval = SpinBox(self.SimpleCardWidget_capture_pals)
+        self.SpinBox_capture_pals_adventure_patrol_interval.setMinimum(1)
+        self.SpinBox_capture_pals_adventure_patrol_interval.setMaximum(999999)
+        self.SpinBox_capture_pals_adventure_patrol_interval.setObjectName("SpinBox_capture_pals_adventure_patrol_interval")
+        self.gridLayout_capture_pals_card.addWidget(self.SpinBox_capture_pals_adventure_patrol_interval, 12, 1, 1, 2)
+
+        # 提示文本
+        spacerItem_capture = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_capture_pals_card.addItem(spacerItem_capture, 13, 0, 1, 1)
+
+        self.BodyLabel_tip_capture_pals = BodyLabel(self.SimpleCardWidget_capture_pals)
+        self.BodyLabel_tip_capture_pals.setText("")
+        self.BodyLabel_tip_capture_pals.setTextFormat(QtCore.Qt.MarkdownText)
+        self.BodyLabel_tip_capture_pals.setWordWrap(True)
+        self.BodyLabel_tip_capture_pals.setObjectName("BodyLabel_tip_capture_pals")
+        self.gridLayout_capture_pals_card.addWidget(self.BodyLabel_tip_capture_pals, 14, 0, 1, 3)
+
+        # 将参数卡放到页面
+        self.gridLayout_capture_pals.addWidget(self.SimpleCardWidget_capture_pals, 0, 0, 1, 1)
+
+        # 启动按钮
+        self.PushButton_start_capture_pals = PushButton(self.page_capture_pals)
+        self.PushButton_start_capture_pals.setObjectName("PushButton_start_capture_pals")
+        self.gridLayout_capture_pals.addWidget(self.PushButton_start_capture_pals, 1, 0, 1, 1)
+
+        # 右侧：日志卡
+        self.SimpleCardWidget_log_capture_pals = SimpleCardWidget(self.page_capture_pals)
+        self.SimpleCardWidget_log_capture_pals.setObjectName("SimpleCardWidget_log_capture_pals")
+        self.gridLayout_log_capture_pals = QtWidgets.QGridLayout(self.SimpleCardWidget_log_capture_pals)
+        self.gridLayout_log_capture_pals.setObjectName("gridLayout_log_capture_pals")
+
+        self.TitleLabel_log_capture_pals = TitleLabel(self.SimpleCardWidget_log_capture_pals)
+        self.TitleLabel_log_capture_pals.setObjectName("TitleLabel_log_capture_pals")
+        self.gridLayout_log_capture_pals.addWidget(self.TitleLabel_log_capture_pals, 0, 0, 1, 1)
+
+        self.textBrowser_log_capture_pals = QtWidgets.QTextBrowser(self.SimpleCardWidget_log_capture_pals)
+        self.textBrowser_log_capture_pals.setStyleSheet("")
+        self.textBrowser_log_capture_pals.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.textBrowser_log_capture_pals.setObjectName("textBrowser_log_capture_pals")
+        self.gridLayout_log_capture_pals.addWidget(self.textBrowser_log_capture_pals, 1, 0, 1, 1)
+
+        self.gridLayout_capture_pals.addWidget(self.SimpleCardWidget_log_capture_pals, 0, 1, 2, 1)
+
+        # 列宽与其它页保持一致（左2右1）
+        self.gridLayout_capture_pals.setColumnStretch(0, 2)
+        self.gridLayout_capture_pals.setColumnStretch(1, 1)
+
+        self.stackedWidget.addWidget(self.page_capture_pals)
+
         self.gridLayout.addWidget(self.stackedWidget, 1, 0, 1, 1)
         self.SegmentedWidget = SegmentedWidget(additional_features)
         self.SegmentedWidget.setObjectName("SegmentedWidget")
@@ -646,6 +794,21 @@ class Ui_additional_features(object):
         self.CheckBox_is_speed_up.setText(_translate("additional_features", "是否已手动开启倍速"))
         self.TitleLabel_7.setText(_translate("additional_features", "日志"))
         self.PushButton_start_drink.setText(_translate("additional_features", "开始喝酒"))
+        self.BodyLabel_capture_pals_partner_mode.setText(_translate("additional_features", "伙伴岛模式"))
+        self.BodyLabel_capture_pals_adventure_mode.setText(_translate("additional_features", "探险岛模式"))
+        self.StrongBodyLabel_capture_pals_island.setText(_translate("additional_features", "选择岛屿"))
+        self.CheckBox_capture_pals_partner.setText(_translate("additional_features", "伙伴岛"))
+        self.CheckBox_capture_pals_adventure.setText(_translate("additional_features", "探险岛"))
+        self.CheckBox_capture_pals_sync.setText(_translate("additional_features", "同步抓帕鲁"))
+        self.StrongBodyLabel_capture_pals_partner.setText(_translate("additional_features", "伙伴岛参数"))
+        self.BodyLabel_capture_pals_partner_fixed.setText(_translate("additional_features", "定点间隔(秒)"))
+        self.BodyLabel_capture_pals_partner_patrol.setText(_translate("additional_features", "巡逻间隔(秒)"))
+        self.StrongBodyLabel_capture_pals_adventure.setText(_translate("additional_features", "探险岛参数"))
+        self.BodyLabel_capture_pals_adventure_fixed.setText(_translate("additional_features", "定点间隔(秒)"))
+        self.BodyLabel_capture_pals_adventure_patrol.setText(_translate("additional_features", "巡逻间隔(秒)"))
+        self.PushButton_start_capture_pals.setText(_translate("additional_features", "开始抓帕鲁"))
+        self.TitleLabel_log_capture_pals.setText(_translate("additional_features", "日志"))
+
 
 
 from qfluentwidgets import BodyLabel, CheckBox, ComboBox, LineEdit, PixmapLabel, PrimaryPushButton, PushButton, \

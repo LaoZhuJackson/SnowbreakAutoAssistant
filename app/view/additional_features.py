@@ -23,12 +23,14 @@ from app.modules.massaging.massaging import MassagingModule
 from app.modules.maze.maze import MazeModule
 from app.modules.routine_action.routine_action import ActionModule
 from app.modules.water_bomb.water_bomb import WaterBombModule
+from app.modules.capture_pals.capture_pals import CapturePalsModule
 from app.ui.additional_features_interface import Ui_additional_features
 from app.view.base_interface import BaseInterface
 from app.view.subtask import AdjustColor, SubTask
 
 
 class Additional(QFrame, Ui_additional_features, BaseInterface):
+
     def __init__(self, text: str, parent=None):
         super().__init__()
         self.setting_name_list = ['商店', '体力', '奖励']
@@ -45,6 +47,7 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.is_running_maze = False
         self.is_running_massaging = False
         self.is_running_drink = False
+        self.is_running_capture_pals = False
         self.color_pixmap = None
         self.hsv_value = None
         self.jigsaw_solution_pixmap = None
@@ -55,45 +58,88 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def _initWidget(self):
         # 正向链接
-        self.SegmentedWidget.addItem(self.page_fishing.objectName(), '钓鱼',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_fishing))
-        self.SegmentedWidget.addItem(self.page_action.objectName(), '常规行动',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_action))
-        self.SegmentedWidget.addItem(self.page_jigsaw.objectName(), '信源解析',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_jigsaw))
-        self.SegmentedWidget.addItem(self.page_water_bomb.objectName(), '心动水弹',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_water_bomb))
-        self.SegmentedWidget.addItem(self.page_alien_guardian.objectName(), '异星守护',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_alien_guardian))
-        self.SegmentedWidget.addItem(self.page_maze.objectName(), '验证战场',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_maze))
-        self.SegmentedWidget.addItem(self.page_massaging.objectName(), '按摩',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_massaging))
-        self.SegmentedWidget.addItem(self.page_card.objectName(), '猜心对局',
-                                     onClick=lambda: self.stackedWidget.setCurrentWidget(self.page_card))
+        self.SegmentedWidget.addItem(self.page_fishing.objectName(),
+                                     '钓鱼',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_fishing))
+        self.SegmentedWidget.addItem(self.page_action.objectName(),
+                                     '常规行动',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_action))
+        self.SegmentedWidget.addItem(self.page_jigsaw.objectName(),
+                                     '信源解析',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_jigsaw))
+        self.SegmentedWidget.addItem(self.page_water_bomb.objectName(),
+                                     '心动水弹',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_water_bomb))
+        self.SegmentedWidget.addItem(
+            self.page_alien_guardian.objectName(),
+            '异星守护',
+            onClick=lambda: self.stackedWidget.setCurrentWidget(
+                self.page_alien_guardian))
+        self.SegmentedWidget.addItem(self.page_maze.objectName(),
+                                     '验证战场',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_maze))
+        self.SegmentedWidget.addItem(self.page_massaging.objectName(),
+                                     '按摩',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_massaging))
+        self.SegmentedWidget.addItem(self.page_card.objectName(),
+                                     '猜心对局',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_card))
+        self.SegmentedWidget.addItem(self.page_capture_pals.objectName(),
+                                     '抓帕鲁',
+                                     onClick=lambda: self.stackedWidget.
+                                     setCurrentWidget(self.page_capture_pals))
         self.SegmentedWidget.setCurrentItem(self.page_fishing.objectName())
         self.stackedWidget.setCurrentIndex(0)
         self.ComboBox_fishing_mode.addItems(
             ["高性能（消耗性能高速判断，准确率高）", "低性能（超时自动拉杆，准确率较低）"])
         self.BodyLabel_tip_fish.setText(
-            "### 提示\n* 为实现纯后台，现已不支持鼠标侧键\n* 钓鱼角色选择分析员，否则无法正常工作\n* 根据游戏右下角手动设置好抛竿按键、钓鱼次数和鱼饵类型后再点开始\n* 珍奇钓鱼点每天最多钓25次\n* 稀有钓鱼点每天最多钓50次\n* 普通钓鱼点无次数限制\n* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次\n* 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域\n")
+            "### 提示\n* 为实现纯后台，现已不支持鼠标侧键\n* 钓鱼角色选择分析员，否则无法正常工作\n* 根据游戏右下角手动设置好抛竿按键、钓鱼次数和鱼饵类型后再点开始\n* 珍奇钓鱼点每天最多钓25次\n* 稀有钓鱼点每天最多钓50次\n* 普通钓鱼点无次数限制\n* 当一个钓鱼点钓完后需要手动移动到下一个钓鱼点，进入钓鱼界面后再启动一次\n* 当黄色块数异常时尝试上面的校准HSV，钓鱼出现圆环时点`校准颜色`，然后点黄色区域\n"
+        )
         self.BodyLabel_tip_action.setText(
-            "### 提示\n* 自动完成常规行动，在看板娘页面点击开始\n* 重复刷指定次数实战训练第一关，不消耗体力\n* 用于完成凭证20次常规行动周常任务")
+            "### 提示\n* 自动完成常规行动，在看板娘页面点击开始\n* 重复刷指定次数实战训练第一关，不消耗体力\n* 用于完成凭证20次常规行动周常任务"
+        )
         self.BodyLabel_tip_jigsaw.setText(
-            "### 提示\n* 本功能只提供解决方案，不自动拼\n* 需要手动输入当前拥有的各个拼图数量\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量")
+            "### 提示\n* 本功能只提供解决方案，不自动拼\n* 需要手动输入当前拥有的各个拼图数量\n* 指定最大方案数越大，耗时越长，但可能会得到一个更优的方案,建议范围10~100\n* 设置过大方案数会产生卡顿\n* 生成的方案不是全局最优，而是目前方案数中的最优\n* 可以尝试降低9,10,11号碎片数量可能得到更优解\n* 当方案数量较少时，则应增加9,10,11号碎片数量"
+        )
         self.BodyLabel_tip_water.setText(
             "### 提示\n* 站在水弹入口位置后再点开始\n* 当无法识别道具或者生命时，适当调低上面两个置信度参数")
         self.BodyLabel_tip_alien.setText(
-            "### 提示\n* 开始战斗后再点击开始\n* 常驻伙伴推荐带钢珠和炽热投手\n* 闯关模式为半自动一关一关打。需要手动开枪，手动选择下一关")
+            "### 提示\n* 开始战斗后再点击开始\n* 常驻伙伴推荐带钢珠和炽热投手\n* 闯关模式为半自动一关一关打。需要手动开枪，手动选择下一关"
+        )
         self.BodyLabel_tip_maze.setText(
-            "### 提示\n* 本功能只适用于增益迷宫（新迷宫），而非老迷宫\n* 运行模式中单次运行适合打前3关，重复运行则是一直刷最后一关\n* 进配队界面选好增益后再点击SAA的开始迷宫\n* 增益推荐配技能-爆电和护盾-夺取\n* 配队必须要有辰星-琼弦，且把角色放在中间位\n* 辅助有豹豹上豹豹防止暴毙")
+            "### 提示\n* 本功能只适用于增益迷宫（新迷宫），而非老迷宫\n* 运行模式中单次运行适合打前3关，重复运行则是一直刷最后一关\n* 进配队界面选好增益后再点击SAA的开始迷宫\n* 增益推荐配技能-爆电和护盾-夺取\n* 配队必须要有辰星-琼弦，且把角色放在中间位\n* 辅助有豹豹上豹豹防止暴毙"
+        )
         self.BodyLabel_tip_massaging.setText(
             "### 提示\n* 此功能还没开发完，不要使用\n* 使用本功能建议按摩等级大于等于4级")
         self.BodyLabel_tip_card.setText(
-            "### 提示\n* 站在猜心对局入口位置后再点开始\n* 两种模式均无策略，目的均是为了快速结束对局刷下一把\n* 逻辑：有质疑直接质疑，轮到自己出牌时出中间的那一张\n* 实测有赢有输，挂着刷经验就行")
+            "### 提示\n* 站在猜心对局入口位置后再点开始\n* 两种模式均无策略，目的均是为了快速结束对局刷下一把\n* 逻辑：有质疑直接质疑，轮到自己出牌时出中间的那一张\n* 实测有赢有输，挂着刷经验就行"
+        )
+        self.BodyLabel_tip_capture_pals.setText(
+            "### 提示\n"
+            "* 通过视频BV1SV8wzjEpE和BV1SV8wzjEpE的抓捕思路实现\n"
+            "* 本功能用于自动抓帕鲁，需要携带有高伤害满级召雷+碎冰冰/布防的帕鲁来秒杀敌人，比如武装会员，爆破会员等\n"
+            "* 抓帕鲁前请确保已在游戏内设置好狂猎支援技快捷键为 C 键\n"
+            "* 启动前请确保当前是全屏模式16：9并且界面在选择伙伴岛/探险岛页面\n"
+            "* 伙伴岛/探险岛可分别选择：定点抓帕鲁 或 巡逻抓帕鲁\n"
+            "* 定点抓帕鲁：进图后按狂猎支援技C再尝试按 F 进行抓取；按设定间隔循环\n"
+            "* 巡逻抓帕鲁：每次抓完会 ESC 退出地图并重新进入，以刷新巡逻帕鲁\n"
+            "* 同步抓帕鲁：双岛同时勾选时，按“各自间隔周期”在两岛间切换；某一岛抓完后会自动只刷未完成的岛\n"
+            "* 若多次劝降失败会提示你检查抓帕鲁地点/界面是否正确\n"
+        )
+
+
         # 设置combobox选项
-        lure_type_items = ['万能鱼饵', '普通鱼饵', '豪华鱼饵', '至尊鱼饵', '重量级鱼类虫饵', '巨型鱼类虫饵',
-                           '重量级鱼类夜钓虫饵', '巨型鱼类夜钓虫饵']
+        lure_type_items = [
+            '万能鱼饵', '普通鱼饵', '豪华鱼饵', '至尊鱼饵', '重量级鱼类虫饵', '巨型鱼类虫饵', '重量级鱼类夜钓虫饵',
+            '巨型鱼类夜钓虫饵'
+        ]
         run_items = ["切换疾跑", "按住疾跑"]
         mode_items = ["无尽模式", "闯关模式"]
         mode_maze_items = ["单次运行", "重复运行"]
@@ -105,6 +151,9 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.ComboBox_mode_maze.addItems(mode_maze_items)
         self.ComboBox_wife.addItems(wife_items)
         self.ComboBox_card_mode.addItems(mode_card_items)
+        capture_pals_mode_items = ["定点抓帕鲁", "巡逻抓帕鲁"]
+        self.ComboBox_capture_pals_partner_mode.addItems(capture_pals_mode_items)
+        self.ComboBox_capture_pals_adventure_mode.addItems(capture_pals_mode_items)
 
         self.update_label_color()
         # self.color_pixmap = self.generate_pixmap_from_hsv(hsv_value)
@@ -124,14 +173,22 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         # 反向链接
         self.stackedWidget.currentChanged.connect(self.onCurrentIndexChanged)
         # 按钮信号
-        self.PushButton_start_fishing.clicked.connect(self.on_fishing_button_click)
-        self.PushButton_start_action.clicked.connect(self.on_action_button_click)
-        self.PushButton_start_jigsaw.clicked.connect(self.on_jigsaw_button_click)
-        self.PushButton_start_water_bomb.clicked.connect(self.on_water_bomb_button_click)
-        self.PushButton_start_alien_guardian.clicked.connect(self.on_alien_guardian_button_click)
+        self.PushButton_start_fishing.clicked.connect(
+            self.on_fishing_button_click)
+        self.PushButton_start_action.clicked.connect(
+            self.on_action_button_click)
+        self.PushButton_start_jigsaw.clicked.connect(
+            self.on_jigsaw_button_click)
+        self.PushButton_start_water_bomb.clicked.connect(
+            self.on_water_bomb_button_click)
+        self.PushButton_start_alien_guardian.clicked.connect(
+            self.on_alien_guardian_button_click)
         self.PushButton_start_maze.clicked.connect(self.on_maze_button_click)
-        self.PushButton_start_massaging.clicked.connect(self.on_massaging_button_click)
+        self.PushButton_start_massaging.clicked.connect(
+            self.on_massaging_button_click)
         self.PushButton_start_drink.clicked.connect(self.on_drink_button_click)
+        self.PushButton_start_capture_pals.clicked.connect(
+            self.on_capture_pals_button_click)
 
         # 链接各种需要保存修改的控件
         self._connect_to_save_changed()
@@ -139,7 +196,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.PrimaryPushButton_get_color.clicked.connect(self.adjust_color)
         self.PushButton_reset.clicked.connect(self.reset_color)
 
-        self.LineEdit_fish_key.editingFinished.connect(lambda: self.update_fish_key(self.LineEdit_fish_key.text()))
+        self.LineEdit_fish_key.editingFinished.connect(
+            lambda: self.update_fish_key(self.LineEdit_fish_key.text()))
 
         signalBus.jigsawDisplaySignal.connect(self.paint_best_solution)
         signalBus.updatePiecesNum.connect(self.update_pieces_num)
@@ -151,7 +209,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             config_item = getattr(config, widget.objectName(), None)
             if config_item:
                 if isinstance(widget, CheckBox):
-                    widget.setChecked(config_item.value)  # 使用配置项的值设置 CheckBox 的状态
+                    widget.setChecked(
+                        config_item.value)  # 使用配置项的值设置 CheckBox 的状态
                 elif isinstance(widget, ComboBox):
                     # widget.setPlaceholderText("未选择")
                     widget.setCurrentIndex(config_item.value)
@@ -165,8 +224,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                     widget.setValue(config_item.value)
                 elif isinstance(widget, Slider):
                     widget.setValue(config_item.value)
-                    text_name = 'BodyLabel_' + widget.objectName().split('_')[1] + '_' + widget.objectName().split('_')[
-                        2]
+                    text_name = 'BodyLabel_' + widget.objectName().split(
+                        '_')[1] + '_' + widget.objectName().split('_')[2]
                     text_widget = self.findChild(QLabel, name=text_name)
                     text_widget.setText(str(widget.value()))
 
@@ -175,41 +234,53 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         for children in children_list:
             # 此时不能用lambda，会使传参出错
             if isinstance(children, CheckBox):
-                children.stateChanged.connect(partial(self.save_changed, children))
+                children.stateChanged.connect(
+                    partial(self.save_changed, children))
             elif isinstance(children, ComboBox):
-                children.currentIndexChanged.connect(partial(self.save_changed, children))
+                children.currentIndexChanged.connect(
+                    partial(self.save_changed, children))
             elif isinstance(children, SpinBox):
-                children.valueChanged.connect(partial(self.save_changed, children))
+                children.valueChanged.connect(
+                    partial(self.save_changed, children))
             elif isinstance(children, LineEdit):
-                children.editingFinished.connect(partial(self.save_changed, children))
+                children.editingFinished.connect(
+                    partial(self.save_changed, children))
             elif isinstance(children, Slider):
-                children.valueChanged.connect(partial(self.save_changed, children))
+                children.valueChanged.connect(
+                    partial(self.save_changed, children))
 
     def save_changed(self, widget):
         if isinstance(widget, SpinBox):
-            config.set(getattr(config, widget.objectName(), None), widget.value())
+            config.set(getattr(config, widget.objectName(), None),
+                       widget.value())
         elif isinstance(widget, CheckBox):
-            config.set(getattr(config, widget.objectName(), None), widget.isChecked())
+            config.set(getattr(config, widget.objectName(), None),
+                       widget.isChecked())
         elif isinstance(widget, LineEdit):
             # 如果是钓鱼相关的lineEdit
             if widget.objectName().split('_')[1] == 'fish':
                 # 钓鱼按键
                 if widget.objectName().split('_')[2] == 'key':
-                    config.set(getattr(config, widget.objectName(), None), widget.text())
+                    config.set(getattr(config, widget.objectName(), None),
+                               widget.text())
                 else:
                     text = widget.text()
                     if self.is_valid_format(text):
-                        config.set(getattr(config, widget.objectName(), None), text)
+                        config.set(getattr(config, widget.objectName(), None),
+                                   text)
             elif widget.objectName().split('_')[1] == 'jigsaw':
                 text = widget.text()
                 if text == "-1":
                     text = "0"
                 config.set(getattr(config, widget.objectName(), None), text)
         elif isinstance(widget, ComboBox):
-            config.set(getattr(config, widget.objectName(), None), widget.currentIndex())
+            config.set(getattr(config, widget.objectName(), None),
+                       widget.currentIndex())
         elif isinstance(widget, Slider):
-            config.set(getattr(config, widget.objectName(), 70), widget.value())
-            text_name = 'BodyLabel_' + widget.objectName().split('_')[1] + '_' + widget.objectName().split('_')[2]
+            config.set(getattr(config, widget.objectName(), 70),
+                       widget.value())
+            text_name = 'BodyLabel_' + widget.objectName().split(
+                '_')[1] + '_' + widget.objectName().split('_')[2]
             text_widget = self.findChild(QLabel, name=text_name)
             text_widget.setText(str(widget.value()))
 
@@ -225,7 +296,11 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         # 如果匹配成功，则继续检查数值范围
         if match:
             # 获取匹配到的三个整数,match.group(0)代表整个匹配的字符串
-            int_values = [int(match.group(1)), int(match.group(2)), int(match.group(3))]
+            int_values = [
+                int(match.group(1)),
+                int(match.group(2)),
+                int(match.group(3))
+            ]
 
             # 检查每个整数是否在0~255之间
             if all(0 <= value <= 255 for value in int_values):
@@ -241,7 +316,9 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         通过设置style的方式将颜色呈现在label上，这样可以随label缩放
         :return:
         """
-        hsv_value = [int(value) for value in config.LineEdit_fish_base.value.split(",")]
+        hsv_value = [
+            int(value) for value in config.LineEdit_fish_base.value.split(",")
+        ]
         # 使用 OpenCV 将 HSV 转换为 BGR
         hsv_array = np.uint8([[[hsv_value[0], hsv_value[1], hsv_value[2]]]])
         bgr_color = cv2.cvtColor(hsv_array, cv2.COLOR_HSV2BGR)[0][0]
@@ -250,12 +327,14 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         # 将 RGB 转换为 #RRGGBB 格式的字符串
         rgb_color_str = f"#{rgb_color[0]:02X}{rgb_color[1]:02X}{rgb_color[2]:02X}"
         # 使用 setStyleSheet 设置 QLabel 的背景颜色
-        self.PixmapLabel.setStyleSheet(f"background-color: {rgb_color_str};border-radius: 5px;")
+        self.PixmapLabel.setStyleSheet(
+            f"background-color: {rgb_color_str};border-radius: 5px;")
 
     def update_pieces_num(self, pieces_num: dict):
         try:
             for key, value in pieces_num.items():
-                line_edit = self.SimpleCardWidget_jigsaw.findChildren(LineEdit, key)[0]
+                line_edit = self.SimpleCardWidget_jigsaw.findChildren(
+                    LineEdit, key)[0]
                 line_edit.setText(str(value))
                 line_edit.editingFinished.emit()
         except Exception as e:
@@ -263,7 +342,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def adjust_color(self):
         self.adjust_color_thread = AdjustColor()
-        self.adjust_color_thread.color_changed.connect(self.reload_color_config)
+        self.adjust_color_thread.color_changed.connect(
+            self.reload_color_config)
         self.adjust_color_thread.start()
 
     def reload_color_config(self):
@@ -273,15 +353,19 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         self.update_label_color()
 
     def reset_color(self):
-        config.set(config.LineEdit_fish_base, config.LineEdit_fish_base.defaultValue)
-        config.set(config.LineEdit_fish_upper, config.LineEdit_fish_upper.defaultValue)
-        config.set(config.LineEdit_fish_lower, config.LineEdit_fish_lower.defaultValue)
+        config.set(config.LineEdit_fish_base,
+                   config.LineEdit_fish_base.defaultValue)
+        config.set(config.LineEdit_fish_upper,
+                   config.LineEdit_fish_upper.defaultValue)
+        config.set(config.LineEdit_fish_lower,
+                   config.LineEdit_fish_lower.defaultValue)
         self.LineEdit_fish_base.setText(config.LineEdit_fish_base.value)
         self.LineEdit_fish_upper.setText(config.LineEdit_fish_upper.value)
         self.LineEdit_fish_lower.setText(config.LineEdit_fish_lower.value)
         self.update_label_color()
 
     def paint_best_solution(self, best_solution_board: list):
+
         def get_color_for_value(piece_id: int):
             """根据数组中的值返回相应的颜色"""
             if piece_id == 1:
@@ -318,7 +402,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             total_height = 400
 
             # 根据total_height计算每个小方块的高和宽
-            tile_height = tile_width = (total_height - spacing * (rows - 1)) / rows
+            tile_height = tile_width = (total_height - spacing *
+                                        (rows - 1)) / rows
             total_width = tile_width * cols + spacing * (cols - 1)
             pixmap = QPixmap(int(total_width), int(total_height))
             pixmap.fill(QColor(228, 237, 245))  # 设置背景色为白色
@@ -335,12 +420,14 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
                 x_pos = y * (tile_width + spacing)
                 y_pos = x * (tile_height + spacing)
 
-                rect = QRect(int(x_pos), int(y_pos), int(tile_width), int(tile_height))
+                rect = QRect(int(x_pos), int(y_pos), int(tile_width),
+                             int(tile_height))
                 painter.fillRect(rect, color)
             painter.end()
 
             self.jigsaw_solution_pixmap = pixmap
-            self.PixmapLabel_best_solution.setPixmap(self.jigsaw_solution_pixmap)
+            self.PixmapLabel_best_solution.setPixmap(
+                self.jigsaw_solution_pixmap)
 
         generate_pixmap()
 
@@ -362,7 +449,9 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
     def set_simple_card_enable(self, simple_card, enable: bool):
         children = get_all_children(simple_card)
         for child in children:
-            if isinstance(child, CheckBox) or isinstance(child, LineEdit) or isinstance(child, SpinBox):
+            if isinstance(child, CheckBox) or isinstance(
+                    child, LineEdit) or isinstance(
+                        child, SpinBox) or isinstance(child, ComboBox):
                 child.setEnabled(enable)
 
     def on_fishing_button_click(self):
@@ -448,7 +537,8 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
 
     def handle_water_bomb(self, is_running):
         if is_running:
-            self.set_simple_card_enable(self.SimpleCardWidget_water_bomb, False)
+            self.set_simple_card_enable(self.SimpleCardWidget_water_bomb,
+                                        False)
             self.PushButton_start_water_bomb.setText('停止心动水弹')
             self.is_running_water_bomb = True
         else:
@@ -460,18 +550,21 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
         if not self.is_running_alien_guardian:
             self.redirectOutput(self.textBrowser_log_alien_guardian)
             self.alien_guardian_task = SubTask(AlienGuardianModule)
-            self.alien_guardian_task.is_running.connect(self.handle_alien_guardian)
+            self.alien_guardian_task.is_running.connect(
+                self.handle_alien_guardian)
             self.alien_guardian_task.start()
         else:
             self.alien_guardian_task.stop()
 
     def handle_alien_guardian(self, is_running):
         if is_running:
-            self.set_simple_card_enable(self.SimpleCardWidget_alien_guardian, False)
+            self.set_simple_card_enable(self.SimpleCardWidget_alien_guardian,
+                                        False)
             self.PushButton_start_alien_guardian.setText('停止异星守护')
             self.is_running_alien_guardian = True
         else:
-            self.set_simple_card_enable(self.SimpleCardWidget_alien_guardian, True)
+            self.set_simple_card_enable(self.SimpleCardWidget_alien_guardian,
+                                        True)
             self.PushButton_start_alien_guardian.setText('开始异星守护')
             self.is_running_alien_guardian = False
 
@@ -535,3 +628,24 @@ class Additional(QFrame, Ui_additional_features, BaseInterface):
             self.set_simple_card_enable(self.SimpleCardWidget_card, True)
             self.PushButton_start_drink.setText('开始喝酒')
             self.is_running_drink = False
+
+    def on_capture_pals_button_click(self):
+        """抓帕鲁开始按键的信号处理"""
+        if not self.is_running_capture_pals:
+            self.redirectOutput(self.textBrowser_log_capture_pals)
+            self.capture_pals_task = SubTask(CapturePalsModule)
+            self.capture_pals_task.is_running.connect(self.handle_capture_pals)
+            self.capture_pals_task.start()
+        else:
+            self.capture_pals_task.stop()
+
+    def handle_capture_pals(self, is_running):
+        """抓帕鲁线程开始与结束的信号处理"""
+        if is_running:
+            self.set_simple_card_enable(self.SimpleCardWidget_capture_pals, False)
+            self.PushButton_start_capture_pals.setText('停止抓帕鲁')
+            self.is_running_capture_pals = True
+        else:
+            self.set_simple_card_enable(self.SimpleCardWidget_capture_pals, True)
+            self.PushButton_start_capture_pals.setText('开始抓帕鲁')
+            self.is_running_capture_pals = False

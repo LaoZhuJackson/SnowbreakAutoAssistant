@@ -179,7 +179,78 @@ class Config(QConfig):
     ComboBox_card_mode = OptionsConfigItem("add_drink", "ComboBox_card_mode", 0, OptionsValidator([0, 1]))
     SpinBox_drink_times = ConfigItem("add_drink", "SpinBox_drink_times", -1)
     CheckBox_is_speed_up = ConfigItem("add_drink", "CheckBox_is_speed_up", False, BoolValidator())
+    # 抓帕鲁相关（add_capture_pals）
+    # 伙伴岛抓帕鲁模式：0=定点 1=巡逻
+    ComboBox_capture_pals_partner_mode = ConfigItem(
+        "add_capture_pals", "ComboBox_capture_pals_partner_mode", 0
+    )
 
+    # 探险岛抓帕鲁模式：0=定点 1=巡逻
+    ComboBox_capture_pals_adventure_mode = ConfigItem(
+        "add_capture_pals", "ComboBox_capture_pals_adventure_mode", 1
+    )
+
+    # 选择岛：伙伴岛/探险岛
+    CheckBox_capture_pals_partner = ConfigItem(
+        "add_capture_pals",
+        "CheckBox_capture_pals_partner",
+        True,
+        BoolValidator()
+    )
+    CheckBox_capture_pals_adventure = ConfigItem(
+        "add_capture_pals",
+        "CheckBox_capture_pals_adventure",
+        False,
+        BoolValidator()
+    )
+
+    # 是否启用同步抓帕鲁（仅在双岛勾选时有效）
+    CheckBox_capture_pals_sync = ConfigItem(
+        "add_capture_pals",
+        "CheckBox_capture_pals_sync",
+        False,
+        BoolValidator()
+    )
+
+    # 同步抓帕鲁：插入探险岛的周期（分钟）
+    # 例如：伙伴岛抓帕鲁间隙每隔 N 分钟去探险岛巡逻抓一轮
+    SpinBox_capture_pals_sync_every_min = ConfigItem(
+        "add_capture_pals",
+        "SpinBox_capture_pals_sync_every_min",
+        5
+    )
+
+    # 伙伴岛：定点抓帕鲁间隔（秒）
+    # 默认 35s（30s刷新 + 5s抓捕）
+    SpinBox_capture_pals_partner_fixed_interval = ConfigItem(
+        "add_capture_pals",
+        "SpinBox_capture_pals_partner_fixed_interval",
+        35
+    )
+
+    # 伙伴岛：巡逻抓帕鲁刷新间隔（秒）
+    # 默认 10s（每次抓完退出等待刷新再进）
+    SpinBox_capture_pals_partner_patrol_interval = ConfigItem(
+        "add_capture_pals",
+        "SpinBox_capture_pals_partner_patrol_interval",
+        10
+    )
+
+    # 探险岛：定点抓帕鲁间隔（秒）
+    # 默认 300s（5min）
+    SpinBox_capture_pals_adventure_fixed_interval = ConfigItem(
+        "add_capture_pals",
+        "SpinBox_capture_pals_adventure_fixed_interval",
+        300
+    )
+
+    # 探险岛：巡逻抓帕鲁刷新间隔（秒）
+    # 默认 1200s（20min）
+    SpinBox_capture_pals_adventure_patrol_interval = ConfigItem(
+        "add_capture_pals",
+        "SpinBox_capture_pals_adventure_patrol_interval",
+        1200
+    )
 
 config = Config()
 config.themeMode.value = Theme.AUTO
