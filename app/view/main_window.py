@@ -26,7 +26,7 @@ from ..common.icon import Icon
 from ..common.logger import logger
 from ..common.matcher import matcher
 from ..common.signal_bus import signalBus
-from ..common.utils import get_start_arguments, get_gitee_text, get_local_version, get_cloudflare_data
+from ..common.utils import get_start_arguments, get_gitee_text, get_local_version, get_cloudflare_data, resolve_game_exe
 from ..modules.ocr import ocr
 from ..repackage.custom_message_box import CustomMessageBox
 from ..ui.display_interface import DisplayInterface
@@ -94,25 +94,26 @@ class MainWindow(MSFluentWindow):
                 logger.warn(f'未勾选"自动打开游戏"')
 
     def open_game_directly(self):
-        """直接启动游戏"""
-        # 用户提供的能在启动器找到的路径
-        start_path = config.LineEdit_game_directory.value
-        start_path = start_path.replace("/", "\\")
+        """直接启动游戏（兼容 Steam/Epic 与国服等不同目录结构）"""
+        start_path = os.path.normpath(config.LineEdit_game_directory.value)
         game_channel = config.server_interface.value
-        exe_path = os.path.join(start_path, r'game\Game\Binaries\Win64\Game.exe')
+
+        exe_path = resolve_game_exe(start_path)
+        if not exe_path or not os.path.exists(exe_path):
+            logger.error(f"没有找到对应文件: {exe_path or '(empty)'}，请检查游戏路径: {start_path}")
+            return
+
         try:
-            launch_args = get_start_arguments(start_path, game_channel)
+            launch_args = get_start_arguments(start_path, game_channel, exe_path=exe_path)
             if not launch_args:
                 logger.error(f"游戏启动失败未找到对应参数，start_path：{start_path}，game_channel:{game_channel}")
                 return
-            else:
-                # 尝试以管理员权限运行
-                subprocess.Popen([exe_path] + launch_args)
-                logger.debug(f'正在启动 {exe_path} {launch_args}')
-        except FileNotFoundError:
-            logger.error(f'没有找到对应文件: {exe_path}')
+
+            subprocess.Popen([exe_path] + launch_args)
+            logger.debug(f"正在启动 {exe_path} {launch_args}")
+
         except Exception as e:
-            logger.error(f'出现报错: {e}')
+            logger.error(f"出现报错: {e}")
 
     def connectSignalToSlot(self):
         signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)

@@ -22,7 +22,7 @@ from app.common.logger import original_stdout, original_stderr, logger
 from app.common.signal_bus import signalBus
 from app.common.style_sheet import StyleSheet
 from app.common.utils import get_all_children, get_date_from_api, get_gitee_text, get_start_arguments, \
-    is_exist_snowbreak, get_cloudflare_data, get_local_version
+    is_exist_snowbreak, get_cloudflare_data, get_local_version, resolve_game_exe
 from app.modules.base_task.base_task import BaseTask
 from app.modules.chasm.chasm import ChasmModule
 from app.modules.collect_supplies.collect_supplies import CollectSuppliesModule
@@ -619,28 +619,28 @@ class Home(QFrame, Ui_home, BaseInterface):
 
     def open_game_directly(self):
         """直接启动游戏"""
-        # 用户提供的能在启动器找到的路径
-        start_path = config.LineEdit_game_directory.value
-        start_path = start_path.replace("/", "\\")
+        start_path = os.path.normpath(config.LineEdit_game_directory.value)
         game_channel = config.server_interface.value
-        exe_path = os.path.join(start_path, r'game\Game\Binaries\Win64\Game.exe')
+
+        exe_path = resolve_game_exe(start_path)
         try:
             # 检查游戏主程序是否存在
-            if not os.path.exists(exe_path):
-                logger.error(f'游戏主程序不存在: {exe_path}')
+            if not exe_path:
+                logger.error(f"未找到游戏主程序 Game.exe，请检查路径: {start_path}")
                 return
-            launch_args = get_start_arguments(start_path, game_channel)
+
+            launch_args = get_start_arguments(start_path, game_channel, exe_path=exe_path)
             if not launch_args:
                 logger.error(f"游戏启动失败未找到对应参数，start_path：{start_path}，game_channel:{game_channel}")
                 return
+
+            if not is_exist_snowbreak():
+                # 尝试以管理员权限运行
+                subprocess.Popen([exe_path] + launch_args)
+                logger.debug(f"正在启动 {exe_path} {launch_args}")
             else:
-                if not is_exist_snowbreak():
-                    # 尝试以管理员权限运行
-                    subprocess.Popen([exe_path] + launch_args)
-                    logger.debug(f'正在启动 {exe_path} {launch_args}')
-                else:
-                    logger.info(f"游戏窗口已存在")
-                self.check_game_window_timer.start(500)
+                logger.info("游戏窗口已存在")
+            self.check_game_window_timer.start(500)
         except FileNotFoundError:
             logger.error(f'没有找到对应文件: {exe_path}')
         except Exception as e:

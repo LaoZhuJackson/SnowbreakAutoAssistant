@@ -348,52 +348,110 @@ def get_cloudflare_data():
     except Exception as e:
         return {"error": f"解析JSON失败: {e}"}
 
-def get_start_arguments(start_path, start_model):
+
+def get_start_arguments(start_path, start_model, exe_path: str = None):
     """
     自动判断是什么服，什么启动器，返回对应的启动参数
     :param start_path: 启动路径，由用户提供，可以在启动器查看
     :param start_model: 由用户设置，在SAA设置中选服
     :return:
     """
-    # 统一进入game文件夹
-    user_dir = os.path.join(start_path, 'game').replace('\\', '/')
+    start_path = os.path.normpath(start_path)
+
+    # 如果传了 exe_path，就用它推 userdir；否则退回老逻辑
+    if exe_path and os.path.exists(exe_path):
+        user_dir = resolve_userdir(start_path, exe_path)
+    else:
+        user_dir = os.path.join(start_path, 'game').replace('\\', '/')
+
     arg = None
-    # 国服新版启动命令
+
+    # 国服
     if start_model == 0:
         if has_folder_in_path(start_path, "Temp"):
             arg = [
                 "-FeatureLevelES31",
                 "-ChannelID=jinshan",
-                '-userdir=' + user_dir,
+                f"-userdir={user_dir}",
                 '--launcher-language="en"',
                 '--launcher-channel="CBJQos"',
-                '--launcher-gamecode="cbjq"'
+                '--launcher-gamecode="cbjq"',
             ]
         else:
-            # 国服旧版启动命令
-            # self.start_path = D:\Game\尘白禁区\Snow\data
             arg = [
                 "-FeatureLevelES31",
                 "-ChannelID=jinshan",
-                '-userdir=' + user_dir
+                f"-userdir={user_dir}",
             ]
-    # b服启动命令
-    # self.start_path = E:\Snow\data
+
+    # b服
     elif start_model == 1:
         arg = [
             "-FeatureLevelES31",
             "-ChannelID=bilibili",
-            '-userdir=' + user_dir
+            f"-userdir={user_dir}",
         ]
-    # 国际服启动命令
-    # E:\SteamLibrary\steamapps\common\SNOWBREAK
+
+    # 国际服（Steam/Epic）
     elif start_model == 2:
         arg = [
             "-FeatureLevelES31",
             "-channelid=seasun",
-            "steamapps"
+            "steamapps",
         ]
+
     return arg
+
+
+def resolve_game_exe(start_path: str) -> str:
+    start_path = os.path.normpath(start_path)
+
+    candidates = [
+        os.path.join(start_path, r"game\Game\Binaries\Win64\Game.exe"),
+        os.path.join(start_path, r"Game\Binaries\Win64\Game.exe"),
+        # 容错：用户选到子目录
+        os.path.join(start_path, r"..\game\Game\Binaries\Win64\Game.exe"),
+        os.path.join(start_path, r"..\Game\Binaries\Win64\Game.exe"),
+    ]
+
+    for p in candidates:
+        p = os.path.normpath(p)
+        if os.path.exists(p):
+            return p
+
+    # 兜底：递归找 Game.exe 且包含 Binaries\Win64
+    for root, _, files in os.walk(start_path):
+        if "Game.exe" in files:
+            p = os.path.normpath(os.path.join(root, "Game.exe"))
+            if re.search(r"binaries\\win64", p.lower()):
+                return p
+
+    return ""
+
+
+def resolve_userdir(start_path: str, exe_path: str) -> str:
+    """
+    目标：userdir（通常是 <root>/game）
+    """
+    start_path = os.path.normpath(start_path)
+    exe_path = os.path.normpath(exe_path)
+
+    # 从 exe 推 root：.../Game/Binaries/Win64/Game.exe -> 往上 3 层到 .../Game
+    game_folder = os.path.normpath(os.path.join(os.path.dirname(exe_path), r"..\..\.."))
+    # 再往上一层通常是安装根目录（例如 SNOWBREAK）
+    root = os.path.normpath(os.path.join(game_folder, r".."))
+
+    # 兼容原来的设计：优先 <root>/game
+    cand1 = os.path.join(root, "game")
+    if os.path.isdir(cand1):
+        return cand1.replace("\\", "/")
+
+    # 有些结构可能直接就是 root 本身作为 userdir（或 game_folder）
+    if os.path.isdir(start_path) and os.path.isdir(os.path.join(start_path, "Game")):
+        # 用户很可能选的是 root
+        return start_path.replace("\\", "/")
+
+    return root.replace("\\", "/")
 
 
 def has_folder_in_path(path, dir_name):
